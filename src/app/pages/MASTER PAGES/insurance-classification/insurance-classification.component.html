@@ -1,61 +1,105 @@
 <div class="view-wrapper list-page">
-    <dx-data-grid class="grid theme-dependent" noDataText="" height="600" [dataSource]="dataSource" [showBorders]="true"
-        [allowColumnResizing]="true" [allowColumnReordering]="true" [rowAlternationEnabled]="true"
-        rowAlternationInterval="2" (onExporting)="onExporting($event)" (onRowRemoving)="onRowRemoving($event)"
-        (onRowUpdating)="onRowUpdating($event)" height="84vh">
-        <dxo-paging [pageSize]="10"></dxo-paging>
-        <dxo-editing mode="form" [allowUpdating]="true" [allowDeleting]="true" [allowAdding]="true"
-            [popup]="{ width: '40%', height: '60vh' }">
-            <dxo-popup title="Edit Insurance Classification" [showTitle]="true"></dxo-popup>
-        </dxo-editing>
-        <dxo-pager [visible]="true" [allowedPageSizes]="allowedPageSizes" [displayMode]="displayMode"
-            [showPageSizeSelector]="showPageSizeSelector" [showInfo]="showInfo"
-            [showNavigationButtons]="showNavButtons">
-        </dxo-pager>
-        <dxo-load-panel [showPane]="false"></dxo-load-panel>
-        <dxo-scrolling mode="virtual"></dxo-scrolling>
-        <dxo-sorting mode="multiple"></dxo-sorting>
-        <dxo-header-filter [visible]="true"></dxo-header-filter>
-        <dxo-filter-row [visible]="true"></dxo-filter-row>
-        <dxo-search-panel [visible]="true" placeholder=" Search"></dxo-search-panel>
-        <dxo-export [enabled]="true" [allowExportSelectedData]="true" [formats]="['xlsx', 'pdf']">
-        </dxo-export>
-        <dxo-toolbar>
-            <dxi-item location="before">
-                <div class="grid-header">Insurance Classification</div>
-            </dxi-item>
-            <dxi-item location="after" locateInMenu="auto">
-                <dx-button text="Add " icon="plus" type="default" stylingMode="contained"
-                    (onClick)="show_new_InsuranceClassification_Form()"></dx-button>
-            </dxi-item>
-            <dxi-item location="after" locateInMenu="auto" showText="inMenu" widget="dxButton" [options]="{
-            text: 'Refresh',
-            icon: 'refresh',
-            onClick: refresh,
-            stylingMode: 'text'
-          }"></dxi-item>
-            <dxi-item location="after" locateInMenu="auto">
-                <div class="separator"></div>
-            </dxi-item>
-            <dxi-item name="exportButton"></dxi-item>
-            <dxi-item location="after" locateInMenu="auto">
-                <div class="separator"></div>
-            </dxi-item>
-            <!-- <dxi-item name="columnChooserButton" locateInMenu="auto"></dxi-item> -->
-            <dxi-item name="searchPanel" locateInMenu="auto"></dxi-item>
-        </dxo-toolbar>
+  <dx-data-grid
+    class="grid theme-dependent"
+    noDataText=""
+    height="600"
+    [dataSource]="dataSource"
+    [showBorders]="true"
+    [allowColumnResizing]="true"
+    [allowColumnReordering]="true"
+    [rowAlternationEnabled]="true"
+    rowAlternationInterval="2"
+    (onExporting)="onExporting($event)"
+    (onRowRemoving)="onRowRemoving($event)"
+    (onRowUpdating)="onRowUpdating($event)"
+    height="84vh"
+  >
+    <dxo-paging [pageSize]="10"></dxo-paging>
+    <dxo-editing
+      mode="form"
+      [allowUpdating]="true"
+      [allowDeleting]="true"
+      [allowAdding]="true"
+      [popup]="{ width: '40%', height: '60vh' }"
+    >
+      <dxo-popup
+        title="Edit Insurance Classification"
+        [showTitle]="true"
+      ></dxo-popup>
+    </dxo-editing>
+    <dxo-pager
+      [visible]="true"
+      [allowedPageSizes]="allowedPageSizes"
+      [displayMode]="displayMode"
+      [showPageSizeSelector]="showPageSizeSelector"
+      [showInfo]="showInfo"
+      [showNavigationButtons]="showNavButtons"
+    >
+    </dxo-pager>
+    <dxo-load-panel [showPane]="false"></dxo-load-panel>
+    <dxo-scrolling mode="virtual"></dxo-scrolling>
+    <dxo-sorting mode="multiple"></dxo-sorting>
+    <dxo-header-filter [visible]="true"></dxo-header-filter>
+    <dxo-filter-row [visible]="true"></dxo-filter-row>
+    <dxo-search-panel [visible]="true" placeholder=" Search"></dxo-search-panel>
+    <dxo-export
+      [enabled]="true"
+      [allowExportSelectedData]="true"
+      [formats]="['xlsx', 'pdf']"
+    >
+    </dxo-export>
+    <dxo-toolbar>
+      <dxi-item location="before">
+        <div class="grid-header">Insurance Classification</div>
+      </dxi-item>
+      <dxi-item location="after" locateInMenu="auto">
+        <dx-button
+          text="Add "
+          icon="plus"
+          type="default"
+          stylingMode="contained"
+          (onClick)="show_new_InsuranceClassification_Form()"
+        ></dx-button>
+      </dxi-item>
+      <dxi-item
+        location="after"
+        locateInMenu="auto"
+        showText="inMenu"
+        widget="dxButton"
+        [options]="{
+          text: 'Refresh',
+          icon: 'refresh',
+          onClick: refresh,
+          stylingMode: 'text'
+        }"
+      ></dxi-item>
+      <dxi-item location="after" locateInMenu="auto">
+        <div class="separator"></div>
+      </dxi-item>
+      <dxi-item name="exportButton"></dxi-item>
+      <dxi-item location="after" locateInMenu="auto">
+        <div class="separator"></div>
+      </dxi-item>
+      <!-- <dxi-item name="columnChooserButton" locateInMenu="auto"></dxi-item> -->
+      <dxi-item name="searchPanel" locateInMenu="auto"></dxi-item>
+    </dxo-toolbar>
 
-        <!-- <dxo-selection mode="multiple"></dxo-selection> -->
-        <dxo-header-filter [visible]="true">
-            <dxo-search [enabled]="true"></dxo-search>
-        </dxo-header-filter>
+    <!-- <dxo-selection mode="multiple"></dxo-selection> -->
+    <dxo-header-filter [visible]="true">
+      <dxo-search [enabled]="true"></dxo-search>
+    </dxo-header-filter>
 
-        <dxi-column dataField="Classification" caption="Classification">
-        </dxi-column>
-        <dxi-column dataField="Description" Caption="Description"></dxi-column>
-    </dx-data-grid>
-    <form-popup class="formPopupClass" [(visible)]="isAddFormPopupOpened"
-        (save)="onClickSaveNewInsuranceClassification()" titleText="New Insurance Classification" height="70vh">
-        <app-insurance-classification-new-form></app-insurance-classification-new-form>
-    </form-popup>
+    <dxi-column dataField="Classification" caption="Classification">
+    </dxi-column>
+    <dxi-column dataField="Description" Caption="Description"></dxi-column>
+  </dx-data-grid>
+  <form-popup
+    class="formPopupClass"
+    [(visible)]="isAddFormPopupOpened"
+    (save)="onClickSaveNewInsuranceClassification()"
+    titleText="New Insurance Classification"
+    height="70vh"
+  >
+    <app-insurance-classification-new-form></app-insurance-classification-new-form>
+  </form-popup>
 </div>

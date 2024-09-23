@@ -1,5 +1,4 @@
-
- <div class="view-wrapper list-page">
+<div class="view-wrapper list-page">
   <dx-data-grid
     class="grid theme-dependent"
     noDataText="No data available"
@@ -107,7 +106,8 @@
           text: 'Refresh',
           icon: 'refresh',
           onClick: refresh,
-          stylingMode: 'text'
+          stylingMode: 'text',
+          elementAttr: { class: 'commonButtons' }
         }"
       ></dxi-item>
 
@@ -129,14 +129,14 @@
 
     <dxi-column
       dataField="ClinicianLicense"
-      caption="Clinician License"
+      caption="License"
     ></dxi-column>
-    <dxi-column dataField="ClinicianName" Caption="Clinician Name"></dxi-column>
+    <dxi-column dataField="ClinicianName" caption="Name"></dxi-column>
     <dxi-column
       dataField="ClinicianShortName"
-      Caption="ClinicianShortName"
+      caption="Short Name"
     ></dxi-column>
-    <dxi-column dataField="SpecialityID" Caption="Speciality">
+    <dxi-column dataField="SpecialityID" caption="Speciality">
       <dxo-lookup
         [dataSource]="specialityDatasource"
         displayExpr="DESCRIPTION"

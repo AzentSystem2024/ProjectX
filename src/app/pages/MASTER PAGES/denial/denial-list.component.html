@@ -1,39 +1,74 @@
 <div class="view-wrapper list-page">
-  <dx-data-grid class="grid theme-dependent custom-grid" noDataText="" height="100%" [dataSource]="dataSource"
-    [showBorders]="true" [allowColumnResizing]="true" [allowColumnReordering]="true" [rowAlternationEnabled]="true"
-    rowAlternationInterval="2" (onExporting)="onExporting($event)" (onRowRemoving)="onRowRemoving($event)"
-    (onRowUpdating)="onRowUpdating($event)">
+  <dx-data-grid
+    class="grid theme-dependent custom-grid"
+    noDataText=""
+    height="100%"
+    [dataSource]="dataSource"
+    [showBorders]="true"
+    [allowColumnResizing]="true"
+    [allowColumnReordering]="true"
+    [rowAlternationEnabled]="true"
+    rowAlternationInterval="2"
+    (onExporting)="onExporting($event)"
+    (onRowRemoving)="onRowRemoving($event)"
+    (onRowUpdating)="onRowUpdating($event)"
+  >
     <dxo-paging [pageSize]="10"></dxo-paging>
-    <dxo-editing mode="popup" [allowUpdating]="true" [allowDeleting]="true" [popup]="{ width: '40%', height: '60vh' }">
+    <dxo-editing
+      mode="popup"
+      [allowUpdating]="true"
+      [allowDeleting]="true"
+      [popup]="{ width: '40%', height: '60vh' }"
+    >
       <dxo-popup title="Edit Denial" [showTitle]="true"></dxo-popup>
-
     </dxo-editing>
-    <dxo-pager [visible]="true" [allowedPageSizes]="allowedPageSizes" [displayMode]="displayMode"
-      [showPageSizeSelector]="showPageSizeSelector" [showInfo]="showInfo" [showNavigationButtons]="showNavButtons">
+    <dxo-pager
+      [visible]="true"
+      [allowedPageSizes]="allowedPageSizes"
+      [displayMode]="displayMode"
+      [showPageSizeSelector]="showPageSizeSelector"
+      [showInfo]="showInfo"
+      [showNavigationButtons]="showNavButtons"
+    >
     </dxo-pager>
     <dxo-load-panel [showPane]="false"></dxo-load-panel>
     <dxo-scrolling mode="virtual"></dxo-scrolling>
     <dxo-sorting mode="multiple"></dxo-sorting>
     <dxo-header-filter [visible]="true"></dxo-header-filter>
-    <dxo-filter-row [visible]="true" style="height:30px"></dxo-filter-row>
+    <dxo-filter-row [visible]="true" style="height: 30px"></dxo-filter-row>
     <!-- <dxo-column-chooser [enabled]="true" [height]="400"></dxo-column-chooser> -->
     <dxo-search-panel [visible]="true" placeholder="Search"></dxo-search-panel>
-    <dxo-export [enabled]="true" [allowExportSelectedData]="true" [formats]="['xlsx', 'pdf']">
+    <dxo-export
+      [enabled]="true"
+      [allowExportSelectedData]="true"
+      [formats]="['xlsx', 'pdf']"
+    >
     </dxo-export>
     <dxo-toolbar>
       <dxi-item location="before">
         <div class="grid-header">Denials</div>
       </dxi-item>
       <dxi-item location="after" locateInMenu="auto">
-        <dx-button text="Add Denials" icon="plus" type="default" stylingMode="contained"
-          (onClick)="addDenial()"></dx-button>
+        <dx-button
+          text="Add Denials"
+          icon="plus"
+          type="default"
+          stylingMode="contained"
+          (onClick)="addDenial()"
+        ></dx-button>
       </dxi-item>
-      <dxi-item location="after" locateInMenu="auto" showText="inMenu" widget="dxButton" [options]="{
+      <dxi-item
+        location="after"
+        locateInMenu="auto"
+        showText="inMenu"
+        widget="dxButton"
+        [options]="{
           text: 'Refresh',
           icon: 'refresh',
           onClick: refresh,
           stylingMode: 'text'
-        }"></dxi-item>
+        }"
+      ></dxi-item>
       <dxi-item location="after" locateInMenu="auto">
         <div class="separator"></div>
       </dxi-item>
@@ -50,20 +85,33 @@
       <dxo-search [enabled]="true"></dxo-search>
     </dxo-header-filter>
 
-    <dxi-column dataField="DenialCode" caption="CODE"></dxi-column>
-    <dxi-column dataField="Description"></dxi-column>
-    <dxi-column dataField="DenialTypeID" caption="TYPE">
-      <dxo-lookup [dataSource]="Denial_Type_DropDownData" displayExpr="DESCRIPTION" valueExpr="ID">
+    <dxi-column dataField="DenialCode" caption="Code"></dxi-column>
+    <dxi-column dataField="Description" caption="Description"></dxi-column>
+    <dxi-column dataField="DenialTypeID" caption="Type">
+      <dxo-lookup
+        [dataSource]="Denial_Type_DropDownData"
+        displayExpr="DESCRIPTION"
+        valueExpr="ID"
+      >
       </dxo-lookup>
     </dxi-column>
-    <dxi-column dataField="DenialCategoryID" caption="CATEGORY">
-      <dxo-lookup [dataSource]="Denial_category_DropDownData" displayExpr="DESCRIPTION" valueExpr="ID">
+    <dxi-column dataField="DenialCategoryID" caption="category">
+      <dxo-lookup
+        [dataSource]="Denial_category_DropDownData"
+        displayExpr="DESCRIPTION"
+        valueExpr="ID"
+      >
       </dxo-lookup>
     </dxi-column>
   </dx-data-grid>
 
-  <form-popup class="formPopupClass" [(visible)]="isAddContactPopupOpened" (save)="onClickSaveNewDenial()"
-    titleText="New Denial" height="70vh">
+  <form-popup
+    class="formPopupClass"
+    [(visible)]="isAddContactPopupOpened"
+    (save)="onClickSaveNewDenial()"
+    titleText="New Denial"
+    height="70vh"
+  >
     <denial-new-form></denial-new-form>
   </form-popup>
 </div>

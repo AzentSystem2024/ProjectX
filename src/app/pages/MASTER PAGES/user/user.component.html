@@ -1,69 +1,97 @@
 <div class="view-wrapper list-page">
-    <dx-data-grid class="grid theme-dependent" noDataText="" height="600" [dataSource]="datasource" [showBorders]="true"
-      [allowColumnResizing]="true" [allowColumnReordering]="true" [rowAlternationEnabled]="true"
-      rowAlternationInterval="2" (onEditingStart)="onEditingRow($event)" (onRowRemoving)="onRowRemoving($event)"
-      height="84vh">
-      <dxo-paging [pageSize]="10"></dxo-paging>
-      <dxo-editing mode="popup" [allowUpdating]="true" [allowDeleting]="true">
-      </dxo-editing>
-      <dxo-pager [visible]="true">
-      </dxo-pager>
-      <dxo-load-panel [showPane]="false"></dxo-load-panel>
-      <dxo-scrolling mode="virtual"></dxo-scrolling>
-      <dxo-sorting mode="multiple"></dxo-sorting>
-      <dxo-header-filter [visible]="true"></dxo-header-filter>
-      <dxo-filter-row [visible]="true"></dxo-filter-row>
-      <dxo-column-chooser [enabled]="true" [height]="400"></dxo-column-chooser>
-      <dxo-search-panel [visible]="true" placeholder=" Search"></dxo-search-panel>
-      
-      <dxo-toolbar>
-        <dxi-item location="before">
-          <div class="grid-header">User</div>
-        </dxi-item>
-        <dxi-item location="after" locateInMenu="auto">
-          <dx-button text="Add " icon="plus" type="default" stylingMode="contained"
-          (onClick)="show_new_Form()" ></dx-button>
-        </dxi-item>
-        <dxi-item location="after" locateInMenu="auto" showText="inMenu" widget="dxButton" [options]="{
-            text: 'Refresh',
-            icon: 'refresh',
-            stylingMode: 'text'
-          }"></dxi-item>
-        <dxi-item location="after" locateInMenu="auto">
-          <div class="separator"></div>
-        </dxi-item>
-        <dxi-item name="exportButton"></dxi-item>
-        <dxi-item location="after" locateInMenu="auto">
-          <div class="separator"></div>
-        </dxi-item>
-        <!-- <dxi-item name="columnChooserButton" locateInMenu="auto"></dxi-item> -->
-        <dxi-item name="searchPanel" locateInMenu="auto"></dxi-item>
-      </dxo-toolbar>
-  
-      <!-- <dxo-selection mode="multiple"></dxo-selection> -->
-      <dxo-header-filter [visible]="true">
-        <dxo-search [enabled]="true"></dxo-search>
-      </dxo-header-filter>
+  <dx-data-grid
+    class="grid theme-dependent"
+    noDataText=""
+    height="600"
+    [dataSource]="datasource"
+    [showBorders]="true"
+    [allowColumnResizing]="true"
+    [allowColumnReordering]="true"
+    [rowAlternationEnabled]="true"
+    rowAlternationInterval="2"
+    (onEditingStart)="onEditingRow($event)"
+    (onRowRemoving)="onRowRemoving($event)"
+    height="84vh"
+  >
+    <dxo-paging [pageSize]="10"></dxo-paging>
+    <dxo-editing mode="popup" [allowUpdating]="true" [allowDeleting]="true">
+    </dxo-editing>
+    <dxo-pager [visible]="true"> </dxo-pager>
+    <dxo-load-panel [showPane]="false"></dxo-load-panel>
+    <dxo-scrolling mode="virtual"></dxo-scrolling>
+    <dxo-sorting mode="multiple"></dxo-sorting>
+    <dxo-header-filter [visible]="true"></dxo-header-filter>
+    <dxo-filter-row [visible]="true"></dxo-filter-row>
+    <dxo-column-chooser [enabled]="true" [height]="400"></dxo-column-chooser>
+    <dxo-search-panel [visible]="true" placeholder=" Search"></dxo-search-panel>
 
-      <dxi-column dataField="UserName" caption="User Name"></dxi-column>   
-      <dxi-column dataField="UserRoleName" caption="User Role"></dxi-column>
-      <dxi-column dataField="DateofBirth" caption="Date of Birth"></dxi-column>  
-      <dxi-column dataField="Gender" caption="Gender"></dxi-column>
-      <dxi-column dataField="Email" caption="Email"></dxi-column>
-      <dxi-column dataField="Mobile" caption="Mobile No."></dxi-column>
-      <dxi-column dataField="Whatsapp" caption="Whatsapp No."></dxi-column>
-    
-    </dx-data-grid>
-    <form-popup class="formPopupClass" [(visible)]="isAddFormPopupOpened"
-    titleText="New User" [height]="'100vh'" [width]="popupwidth" (save)="onClickSaveNewData()" >
-   <app-user-new-form></app-user-new-form>
+    <dxo-toolbar>
+      <dxi-item location="before">
+        <div class="grid-header">User</div>
+      </dxi-item>
+      <dxi-item location="after" locateInMenu="auto">
+        <dx-button
+          text="Add "
+          icon="plus"
+          type="default"
+          stylingMode="contained"
+          (onClick)="show_new_Form()"
+        ></dx-button>
+      </dxi-item>
+      <dxi-item
+        location="after"
+        locateInMenu="auto"
+        showText="inMenu"
+        widget="dxButton"
+        [options]="{
+          text: 'Refresh',
+          icon: 'refresh',
+          stylingMode: 'text'
+        }"
+      ></dxi-item>
+      <dxi-item location="after" locateInMenu="auto">
+        <div class="separator"></div>
+      </dxi-item>
+      <dxi-item name="exportButton"></dxi-item>
+      <dxi-item location="after" locateInMenu="auto">
+        <div class="separator"></div>
+      </dxi-item>
+      <!-- <dxi-item name="columnChooserButton" locateInMenu="auto"></dxi-item> -->
+      <dxi-item name="searchPanel" locateInMenu="auto"></dxi-item>
+    </dxo-toolbar>
+
+    <!-- <dxo-selection mode="multiple"></dxo-selection> -->
+    <dxo-header-filter [visible]="true">
+      <dxo-search [enabled]="true"></dxo-search>
+    </dxo-header-filter>
+
+    <dxi-column dataField="UserName" caption="Name"></dxi-column>
+    <dxi-column dataField="UserRoleName" caption="Role"></dxi-column>
+    <dxi-column dataField="DateofBirth" caption="Date of Birth"></dxi-column>
+    <dxi-column dataField="Gender" caption="Gender"></dxi-column>
+    <dxi-column dataField="Email" caption="Email"></dxi-column>
+    <dxi-column dataField="Mobile" caption="Mobile No."></dxi-column>
+    <dxi-column dataField="Whatsapp" caption="Whatsapp No."></dxi-column>
+  </dx-data-grid>
+  <form-popup
+    class="formPopupClass"
+    [(visible)]="isAddFormPopupOpened"
+    titleText="New User"
+    [height]="'100vh'"
+    [width]="popupwidth"
+    (save)="onClickSaveNewData()"
+  >
+    <app-user-new-form></app-user-new-form>
   </form-popup>
   <dx-popup
-  [(visible)]="isEditPopupOpened"
-  title="Edit User"
-  [height]="'100vh'"
-  [width]="popupwidth"
+    [(visible)]="isEditPopupOpened"
+    title="Edit User"
+    [height]="'100vh'"
+    [width]="popupwidth"
   >
-  <app-user-edit-form  [formdata]="selectedRowData" (closeForm)="CloseEditForm()"></app-user-edit-form>
-</dx-popup>
-  </div>
+    <app-user-edit-form
+      [formdata]="selectedRowData"
+      (closeForm)="CloseEditForm()"
+    ></app-user-edit-form>
+  </dx-popup>
+</div>
