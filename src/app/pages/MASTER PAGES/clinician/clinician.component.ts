@@ -16,6 +16,7 @@ import notify from 'devextreme/ui/notify';
 import { DataService } from 'src/app/services';
 import { ClinicianNewFormModule } from '../../POP-UP_PAGES/clinician-new-form/clinician-new-form.component';
 import { ClinicianNewFormComponent } from '../../POP-UP_PAGES/clinician-new-form/clinician-new-form.component';
+
 @Component({
   selector: 'app-clinician',
   templateUrl: './clinician.component.html',
@@ -31,7 +32,7 @@ export class ClinicianComponent implements OnInit {
 
   isAddClinicianPopupOpened: any = false;
   dataSource: any;
-  //========Variables for Pagination ====================
+  // Variables for Pagination
   readonly allowedPageSizes: any = [5, 10, 'all'];
   displayMode: any = 'full';
   showPageSizeSelector = true;
@@ -43,6 +44,10 @@ export class ClinicianComponent implements OnInit {
   clinicianProfessionDatasource: any;
   clinicianCategoryDatasource: any;
   genderDatasource: any;
+  auto: string = 'auto';
+
+  
+  showSearchBar: boolean = false; 
 
   constructor(
     private service: ReportService,
@@ -51,20 +56,22 @@ export class ClinicianComponent implements OnInit {
 
   ngOnInit(): void {
     this.get_DropDown_Data();
-
     this.get_Clinician_Data_List();
   }
-  //=========================show new popup=========================
+
+ 
   show_new__Form() {
     this.isAddClinicianPopupOpened = true;
   }
 
+ 
   get_gender_dropDown() {
     this.masterService.get_gender_Data().subscribe((res: any) => {
       this.genderDatasource = res;
     });
   }
-  //=============Get Denial Type Drop dwn Data==============================
+
+ 
   get_DropDown_Data() {
     this.masterService.Get_GropDown('SPECIALITY').subscribe((response: any) => {
       this.specialityDatasource = response;
@@ -89,14 +96,14 @@ export class ClinicianComponent implements OnInit {
       });
   }
 
-  //========================Get Datasource =======================
+  
   get_Clinician_Data_List() {
     this.masterService.get_Clinian_Table_Data().subscribe((response: any) => {
       this.dataSource = response.data;
     });
   }
 
-  //====================Add data ================================
+  
   onClickSaveNewClinician = () => {
     const {
       ClinicianLicense,
@@ -108,6 +115,7 @@ export class ClinicianComponent implements OnInit {
       CategoryID,
       Gender,
     } = this.clinicianComponent.getnewClinicianData();
+
     this.masterService
       .Insert_Clinician_Data(
         ClinicianLicense,
@@ -142,7 +150,7 @@ export class ClinicianComponent implements OnInit {
       });
   };
 
-  //====================Row Data Deleting========================
+ 
   onRowRemoving(event: any) {
     event.cancel = true;
     let SelectedRow = event.key;
@@ -174,7 +182,8 @@ export class ClinicianComponent implements OnInit {
         this.get_Clinician_Data_List();
       });
   }
-  //===================RTow Data Update==========================
+
+ 
   onRowUpdating(event: any) {
     const updataDate = event.newData;
     const oldData = event.oldData;
@@ -207,7 +216,7 @@ export class ClinicianComponent implements OnInit {
           this.get_Clinician_Data_List();
           notify(
             {
-              message: `New Clinician updated Successfully`,
+              message: `Clinician updated Successfully`,
               position: { at: 'top right', my: 'top right' },
               displayTime: 500,
             },
@@ -216,30 +225,46 @@ export class ClinicianComponent implements OnInit {
         } else {
           notify(
             {
-              message: `Your Data Not Saved`,
+              message: `Update failed`,
               position: { at: 'top right', my: 'top right' },
               displayTime: 500,
             },
             'error'
           );
         }
-        // event.component.refresh();
-        event.component.cancelEditData(); // Close the popup
+        event.component.cancelEditData(); 
         this.dataGrid.instance.refresh();
       });
 
-    event.cancel = true; // Prevent the default update operation
+    event.cancel = true; 
   }
 
-  //========================Export data ==========================
+ 
   onExporting(event: any) {
     this.service.exportDataGrid(event);
   }
-  //=================== Page refreshing==========================
+
+ 
   refresh = () => {
     this.dataGrid.instance.refresh();
   };
+
+ 
+  onShowSearchBar() {
+    this.showSearchBar = true; 
+  }
+
+  onHideSearchBar() {
+    this.showSearchBar = false; 
+  }
+
+ 
+  onSearchQueryChanged(event: any) {
+    const query = event.value;
+    this.dataGrid.instance.searchByText(query);
+  }
 }
+
 @NgModule({
   imports: [
     CommonModule,
@@ -258,3 +283,5 @@ export class ClinicianComponent implements OnInit {
   declarations: [ClinicianComponent],
 })
 export class ClinicianListModule {}
+
+
