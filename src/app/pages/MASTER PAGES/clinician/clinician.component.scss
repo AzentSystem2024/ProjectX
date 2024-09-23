@@ -1,8 +1,11 @@
+
+
 @use "../../../../variables.scss" as *;
 @use "sass:math";
 
 :host {
   --side-panel-toolbar-height: 72px;
+
   width: 100%;
   display: contents;
 }
@@ -17,7 +20,6 @@
 
   .grid {
     height: 45%;
-
     .name-template {
       .position {
         font-size: 12px;
@@ -25,26 +27,19 @@
       }
     }
 
-    ::ng-deep .dx-datagrid-header-panel {
-      padding: 30px var(--content-padding);
-    }
-
-    ::ng-deep .dx-toolbar {
-      margin-bottom: 0;
-      padding: var(--toolbar-margin-bottom) 0;
-      display: flex;
-      justify-content: space-between;
-    }
-
-    ::ng-deep .dx-datagrid-content .dx-row {
-      cursor: pointer;
-
-      &:nth-child(odd) {
-        background-color: #ffffff !important; 
+    ::ng-deep & {
+      .dx-datagrid-header-panel {
+        padding: 0 var(--content-padding);
       }
 
-      &:hover {
-        background-color: #f0f8ff !important; 
+      .dx-toolbar {
+        margin-bottom: 0;
+        padding: var(--toolbar-margin-bottom) 0;
+      }
+
+      .dx-datagrid-content .dx-row {
+        cursor: pointer;
+        
       }
     }
 
@@ -58,104 +53,6 @@
   }
 }
 
-body, html {
-  background-color: #ffffff !important;
-}
-
 .dx-datagrid {
-  height: 85vh;
-  background-color: #ffffff !important;
-
-  ::ng-deep .dx-datagrid-content {
-    padding: 10px;
-    font-size: 14px;
-    font-family: 'Inter', sans-serif;
-
-    .dx-row {
-      background-color: #ffffff !important; 
-    }
-  }
-
-  ::ng-deep .dx-header-row {
-    font-weight: bold;
-    font-size: 16px;
-    color: #333;
-    padding-right: 20px;
-
-    .dx-datagrid-text-content {
-      padding: 0 20px;
-    }
-  }
-
-  ::ng-deep .dx-row .dx-command-edit {
-    padding-right: 30px;
-    text-align: center;
-  }
-}
-
-::ng-deep .dx-toolbar .dx-button {
-  height: 40px;
-  margin: 0 5px;
-
-  &.dx-button-secondary {
-    background-color: #f0f0f0;
-    color: #333;
-    border-radius: 5px;
-
-    &:hover {
-      background-color: #e0e0e0;
-    }
-  }
-}
-
-::ng-deep .dx-toolbar .add-button {
-  background-color: #007bff !important;
-  color: white;
-  font-weight: bold;
-  height: 32px;
-  width: 120px;
-  border-radius: 6px;
-  font-size: 16px;
-
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1) !important;
-
-  &:hover {
-    background-color: #0056b3 !important;
-    box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.1) !important;
-  }
-}
-
-.search-container {
-  position: relative;
-
-  .search-icon {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-
-    i {
-      font-size: 24px;
-      transition: color 0.3s;
-    }
-  }
-
-  .search-bar {
-    position: absolute;
-    top: 0;
-    left: 50px;
-    opacity: 0;
-    visibility: hidden;
-    width: 0;
-    transition: all 0.3s ease;
-  }
-
-  &:hover .search-bar {
-    width: 200px !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-  }
-
-  &:hover .search-icon i {
-    color: #007bff !important;
-  }
+    height: 85vh;
 }
