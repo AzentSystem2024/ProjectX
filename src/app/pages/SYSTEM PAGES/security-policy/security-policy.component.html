@@ -1,169 +1,253 @@
 <div class="FullBody view-wrapper">
-    <div class="BorderBox ">
-        <div class="dx-field m-3">
-            <dx-check-box class="top-border-checkbox" [(value)]="validationRequired" [iconSize]="20"
-                text="Password Validation Required" (valueChange)="onValidationEnableChange($event)"></dx-check-box>
-        </div>
-        <div class="m-0">
-            <dx-number-box [(value)]="minPasswordLength" labelMode="floating" labelLocation="left"
-                label="Minimum Password Length" [showSpinButtons]="true" [width]="'22%'" [readOnly]="readOnlyValue"
-                [disabled]="readOnlyValue" hint="Minimum length of a Password">
-                <dxi-button name="spins"></dxi-button>
-            </dx-number-box>
-        </div>
-
-        <div>
-            <!-- <div class="dx-field RadioGrp d-flex align-items-center mb-5 ps-2 pe-2">
-                <div class="dx-field m-1">
-                    <dx-check-box class="" [(value)]="conditionRequiredValue" text="Maximum Condition Required"
-                        [readOnly]="readOnlyValue" [disabled]="readOnlyValue"
-                        hint="Should contain characters from X of the following four categories"
-                        (valueChange)="onConditionEnableChange($event)"></dx-check-box>
-                </div>
-            </div> -->
-
-            <div class="dx-field m-1 mt-3">
-                <dx-check-box class="" [(value)]="isNumberChecked" text="Minimum 1 Number [0-9] required" [readOnly]="readOnlyValue"
-                     hint="Password should contain atleast one number"></dx-check-box>
-            </div>
-
-            <div class="dx-field m-1">
-                <dx-check-box class="" [(value)]="isUppercaseChecked" text="Minimum 1 Uppercase character required"
-                    [readOnly]="readOnlyValue"
-                    hint="Password should contain atleast one Uppercase character"></dx-check-box>
-            </div>
-
-            <div class="dx-field m-1">
-                <dx-check-box class="" [(value)]="isLowercaseChecked" text="Minimum 1 Lowercase character required"
-                    [readOnly]="readOnlyValue"
-                    hint="Password should contain atleast one Lowercase character"></dx-check-box>
-            </div>
-
-            <div class="dx-field m-1">
-                <dx-check-box class="" [(value)]="isSpecialCharactersChecked" text="Minimum 1 Special character required"
-                    [readOnly]="readOnlyValue"
-                    hint="Password should contain atleast one Special character"></dx-check-box>
-            </div>
-            
-        </div>
+  <div class="BorderBox">
+    <div class="dx-field m-3">
+      <dx-check-box
+        class="top-border-checkbox"
+        [(value)]="validationRequired"
+        [iconSize]="20"
+        text="Password Validation Required"
+        (valueChange)="onValidationEnableChange($event)"
+      ></dx-check-box>
+    </div>
+    <div class="m-0">
+      <dx-number-box
+        [(value)]="minPasswordLength"
+        labelMode="floating"
+        labelLocation="left"
+        label="Minimum Password Length"
+        [showSpinButtons]="true"
+        [width]="'22%'"
+        [readOnly]="readOnlyValue"
+        [disabled]="readOnlyValue"
+        hint="Minimum length of a Password"
+      >
+        <dxi-button name="spins"></dxi-button>
+      </dx-number-box>
     </div>
 
-    <div class="d-flex align-items-center mt-3 p-1">
+    <div>
+      <div class="dx-field m-1 mt-3">
+        <dx-check-box
+          class=""
+          [(value)]="isNumberChecked"
+          text="Minimum 1 Number [0-9] required"
+          [readOnly]="readOnlyValue"
+          hint="Password should contain atleast one number"
+        ></dx-check-box>
+      </div>
 
-        <div class="leftDiv BorderBox me-2">
-            <div class="headingText">Sent OTP on Password Change</div>
-            <div class="dx-field m-1 mt-3 items">
-                <dx-check-box class="" [(value)]="emailOtp"
-                    text="E-mail (e-mail OTP verification  on forgot/change password)"
-                    hint="OTP Email On Password Change"></dx-check-box>
-            </div>
+      <div class="dx-field m-1">
+        <dx-check-box
+          class=""
+          [(value)]="isUppercaseChecked"
+          text="Minimum 1 Uppercase character required"
+          [readOnly]="readOnlyValue"
+          hint="Password should contain atleast one Uppercase character"
+        ></dx-check-box>
+      </div>
 
-            <div class="dx-field m-1 mt-3  items">
-                <dx-check-box class="" [(value)]="smsOtp" text="SMS (SMS OTP verification  on forgot/change password)"
-                    hint="OTP SMS On Password Change"></dx-check-box>
-            </div>
+      <div class="dx-field m-1">
+        <dx-check-box
+          class=""
+          [(value)]="isLowercaseChecked"
+          text="Minimum 1 Lowercase character required"
+          [readOnly]="readOnlyValue"
+          hint="Password should contain atleast one Lowercase character"
+        ></dx-check-box>
+      </div>
 
-            <div class="dx-field m-1 mt-3 ">
-                <dx-check-box class="" [(value)]="whatsAppOtp"
-                    text="WhatsApp (WhatsApp OTP verification  on forgot/change password)"
-                    hint="WhatsApp OTP On Password Change"></dx-check-box>
-            </div>
-        </div>
+      <div class="dx-field m-1">
+        <dx-check-box
+          class=""
+          [(value)]="isSpecialCharactersChecked"
+          text="Minimum 1 Special character required"
+          [readOnly]="readOnlyValue"
+          hint="Password should contain atleast one Special character"
+        ></dx-check-box>
+      </div>
+    </div>
+  </div>
 
-        <div class="rightDiv BorderBox">
-            <div class="headingText">Sent Alert on Password Change</div>
-            <div class="dx-field m-1 mt-3">
-                <dx-check-box class="" [(value)]="emailAlert" text="Email (Email alert on successful pasword change)"
-                    hint="Email Alert On Password Change"></dx-check-box>
-            </div>
+  <div class="d-flex align-items-center mt-3 p-1">
+    <div class="leftDiv BorderBox me-2">
+      <div class="headingText">Sent OTP on Password Change</div>
+      <div class="dx-field m-1 mt-3 items">
+        <dx-check-box
+          class=""
+          [(value)]="emailOtp"
+          text="E-mail (e-mail OTP verification  on forgot/change password)"
+          hint="OTP Email On Password Change"
+        ></dx-check-box>
+      </div>
 
-            <div class="dx-field m-1 mt-4 ">
-                <dx-check-box class="" [(value)]="smsAlert" text="SMS (SMS alert on successful pasword change)"
-                    hint="SMS Alert On Password Change"></dx-check-box>
-            </div>
+      <div class="dx-field m-1 mt-3 items">
+        <dx-check-box
+          class=""
+          [(value)]="smsOtp"
+          text="SMS (SMS OTP verification  on forgot/change password)"
+          hint="OTP SMS On Password Change"
+        ></dx-check-box>
+      </div>
 
-            <div class="dx-field m-1 mt-4 ">
-                <dx-check-box class="" [(value)]="whatsAppAlert"
-                    text="WhatsApp (WhatsApp alert on successful pasword change)"
-                    hint="WhatsApp Alert On Password Change"></dx-check-box>
-            </div>
-        </div>
-
+      <div class="dx-field m-1 mt-3">
+        <dx-check-box
+          class=""
+          [(value)]="whatsAppOtp"
+          text="WhatsApp (WhatsApp OTP verification  on forgot/change password)"
+          hint="WhatsApp OTP On Password Change"
+        ></dx-check-box>
+      </div>
     </div>
 
-    <div class="d-flex align-items-center mt-3 p-1">
+    <div class="rightDiv BorderBox">
+      <div class="headingText">Sent Alert on Password Change</div>
+      <div class="dx-field m-1 mt-3">
+        <dx-check-box
+          class=""
+          [(value)]="emailAlert"
+          text="Email (Email alert on successful pasword change)"
+          hint="Email Alert On Password Change"
+        ></dx-check-box>
+      </div>
 
-        <div class="leftDiv BorderBox me-2">
-            <div class="headingText ">Account Lock</div>
-            <div class="mt-3 items">
-                <dx-number-box [(value)]="LoginAttempts" labelMode="floating" labelLocation="left"
-                    label="Number Of Login Attempts" [width]="'75%'"
-                    hint="The user account must be locked out after consecutive N invalid logins attempts.">
-                </dx-number-box>
-            </div>
+      <div class="dx-field m-1 mt-4">
+        <dx-check-box
+          class=""
+          [(value)]="smsAlert"
+          text="SMS (SMS alert on successful pasword change)"
+          hint="SMS Alert On Password Change"
+        ></dx-check-box>
+      </div>
 
-            <div class="mt-3  items">
-                <dx-number-box [(value)]="resetDuration" labelMode="floating" labelLocation="left"
-                    label="Lock Reset Duration" [width]="'75%'"
-                    hint="The Account lockout counter must reset after n minutes">
-                </dx-number-box>
-            </div>
+      <div class="dx-field m-1 mt-4">
+        <dx-check-box
+          class=""
+          [(value)]="whatsAppAlert"
+          text="WhatsApp (WhatsApp alert on successful pasword change)"
+          hint="WhatsApp Alert On Password Change"
+        ></dx-check-box>
+      </div>
+    </div>
+  </div>
 
-            <div class="mt-3 items">
-                <dx-number-box [(value)]="failedLoginDuration" labelMode="floating" labelLocation="left"
-                    label="Failed Login Check Duration" [width]="'75%'"
-                    hint="This settings is used to Lock a User on Failed Logins. Latest Login status of given X minutes will be checked for Locking">
-                </dx-number-box>
-            </div>
-        </div>
+  <div class="d-flex align-items-center mt-3 p-1">
+    <div class="leftDiv BorderBox me-2">
+      <div class="headingText">Account Lock</div>
+      <div class="mt-3 items">
+        <dx-number-box
+          [(value)]="LoginAttempts"
+          labelMode="floating"
+          labelLocation="left"
+          label="Number Of Login Attempts"
+          [width]="'75%'"
+          hint="The user account must be locked out after consecutive N invalid logins attempts."
+        >
+        </dx-number-box>
+      </div>
 
-        <div class="rightDiv BorderBox">
-            <div class="headingText">General</div>
-            <div class="dx-field m-1 mt-3">
-                <dx-check-box class="" [(value)]="changePasswordOnLogin" text="Change Password On Login"
-                    hint="User must change Password - First Login or after Password is Reset by the Admin"></dx-check-box>
-            </div>
+      <div class="mt-3 items">
+        <dx-number-box
+          [(value)]="resetDuration"
+          labelMode="floating"
+          labelLocation="left"
+          label="Lock Reset Duration"
+          [width]="'75%'"
+          hint="The Account lockout counter must reset after n minutes"
+        >
+        </dx-number-box>
+      </div>
 
-            <div class="mt-3 items">
-                <dx-number-box [(value)]="passwordExpiryDaysCount" labelMode="floating" labelLocation="left"
-                    label="How many days until the password expires?" [width]="'75%'"
-                    hint="Maximum password age (days)">
-                </dx-number-box>
-            </div>
-            <div class="mt-3  items">
-                <dx-number-box [(value)]="passwordRepeatCycle" labelMode="floating" labelLocation="left"
-                    label="Password Repeat Cycle" [width]="'75%'"
-                    hint="Password should not be repeated within a N cycle">
-                </dx-number-box>
-            </div>
-        </div>
+      <div class="mt-3 items">
+        <dx-number-box
+          [(value)]="failedLoginDuration"
+          labelMode="floating"
+          labelLocation="left"
+          label="Failed Login Check Duration"
+          [width]="'75%'"
+          hint="This settings is used to Lock a User on Failed Logins. Latest Login status of given X minutes will be checked for Locking"
+        >
+        </dx-number-box>
+      </div>
     </div>
 
+    <div class="rightDiv BorderBox">
+      <div class="headingText">General</div>
+      <div class="dx-field m-1 mt-3">
+        <dx-check-box
+          class=""
+          [(value)]="changePasswordOnLogin"
+          text="Change Password On Login"
+          hint="User must change Password - First Login or after Password is Reset by the Admin"
+        ></dx-check-box>
+      </div>
 
-    <div class="BorderBox  me-2 mt-4">
-        <div class="headingText ">Others</div>
-        <div class="MessageDiv dx-field mt-3">
-            <div class="dx-field-label custom-label">Unautherized Banner Message</div>
-            <div class="dx-field-value custom-value ">
-                <dx-text-box [(value)]="unautherizedMessage"
-                    hint="This message will be shown on successful login or at the time of unsuccessful access attempts"></dx-text-box>
-            </div>
-        </div>
+      <div class="mt-3 items">
+        <dx-number-box
+          [(value)]="passwordExpiryDaysCount"
+          labelMode="floating"
+          labelLocation="left"
+          label="How many days until the password expires?"
+          [width]="'75%'"
+          hint="Maximum password age (days)"
+        >
+        </dx-number-box>
+      </div>
+      <div class="mt-3 items">
+        <dx-number-box
+          [(value)]="passwordRepeatCycle"
+          labelMode="floating"
+          labelLocation="left"
+          label="Password Repeat Cycle"
+          [width]="'75%'"
+          hint="Password should not be repeated within a N cycle"
+        >
+        </dx-number-box>
+      </div>
+    </div>
+  </div>
 
-        <div class="mt-3 ">
-            <dx-number-box [(value)]="disableUserOn" labelMode="floating" labelLocation="left" label="Disable User On"
-                [width]="'75%'" hint="Enter the number of days to disable the user after inactivity">
-            </dx-number-box>
-        </div>
+  <div class="BorderBox me-2 mt-4">
+    <div class="headingText">Others</div>
+    <div class="MessageDiv dx-field mt-3">
+      <div class="dx-field-label custom-label">Unautherized Banner Message</div>
+      <div class="dx-field-value custom-value">
+        <dx-text-box
+          [(value)]="unautherizedMessage"
+          hint="This message will be shown on successful login or at the time of unsuccessful access attempts"
+        ></dx-text-box>
+      </div>
     </div>
-    <div class="ms-auto mt-3 me-2 d-flex align-items-center">
-        <div class="me-2 cancelbtn">
-            <dx-button stylingMode="outlined" text="cancel" type="normal" (onClick)="onClickCancel()">
-            </dx-button>
-        </div>
-        <div>
-            <dx-button stylingMode="contained" text="save" type="default" (onClick)="onClickSave()">
-            </dx-button>
-        </div>
+
+    <div class="mt-3">
+      <dx-number-box
+        [(value)]="disableUserOn"
+        labelMode="floating"
+        labelLocation="left"
+        label="Disable User On"
+        [width]="'75%'"
+        hint="Enter the number of days to disable the user after inactivity"
+      >
+      </dx-number-box>
     </div>
+  </div>
+  <div class="ms-auto mt-3 me-2 d-flex align-items-center">
+    <div class="me-2 cancelbtn">
+      <dx-button
+        stylingMode="outlined"
+        text="cancel"
+        type="normal"
+        (onClick)="onClickCancel()"
+      >
+      </dx-button>
+    </div>
+    <div>
+      <dx-button
+        stylingMode="contained"
+        text="save"
+        type="default"
+        (onClick)="onClickSave()"
+      >
+      </dx-button>
+    </div>
+  </div>
 </div>

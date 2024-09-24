@@ -57,6 +57,28 @@ export class NotificationSettingsComponent implements OnInit {
     },
   ];
 
+  HtmleditorOptions: any = {
+    height: 200,
+    toolbar: {
+      items: [
+        'undo',
+        'redo',
+        'separator',
+        'bold',
+        'italic',
+        'underline',
+        'separator',
+        'color',
+        'background',
+        'separator',
+        'clear',
+        'separator',
+        'insertLink',
+        'insertImage',
+      ],
+    },
+  };
+
   formData = {
     EmailSenderID: '',
     EmailSenderName: '',
@@ -108,16 +130,9 @@ export class NotificationSettingsComponent implements OnInit {
   TestMailSubject: any = '';
   TestMailMessageBody: any = '';
 
-  phonePattern = /^[02-9]\d{9}$/;
-
-  phoneEditorOptions: EditorOptions = {
-    mask: '+91 X000000000', // +91 followed by 10 digits
-    maskRules: {
-      X: /[6-9]/, // Indian mobile numbers start with 6, 7, 8, or 9
-    },
-    maskInvalidMessage: 'The phone must have a correct Indian mobile format',
-    valueChangeEvent: 'keyup',
-  };
+  clickedEditRowData: any;
+  isRowDataEditing: boolean = false;
+  editpopupHeading: any;
 
   constructor(private service: SystemServicesService) {}
 
@@ -146,16 +161,6 @@ export class NotificationSettingsComponent implements OnInit {
       this.dataSource = response.data;
     });
   }
-  // prettierFormat(markup: string) {
-  //   if (this.editorValueType === 'html') {
-  //     return prettier.format('<div>Hello World</div>', {
-  //       parser: 'html',
-  //       plugins: [parserHtml],
-  //     });
-  //   }
-  //   return markup;
-  // }
-
   //================Tab Click event===============
   onTabClick(e: any) {
     this.clickedTabName = e.itemData.text;
@@ -198,16 +203,41 @@ export class NotificationSettingsComponent implements OnInit {
     this.TestMailSubject = '';
     this.TestMailMessageBody = '';
   }
-  onClickCancel() {}
+  //=============onClick notification editing==========azs
+  onEditingStart(event: any) {
+    this.clickedEditRowData = event.data;
+    this.editpopupHeading = this.clickedEditRowData.Notification;
+    event.cancel = true;
+    this.isRowDataEditing = true;
+    console.log('clicked row data ', this.clickedEditRowData);
+  }
   //================On Click Save Button============
   onClickSave() {
     const validationResult = this.validator.instance.validate();
     if (validationResult.isValid) {
       console.log('Form Data:', this.formData);
+      this.service
+        .saveNotificationSettings(this.formData)
+        .subscribe((response: any) => {
+          if (response) {
+            notify(
+              {
+                message: `Your notification settings updated successfully`,
+                position: { at: 'top right', my: 'top right' },
+              },
+              'success'
+            );
+          }
+        });
     } else {
       console.log('Form is invalid');
     }
   }
+
+  onClickSaveNotificationTemplate() {
+    console.log('html editor testing data :', this.clickedEditRowData);
+  }
+
   onRowUpdating(event: any) {}
   //============== Page refreshing==================
   refresh = () => {

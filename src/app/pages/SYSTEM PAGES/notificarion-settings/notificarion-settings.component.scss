@@ -36,7 +36,6 @@
   top: 0;
   z-index: 10;
 
-
   margin: 10px;
   width: auto;
   height: 50px;
@@ -78,15 +77,18 @@
   padding: 10px;
   border-radius: 8px;
   background-color: var(--base-bg);
-  box-shadow:
-    2px 2px 5px rgba(0, 0, 0, 0.1),  /* Bottom-right shadow */
-    -2px 2px 5px rgba(0, 0, 0, 0.1), /* Bottom-left shadow */
-    -2px -2px 5px rgba(0, 0, 0, 0.1), /* Top-left shadow */
-    2px -2px 5px rgba(0, 0, 0, 0.1); /* Top-right shadow */
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1),
+     -2px 2px 5px rgba(0, 0, 0, 0.1),
+     -2px -2px 5px rgba(0, 0, 0, 0.1),
+     2px -2px 5px rgba(0, 0, 0, 0.1);
 }
-.dx-datagrid .dx-header-row {
-  background-color: #0d9df6; /* Light gray background */
-  color: #333; /* Dark gray text */
-  font-weight: bold; /* Bold header text */
+.SubHeading {
+  margin-bottom: 5px;
+  text-decoration: underline;
+  font-size: larger;
+  font-weight: bold;
 }
-
+.whatsappGroupDiv {
+  // margin-left: 10px;
+  margin: 5px;
+}

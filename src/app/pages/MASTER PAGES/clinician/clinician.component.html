@@ -85,7 +85,11 @@
 
       <dxi-item name="searchPanel" locateInMenu="auto"></dxi-item>
 
-      <dxi-item location="after" locateInMenu="auto">
+      <dxi-item location="after" locateInMenu="auto" class="ms-1">
+        <div class="separator"></div>
+      </dxi-item>
+
+      <dxi-item location="after" locateInMenu="auto" class="me-2 ms-2">
         <dx-button
           text=""
           icon="plus"
@@ -93,8 +97,12 @@
           stylingMode="contained"
           [width]="40"
           class="add-button"
+          hint="Add new clinician"
           (onClick)="show_new__Form()"
         ></dx-button>
+      </dxi-item>
+      <dxi-item location="after" locateInMenu="auto" class="me-1">
+        <div class="separator"></div>
       </dxi-item>
 
       <dxi-item
@@ -104,6 +112,7 @@
         widget="dxButton"
         [options]="{
           text: 'Refresh',
+          hint: 'Refresh',
           icon: 'refresh',
           onClick: refresh,
           stylingMode: 'text',
@@ -117,9 +126,9 @@
 
       <dxi-item name="exportButton"></dxi-item>
 
-      <dxi-item location="after" locateInMenu="auto">
+      <!-- <dxi-item location="after" locateInMenu="auto">
         <div class="separator"></div>
-      </dxi-item>
+      </dxi-item> -->
     </dxo-toolbar>
 
     <!-- <dxo-selection mode="multiple"></dxo-selection> -->
@@ -127,10 +136,7 @@
       <dxo-search [enabled]="true"></dxo-search>
     </dxo-header-filter>
 
-    <dxi-column
-      dataField="ClinicianLicense"
-      caption="License"
-    ></dxi-column>
+    <dxi-column dataField="ClinicianLicense" caption="License"></dxi-column>
     <dxi-column dataField="ClinicianName" caption="Name"></dxi-column>
     <dxi-column
       dataField="ClinicianShortName"

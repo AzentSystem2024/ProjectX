@@ -29,7 +29,7 @@ export class FormPopupComponent {
   @Input() titleText = '';
 
   @Input() width = 480;
-z
+
   @Input() height: string | number = 'auto';
 
   @Input() wrapperAttr: Record<string, string> = {};
@@ -37,7 +37,7 @@ z
   @Input() visible = false;
 
   @Input() visibleButtons = true;
-  
+
   @Input() saveButtonText:any='Save'
 
   @Input() isSaveDisabled = false;
