@@ -29,8 +29,8 @@ import { MasterReportService } from '../../MASTER PAGES/master-report.service';
   styleUrls: ['./user-level-new-form.component.scss'],
   providers: [MasterReportService],
 })
-export class UserLevelNewFormComponent implements OnInit {
-  @Input() sharedValue: any;
+export class UserLevelNewFormComponent implements OnInit, OnChanges {
+  @Input() sharedValue: any | false;
 
   width: any = '100%';
   rtlEnabled: boolean = false;
@@ -49,17 +49,23 @@ export class UserLevelNewFormComponent implements OnInit {
   constructor(private masterservice: MasterReportService) {}
 
   ngOnInit(): void {
+    this.selectedTab = 0;
+    this.UserLevelValue = '';
     this.get_All_MenuList();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['sharedValue'] && this.sharedValue) {
+      this.selectedTab = 0;
+      this.UserLevelValue = '';
+      this.selectedTabData = [];
+
       //========Initialize selectedRows for each tab======
       this.MenuDatasource.forEach((tab, index) => {
         this.selectedRows[index] = [];
       });
       //==========Set the data for the initial tab========
-      this.selectedTabData = this.MenuDatasource[0].Menus;
+      this.selectedTabData = this.MenuDatasource[this.selectedTab].Menus;
       // console.log('selected tab is :', this.selectedTabData);
     }
   }

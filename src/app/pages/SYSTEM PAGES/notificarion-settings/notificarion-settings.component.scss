@@ -1,75 +1,68 @@
-// ::ng-deep .tabs-demo {
-//   display: flex;
-// }
-
-// ::ng-deep .strict-width {
-//   max-width: 340px;
-// }
-
-// ::ng-deep .dx-theme-generic .strict-width {
-//   max-width: 250px;
-// }
-
-// ::ng-deep .widget-container {
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   flex-grow: 1;
-//   width: 100%;
-//   min-width: 200px;
-//   padding: 16px 32px;
-//   overflow: clip;
-// }
-
-// ::ng-deep .widget-wrapper {
-//   display: inline-flex;
-//   flex-direction: column;
-//   align-items: center;
-//   justify-content: center;
-//   gap: 80px;
-//   width: 100%;
-// }
-
-// ::ng-deep .widget-wrapper-vertical {
-//   width: 100%;
-//   flex-direction: row;
-//   align-items: center;
-// }
-
-// .options {
-//   display: flex;
-//   flex-direction: column;
-//   flex-shrink: 0;
-//   padding: 20px;
-//   background-color: rgba(191, 191, 191, 0.15);
-// }
-
-// .caption {
-//   font-weight: 500;
-//   font-size: 18px;
-// }
-
-// ::ng-deep #show-navigation-buttons {
-//   margin-top: 22px;
-// }
-
-// .option {
-//   margin-top: 20px;
-// }
-
-// ::ng-deep .dx-tabs {
-//   max-width: 100%;
-// }
-
-// ::ng-deep .dx-tabs-vertical {
-//   height: 216px;
-// }
-
-// ::ng-deep .dx-viewport:not(.dx-theme-generic) .dx-tabs-horizontal {
-//   border-block-end: 1px solid rgb(225, 225, 225, 0.4);
-// }
-
-// ::ng-deep .dx-viewport:not(.dx-theme-generic) .dx-tabs-vertical {
-//   height: 232px;
-//   border-inline-end: 1px solid rgb(225, 225, 225, 0.4);
-// }
+.ParentDiv {
+  height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+/* Hide the scrollbar */
+.FullBody::-webkit-scrollbar {
+  width: 0;
+}
+.FullBody {
+  -ms-overflow-style: none; /* IE and Edge */
+  // scrollbar-width: none; /* Firefox */
+}
+/* Optional: Add this for smoother scrolling */
+.FullBody {
+  scroll-behavior: smooth;
+}
+.FullBody {
+  margin: 10px;
+  overflow-y: auto;
+  // padding-bottom: 130px;
+  border-radius: 8px;
+}
+.titleBar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  margin: 10px;
+  width: auto;
+  height: 50px;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: var(--base-bg);
+}
+.headingText {
+  font-size: 22px;
+  font-weight: 400;
+}
+.cancelbtn {
+  background-color: var(--base-bg);
+}
+.mainclass {
+  background-color: var(--base-bg);
+  border-radius: 8px;
+}
+.BorderBox {
+  height: 30vh;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: var(--base-bg);
+  box-shadow: -2px 2px 2px rgba(0, 0, 0, 0.1), 2px 2px 2px rgba(0, 0, 0, 0.1),
+    0 2px 2px rgba(0, 0, 0, 0.049);
+}
+.datagridSection {
+  padding: 10px;
+  border-radius: 8px;
+  background-color: var(--base-bg);
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1), -2px 2px 5px rgba(0, 0, 0, 0.1),
+    -2px -2px 5px rgba(0, 0, 0, 0.1), 2px -2px 5px rgba(0, 0, 0, 0.1);
+}
+.SubHeading {
+  margin-bottom: 5px;
+  text-decoration: underline;
+  font-size: larger;
+  font-weight: bold;
+}

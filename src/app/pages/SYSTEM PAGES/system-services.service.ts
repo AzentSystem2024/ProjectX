@@ -80,4 +80,33 @@ export class SystemServicesService {
     const url = `${BASE_URL}/facility/licensefacilityInfo`;
     return this.http.post(url, {});
   }
+
+  //=============================Security Notification ===================================================
+  //==============lising data===========
+  getSecurityNotificationDdata() {
+    const url = `${BASE_URL}/notificationsettings/list`;
+    return this.http.post(url, {});
+  }
+
+  //========save notification data=======
+  saveNotificationSettings(formdata: any) {
+    const url = `${BASE_URL}/notificationsettings/save`;
+    const reqBody = formdata;
+    return this.http.post(url, reqBody);
+  }
+  //========save notification template data=======
+  getNotificationTemplateList() {
+    const url = `${BASE_URL}/notificationsettings/templatelist`;
+    return this.http.post(url, {});
+  }
+  sendTestMail(userid: any, receiverid: any, subject: any, message: any) {
+    const url = `${BASE_URL}/changepassword/formail`;
+    const reqBody = {
+      userid: userid,
+      EmailID: receiverid,
+      subject: subject,
+      mesasge: message,
+    };
+    return this.http.post(url, reqBody);
+  }
 }

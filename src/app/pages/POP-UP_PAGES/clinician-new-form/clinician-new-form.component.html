@@ -16,10 +16,11 @@
           </form-textbox>
         </div>
       </dxi-item>
-
+  
       <dxi-item>
         <div *dxTemplate>
           <form-textbox
+            
             label="Clinician Name"
             [(value)]="newClinician.ClinicianName"
             [isEditing]="true"
@@ -31,6 +32,7 @@
       <dxi-item>
         <div *dxTemplate>
           <form-textbox
+            
             label="Clinician Short Name"
             [(value)]="newClinician.ClinicianShortName"
             [isEditing]="true"
@@ -38,12 +40,12 @@
           </form-textbox>
         </div>
       </dxi-item>
-
+  
       <dxi-item>
         <div *dxTemplate>
           <div>Speciality</div>
           <dx-select-box
-            class="inputBox"
+            
             [items]="specialityDatasource"
             displayExpr="DESCRIPTION"
             valueExpr="ID"
@@ -52,12 +54,12 @@
           ></dx-select-box>
         </div>
       </dxi-item>
-
+  
       <dxi-item>
         <div *dxTemplate>
           <div>Major</div>
           <dx-select-box
-            class="inputBox"
+            
             [items]="clinicianMajorDatasource"
             displayExpr="DESCRIPTION"
             valueExpr="ID"
@@ -71,7 +73,7 @@
         <div *dxTemplate>
           <div>Profession</div>
           <dx-select-box
-            class="inputBox"
+           
             [items]="clinicianProfessionDatasource"
             displayExpr="DESCRIPTION"
             valueExpr="ID"
@@ -85,7 +87,7 @@
         <div *dxTemplate>
           <div>Category</div>
           <dx-select-box
-            class="inputBox"
+           
             [items]="clinicianCategoryDatasource"
             displayExpr="DESCRIPTION"
             valueExpr="ID"
@@ -95,11 +97,10 @@
         </div>
       </dxi-item>
 
-      <dxi-item>
+       <dxi-item>
         <div *dxTemplate>
           <div>Gender</div>
           <dx-select-box
-            class="inputBox"
             [items]="genderDatasource"
             displayExpr="DESCRIPTION"
             valueExpr="DESCRIPTION"
@@ -107,7 +108,7 @@
             [(value)]="newClinician.Gender"
           ></dx-select-box>
         </div>
-      </dxi-item>
+      </dxi-item> 
     </dxi-item>
   </dx-form>
   

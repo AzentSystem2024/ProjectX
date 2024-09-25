@@ -6,6 +6,7 @@ import {
   DxSelectBoxModule,
   DxTextBoxModule,
   DxValidatorModule,
+  DxRadioGroupModule,
 } from 'devextreme-angular';
 import { FormTextboxModule, FormPhotoUploaderModule } from 'src/app/components';
 import { MasterReportService } from '../../MASTER PAGES/master-report.service';
@@ -53,7 +54,7 @@ export class ClinicianNewFormComponent {
     this.newClinician.CategoryID = '';
     this.newClinician.Gender = '';
   }
-  //=============Get Denial Type Drop dwn Data==============================
+  
   get_DropDown_Data() {
     this.masterService
       .Get_GropDown('SPECIALITY')
@@ -98,6 +99,7 @@ export class ClinicianNewFormComponent {
     CommonModule,
     ReactiveFormsModule,
     DxSelectBoxModule,
+    DxRadioGroupModule,
   ],
   declarations: [ClinicianNewFormComponent],
   exports: [ClinicianNewFormComponent],

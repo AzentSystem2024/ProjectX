@@ -66,6 +66,15 @@ export class UserLevelMasterComponent implements OnInit {
   show_new_Form() {
     this.isAddFormVisible = true;
   }
+
+  onPopupClose(): void {
+    this.isAddFormVisible = false;
+
+    // Here you can also reset any form or data if required
+  }
+  onEditPopupClose(){
+    this.iseditFormVisible = false;
+  }
   //=================== Page refreshing==========================
   refresh = () => {
     this.dataGrid.instance.refresh();
@@ -99,7 +108,7 @@ export class UserLevelMasterComponent implements OnInit {
         } else {
           notify(
             {
-              message:` Your Data Not Saved`,
+              message: ` Your Data Not Saved`,
               position: { at: 'top right', my: 'top right' },
             },
             'error'
@@ -185,7 +194,9 @@ export class UserLevelMasterComponent implements OnInit {
 
     // Extract parts of the date
     const day = date.getDate().toString().padStart(2, '0');
-    const month = date.toLocaleString('en-US', { month: 'short' }).toUpperCase();
+    const month = date
+      .toLocaleString('en-US', { month: 'short' })
+      .toUpperCase();
     const year = date.getFullYear();
     const hours = date.getHours();
     const minutes = date.getMinutes().toString().padStart(2, '0');

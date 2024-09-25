@@ -87,18 +87,8 @@
       <dxo-search [enabled]="true"></dxo-search>
     </dxo-header-filter>
 
-    <dxi-column dataField="FacilityGroup" caption="Facility Group">
-      <!-- <dxo-lookup
-        [dataSource]="facilityGroupDatasource"
-        displayExpr="DESCRIPTION"
-        valueExpr="ID"
-      >
-      </dxo-lookup> -->
-    </dxi-column>
-    <dxi-column
-      dataField="Description"
-      Caption="Group Description"
-    ></dxi-column>
+    <dxi-column dataField="FacilityGroup" caption="Group"> </dxi-column>
+    <dxi-column dataField="Description" caption="Description"></dxi-column>
   </dx-data-grid>
   <form-popup
     class="formPopupClass"

@@ -324,7 +324,6 @@ body {
   font-family: "Inter", sans-serif;
 }
 
-
 .dx-theme-fluent {
   .dx-widget {
     font-family: "Inter", sans-serif;
@@ -485,7 +484,11 @@ body {
 
   .dx-datagrid-headers.dx-datagrid-nowrap.dx-bordered-top-view {
     border-radius: 8px 8px 0 0;
-    // background-color: yellow;
+    background-color: #00a0e020;
+    // height: auto;
+    // padding: 3px;
+    font-size: larger;
+    font-weight: bolder;
   }
 
   .theme-dependent {
@@ -513,7 +516,6 @@ body {
   background-color: rgba(8, 8, 8, 0.211);
 }
 
-
 .reduced-padding {
   margin: 0 !important;
   padding: 0 !important;
@@ -532,8 +534,18 @@ body {
 .toolBarDiv {
   padding: 0px;
 }
-
-
-
-
-
+.dx-datagrid-header-panel
+  .dx-toolbar-text-auto-hide
+  .dx-button.dx-button-has-icon {
+  border-radius: 4px;
+  background-color: #00a0e028;
+}
+.dx-dropdownbutton-action.dx-button-has-icon:not(.dx-button-has-text)
+  .dx-button-content {
+  padding-inline: 12px;
+  background-color: #00a0e028;
+}
+.user-panel[_ngcontent-ng-c2123993514] .user-button.dx-dropdownbutton .dx-buttongroup .dx-button.dx-button-has-icon:not(.dx-button-has-text) .dx-button-content {
+  padding: 0;
+  background-color: #ffffff0a;
+}

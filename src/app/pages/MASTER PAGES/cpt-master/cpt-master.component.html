@@ -1,15 +1,37 @@
 <div class="view-wrapper list-page">
-  <dx-data-grid class="grid theme-dependent" noDataText="" height="600" [dataSource]="dataSource" [showBorders]="true"
-    [allowColumnResizing]="true" [allowColumnReordering]="true" [rowAlternationEnabled]="true"
-    rowAlternationInterval="2" (onExporting)="onExporting($event)" (onRowRemoving)="onRowRemoving($event)"
-    (onRowUpdating)="onRowUpdating($event)" height="84vh">
+  <dx-data-grid
+    class="grid theme-dependent"
+    noDataText=""
+    height="600"
+    [dataSource]="dataSource"
+    [showBorders]="true"
+    [allowColumnResizing]="true"
+    [allowColumnReordering]="true"
+    [rowAlternationEnabled]="true"
+    rowAlternationInterval="2"
+    (onExporting)="onExporting($event)"
+    (onRowRemoving)="onRowRemoving($event)"
+    (onRowUpdating)="onRowUpdating($event)"
+    height="84vh"
+  >
     <dxo-paging [pageSize]="10"></dxo-paging>
-    <dxo-editing mode="popup" [allowUpdating]="true" [allowDeleting]="true" [allowAdding]="true"
-      [popup]="{ width: '40%', height: '60vh' }">
+    <dxo-editing
+      mode="popup"
+      [allowUpdating]="true"
+      [allowDeleting]="true"
+      [allowAdding]="true"
+      [popup]="{ width: '40%', height: '60vh' }"
+    >
       <dxo-popup title="Edit CPT data" [showTitle]="true"></dxo-popup>
     </dxo-editing>
-    <dxo-pager [visible]="true" [allowedPageSizes]="allowedPageSizes" [displayMode]="displayMode"
-      [showPageSizeSelector]="showPageSizeSelector" [showInfo]="showInfo" [showNavigationButtons]="showNavButtons">
+    <dxo-pager
+      [visible]="true"
+      [allowedPageSizes]="allowedPageSizes"
+      [displayMode]="displayMode"
+      [showPageSizeSelector]="showPageSizeSelector"
+      [showInfo]="showInfo"
+      [showNavigationButtons]="showNavButtons"
+    >
     </dxo-pager>
     <dxo-load-panel [showPane]="false"></dxo-load-panel>
     <dxo-scrolling mode="virtual"></dxo-scrolling>
@@ -18,22 +40,37 @@
     <dxo-filter-row [visible]="true"></dxo-filter-row>
     <!-- <dxo-column-chooser [enabled]="true" [height]="400"></dxo-column-chooser> -->
     <dxo-search-panel [visible]="true" placeholder=" Search"></dxo-search-panel>
-    <dxo-export [enabled]="true" [allowExportSelectedData]="true" [formats]="['xlsx', 'pdf']">
+    <dxo-export
+      [enabled]="true"
+      [allowExportSelectedData]="true"
+      [formats]="['xlsx', 'pdf']"
+    >
     </dxo-export>
     <dxo-toolbar>
       <dxi-item location="before">
         <div class="grid-header">CPT Type</div>
       </dxi-item>
       <dxi-item location="after" locateInMenu="auto">
-        <dx-button text="Add " icon="plus" type="default" stylingMode="contained"
-          (onClick)="show_new_Form()"></dx-button>
+        <dx-button
+          text="Add "
+          icon="plus"
+          type="default"
+          stylingMode="contained"
+          (onClick)="show_new_Form()"
+        ></dx-button>
       </dxi-item>
-      <dxi-item location="after" locateInMenu="auto" showText="inMenu" widget="dxButton" [options]="{
+      <dxi-item
+        location="after"
+        locateInMenu="auto"
+        showText="inMenu"
+        widget="dxButton"
+        [options]="{
           text: 'Refresh',
           icon: 'refresh',
           onClick: refresh,
           stylingMode: 'text'
-        }"></dxi-item>
+        }"
+      ></dxi-item>
       <dxi-item location="after" locateInMenu="auto">
         <div class="separator"></div>
       </dxi-item>
@@ -50,14 +87,19 @@
       <dxo-search [enabled]="true"></dxo-search>
     </dxo-header-filter>
 
-    <dxi-column dataField="CPTTypeID" caption="CPT TypeID"></dxi-column>
-    <dxi-column dataField="CPTCode" Caption="CPT Code"></dxi-column>
-    <dxi-column dataField="CPTShortName" Caption="CPT ShortName"></dxi-column>
-    <dxi-column dataField="CPTName" Caption="CPT Name"></dxi-column>
-    <dxi-column dataField="Description" Caption="Description"></dxi-column>
+    <dxi-column dataField="CPTTypeID" caption="TypeID" width="auto"></dxi-column>
+    <dxi-column dataField="CPTCode" caption="Code"></dxi-column>
+    <dxi-column dataField="CPTName" caption="Name"></dxi-column>
+    <dxi-column dataField="CPTShortName" caption="Short Name"></dxi-column>
+    <dxi-column dataField="Description" caption="Description"></dxi-column>
   </dx-data-grid>
-  <form-popup class="formPopupClass" [(visible)]="isAddFormPopupOpened" (save)="onClickSaveNewCptType()"
-    titleText="New CPT Master" height="80vh">
+  <form-popup
+    class="formPopupClass"
+    [(visible)]="isAddFormPopupOpened"
+    (save)="onClickSaveNewCptType()"
+    titleText="New CPT Master"
+    height="80vh"
+  >
     <app-cpt-master-new-form></app-cpt-master-new-form>
   </form-popup>
 </div>
