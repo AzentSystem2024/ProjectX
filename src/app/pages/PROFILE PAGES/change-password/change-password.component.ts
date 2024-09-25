@@ -18,7 +18,7 @@ export class ChangePasswordComponent implements OnInit {
   validationGroup: DxValidationGroupComponent;
 
   securityPolicyData: any;
-  UserID: number = 1;
+  UserID: any;
   oldPassword: any;
   getOldPassword:any;
   newPassword: string = '';
@@ -30,7 +30,7 @@ export class ChangePasswordComponent implements OnInit {
   showConfirmPassword: boolean = false;
 
   constructor(private service: MasterReportService,private authService:AuthService,private route:Router) {
-    this.dummyId=this.authService.UserID
+    this.UserID=sessionStorage.getItem('UserID');
     console.log(this.dummyId,"dummy")
   }
 
@@ -41,7 +41,6 @@ export class ChangePasswordComponent implements OnInit {
   validatePasswordMatch = (): boolean => {
     return this.newPassword === this.confirmPassword;
   };
-
 
   saveNewPassword(){
 
@@ -105,6 +104,10 @@ export class ChangePasswordComponent implements OnInit {
     });
   }
 
+  closeChangePassword(){
+    this.route.navigateByUrl('/analytics-dashboard');
+  }
+
   validateField(fieldName: string): boolean {
     // Trigger validation for a specific field
     const instance = (document.getElementById(fieldName) as any)
@@ -156,13 +159,17 @@ export class ChangePasswordComponent implements OnInit {
       console.log('user security policy data', this.securityPolicyData);
     });
   }
-  onPasswordKeyDown(event: KeyboardEvent): void {
-    // Capture current input value
+  onPasswordInput(event: Event): void {
     const target = event.target as HTMLInputElement;
-    setTimeout(() => {
-      this.newPassword = target.value; // Get the updated password after keydown
-      this.checkPasswordStrength(); // Call the function to check the strength of the password
-    }, 0);
+  
+    // Remove spaces from the current value
+    const sanitizedValue = target.value.replace(/\s/g, '');
+  
+    // Update the target value and the newPassword property
+    target.value = sanitizedValue; 
+    this.newPassword = sanitizedValue; // Update the password value
+  
+    this.checkPasswordStrength(); // Call the function to check the strength of the password
   }
 
   onConfirmPasswordKeyDown(event: KeyboardEvent): void {
@@ -173,6 +180,7 @@ export class ChangePasswordComponent implements OnInit {
       this.validateConfirmPassword(); // Call the function to check the strength of the password
     }, 0);
   }
+
 
   // Function to check if the password meets all security requirements
   checkPasswordStrength(): boolean {

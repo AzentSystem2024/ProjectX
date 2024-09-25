@@ -1,4 +1,5 @@
 import { Component, NgModule } from '@angular/core';
+import { DxButtonModule } from 'devextreme-angular';
 
 
 import { CardAuthModule, ResetPasswordFormModule } from 'src/app/components';
@@ -22,6 +23,7 @@ export class AppResetPasswordComponent {
   imports: [
     CardAuthModule,
     ResetPasswordFormModule,
+    DxButtonModule
   ],
   providers: [],
   exports: [AppResetPasswordComponent],

@@ -31,8 +31,11 @@ export class ResetPasswordFormComponent implements OnInit,OnDestroy {
   otpMessage : string = '';
   timer: number = 0; // Timer in seconds (e.g., 2 minutes)
   interval: any;
-  isButtonDisabled: boolean = false;  // Add this line
+  isGetOtpButtonDisabled: boolean = false;  // Add this line
+  isSubmitPasswordButtonDisabled:boolean=true;
   UserID:number = 0;
+  securityPolicyData: any;
+  confirmPasswordBorderColor: string = '1px solid #ddd'; // Default border color
   constructor(private router:Router,private ngZone: NgZone,private cdr: ChangeDetectorRef,private userservice:MasterReportService){
 
   }
@@ -58,6 +61,11 @@ export class ResetPasswordFormComponent implements OnInit,OnDestroy {
     }
   }
 
+  onEmailOrPhoneInput(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    this.isGetOtpButtonDisabled = !this.validateEmailOrPhone(inputElement.value);
+  }
+
   ngOnInit(): void {
     this.formData = {
       email: '',
@@ -65,12 +73,15 @@ export class ResetPasswordFormComponent implements OnInit,OnDestroy {
       newPassword: '',
       confirmPassword: ''
     };
+
+    this.getSecurityPolicyData();
+    this.isGetOtpButtonDisabled=true;
   }
 
   // Function to start the timer
   startTimer() {
     this.timer = 30; 
-    this.isButtonDisabled = true;
+    this.isGetOtpButtonDisabled = true;
   
     // Clear any existing interval to avoid multiple intervals running
     if (this.interval) {
@@ -86,7 +97,7 @@ export class ResetPasswordFormComponent implements OnInit,OnDestroy {
         } else {
           clearInterval(this.interval); // Stop the timer when it reaches 0
           notify({ message: 'OTP expired. Please request a new one.', position: { at: 'top center', my: 'top center' }, delay: 4000 }, 'error');
-          this.isButtonDisabled = false;
+          this.isGetOtpButtonDisabled = false;
           this.otpSent = false;
           this.formHeight = 300;
           this.otpDigits = ['', '', '', '', '', ''];
@@ -140,6 +151,8 @@ export class ResetPasswordFormComponent implements OnInit,OnDestroy {
       notify({ message: 'Please enter your email or phone number', position: { at: 'top center', my: 'top center' }, delay: 4000 }, 'error');
       return;
     }
+
+    this.isGetOtpButtonDisabled=true;
 
     
     this.formData.email = ''; // Clear the email/phone field
@@ -215,7 +228,7 @@ export class ResetPasswordFormComponent implements OnInit,OnDestroy {
       this.otpSent = false;
       this.otpVerified = true; // Show new password form
       this.headerTitle = 'Set New Password'; // Change header after OTP is verified
-      this.formHeight = 300;
+      this.formHeight = 500;
     } else {
       notify({ message: 'Invalid OTP. Please try again.', position: { at: 'top center', my: 'top center' }, delay: 4000 }, 'error');
     }
@@ -229,11 +242,21 @@ export class ResetPasswordFormComponent implements OnInit,OnDestroy {
     if (!validationResult.isValid) {
       return; // Stop execution if form is not valid; error messages will be shown next to the fields
     }
-    
-    if (this.formData.newPassword !== this.formData.confirmPassword) {
-      notify({ message: 'Passwords do not match. Please try again.', position: { at: 'top center', my: 'top center' }, delay: 3000 }, 'error');
-      return;
-    }
+
+     // Check if the new password meets the security policy
+  if (!this.checkPasswordStrength()) {
+    // Show error message if the password does not meet the security policy
+    notify(
+      {
+        message: 'New password does not meet the security requirements.',
+        position: { at: 'top right', my: 'top right' },
+        displayTime: 500,
+      },
+      'error'
+    );
+    return; // Stop execution if the password does not meet the policy
+  }
+
 
     const data={
       UserID:this.UserID,
@@ -257,6 +280,86 @@ export class ResetPasswordFormComponent implements OnInit,OnDestroy {
         notify({ message: `${res.message}`, position: { at: 'top center', my: 'top center' }, delay: 2000 }, 'error');
       }
     })
+  }
+
+  getSecurityPolicyData() {
+    this.userservice.getUserSecurityPolicityData().subscribe((res: any) => {
+      this.securityPolicyData = res.data[0];
+      console.log('user security policy data', this.securityPolicyData);
+    });
+  }
+  checkNumbers(): boolean {
+    return this.securityPolicyData.Numbers ? /\d/.test(this.formData.newPassword) : true;
+  }
+
+  checkUppercase(): boolean {
+    return this.securityPolicyData.UppercaseCharacters ? /[A-Z]/.test(this.formData.newPassword) : true;
+  }
+
+  checkLowercase(): boolean {
+    return this.securityPolicyData.LowercaseCharacters ? /[a-z]/.test(this.formData.newPassword) : true;
+  }
+
+  checkSpecialCharacters(): boolean {
+    return this.securityPolicyData.SpecialCharacters ? /[!@#$%^&*(),.?":{}|<>]/.test(this.formData.newPassword) : true;
+  }
+
+  checkMinimumLength(): boolean {
+    return this.formData.newPassword.length >= this.securityPolicyData.MinimumLength;
+  }
+
+  validatePasswordMatch = (): boolean => {
+    return this.formData.newPassword === this.formData.confirmPassword;
+  };
+
+  onPasswordKeyDown(event: any): void {
+    const target = event.target as HTMLInputElement;
+  
+    // Remove spaces from the current value
+    const sanitizedValue = target.value.replace(/\s/g, '');
+  
+    // Update the target value and the newPassword property
+    target.value = sanitizedValue; 
+    this.formData.newPassword = sanitizedValue; // Update the password value
+  
+    this.checkPasswordStrength(); // Call the function to check the strength of the password
+  }
+
+  checkPasswordStrength(): boolean {
+    if (!this.securityPolicyData) return false;
+
+    return this.checkNumbers() && this.checkUppercase() && this.checkLowercase() &&
+           this.checkSpecialCharacters() && this.checkMinimumLength();
+  }
+
+  onConfirmPasswordKeyDown(event: Event): void {
+    // Capture current input value
+    const target = event.target as HTMLInputElement;
+    setTimeout(() => {
+      this.formData.confirmPassword = target.value; // Get the updated password after keydown
+      this.validateConfirmPassword(); // Call the function to check the strength of the password
+    }, 0);
+  }
+
+  validateConfirmPassword(){
+    if (!this.formData.newPassword || !this.formData.confirmPassword) {
+      // If either newPassword or confirmPassword is empty, set border color to red
+      this.confirmPasswordBorderColor = '2px solid red';
+      this.isSubmitPasswordButtonDisabled=true;
+    } else if (this.formData.newPassword === this.formData.confirmPassword) {
+      // If both passwords match, set border color to green
+      this.confirmPasswordBorderColor = '2px solid green';
+      this.isSubmitPasswordButtonDisabled=false;
+    }
+     else {
+      // If passwords don't match, set border color to red
+      this.confirmPasswordBorderColor = '2px solid red';
+      this.isSubmitPasswordButtonDisabled=true;
+    }
+  }
+
+  redirectToLogin() {
+    this.router.navigate(['/auth/login']); // Adjust the route to your actual login page path
   }
 }
 @NgModule({

@@ -37,6 +37,7 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "allowedCommonJsDependencies": [
+               "country-list-with-dial-code-and-flag",
               "jspdf-autotable",
               "exceljs",
               "devextreme-dist/js/vectormap-data/usa.js",

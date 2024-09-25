@@ -1,7 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ImageCropperComponent } from 'ngx-image-cropper';
-
 import {
   AfterViewChecked,
   ChangeDetectorRef,
@@ -103,6 +101,7 @@ export class UserNewFormComponent implements OnInit,AfterViewChecked {
   onHideEvent = 'click';
   selectedRowCount: number = 0; 
   totalRowCount: number = 0;
+  userList:any;
   // Method to handle tab click and set selected index
   onTabClick(event: any) {
     console.log(event);
@@ -134,12 +133,117 @@ export class UserNewFormComponent implements OnInit,AfterViewChecked {
     { dataField: 'facility', caption: 'Facility' }
   ];
 
+  public isDropdownOpen: boolean = false;
+
   constructor(private service:MasterReportService,private cdr: ChangeDetectorRef){
     
   }
   ngAfterViewChecked() {
     this.cdr.detectChanges();  // Triggers change detection
   }
+
+  onDateOfBirthChange(event: any) {
+    this.newUserData.DateofBirth = event.value; // Update the model with the selected date
+  }
+  onLoginExpiryDateChange(event: any) {
+    this.newUserData.LoginExpiryDate = event.value; // Update the model with the selected date
+  }
+  onLockDateFromChange(event: any) {
+    this.newUserData.LockDateFrom = event.value; // Update the model with the selected date
+  }
+  onLockDateToChange(event: any) {
+    this.newUserData.LockDateTo = event.value; // Update the model with the selected date
+  }
+
+  getUSerData(){
+    this.service.get_User_data().subscribe(data=>{
+      this.userList=data;
+      console.log('datasource',this.userList);
+    })
+  }
+  
+  onLoginNameInput(event: Event): void {
+    const target = event.target as HTMLInputElement;
+
+    // Remove spaces from the current value and sanitize it
+    const sanitizedValue = target.value.replace(/\s/g, '').replace(/[^a-zA-Z0-9]/g, '');
+
+    // Check if the first character is an alphabet
+    if (sanitizedValue.length > 0 && /^[a-zA-Z]/.test(sanitizedValue[0])) {
+        // Update the target value and the LoginName property
+        target.value = sanitizedValue; 
+        this.newUserData.LoginName = sanitizedValue; // Update the login name value
+
+        // Validate the login name directly
+        this.checkLoginNameExists({ value: sanitizedValue });
+    } else {
+        // If the first character is not an alphabet, reset the input
+        target.value = ''; // Optionally clear the input
+        this.newUserData.LoginName = ''; // Reset the login name value
+    }
+}
+
+checkLoginNameExists= (e: any): boolean => {
+    const loginName = e.value;
+    const exists = this.userList.some(user => user.LoginName === loginName);
+  
+    // Return true if it does NOT exist, false if it DOES exist
+    e.valid = !exists;
+    return e.valid;
+}
+
+  onUserNameInput(event: Event): void {
+    const target = event.target as HTMLInputElement;
+  
+    // Regular expression to allow only alphabets with a single space between words
+    let sanitizedValue = target.value
+      .replace(/[^a-zA-Z\s]/g, '') // Remove all characters except alphabets and spaces
+      .replace(/\s{2,}/g, ' ')     // Replace multiple spaces with a single space
+      .replace(/^\s+/g, '')    // Remove spaces at the beginning of the string
+      .toUpperCase(); 
+  
+    target.value = sanitizedValue; 
+    this.newUserData.UserName = sanitizedValue; // Update the UserName value
+  }
+
+  // This function removes spaces from the email input and updates the Email property
+onEmailInput(event: Event): void {
+  const target = event.target as HTMLInputElement;
+
+  // Remove spaces from the email input
+  const sanitizedValue = target.value.replace(/\s/g, '');
+
+  // Update the target value and the Email property
+  target.value = sanitizedValue;
+  this.newUserData.Email = sanitizedValue;
+  this.checkEmailExists({ value: sanitizedValue });
+}
+
+// This function checks if the email already exists in the user list
+checkEmailExists=(e: any): boolean => {
+  const email = e.value;
+  
+  // Check if the email already exists in the user list
+  const exists = this.userList.some(user => user.Email.toLowerCase() === email.toLowerCase());
+
+  // Return true if it does NOT exist, false if it DOES exist
+  e.valid = !exists;
+  return e.valid;
+}
+
+// Email format validation using custom regex (only alphanumerics before @)
+customEmailValidation = (e: any): boolean => {
+  const email = e.value;
+
+  // Custom regex: only alphanumeric before @, at least one alphabet, followed by valid domain
+  const emailPattern = /^[a-zA-Z0-9]+[a-zA-Z]+[a-zA-Z0-9]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+  // Validate email against the custom pattern
+  const isValid = emailPattern.test(email);
+
+  e.valid = isValid;
+  return e.valid;
+}
 
   // Function to handle selection changes
   onSelectionChanged(e: any) {
@@ -213,19 +317,26 @@ export class UserNewFormComponent implements OnInit,AfterViewChecked {
   }
 
   handleFileInputChange(event: Event) {
-    const input = event.target as HTMLInputElement; // Explicitly cast to HTMLInputElement
+    const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       const file = input.files[0];
       this.readFile(file);
+      this.resetFileInput(); // Reset the file input after selecting a file
     }
   }
+
+  // Function to reset the file input
+resetFileInput() {
+  if (this.fileInput && this.fileInput.nativeElement) {
+    this.fileInput.nativeElement.value = ''; // Reset the file input value
+  }
+}
 
   readFile(file: File) {
     const reader = new FileReader();
     reader.onload = () => {
       const result = reader.result as string;
       this.newUserData.PhotoFile = result;
-      console.log( this.newUserData.PhotoFile,"kkk")
       this.images.push(result); // Add the base64 image to the gallery
     };
     reader.readAsDataURL(file); // Read the file as a base64 string
@@ -279,10 +390,24 @@ export class UserNewFormComponent implements OnInit,AfterViewChecked {
     console.log(this.countryCodes, 'country code'); // Optional: For debugging
   }
 
-  // Method to format the display value with flag and dial code
-  displayCountryCode(item: any) {
-    return item ? `${item.data.flag} - ${item.data.dial_code} - ${item.data.name}` : '';
+  // Use this function to display based on dropdown state
+  countryCodeDisplay = (item: any) => {
+    return item ? (this.isDropdownOpen 
+                   ? `${item.data.flag} ${item.data.dial_code} - ${item.data.name}` 
+                   : `${item.data.flag}`) : '';  // Display only country flag before dropdown is opened
+  };
+
+  // Triggered when the dropdown is opened
+  onDropdownOpened() {
+    this.isDropdownOpen = true;  // Mark dropdown as open
   }
+
+  // Triggered when the dropdown is closed
+  onDropdownClosed() {
+    this.isDropdownOpen = false;  // Mark dropdown as closed
+  }
+
+  
 
   ngOnInit(): void {
     this.getDropDownData('GENDER_DATA');
@@ -293,6 +418,7 @@ export class UserNewFormComponent implements OnInit,AfterViewChecked {
     
     this.setDefaultCountryCode();
     this.updateMobileNumber(); // Update mobile field with the default country code
+    this.getUSerData();
   
   }
 
@@ -444,14 +570,22 @@ export class UserNewFormComponent implements OnInit,AfterViewChecked {
     if (selectedCountry) {
       const dialCode = selectedCountry.data.dial_code;
   
-      // Ensure the dial code part remains the same and prepend it if needed
+      // If the user tries to backspace to remove the dial code, reset the input
+      if (!newValue.startsWith(dialCode)) {
+        this.newUserData.Mobile = dialCode; // Reset mobile number to only show dial code
+        return;
+      }
+  
+      // Extract the mobile number part
       const mobileNumberPart = newValue.replace(dialCode, '').trim();
       const validMobileNumber = this.validateMobileNumber(mobileNumberPart);
   
-      // Only update the mobile field if it starts with valid digits and does not start with zero
+      // Update the mobile field, keeping the dial code intact
       this.newUserData.Mobile = `${dialCode} ${validMobileNumber}`;
     }
   }
+
+  
 
   validateMobileNumber(mobileNumber: string): string {
     // Remove any non-digit characters
@@ -459,6 +593,50 @@ export class UserNewFormComponent implements OnInit,AfterViewChecked {
   
     // Ensure the number does not start with zero and return valid number or empty string if invalid
     return digitsOnly.startsWith('0') ? '' : digitsOnly;
+  }
+  
+
+  MobileNumberValidate=(e: any): boolean => {
+    const mobileNumber = e.value;
+  
+    // Remove all non-digit characters
+    const sanitizedNumber = mobileNumber.replace(/\D/g, '');
+  
+    // Check if the sanitized number has at least 10 digits
+    if (sanitizedNumber.length >= 10) {
+      return true; // Valid
+    }
+    return false; // Invalid
+  }
+
+  WhatsappValidate=(e: any): boolean => {
+    const whatsappNumber = e.value;
+  
+    // Remove all non-digit characters
+    const sanitizedNumber = whatsappNumber.replace(/\D/g, '');
+  
+    // Check if the sanitized number has at least 10 digits
+    if (sanitizedNumber.length >= 10) {
+      return true; // Valid
+    }
+    return false; // Invalid
+  }
+
+  validateWhatsapp(event: any) {
+    const target = event.target as HTMLInputElement;
+
+  // Allow only input that starts with '+' and contains only digits
+  const sanitizedValue = target.value.replace(/[^0-9+]/g, '');
+
+  // Ensure the '+' is only at the start
+  if (sanitizedValue.indexOf('+') > 0) {
+    target.value = '+' + sanitizedValue.replace(/\+/g, '');
+  } else {
+    target.value = sanitizedValue;
+  }
+
+  // Update the WhatsApp property with the sanitized value
+  this.newUserData.Whatsapp = target.value;
   }
 
  
@@ -475,11 +653,19 @@ export class UserNewFormComponent implements OnInit,AfterViewChecked {
   
 
   copyToClipboard(): void {
+    if (!navigator.clipboard) {
+      console.warn('Clipboard API not available. Make sure you are running the application over HTTPS.');
+      // Optionally show a user-friendly message or fallback logic
+      this.tooltipVisible = false; 
+      return;
+    }
+  
     navigator.clipboard.writeText(this.generatedPassword).then(() => {
-      this.tooltipVisible=true;
+      this.tooltipVisible = true;
       console.log('Password copied to clipboard');
     }).catch(err => {
       console.error('Error copying password to clipboard', err);
+      // You can show an error message to the user here
     });
   }
 }
@@ -506,8 +692,7 @@ export class UserNewFormComponent implements OnInit,AfterViewChecked {
     ReactiveFormsModule,
     DxValidationGroupModule,
     DxNumberBoxModule,
-
-    
+   
   ],
   providers: [],
   declarations: [UserNewFormComponent],

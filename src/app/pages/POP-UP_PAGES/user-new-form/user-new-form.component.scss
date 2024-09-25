@@ -68,6 +68,7 @@
     overflow: hidden; /* Hide overflow to make image cover */
 }
 
+
 #drop-area.highlight {
     border-color: purple; /* Highlight color when dragging over */
 }
@@ -104,7 +105,7 @@ button:hover {
 
 #gallery img {
     width: 100%; /* Make image cover the full width */
-    height: 100%; /* Make image cover the full height */
+    height: 135px; /* Make image cover the full height */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Shadow effect */
     transition: transform 0.3s; /* Smooth transition for transform */
 }
@@ -116,6 +117,8 @@ button:hover {
       position: absolute; /* Absolute positioning for close icon */
       bottom: 10px; /* Distance from top */
       right: 50%; /* Distance from right */
+      color: red;
+      font-weight: bolder;
       cursor: pointer; 
 //   font-size: 20px; /* Size of the close icon */
 //   color: red; /* Color of the close icon */

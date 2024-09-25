@@ -54,6 +54,7 @@ export class AppHeaderComponent implements OnInit {
       if (response.isOk && response.data) {
         this.user = response.data;
         this.user.name = this.authService.loginName; // Bind loginName
+        // this.user.avatarUrl=sessionStorage.getItem('UserPhoto');
       }
     });
   }

@@ -114,13 +114,22 @@ export class ResetPasswordComponent implements OnInit,OnChanges {
   }
 
   copyToClipboard(): void {
+    if (!navigator.clipboard) {
+      console.warn('Clipboard API not available. Make sure you are running the application over HTTPS.');
+      // Optionally show a user-friendly message or fallback logic
+      this.tooltipVisible = false; 
+      return;
+    }
+  
     navigator.clipboard.writeText(this.generatedPassword).then(() => {
-      this.tooltipVisible=true;
+      this.tooltipVisible = true;
       console.log('Password copied to clipboard');
     }).catch(err => {
       console.error('Error copying password to clipboard', err);
+      // You can show an error message to the user here
     });
   }
+  
   ResetPassword(){
     console.log(this.newFormData,"formdata");
     this.service.reset_Password(this.newFormData).subscribe(data=>{

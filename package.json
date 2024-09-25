@@ -24,6 +24,7 @@
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "country-list-with-dial-code-and-flag": "^5.0.5",
+    "cropperjs": "^1.6.2",
     "devextreme-angular": "23.2-next",
     "devextreme-schematics": "^1.2.16",
     "exceljs": "3.10.0",

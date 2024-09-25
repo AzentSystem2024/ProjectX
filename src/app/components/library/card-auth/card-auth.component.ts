@@ -18,7 +18,7 @@ export class CardAuthComponent {
 @NgModule({
   imports: [
     CommonModule,
-    DxLoadIndicatorModule
+    DxLoadIndicatorModule,
   ],
   declarations: [CardAuthComponent],
   exports: [CardAuthComponent],

@@ -30,7 +30,7 @@ export class UserComponent implements OnInit {
   userNewForm: UserNewFormComponent;
   popupwidth:any='65%'
   datasource:any;
-  
+
   isAddFormPopupOpened:boolean=false;
   isEditPopupOpened:boolean=false;
   selectedRowData:any;
@@ -74,6 +74,7 @@ export class UserComponent implements OnInit {
           },
           'success'
         );
+        this.getUSerData();
       }
       } catch (error) {
         notify(
@@ -105,6 +106,7 @@ export class UserComponent implements OnInit {
             },
             'success'
           );
+          this.dataGrid.instance.refresh();
         } catch (error) {
           notify(
             {

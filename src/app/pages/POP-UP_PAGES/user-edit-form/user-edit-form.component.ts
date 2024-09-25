@@ -141,6 +141,7 @@ export class UserEditFormComponent implements OnInit,OnChanges {
   showUserDetails: boolean = true; // Show User Details by default
   showOptions: boolean = true;     // Show Options by default
   selectedUserType: string = this.userTypes[0]; // Default to 'Normal User'
+  userList:any;
   tabItems = [
     { text: 'Facility' },
     { text: 'Options' }
@@ -156,13 +157,89 @@ export class UserEditFormComponent implements OnInit,OnChanges {
     { dataField: 'facility', caption: 'Facility' }
   ];
 
+  public isDropdownOpen: boolean = false;
+  currentLoginName:any;
+  currentEmail:any;
+
   constructor(private service:MasterReportService,private cdr: ChangeDetectorRef){ 
   }
+
+  getUSerData(){
+    this.service.get_User_data().subscribe(data=>{
+      this.userList=data;
+      console.log('datasource',this.userList);
+    })
+  }
+
+  onLoginNameInput(event: Event): void {
+    const target = event.target as HTMLInputElement;
+
+    // Remove spaces from the current value and sanitize it
+    const sanitizedValue = target.value.replace(/\s/g, '').replace(/[^a-zA-Z0-9]/g, '');
+
+    // Check if the first character is an alphabet
+    if (sanitizedValue.length > 0 && /^[a-zA-Z]/.test(sanitizedValue[0])) {
+        // Update the target value and the LoginName property
+        target.value = sanitizedValue; 
+        this.newUserData.LoginName = sanitizedValue; // Update the login name value
+
+        // Validate the login name directly
+        this.checkLoginNameExists({ value: sanitizedValue });
+    } else {
+        // If the first character is not an alphabet, reset the input
+        target.value = ''; // Optionally clear the input
+        this.newUserData.LoginName = ''; // Reset the login name value
+    }
+}
+
+checkLoginNameExists = (e: any): boolean => {
+  const loginName = e.value;
+
+
+  // Check if the login name exists in the user list, excluding the current one
+  const exists = this.userList.some(user => user.LoginName === loginName && user.LoginName !== this.currentLoginName);
+
+  // Return true if it does NOT exist, false if it DOES exist
+  e.valid = !exists;
+
+  // Optional: You can also provide feedback to the user here if needed
+  if (!e.valid) {
+      // Logic to show a message indicating the login name already exists
+      console.log('Login name already exists.');
+  }
+
+  return e.valid;
+}
+
+// This function removes spaces from the email input and updates the Email property
+onEmailInput(event: Event): void {
+  const target = event.target as HTMLInputElement;
+
+  // Remove spaces from the email input
+  const sanitizedValue = target.value.replace(/\s/g, '');
+
+  // Update the target value and the Email property
+  target.value = sanitizedValue;
+  this.newUserData.Email = sanitizedValue;
+  this.checkEmailExists({ value: sanitizedValue });
+}
+
+// This function checks if the email already exists in the user list
+checkEmailExists=(e: any): boolean => {
+  const email = e.value;
+  
+  // Check if the email already exists in the user list
+  const exists = this.userList.some(user => (user.Email.toLowerCase() === email.toLowerCase()) && user.Email!==this.currentEmail);
+
+  // Return true if it does NOT exist, false if it DOES exist
+  e.valid = !exists;
+  return e.valid;
+}
 
   // Function to handle selection changes
   onSelectionChanged(e: any) {
     // Map selected row keys to the desired format
-    this.userData.user_facility = e.selectedRowKeys.map((key: number) => ({      // Generate an ID for each entry starting from 1
+    this.newUserData.user_facility = e.selectedRowKeys.map((key: number) => ({      // Generate an ID for each entry starting from 1
       FacilityID: key        // Assign the selected FacilityID
     }));
     console.log('User Facility:', this.userData.user_facility);
@@ -237,15 +314,6 @@ export class UserEditFormComponent implements OnInit,OnChanges {
       }
     };
   }
-  removeImage(index: number) {
-    // Remove image logic
-    this.images.splice(index, 1);
-    // Clear PhotoFile if the last image is removed
-    if (this.images.length === 0) {
-      this.newUserData.PhotoFile = '';
-    }
-  }
-
   
   getCountryCodeList() {
     const codes = CountryList.getAll(); // Get all country codes
@@ -255,9 +323,21 @@ export class UserEditFormComponent implements OnInit,OnChanges {
     console.log(this.countryCodes, 'country code'); // Optional: For debugging
   }
 
-  // Method to format the display value with flag and dial code
-  displayCountryCode(item: any) {
-    return item ? `${item.data.flag} - ${item.data.dial_code} - ${item.data.name}` : '';
+  // Use this function to display based on dropdown state
+  countryCodeDisplay = (item: any) => {
+    return item ? (this.isDropdownOpen 
+                   ? `${item.data.flag} ${item.data.dial_code} - ${item.data.name}` 
+                   : `${item.data.flag}`) : '';  // Display only country flag before dropdown is opened
+  };
+
+  // Triggered when the dropdown is opened
+  onDropdownOpened() {
+    this.isDropdownOpen = true;  // Mark dropdown as open
+  }
+
+  // Triggered when the dropdown is closed
+  onDropdownClosed() {
+    this.isDropdownOpen = false;  // Mark dropdown as closed
   }
 
   extractCountryCode(mobileNumber: string): string | null {
@@ -311,11 +391,17 @@ export class UserEditFormComponent implements OnInit,OnChanges {
     if (selectedCountry) {
       const dialCode = selectedCountry.data.dial_code;
   
-      // Ensure the dial code part remains the same and prepend it if needed
+      // If the user tries to backspace to remove the dial code, reset the input
+      if (!newValue.startsWith(dialCode)) {
+        this.newUserData.Mobile = dialCode; // Reset mobile number to only show dial code
+        return;
+      }
+  
+      // Extract the mobile number part
       const mobileNumberPart = newValue.replace(dialCode, '').trim();
       const validMobileNumber = this.validateMobileNumber(mobileNumberPart);
   
-      // Only update the mobile field if it starts with valid digits and does not start with zero
+      // Update the mobile field, keeping the dial code intact
       this.newUserData.Mobile = `${dialCode} ${validMobileNumber}`;
     }
   }
@@ -326,6 +412,49 @@ export class UserEditFormComponent implements OnInit,OnChanges {
   
     // Ensure the number does not start with zero and return valid number or empty string if invalid
     return digitsOnly.startsWith('0') ? '' : digitsOnly;
+  }
+
+  MobileNumberValidate=(e: any): boolean => {
+    const mobileNumber = e.value;
+  
+    // Remove all non-digit characters
+    const sanitizedNumber = mobileNumber.replace(/\D/g, '');
+  
+    // Check if the sanitized number has at least 10 digits
+    if (sanitizedNumber.length >= 10) {
+      return true; // Valid
+    }
+    return false; // Invalid
+  }
+
+  WhatsappValidate=(e: any): boolean => {
+    const whatsappNumber = e.value;
+  
+    // Remove all non-digit characters
+    const sanitizedNumber = whatsappNumber.replace(/\D/g, '');
+  
+    // Check if the sanitized number has at least 10 digits
+    if (sanitizedNumber.length >= 10) {
+      return true; // Valid
+    }
+    return false; // Invalid
+  }
+
+  validateWhatsapp(event: any) {
+    const target = event.target as HTMLInputElement;
+
+  // Allow only input that starts with '+' and contains only digits
+  const sanitizedValue = target.value.replace(/[^0-9+]/g, '');
+
+  // Ensure the '+' is only at the start
+  if (sanitizedValue.indexOf('+') > 0) {
+    target.value = '+' + sanitizedValue.replace(/\+/g, '');
+  } else {
+    target.value = sanitizedValue;
+  }
+
+  // Update the WhatsApp property with the sanitized value
+  this.newUserData.Whatsapp = target.value;
   }
 
   autoBindWhatsapp() {
@@ -344,6 +473,7 @@ export class UserEditFormComponent implements OnInit,OnChanges {
     this.getUserSecurityPolicyData();
     this.getFacilityData();
     this.getCountryCodeList();
+    this.getUSerData();
 
     // Pre-fill country code field based on mobile number
   if (this.newUserData.Mobile) {
@@ -398,7 +528,16 @@ export class UserEditFormComponent implements OnInit,OnChanges {
   }
 
   onSaveClick(){
+
+    const validationResult = this.validationGroup.instance.validate();
+
+    // Check if the form is valid before proceeding
+    if (!validationResult.isValid) {
+      return; // Stop execution if form is not valid; error messages will be shown next to the fields
+    }
+    
     console.log(this.newUserData,"edit form data");
+    console.log(this.userData.user_facility,"userfacility")
     this.service.update_User_Data(this.newUserData).subscribe((res:any)=>{
       try {
         if(res.message==='Success')
@@ -412,6 +551,16 @@ export class UserEditFormComponent implements OnInit,OnChanges {
           'success'
         );
         this.close();
+      }
+      else{
+        notify(
+          {
+            message: 'An unexpected error occurred',
+            position: { at: 'top right', my: 'top right' },
+            displayTime: 500,
+          },
+          'error'
+        );
       }
       } catch (error) {
         notify(
@@ -436,10 +585,12 @@ export class UserEditFormComponent implements OnInit,OnChanges {
     if (changes.formdata && changes.formdata.currentValue) {
       console.log(this.formdata, "..............");
       this.UserID=this.formdata.UserID;
+      this.currentLoginName=this.formdata.LoginName;
+      this.currentEmail=this.formdata.Email;
       console.log(this.UserID,"userid")
       this.newUserData = { ...this.formdata };
-      this.PhotoFile=this.newUserData.PhotoFile;
-      console.log(this.PhotoFile,"photo")
+      this.images=this.newUserData.PhotoFile;
+      console.log(this.images,"photo")
 
       // Extract country code from mobile number
       const extractedCountryCode = this.extractCountryCode(this.newUserData.Mobile);

@@ -63,6 +63,7 @@ export class LoginFormComponent implements OnInit {
             if (response.flag == 1) {
               sessionStorage.setItem('loginName', response.data.LoginName);
               sessionStorage.setItem('UserID', response.data.UserID);
+              sessionStorage.setItem('UserPhoto', response.data.PhotoFile);
               console.log("loginname",this.authService.loginName)
               this.authService.setUserData(response.data);
               localStorage.setItem('logData', JSON.stringify(response.data));
@@ -87,6 +88,9 @@ export class LoginFormComponent implements OnInit {
                     .logIn(username, password, forcelogin)
                     .subscribe((response: any) => {
                       if (response.flag == 1) {
+                        sessionStorage.setItem('loginName', response.data.LoginName);
+                        sessionStorage.setItem('UserID', response.data.UserID);
+                        sessionStorage.setItem('UserPhoto', response.data.PhotoFile);
                         localStorage.setItem(
                           'logData',
                           JSON.stringify(response.data)

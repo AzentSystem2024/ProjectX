@@ -992,7 +992,7 @@ export class MasterReportService {
   }
 
   insert_User_Data(data:any) {
-    const url = `${BASE_URL}/user/insert`;
+    const url = `${BASE_URL}user/insert`;
     const reqBody = {
         UserName: data.UserName,
         LoginName: data.LoginName,

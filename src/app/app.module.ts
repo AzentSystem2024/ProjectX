@@ -69,7 +69,7 @@ import { ChangePasswordModule } from './pages/PROFILE PAGES/change-password/chan
     UserNewFormModule,
     UserEditFormModule,
     ResetPasswordModule,
-    ChangePasswordModule
+    ChangePasswordModule,
   ],
   providers: [AuthService, ScreenService, AppInfoService, ThemeService],
   bootstrap: [AppComponent],
