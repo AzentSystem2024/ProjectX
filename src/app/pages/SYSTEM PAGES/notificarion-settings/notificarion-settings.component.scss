@@ -5,37 +5,28 @@
   overflow-x: hidden;
   overflow-y: hidden;
 }
-
 /* Hide the scrollbar */
 .FullBody::-webkit-scrollbar {
   width: 0;
 }
-
 .FullBody {
   -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  // scrollbar-width: none; /* Firefox */
 }
-
 /* Optional: Add this for smoother scrolling */
 .FullBody {
   scroll-behavior: smooth;
 }
-
 .FullBody {
   margin: 10px;
-  width: auto;
-  height: auto;
-  padding: 10px;
   overflow-y: auto;
-  padding-bottom: 130px;
+  // padding-bottom: 130px;
   border-radius: 8px;
-  background-color: var(--base-bg);
 }
 .titleBar {
   position: sticky;
   top: 0;
   z-index: 10;
-
   margin: 10px;
   width: auto;
   height: 50px;
@@ -43,7 +34,6 @@
   border-radius: 8px;
   background-color: var(--base-bg);
 }
-
 .headingText {
   font-size: 22px;
   font-weight: 400;
@@ -51,19 +41,9 @@
 .cancelbtn {
   background-color: var(--base-bg);
 }
-.btnGroup {
-  margin-left: auto;
-  padding-right: 10px;
-}
-.GruopDiv {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  padding: 10px;
-  border-radius: 8px;
+.mainclass {
   background-color: var(--base-bg);
-  box-shadow: -2px 2px 2px rgba(0, 0, 0, 0.1), 2px 2px 2px rgba(0, 0, 0, 0.1),
-    0 2px 2px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
 }
 .BorderBox {
   height: 30vh;
@@ -77,18 +57,12 @@
   padding: 10px;
   border-radius: 8px;
   background-color: var(--base-bg);
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1),
-     -2px 2px 5px rgba(0, 0, 0, 0.1),
-     -2px -2px 5px rgba(0, 0, 0, 0.1),
-     2px -2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1), -2px 2px 5px rgba(0, 0, 0, 0.1),
+    -2px -2px 5px rgba(0, 0, 0, 0.1), 2px -2px 5px rgba(0, 0, 0, 0.1);
 }
 .SubHeading {
   margin-bottom: 5px;
   text-decoration: underline;
   font-size: larger;
   font-weight: bold;
-}
-.whatsappGroupDiv {
-  // margin-left: 10px;
-  margin: 5px;
 }

@@ -23,7 +23,7 @@
     </div>
   </div>
 
-  <div class="FullBody view-wrapper">
+  <div class="FullBody">
     <div class="mainclass">
       <dx-tabs
         #withIconAndText
@@ -292,7 +292,7 @@
       </div>
     </div>
 
-    <div class="datagridSection mt-4">
+    <div class="datagridSection mt-2">
       <div class="SubHeading">Notification Events</div>
       <dx-data-grid
         [dataSource]="dataSource"
@@ -454,7 +454,7 @@
 
     <dx-form [formData]="clickedEditRowData" caption=" hello testing">
       <!-- First Group -->
-      <dxi-item itemType="group" [colCount]="2" caption="E-Mail" class="mb-3">
+      <dxi-item itemType="group" [colCount]="2" class="mb-3">
         <!-- First Row: SendEmail -->
         <dxi-item
           dataField="SendEmail"
@@ -477,9 +477,9 @@
       </dxi-item>
 
       <!-- -------Second Row Of SmS and WhatsApp-------- -->
-      <dxi-item itemType="group" [colCount]="2" class="mb-3">
+      <dxi-item itemType="group" [colCount]="1" class="mb-3">
         <!-- Second Group: SMS -->
-        <dxi-item itemType="group" caption="SMS" [colCount]="1">
+        <dxi-item itemType="group" [colCount]="1">
           <dxi-item
             dataField="SendSMS"
             editorType="dxCheckBox"
@@ -490,12 +490,7 @@
         </dxi-item>
 
         <!-- Third Group: WhatsApp -->
-        <dxi-item
-          itemType="group"
-          caption="WhatsApp"
-          [colCount]="1"
-          class="whatsappGroupDiv"
-        >
+        <dxi-item itemType="group" [colCount]="1" class="whatsappGroupDiv">
           <dxi-item
             dataField="SendWhatsapp"
             editorType="dxCheckBox"
