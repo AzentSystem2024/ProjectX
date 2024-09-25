@@ -57,7 +57,8 @@ export class ClinicianMajorComponent {
   }
   //========================Export data ==========================
   onExporting(event: any) {
-    this.service.exportDataGrid(event);
+    const fileName='clinician Major'
+    this.service.exportDataGrid(event,fileName);
   }
   //====================Add data ================================
   onClickSaveNewData = () => {

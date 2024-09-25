@@ -70,7 +70,8 @@ export class FacilityGroupListComponent implements OnInit {
   }
   //========================Export data ==========================
   onExporting(event: any) {
-    this.service.exportDataGrid(event);
+    const fileName='Facility Group'
+    this.service.exportDataGrid(event,fileName);
   }
   //====================Add data ================================
   onClickSaveNewFacilityGroup = () => {

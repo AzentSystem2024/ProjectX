@@ -94,8 +94,9 @@ export class DenialListComponent {
   };
 
   //================Exporting Function=====================
-  onExporting(e: any) {
-    this.reportservice.exportDataGrid(e);
+  onExporting(event: any) {
+    const fileName='Denial'
+    this.reportservice.exportDataGrid(event,fileName);
   }
 
   //=============Get Denial Type Drop dwn Data==============================

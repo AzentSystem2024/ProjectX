@@ -80,7 +80,9 @@ export class CPTTypeComponent implements OnInit {
 
   //========================Export data ==========================
   onExporting(event: any) {
-    this.service.exportDataGrid(event);
+    const fileName='CPT type'
+
+    this.service.exportDataGrid(event,fileName);
   }
 
   //====================Row Data Deleting========================

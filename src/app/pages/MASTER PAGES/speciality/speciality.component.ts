@@ -94,7 +94,8 @@ export class SpecialityComponent implements OnInit {
 
   //========================Export data ==========================
   onExporting(event: any) {
-    this.service.exportDataGrid(event);
+    const fileName='Speciality'
+    this.service.exportDataGrid(event,fileName);
   }
 
   //====================Row Data Deleting========================

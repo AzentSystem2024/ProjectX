@@ -46,8 +46,8 @@ export class ClinicianComponent implements OnInit {
   genderDatasource: any;
   auto: string = 'auto';
 
-  
-  showSearchBar: boolean = false; 
+
+  showSearchBar: boolean = false;
 
   constructor(
     private service: ReportService,
@@ -59,19 +59,19 @@ export class ClinicianComponent implements OnInit {
     this.get_Clinician_Data_List();
   }
 
- 
+
   show_new__Form() {
     this.isAddClinicianPopupOpened = true;
   }
 
- 
+
   get_gender_dropDown() {
     this.masterService.get_gender_Data().subscribe((res: any) => {
       this.genderDatasource = res;
     });
   }
 
- 
+
   get_DropDown_Data() {
     this.masterService.Get_GropDown('SPECIALITY').subscribe((response: any) => {
       this.specialityDatasource = response;
@@ -96,14 +96,14 @@ export class ClinicianComponent implements OnInit {
       });
   }
 
-  
+
   get_Clinician_Data_List() {
     this.masterService.get_Clinian_Table_Data().subscribe((response: any) => {
       this.dataSource = response.data;
     });
   }
 
-  
+
   onClickSaveNewClinician = () => {
     const {
       ClinicianLicense,
@@ -150,7 +150,7 @@ export class ClinicianComponent implements OnInit {
       });
   };
 
- 
+
   onRowRemoving(event: any) {
     event.cancel = true;
     let SelectedRow = event.key;
@@ -183,7 +183,7 @@ export class ClinicianComponent implements OnInit {
       });
   }
 
- 
+
   onRowUpdating(event: any) {
     const updataDate = event.newData;
     const oldData = event.oldData;
@@ -232,33 +232,34 @@ export class ClinicianComponent implements OnInit {
             'error'
           );
         }
-        event.component.cancelEditData(); 
+        event.component.cancelEditData();
         this.dataGrid.instance.refresh();
       });
 
-    event.cancel = true; 
+    event.cancel = true;
   }
 
- 
+
   onExporting(event: any) {
-    this.service.exportDataGrid(event);
+    const fileName='Clinician'
+    this.service.exportDataGrid(event,fileName);
   }
 
- 
+
   refresh = () => {
     this.dataGrid.instance.refresh();
   };
 
- 
+
   onShowSearchBar() {
-    this.showSearchBar = true; 
+    this.showSearchBar = true;
   }
 
   onHideSearchBar() {
-    this.showSearchBar = false; 
+    this.showSearchBar = false;
   }
 
- 
+
   onSearchQueryChanged(event: any) {
     const query = event.value;
     this.dataGrid.instance.searchByText(query);

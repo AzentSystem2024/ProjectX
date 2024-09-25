@@ -62,7 +62,8 @@ export class LicenseInfoComponent {
 
   //========================Export data ==========================
   onExporting(event: any) {
-    this.service.exportDataGrid(event);
+    const fileName='licence-info'
+    this.service.exportDataGrid(event,fileName);
   }
   //=================== Page refreshing===========================
   refresh = () => {

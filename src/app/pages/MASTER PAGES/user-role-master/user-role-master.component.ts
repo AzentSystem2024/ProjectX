@@ -81,7 +81,8 @@ export class UserLevelMasterComponent implements OnInit {
   };
   //========================Export data ==========================
   onExporting(event: any) {
-    this.service.exportDataGrid(event);
+    const fileName='userRole'
+    this.service.exportDataGrid(event,fileName);
   }
   //===============Fetch All User Level List===================
   fetch_all_UserLevel_list() {

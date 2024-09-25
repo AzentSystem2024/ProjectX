@@ -68,7 +68,8 @@ export class FacilityListComponent implements OnInit {
 
   //========================Export data ==========================
   onExporting(event: any) {
-    this.service.exportDataGrid(event);
+    const fileName='Facility'
+    this.service.exportDataGrid(event,fileName);
   }
 
   //====================Get Facility List Datasource==============

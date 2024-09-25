@@ -60,7 +60,8 @@ export class ClinicianProfessionComponent {
   }
   //========================Export data ==========================
   onExporting(event: any) {
-    this.service.exportDataGrid(event);
+    const fileName='clinician Profession'
+    this.service.exportDataGrid(event,fileName);
   }
   //====================Add data ================================
   onClickSaveNewData = () => {
