@@ -206,7 +206,7 @@ export class NotificationSettingsComponent implements OnInit {
   //=============onClick notification editing==========azs
   onEditingStart(event: any) {
     this.clickedEditRowData = event.data;
-    this.editpopupHeading = this.clickedEditRowData.Notification;
+    this.editpopupHeading = `${this.clickedEditRowData.Notification} event`;
     event.cancel = true;
     this.isRowDataEditing = true;
     console.log('clicked row data ', this.clickedEditRowData);
