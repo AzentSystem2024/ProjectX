@@ -99,6 +99,14 @@ export class SystemServicesService {
     const url = `${BASE_URL}/notificationsettings/templatelist`;
     return this.http.post(url, {});
   }
+
+  //=========update a notificatin template ========
+ updateNotificationSettingTemplate(formdata: any) {
+  const url = `${BASE_URL}/notificationsettings/updatenotification`;
+  const reqBody = formdata;
+  return this.http.post(url, reqBody);
+}
+  //=============send a test mail==================
   sendTestMail(userid: any, receiverid: any, subject: any, message: any) {
     const url = `${BASE_URL}/changepassword/formail`;
     const reqBody = {
