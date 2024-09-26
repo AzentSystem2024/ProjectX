@@ -70,10 +70,10 @@ export class UserLevelMasterComponent implements OnInit {
   onPopupClose(): void {
     this.isAddFormVisible = false;
 
-    // Here you can also reset any form or data if required
   }
-  onEditPopupClose(){
+  onEditPopupClose() {
     this.iseditFormVisible = false;
+    this.userlevelEditForm.resetUserChanges()
   }
   //=================== Page refreshing==========================
   refresh = () => {
@@ -81,8 +81,8 @@ export class UserLevelMasterComponent implements OnInit {
   };
   //========================Export data ==========================
   onExporting(event: any) {
-    const fileName='userRole'
-    this.service.exportDataGrid(event,fileName);
+    const fileName = 'userRole';
+    this.service.exportDataGrid(event, fileName);
   }
   //===============Fetch All User Level List===================
   fetch_all_UserLevel_list() {

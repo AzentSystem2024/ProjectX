@@ -27,7 +27,7 @@ import { MasterReportService } from '../../MASTER PAGES/master-report.service';
   styleUrls: ['./user-level-edit-form.component.scss'],
   providers: [MasterReportService],
 })
-export class UserLevelEditFormComponent implements OnInit ,OnChanges{
+export class UserLevelEditFormComponent implements OnInit, OnChanges {
   @Input() editValue: any;
 
   width: any = '100%';
@@ -45,6 +45,7 @@ export class UserLevelEditFormComponent implements OnInit ,OnChanges{
   UserLevelValue: any = '';
   isErrorVisible: boolean = false;
   checkedRows: any;
+  resetValue: boolean = false;
   constructor(private masterservice: MasterReportService) {}
 
   ngOnInit(): void {
@@ -66,7 +67,6 @@ export class UserLevelEditFormComponent implements OnInit ,OnChanges{
           selectedMenuIds.includes(menu.MenuId)
         ).map((menu: any) => menu.MenuId);
       });
-      // console.log("ihfodshfokjdsfidsh ifnhds iocsdjifdwejif",this.selectedRows)
       // Set the data for the initial tab
       this.selectedTab = 0;
       this.selectedTabData = this.MenuDatasource[this.selectedTab].Menus;
@@ -126,6 +126,10 @@ export class UserLevelEditFormComponent implements OnInit ,OnChanges{
   }
 
   getNewUSerLevelEditedData = () => ({ ...this.allSelectedRows });
+
+  resetUserChanges = () => {
+    this.editValue=''
+  };
 }
 @NgModule({
   imports: [

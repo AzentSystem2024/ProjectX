@@ -1,5 +1,5 @@
-
 import { HttpClient } from '@angular/common/http';
+import { Token } from '@angular/compiler';
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, ActivatedRouteSnapshot } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
@@ -20,7 +20,7 @@ const defaultPath = '/';
 
 //=============================Base url==============================
 import { environment } from 'src/environments/environment';
-const BaseURL=environment.PROJECTX_API_BASE_URL
+const BaseURL = environment.PROJECTX_API_BASE_URL;
 
 //==================================Default USer Name and details=======================
 export const defaultUser: IUser = {
@@ -163,6 +163,11 @@ export class AuthService {
   }
 
   async logOut() {
+    const API_URL = ` ${BaseURL}user/LOGIN`;
+    const token = JSON.parse(localStorage.getItem('logData')).Token;
+    const ReqBody = { Token: token };
+    console.log('token :', token, 'reqbody:', ReqBody);
+    this.http.post<any>(API_URL, ReqBody);
     localStorage.removeItem('sidemenuItems');
     sessionStorage.clear();
     this.router.navigate(['/auth/login']);
