@@ -18,27 +18,33 @@ export class ResetPasswordComponent implements OnInit,OnChanges {
   generatedPassword: string = '';
   tooltipVisible = false;
   securityPolicyData:any;
+  loginuserId:any;
+  formData: any;
+  newFormData: any;
 
   constructor(private service:MasterReportService){
+      this.loginuserId=sessionStorage.getItem('UserID');
+      console.log(this.loginuserId,"userid")
 
       this.service.getUserSecurityPolicityData().subscribe((res:any)=>{
         this.securityPolicyData = res.data[0];
         console.log('user security policy data',this.securityPolicyData)
         this.generatedPassword = this.generateRandomPassword();
       })
+      
   
-  }
 
-  formData:any = {
+
+  this.formData = {
     NewPassword: '',
     ChangePasswordOnLogin:true,
-    ModifiedFrom:'User',
+    ModifiedFrom:this.loginuserId,
     UserID:''
   }
 
-  newFormData = this.formData;
+  this.newFormData = this.formData;
   
-
+}
 
   ngOnInit(): void {
     // this.securityPolicyData();

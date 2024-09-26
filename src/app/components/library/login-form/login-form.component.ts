@@ -29,6 +29,8 @@ export class LoginFormComponent implements OnInit {
 
   formData: any = {};
 
+  isPasswordVisible:boolean=false;
+
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -38,6 +40,10 @@ export class LoginFormComponent implements OnInit {
     this.themeService.isDark.subscribe((value: boolean) => {
       this.btnStylingMode = value ? 'outlined' : 'contained';
     });
+  }
+
+  togglePasswordVisibility=() => {
+    this.isPasswordVisible = !this.isPasswordVisible;
   }
 
   changePasswordMode() {
@@ -75,7 +81,14 @@ export class LoginFormComponent implements OnInit {
                 'sidemenuItems',
                 JSON.stringify(response.menus)
               );
-              this.router.navigateByUrl('/analytics-dashboard');
+              // Check if the user needs to change the password on login
+              if (response.data.ChangePasswordOnLogin === true) {
+                // Route to the change password page
+                this.router.navigateByUrl('/change-password');
+              } else {
+                // Route to the dashboard
+                this.router.navigateByUrl('/analytics-dashboard');
+              }
             } else if (response.flag == 2) {
               const result = confirm(
                 'You are already logged in on another device. Do you want to force the login process?',
@@ -105,7 +118,16 @@ export class LoginFormComponent implements OnInit {
                           'sidemenuItems',
                           JSON.stringify(response.menus)
                         );
-                        this.router.navigateByUrl('/analytics-dashboard');
+                        // Check if the user needs to change the password on login
+                        if (response.data.ChangePasswordOnLogin === true) {
+
+                          console.log("trueeeeeeeeeeeeeeeeeeeeeeeeeeeee")
+                          // Route to the change password page
+                          this.router.navigateByUrl('/change-password');
+                        } else {
+                          // Route to the dashboard
+                          this.router.navigateByUrl('/analytics-dashboard');
+                        }
                       }
                     });
                 } else {
