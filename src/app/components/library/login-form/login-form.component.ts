@@ -9,6 +9,7 @@ import notify from 'devextreme/ui/notify';
 import { AuthService, IResponse, ThemeService } from 'src/app/services';
 import { SharedServiceService } from 'src/app/services/shared-service.service';
 import { confirm } from 'devextreme/ui/dialog';
+import { InactivityService } from 'src/app/services/inactivity.service';
 
 @Component({
   selector: 'app-login-form',
@@ -33,7 +34,8 @@ export class LoginFormComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private themeService: ThemeService,
-    private sharedService: SharedServiceService
+    private sharedService: SharedServiceService,
+    private inactive: InactivityService
   ) {
     this.themeService.isDark.subscribe((value: boolean) => {
       this.btnStylingMode = value ? 'outlined' : 'contained';
@@ -57,14 +59,14 @@ export class LoginFormComponent implements OnInit {
         this.authService
           .logIn(username, password, forcelogin)
           .subscribe((response: any) => {
-            // if(response.data.ChangePasswordOnLogin==='true'){
+            // if(response.data.ChangePasswordOnLogin=='true'){
             //   this.router.navigateByUrl('/change-password');
             // }
             if (response.flag == 1) {
               sessionStorage.setItem('loginName', response.data.LoginName);
               sessionStorage.setItem('UserID', response.data.UserID);
               sessionStorage.setItem('UserPhoto', response.data.PhotoFile);
-              console.log("loginname",this.authService.loginName)
+              console.log('loginname', this.authService.loginName);
               this.authService.setUserData(response.data);
               localStorage.setItem('logData', JSON.stringify(response.data));
               localStorage.setItem(
@@ -75,6 +77,7 @@ export class LoginFormComponent implements OnInit {
                 'sidemenuItems',
                 JSON.stringify(response.menus)
               );
+              this.inactive.setUserlogginValue();
               this.router.navigateByUrl('/analytics-dashboard');
             } else if (response.flag == 2) {
               const result = confirm(
@@ -88,10 +91,15 @@ export class LoginFormComponent implements OnInit {
                     .logIn(username, password, forcelogin)
                     .subscribe((response: any) => {
                       if (response.flag == 1) {
-
-                        sessionStorage.setItem('loginName', response.data.LoginName);
+                        sessionStorage.setItem(
+                          'loginName',
+                          response.data.LoginName
+                        );
                         sessionStorage.setItem('UserID', response.data.UserID);
-                        sessionStorage.setItem('UserPhoto', response.data.PhotoFile);
+                        sessionStorage.setItem(
+                          'UserPhoto',
+                          response.data.PhotoFile
+                        );
 
                         localStorage.setItem(
                           'logData',
@@ -105,6 +113,7 @@ export class LoginFormComponent implements OnInit {
                           'sidemenuItems',
                           JSON.stringify(response.menus)
                         );
+                        this.inactive.setUserlogginValue();
                         this.router.navigateByUrl('/analytics-dashboard');
                       }
                     });
@@ -118,8 +127,7 @@ export class LoginFormComponent implements OnInit {
                   );
                 }
               });
-            }
-            else {
+            } else {
               notify(
                 {
                   message: `invalid username or password...!!!`,
