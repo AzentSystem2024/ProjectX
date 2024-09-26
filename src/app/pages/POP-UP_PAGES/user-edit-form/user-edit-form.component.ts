@@ -112,6 +112,7 @@ export class UserEditFormComponent implements OnInit,OnChanges {
   securityPolicyData:any;
   facilityList
   countryCodes: any[] = [];
+  isImageUploaded = false; // Variable to track image upload status
 
   isDropZoneActive = false;
   imageSource = '';
@@ -298,10 +299,11 @@ checkEmailExists=(e: any): boolean => {
     const reader = new FileReader();
     reader.onload = () => {
       const result = reader.result as string;
+      this.isImageUploaded = true;
       this.newUserData.PhotoFile = result;
-      this.images.push(result); // Add the base64 image to the gallery
+      this.images = [result]; // Only store one image
     };
-    reader.readAsDataURL(file); // Read the file as a base64 string
+    reader.readAsDataURL(file);
   }
 
   previewFile(file: File) {
@@ -313,6 +315,12 @@ checkEmailExists=(e: any): boolean => {
         this.images.push(reader.result);
       }
     };
+  }
+
+  removeImage() {
+    this.isImageUploaded = false;
+    this.images = []; // Clear the image
+    this.newUserData.PhotoFile = ''; // Clear the stored file data
   }
   
   getCountryCodeList() {
@@ -589,8 +597,14 @@ checkEmailExists=(e: any): boolean => {
       this.currentEmail=this.formdata.Email;
       console.log(this.UserID,"userid")
       this.newUserData = { ...this.formdata };
-      this.images=this.newUserData.PhotoFile;
-      console.log(this.images,"photo")
+      if (this.newUserData.PhotoFile) {
+        this.isImageUploaded = true;
+        this.images = this.newUserData.PhotoFile;
+        console.log(this.images, "photo");
+      } else {
+        this.images = [];  // Set images to empty if PhotoFile is not available
+        console.log("No photo available");
+      }
 
       // Extract country code from mobile number
       const extractedCountryCode = this.extractCountryCode(this.newUserData.Mobile);

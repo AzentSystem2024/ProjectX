@@ -68,6 +68,10 @@
     overflow: hidden; /* Hide overflow to make image cover */
 }
 
+/* Hide the border when the "image-uploaded" class is added */
+#drop-area.image-uploaded {
+    border: none; /* Remove the border */
+  }
 
 #drop-area.highlight {
     border-color: purple; /* Highlight color when dragging over */

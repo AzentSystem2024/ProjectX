@@ -88,9 +88,11 @@ export class LoginFormComponent implements OnInit {
                     .logIn(username, password, forcelogin)
                     .subscribe((response: any) => {
                       if (response.flag == 1) {
+                
                         sessionStorage.setItem('loginName', response.data.LoginName);
                         sessionStorage.setItem('UserID', response.data.UserID);
                         sessionStorage.setItem('UserPhoto', response.data.PhotoFile);
+
                         localStorage.setItem(
                           'logData',
                           JSON.stringify(response.data)

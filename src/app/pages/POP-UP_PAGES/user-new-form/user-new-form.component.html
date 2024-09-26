@@ -43,7 +43,7 @@
             <i class="dx-icon-refresh"></i>  <!-- DevExtreme refresh icon -->
           </button>
             <!-- [mode]="isPasswordVisible ? 'text' : 'password'"  -->
-            <!-- Show/Hide Eye Icon -->
+          <!-- Show/Hide Eye Icon -->
             <!-- <button 
               type="button"
               (click)="togglePasswordVisibility()"
@@ -120,7 +120,7 @@
               style="margin-left: 10px;"
               hint="Mobile No"
               [valueChangeEvent]="'input'"
-              (onValueChanged)="onMobileInputChange($event)"
+              (input)="onMobileInputChange($event)"
               [maxLength]="17"
             >
             <dx-validator>
@@ -219,7 +219,7 @@
         <div class="form-column" style="flex: 1;">
           <label>Profile Image</label>
           <div id="drop-area" (dragenter)="preventDefaults($event)" (dragover)="preventDefaults($event)"
-               (dragleave)="handleDragLeave($event)" (drop)="handleDrop($event)">
+               (dragleave)="handleDragLeave($event)" (drop)="handleDrop($event)" [class.image-uploaded]="isImageUploaded">
              
             
             <!-- Conditionally show this section only if no images have been uploaded -->
@@ -231,9 +231,9 @@
             
             <!-- Gallery to display uploaded images -->
             <div id="gallery">
-              <div *ngFor="let img of images; let i = index" class="image-container">
-                <img [src]="img" />
-              <span class="close-icon" (click)="removeImage(i)">&#x2715;</span> <!-- Close icon -->
+              <div *ngIf="images.length === 1" class="image-container">
+                <img [src]="images[0]" />
+                <span class="close-icon" (click)="removeImage()">&#x2715;</span> <!-- Close icon -->
               </div>
             </div>
           </div>

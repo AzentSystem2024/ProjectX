@@ -118,6 +118,7 @@ export class UserNewFormComponent implements OnInit,AfterViewChecked {
   showUserDetails: boolean = true; // Show User Details by default
   showOptions: boolean = true;     // Show Options by default
   selectedUserType: string = this.userTypes[0]; // Default to 'Normal User'
+  isImageUploaded = false; // Variable to track image upload status
   tabItems = [
     { text: 'Facility' },
     { text: 'Options' }
@@ -332,16 +333,16 @@ resetFileInput() {
   }
 }
 
-  readFile(file: File) {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const result = reader.result as string;
-      this.newUserData.PhotoFile = result;
-      this.images.push(result); // Add the base64 image to the gallery
-    };
-    reader.readAsDataURL(file); // Read the file as a base64 string
-  }
-
+readFile(file: File) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    const result = reader.result as string;
+    this.isImageUploaded = true;
+    this.newUserData.PhotoFile = result;
+    this.images = [result]; // Only store one image
+  };
+  reader.readAsDataURL(file);
+}
   // readFile(file: File) {
   //   const reader = new FileReader();
   //   reader.onload = () => {
@@ -372,13 +373,10 @@ resetFileInput() {
       }
     };
   }
-  removeImage(index: number) {
-    // Remove image logic
-    this.images.splice(index, 1);
-    // Clear PhotoFile if the last image is removed
-    if (this.images.length === 0) {
-      this.newUserData.PhotoFile = '';
-    }
+  removeImage() {
+    this.isImageUploaded = false;
+    this.images = []; // Clear the image
+    this.newUserData.PhotoFile = ''; // Clear the stored file data
   }
 
   
@@ -560,7 +558,21 @@ resetFileInput() {
   
 
   onMobileInputChange(event: any) {
-    const newValue = event.value;
+    const target = event.target as HTMLInputElement;
+  
+    // Get the input value and allow only '+' at the start and digits after that
+    let newValue = target.value.replace(/[^0-9+]/g, '');
+    
+    // Ensure the input starts with '+' and not '0'
+    if (!newValue.startsWith('+')) {
+      newValue = '+' + newValue;
+    }
+    
+    // Remove any leading '0' after '+'
+    newValue = newValue.replace(/\+0/g, '+');
+
+    // Set the cleaned value back to the input
+    target.value = newValue;
   
     // Find the selected country code
     const selectedCountry = this.countryCodes.find(

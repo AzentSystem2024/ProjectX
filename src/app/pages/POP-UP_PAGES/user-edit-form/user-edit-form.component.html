@@ -211,7 +211,7 @@
           <div class="form-column" style="flex: 1;">
             <label>Profile Image</label>
             <div id="drop-area" (dragenter)="preventDefaults($event)" (dragover)="preventDefaults($event)"
-                 (dragleave)="handleDragLeave($event)" (drop)="handleDrop($event)">
+                 (dragleave)="handleDragLeave($event)" (drop)="handleDrop($event)" [class.image-uploaded]="isImageUploaded">
               
               <!-- Conditionally show this section only if no images have been uploaded -->
               <span *ngIf="images.length === 0">Drag and drop an image file here or </span>
@@ -222,8 +222,9 @@
               
               <!-- Gallery to display uploaded images -->
               <div id="gallery">
-                <div class="image-container">
+                <div class="image-container" *ngIf="images.length > 0">
                   <img [src]="images"/>
+                  <span class="close-icon" (click)="removeImage()">&#x2715;</span> <!-- Close icon -->
                 </div>
               </div>
             </div>
@@ -256,6 +257,7 @@
           [selection]="{ mode: 'multiple' }" 
           height="300"
           keyExpr="ID"
+          noDataText=" "
           [(selectedRowKeys)]="selectedRows"
           (onSelectionChanged)="onSelectionChanged($event)"
         >

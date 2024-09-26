@@ -28,6 +28,7 @@ export class ChangePasswordComponent implements OnInit {
   oldPasswordError: string = ''; // Error message for old password validation
   dummyId:any;
   showConfirmPassword: boolean = false;
+  isPasswordVisible: boolean = false;
 
   constructor(private service: MasterReportService,private authService:AuthService,private route:Router) {
     this.UserID=sessionStorage.getItem('UserID');
@@ -41,6 +42,10 @@ export class ChangePasswordComponent implements OnInit {
   validatePasswordMatch = (): boolean => {
     return this.newPassword === this.confirmPassword;
   };
+
+  togglePasswordVisibility(): void {
+    this.isPasswordVisible = !this.isPasswordVisible; // Toggle the visibility
+}
 
   saveNewPassword(){
 

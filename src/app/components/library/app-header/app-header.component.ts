@@ -54,8 +54,14 @@ export class AppHeaderComponent implements OnInit {
       if (response.isOk && response.data) {
         this.user = response.data;
         this.user.name = this.authService.loginName; // Bind loginName
-        // this.user.avatarUrl=sessionStorage.getItem('UserPhoto');
-      }
+        // Get UserPhoto from sessionStorage
+        const storedUserPhoto = sessionStorage.getItem('UserPhoto');
+
+        // Set avatarUrl: use storedUserPhoto if available, otherwise default to the fallback image
+        this.user.avatarUrl = storedUserPhoto
+          ? storedUserPhoto
+          : 'https://js.devexpress.com/Demos/WidgetsGallery/JSDemos/images/employees/01.png';
+        }
     });
   }
   changePassword(){

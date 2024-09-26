@@ -1,6 +1,9 @@
 @use "../../../../variables.scss" as *;
 
 .login-form {
+  width:400px;
+  height:400px;
+  margin-top: 60px;
   ::ng-deep .form-text {
     color: var(--base-text-color-alpha);
   }

@@ -36,6 +36,7 @@ export class ResetPasswordFormComponent implements OnInit,OnDestroy {
   UserID:number = 0;
   securityPolicyData: any;
   confirmPasswordBorderColor: string = '1px solid #ddd'; // Default border color
+  isPasswordVisible: boolean = false; 
   constructor(private router:Router,private ngZone: NgZone,private cdr: ChangeDetectorRef,private userservice:MasterReportService){
 
   }
@@ -311,6 +312,10 @@ export class ResetPasswordFormComponent implements OnInit,OnDestroy {
   validatePasswordMatch = (): boolean => {
     return this.formData.newPassword === this.formData.confirmPassword;
   };
+
+  togglePasswordVisibility(): void {
+    this.isPasswordVisible = !this.isPasswordVisible; // Toggle the visibility
+}
 
   onPasswordKeyDown(event: any): void {
     const target = event.target as HTMLInputElement;

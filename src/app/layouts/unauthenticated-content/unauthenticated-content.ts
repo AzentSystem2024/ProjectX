@@ -32,7 +32,7 @@ export class UnauthenticatedContentComponent {
   get title() {
     const path = this.router.url.split('/').at(-1);
     switch (path) {
-      case 'login': return 'Sign In';
+      case 'login': return 'Project X';
       case 'create-account': return 'Sign Up';
       case 'change-password': return 'Change Password';
       default: return '';
