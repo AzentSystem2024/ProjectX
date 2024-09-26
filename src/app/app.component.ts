@@ -1,5 +1,6 @@
 import { Component, HostBinding, OnDestroy, } from '@angular/core';
 import { AppInfoService, AuthService, ScreenService, ThemeService } from './services';
+import { InactivityService } from './services/inactivity.service';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +15,8 @@ export class AppComponent implements OnDestroy {
   constructor(private authService: AuthService,
               private themeService: ThemeService,
               private screen: ScreenService,
-              public appInfo: AppInfoService) {
+              public appInfo: AppInfoService,
+              private inactivityService: InactivityService) {
     themeService.setAppTheme();
   }
 

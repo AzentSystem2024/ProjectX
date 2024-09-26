@@ -33,7 +33,7 @@ import { UserNewFormModule } from './pages/POP-UP_PAGES/user-new-form/user-new-f
 import { UserEditFormModule } from './pages/POP-UP_PAGES/user-edit-form/user-edit-form.component';
 import { ResetPasswordModule } from './pages/POP-UP_PAGES/reset-password/reset-password.component';
 import { ChangePasswordModule } from './pages/PROFILE PAGES/change-password/change-password.component';
-
+// import { SessionTimeoutDialogComponent } from './components/library/session-timeout-dialog/session-timeout-dialog.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -44,7 +44,7 @@ import { ChangePasswordModule } from './pages/PROFILE PAGES/change-password/chan
     RejectedClaimsComponent,
     BalanceAmountToBeReceivedComponent,
     ResubmissionSummaryComponent,
-
+    // SessionTimeoutDialogComponent
   ],
   imports: [
     TaskListModule,
