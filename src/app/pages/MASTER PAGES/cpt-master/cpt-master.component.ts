@@ -180,7 +180,8 @@ export class CPTMasterComponent implements OnInit {
 
   //========================Export data ==========================
   onExporting(event: any) {
-    this.service.exportDataGrid(event);
+    const fileName='CPT master'
+    this.service.exportDataGrid(event,fileName);
   }
 
   //=================== Page refreshing==========================

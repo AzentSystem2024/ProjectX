@@ -60,7 +60,8 @@ export class InsuranceClassificationComponent {
   }
   //========================Export data ==========================
   onExporting(event: any) {
-    this.service.exportDataGrid(event);
+    const fileName='Insurance-Classification'
+    this.service.exportDataGrid(event,fileName);
   }
   //====================Add data ================================
   onClickSaveNewInsuranceClassification = () => {

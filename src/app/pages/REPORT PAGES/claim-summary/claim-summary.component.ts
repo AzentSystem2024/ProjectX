@@ -513,8 +513,9 @@ export class ClaimSummaryComponent implements AfterViewInit {
     this.reportEngine.makeColumnVisible(this.dataGrid, columnName);
   };
   //================Exporting Function===================
-  onExporting(e: any) {
-    this.service.exportDataGrid(e);
+  onExporting(event: any) {
+    const fileName='Cliam-Summary'
+    this.service.exportDataGrid(event,fileName);
   }
   //==========show memorise save pop up==================
   show_Memorise_popup = () => {

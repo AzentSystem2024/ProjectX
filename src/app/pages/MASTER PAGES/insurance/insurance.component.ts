@@ -103,7 +103,8 @@ export class InsuranceComponent implements OnInit {
 
   //========================Export data ==========================
   onExporting(event: any) {
-    this.service.exportDataGrid(event);
+    const fileName='Insurance'
+    this.service.exportDataGrid(event,fileName);
   }
 
   //====================Row Data Deleting========================

@@ -35,7 +35,7 @@
     <dxo-scrolling mode="virtual"></dxo-scrolling>
     <dxo-sorting mode="multiple"></dxo-sorting>
     <dxo-header-filter [visible]="true"></dxo-header-filter>
-    <dxo-filter-row [visible]="true" style="height: 30px"></dxo-filter-row>
+    <dxo-filter-row [visible]="true"></dxo-filter-row>
     <!-- <dxo-column-chooser [enabled]="true" [height]="400"></dxo-column-chooser> -->
     <dxo-search-panel [visible]="true" placeholder="Search"></dxo-search-panel>
     <dxo-export
@@ -48,14 +48,22 @@
       <dxi-item location="before">
         <div class="grid-header">Denials</div>
       </dxi-item>
+      <dxi-item name="searchPanel" locateInMenu="auto"></dxi-item>
+      <dxi-item location="after" locateInMenu="auto">
+        <div class="separator"></div>
+      </dxi-item>
       <dxi-item location="after" locateInMenu="auto">
         <dx-button
-          text="Add Denials"
+          text=""
           icon="plus"
           type="default"
+          hint="Add new Data"
           stylingMode="contained"
           (onClick)="addDenial()"
         ></dx-button>
+      </dxi-item>
+      <dxi-item location="after" locateInMenu="auto">
+        <div class="separator"></div>
       </dxi-item>
       <dxi-item
         location="after"
@@ -65,6 +73,7 @@
         [options]="{
           text: 'Refresh',
           icon: 'refresh',
+          hint:'refresh',
           onClick: refresh,
           stylingMode: 'text'
         }"
@@ -73,11 +82,6 @@
         <div class="separator"></div>
       </dxi-item>
       <dxi-item name="exportButton"></dxi-item>
-      <dxi-item location="after" locateInMenu="auto">
-        <div class="separator"></div>
-      </dxi-item>
-      <!-- <dxi-item name="columnChooserButton" locateInMenu="auto"></dxi-item> -->
-      <dxi-item name="searchPanel" locateInMenu="auto"></dxi-item>
     </dxo-toolbar>
 
     <!-- <dxo-selection mode="multiple"></dxo-selection> -->

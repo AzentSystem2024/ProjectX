@@ -11,7 +11,6 @@
 }
 .FullBody {
   -ms-overflow-style: none; /* IE and Edge */
-  // scrollbar-width: none; /* Firefox */
 }
 /* Optional: Add this for smoother scrolling */
 .FullBody {
@@ -20,14 +19,13 @@
 .FullBody {
   margin: 10px;
   overflow-y: auto;
-  // padding-bottom: 130px;
   border-radius: 8px;
 }
 .titleBar {
   position: sticky;
   top: 0;
   z-index: 10;
-  margin: 10px;
+  margin: 10px 10px 0px 10px;
   width: auto;
   height: 50px;
   padding: 15px;
@@ -55,6 +53,7 @@
 }
 .datagridSection {
   padding: 10px;
+  padding-bottom: 55px;
   border-radius: 8px;
   background-color: var(--base-bg);
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1), -2px 2px 5px rgba(0, 0, 0, 0.1),
@@ -66,3 +65,4 @@
   font-size: larger;
   font-weight: bold;
 }
+

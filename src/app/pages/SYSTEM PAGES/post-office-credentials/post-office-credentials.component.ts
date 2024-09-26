@@ -141,7 +141,8 @@ export class PostOfficeCredentialsComponent implements OnInit {
 
   //========================Export data ==========================
   onExporting(event: any) {
-    this.service.exportDataGrid(event);
+    const fileName='Post-office-credentials'
+    this.service.exportDataGrid(event,fileName);
   }
 }
 @NgModule({

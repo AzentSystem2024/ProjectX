@@ -1,6 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, NgModule, OnInit, ViewChild } from '@angular/core';
-import { DxButtonModule, DxDataGridComponent, DxDataGridModule, DxDropDownButtonModule, DxLookupModule, DxSelectBoxModule, DxTextBoxModule } from 'devextreme-angular';
+import {
+  DxButtonModule,
+  DxDataGridComponent,
+  DxDataGridModule,
+  DxDropDownButtonModule,
+  DxLookupModule,
+  DxSelectBoxModule,
+  DxTextBoxModule,
+} from 'devextreme-angular';
 import { FormPopupModule } from 'src/app/components';
 import notify from 'devextreme/ui/notify';
 import { ReportService } from 'src/app/services/Report-data.service';
@@ -30,7 +38,7 @@ export class FacilityTypeComponent implements OnInit {
   showInfo = true;
   showNavButtons = true;
   facilityGroupDatasource: any;
-  isAddFormPopupOpened: boolean=false;
+  isAddFormPopupOpened: boolean = false;
 
   constructor(
     private service: ReportService,
@@ -40,15 +48,15 @@ export class FacilityTypeComponent implements OnInit {
   ngOnInit(): void {
     this.get_FacilityType_Data_List();
   }
-//=========================show new popup=========================
-  show_new_Form(){
+  //=========================show new popup=========================
+  show_new_Form() {
     this.isAddFormPopupOpened = true;
   }
 
   //========================Get Datasource =======================
   get_FacilityType_Data_List() {
     this.masterService.Get_Facility_Type_Data().subscribe((response: any) => {
-      this.dataSource = response.data
+      this.dataSource = response.data;
     });
   }
 
@@ -83,7 +91,8 @@ export class FacilityTypeComponent implements OnInit {
 
   //========================Export data ==========================
   onExporting(event: any) {
-    this.service.exportDataGrid(event);
+    const fileName = 'Facility type';
+    this.service.exportDataGrid(event, fileName);
   }
 
   //====================Row Data Deleting========================

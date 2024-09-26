@@ -81,7 +81,8 @@ export class DenialTypeComponent implements OnInit{
 
   //========================Export data ==========================
   onExporting(event: any) {
-    this.service.exportDataGrid(event);
+    const fileName='Denial Type'
+    this.service.exportDataGrid(event,fileName);
   }
 
   //====================Row Data Deleting========================

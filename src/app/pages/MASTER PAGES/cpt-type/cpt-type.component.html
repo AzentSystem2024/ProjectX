@@ -51,14 +51,23 @@
       <dxi-item location="before">
         <div class="grid-header">CPT Type</div>
       </dxi-item>
+      <dxi-item name="searchPanel" locateInMenu="auto"></dxi-item>
+      <dxi-item location="after" locateInMenu="auto">
+        <div class="separator"></div>
+      </dxi-item>
+
       <dxi-item location="after" locateInMenu="auto">
         <dx-button
-          text="Add "
+          text=""
           icon="plus"
           type="default"
+          hint="Add New Data"
           stylingMode="contained"
           (onClick)="show_new_Form()"
         ></dx-button>
+      </dxi-item>
+      <dxi-item location="after" locateInMenu="auto">
+        <div class="separator"></div>
       </dxi-item>
       <dxi-item
         location="after"
@@ -68,6 +77,7 @@
         [options]="{
           text: 'Refresh',
           icon: 'refresh',
+          hint: 'Refresh',
           onClick: refresh,
           stylingMode: 'text'
         }"
@@ -76,11 +86,6 @@
         <div class="separator"></div>
       </dxi-item>
       <dxi-item name="exportButton"></dxi-item>
-      <dxi-item location="after" locateInMenu="auto">
-        <div class="separator"></div>
-      </dxi-item>
-      <!-- <dxi-item name="columnChooserButton" locateInMenu="auto"></dxi-item> -->
-      <dxi-item name="searchPanel" locateInMenu="auto"></dxi-item>
     </dxo-toolbar>
 
     <!-- <dxo-selection mode="multiple"></dxo-selection> -->

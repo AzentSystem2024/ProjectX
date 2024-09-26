@@ -44,7 +44,6 @@ import { ClinicianProfessionComponent } from './pages/MASTER PAGES/clinician-pro
 import { ClinicianCategoryComponent } from './pages/MASTER PAGES/clinician-category/clinician-category.component';
 import { SecurityPolicyComponent } from './pages/SYSTEM PAGES/security-policy/security-policy.component';
 import { UserLevelMasterComponent } from './pages/MASTER PAGES/user-role-master/user-role-master.component';
-import { ConfigurationComponent } from './pages/SYSTEM PAGES/configuration/configuration.component';
 import { UserComponent } from './pages/MASTER PAGES/user/user.component';
 import { ChangePasswordComponent } from './pages/PROFILE PAGES/change-password/change-password.component';
 import { LicenseInfoComponent } from './pages/SYSTEM PAGES/license-info/license-info.component';
@@ -149,11 +148,6 @@ const routes: Routes = [
       {
         path: 'change-password',
         component: ChangePasswordComponent,
-        canActivate: [AuthGuardService],
-      },
-      {
-        path: 'configuration-page',
-        component: ConfigurationComponent,
         canActivate: [AuthGuardService],
       },
       {

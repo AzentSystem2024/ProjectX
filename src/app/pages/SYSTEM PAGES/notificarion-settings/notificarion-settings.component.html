@@ -301,35 +301,52 @@
         [paging]="{ pageSize: 10 }"
         [allowColumnReordering]="true"
         [allowColumnResizing]="true"
+
+        (onRowUpdating)="onRowUpdating($event)"
         (onEditingStart)="onEditingStart($event)"
       >
         <dxo-paging [pageSize]="10"></dxo-paging>
+
+        <!-- Change editing mode to 'row' -->
         <dxo-editing
-          mode="popup"
+          mode="row"
           [allowUpdating]="true"
           [allowAdding]="false"
           [allowDeleting]="false"
-        >
-        </dxo-editing>
+        ></dxo-editing>
 
         <dxi-column
           dataField="serialNumber"
           caption="SL No"
           width="auto"
         ></dxi-column>
+
         <dxi-column dataField="Notification" caption="Action"></dxi-column>
-        <dxi-column dataField="SendEmail" caption="Email"> </dxi-column>
+
+        <dxi-column
+          dataField="SendEmail"
+          caption="Email"
+          dataType="boolean"
+          [showEditorAlways]="true"
+          [allowEditing]="true"
+        ></dxi-column>
+
+        <!-- Make checkboxes editable -->
         <dxi-column
           dataField="SendSMS"
           caption="SMS"
           dataType="boolean"
           [showEditorAlways]="true"
+          [allowEditing]="true"
         ></dxi-column>
+
         <dxi-column
           dataField="SendWhatsapp"
           caption="WhatsApp"
           dataType="boolean"
           [showEditorAlways]="true"
+          [allowEditing]="true"
+          readOnly="false"
         ></dxi-column>
       </dx-data-grid>
     </div>
@@ -434,9 +451,11 @@
     [showTitle]="true"
     [title]="editpopupHeading"
     [dragEnabled]="true"
-    [hideOnOutsideClick]="false"
+    [hideOnOutsideClick]="true"
     [showCloseButton]="true"
     [(visible)]="isRowDataEditing"
+    (onHiding)="clearFormData()"
+
   >
     <div class="d-flex align-items-center">
       <!-- <div class="flex-grow-1 text-center">

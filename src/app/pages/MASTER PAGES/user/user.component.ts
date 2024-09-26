@@ -35,7 +35,7 @@ export class UserComponent implements OnInit {
   isEditPopupOpened:boolean=false;
   selectedRowData:any;
 
-  constructor(private service:MasterReportService,private cdr: ChangeDetectorRef){}
+  constructor(private service:MasterReportService,private reportService:ReportService,private cdr: ChangeDetectorRef){}
 
   onEditingRow(event): void {
     console.log(event,"event")
@@ -121,6 +121,13 @@ export class UserComponent implements OnInit {
         this.dataGrid.instance.refresh();
         this.getUSerData();
       });
+  }
+
+
+  //========================Export data ==========================
+  onExporting(event: any) {
+    const fileName='Speciality'
+    this.reportService.exportDataGrid(event,fileName);
   }
 
   CloseEditForm(){

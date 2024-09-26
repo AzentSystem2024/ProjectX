@@ -113,18 +113,18 @@ export class ReportService {
   }
 
   //==============Export function==================
-  exportDataGrid(e: any) {
+  exportDataGrid(e: any,fileName:any) {
     if (e.format === 'pdf') {
       const doc = new jsPDF();
       exportDataGridToPdf({
         jsPDFDocument: doc,
         component: e.component,
       }).then(() => {
-        doc.save('Denials.pdf');
+        doc.save(`${fileName}.pdf`);
       });
     } else {
       const workbook = new Workbook();
-      const worksheet = workbook.addWorksheet('Denials');
+      const worksheet = workbook.addWorksheet(`${fileName}`);
       exportDataGridToXLSX({
         component: e.component,
         worksheet,
@@ -133,7 +133,7 @@ export class ReportService {
         workbook.xlsx.writeBuffer().then((buffer) => {
           saveAs(
             new Blob([buffer], { type: 'application/octet-stream' }),
-            'Denials.xlsx'
+            `${fileName}.xlsx`
           );
         });
       });

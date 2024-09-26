@@ -94,6 +94,17 @@ export class NotificationSettingsComponent implements OnInit {
     WhatsappNumber: '',
   };
 
+  defaultRowData: any = {
+    NotificationType: '',
+    SendEmail: false,
+    EmailSubject: '',
+    EmailMessage: '',
+    SendSMS: false,
+    SMSTemplate: '',
+    SendWhatsapp: false,
+    WhatsappTemplate: '',
+    Notification: '',
+  };
   //========Variables for Pagination ====================
   readonly allowedPageSizes: any = [5, 10, 'all'];
   displayMode: any = 'full';
@@ -141,18 +152,14 @@ export class NotificationSettingsComponent implements OnInit {
     this.getNotificationSettingsTemplateList();
     this.updateVisibility(); // Set visibility when component is loaded
   }
-  //================Only Allow numbers Input ==================
-  onInputNumber(event: any): void {
-    const input = event.event.target.value;
-    event.component.option('value', input.replace(/\D/g, ''));
-  }
+
   //=================Notification Settings Data===============
   getNotificationSettingsData() {
     this.service.getSecurityNotificationDdata().subscribe((response: any) => {
       this.formData = response.data[0];
     });
   }
-  //=============Notification Settings Template Data==========
+  //=========Notification Settings Template Data======
   getNotificationSettingsTemplateList() {
     this.service.getNotificationTemplateList().subscribe((response: any) => {
       response.data.forEach((item: any, index: number) => {
@@ -171,11 +178,12 @@ export class NotificationSettingsComponent implements OnInit {
     this.isSMSVisible = this.clickedTabName === 'SMS';
     this.iswhatsAppVisible = this.clickedTabName === 'WhatsApp';
   }
+
+  //===========================================Test mail starting===============================
   //===============Test Mail Button Click==========
   onClickTestMail() {
     this.testMailpopupVisible = true;
   }
-
   //==============test mail sending===============
   onTestMailSending() {
     const userID: any = JSON.parse(localStorage.getItem('logData')).UserID;
@@ -203,15 +211,61 @@ export class NotificationSettingsComponent implements OnInit {
     this.TestMailSubject = '';
     this.TestMailMessageBody = '';
   }
-  //=============onClick notification editing==========azs
+
+  //===========================================Test mail ending===============================
+
+  //==============================================================================
+  //=============onClick notification editing==========
   onEditingStart(event: any) {
+    this.clickedEditRowData = { ...this.defaultRowData };
     this.clickedEditRowData = event.data;
-    this.editpopupHeading = this.clickedEditRowData.Notification;
+    this.editpopupHeading = `${this.clickedEditRowData.Notification} event`;
     event.cancel = true;
     this.isRowDataEditing = true;
-    console.log('clicked row data ', this.clickedEditRowData);
   }
-  //================On Click Save Button============
+
+  //============update Notification template ============
+  onClickSaveNotificationTemplate() {
+    this.service
+      .updateNotificationSettingTemplate(this.clickedEditRowData)
+      .subscribe((response: any) => {
+        if (response.flag == 1) {
+          this.isRowDataEditing = false;
+          notify(
+            {
+              message: `Your notification template updated successfully`,
+              position: { at: 'top right', my: 'top right' },
+            },
+            'success'
+          );
+          this.getNotificationSettingsTemplateList();
+        } else {
+          this.isRowDataEditing = false;
+          notify(
+            {
+              message: `Sorry..! Your notification template update failed`,
+              position: { at: 'top right', my: 'top right' },
+            },
+            'error'
+          );
+        }
+      });
+  }
+
+  clearFormData() {
+    this.clickedEditRowData = { ...this.defaultRowData };
+    this.isRowDataEditing = false;
+    // this.clickedEditRowData.EmailMessage = '';
+    // this.clickedEditRowData.SendEmail = false;
+    // this.clickedEditRowData.EmailSubject = '';
+    // this.clickedEditRowData.SendSMS = false;
+    // this.clickedEditRowData.SMSTemplate = '';
+    // this.clickedEditRowData.SendWhatsapp = false;
+    // this.clickedEditRowData.WhatsappTemplate = '';
+  }
+
+  onRowUpdating(event: any) {}
+  //================On Click Save Notification Settings============
   onClickSave() {
     const validationResult = this.validator.instance.validate();
     if (validationResult.isValid) {
@@ -234,11 +288,6 @@ export class NotificationSettingsComponent implements OnInit {
     }
   }
 
-  onClickSaveNotificationTemplate() {
-    console.log('html editor testing data :', this.clickedEditRowData);
-  }
-
-  onRowUpdating(event: any) {}
   //============== Page refreshing==================
   refresh = () => {
     this.dataGrid.instance.refresh();

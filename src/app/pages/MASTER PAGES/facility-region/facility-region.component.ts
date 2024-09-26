@@ -89,7 +89,8 @@ export class FacilityRegionComponent implements OnInit {
 
   //========================Export data ==========================
   onExporting(event: any) {
-    this.service.exportDataGrid(event);
+    const fileName='Facility Region'
+    this.service.exportDataGrid(event,fileName);
   }
 
   //====================Row Data Deleting========================
