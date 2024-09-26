@@ -37,6 +37,8 @@ export class ResetPasswordFormComponent implements OnInit,OnDestroy {
   securityPolicyData: any;
   confirmPasswordBorderColor: string = '1px solid #ddd'; // Default border color
   isPasswordVisible: boolean = false; 
+  isConfirmPasswordVisible: boolean =false;
+  loading: boolean = false; // Add a loading flag
   constructor(private router:Router,private ngZone: NgZone,private cdr: ChangeDetectorRef,private userservice:MasterReportService){
 
   }
@@ -81,7 +83,7 @@ export class ResetPasswordFormComponent implements OnInit,OnDestroy {
 
   // Function to start the timer
   startTimer() {
-    this.timer = 30; 
+    this.timer = 60; 
     this.isGetOtpButtonDisabled = true;
   
     // Clear any existing interval to avoid multiple intervals running
@@ -154,6 +156,7 @@ export class ResetPasswordFormComponent implements OnInit,OnDestroy {
     }
 
     this.isGetOtpButtonDisabled=true;
+    this.loading = true; // Start the loading indicator
 
     
     this.formData.email = ''; // Clear the email/phone field
@@ -178,6 +181,7 @@ export class ResetPasswordFormComponent implements OnInit,OnDestroy {
         this.generatedOtp=res.EmailOTP;
         console.log(this.generatedOtp,"generated otp")
         // // Hide email/phone input and show OTP input
+        this.loading = false;
         this.otpSent = true;
         // this.headerTitle = 'Verify OTP'; // Change header after sending OTP
         this.formHeight = 500;
@@ -185,6 +189,7 @@ export class ResetPasswordFormComponent implements OnInit,OnDestroy {
         this.startTimer();
       }
       else if(res.Flag===0){
+        this.loading = false;
         notify({ message: `${res.Message}`, position: { at: 'top center', my: 'top center' }, delay: 4000 }, 'error');
       }
     })
@@ -316,6 +321,9 @@ export class ResetPasswordFormComponent implements OnInit,OnDestroy {
   togglePasswordVisibility(): void {
     this.isPasswordVisible = !this.isPasswordVisible; // Toggle the visibility
 }
+toggleConfirmPasswordVisibility() : void {
+  this.isConfirmPasswordVisible = !this.isConfirmPasswordVisible; // Toggle the visibility
+}
 
   onPasswordKeyDown(event: any): void {
     const target = event.target as HTMLInputElement;
@@ -377,6 +385,7 @@ export class ResetPasswordFormComponent implements OnInit,OnDestroy {
     DxTextBoxModule,
     DxValidatorModule,
     DxValidationGroupModule,
+   
   ],
   declarations: [ResetPasswordFormComponent],
   exports: [ResetPasswordFormComponent],

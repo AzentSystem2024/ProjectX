@@ -30,6 +30,8 @@ export class LoginFormComponent implements OnInit {
 
   formData: any = {};
 
+  isPasswordVisible:boolean=false;
+
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -40,6 +42,10 @@ export class LoginFormComponent implements OnInit {
     this.themeService.isDark.subscribe((value: boolean) => {
       this.btnStylingMode = value ? 'outlined' : 'contained';
     });
+  }
+
+  togglePasswordVisibility=() => {
+    this.isPasswordVisible = !this.isPasswordVisible;
   }
 
   changePasswordMode() {
@@ -77,7 +83,6 @@ export class LoginFormComponent implements OnInit {
                 'sidemenuItems',
                 JSON.stringify(response.menus)
               );
-              this.inactive.setUserlogginValue();
               this.router.navigateByUrl('/analytics-dashboard');
             } else if (response.flag == 2) {
               const result = confirm(
@@ -113,7 +118,6 @@ export class LoginFormComponent implements OnInit {
                           'sidemenuItems',
                           JSON.stringify(response.menus)
                         );
-                        this.inactive.setUserlogginValue();
                         this.router.navigateByUrl('/analytics-dashboard');
                       }
                     });

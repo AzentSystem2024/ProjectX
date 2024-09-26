@@ -29,6 +29,7 @@ export class ChangePasswordComponent implements OnInit {
   dummyId:any;
   showConfirmPassword: boolean = false;
   isPasswordVisible: boolean = false;
+  isOldPasswordVisible: boolean = false;
 
   constructor(private service: MasterReportService,private authService:AuthService,private route:Router) {
     this.UserID=sessionStorage.getItem('UserID');
@@ -46,6 +47,9 @@ export class ChangePasswordComponent implements OnInit {
   togglePasswordVisibility(): void {
     this.isPasswordVisible = !this.isPasswordVisible; // Toggle the visibility
 }
+  toggleOldPasswordVisibility(): void {
+    this.isOldPasswordVisible = !this.isOldPasswordVisible; // Toggle the visibility
+  }
 
   saveNewPassword(){
 

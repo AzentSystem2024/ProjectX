@@ -30,8 +30,16 @@
       [editorOptions]="{
         placeholder: 'password',
         stylingMode: 'filled',
-        mode: 'password',
-
+        mode: isPasswordVisible ? 'text' : 'password', 
+        buttons: [{
+          name: 'passwordToggle',
+          location: 'after',
+          options: {
+            icon: isPasswordVisible ? 'fas fa-eye-slash' : 'fas fa-eye', 
+            onClick: togglePasswordVisibility,
+            stylingMode: 'text',
+          }
+        }]
       }"
     >
       <dxi-validation-rule
