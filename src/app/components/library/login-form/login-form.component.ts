@@ -30,7 +30,7 @@ export class LoginFormComponent implements OnInit {
 
   formData: any = {};
 
-  isPasswordVisible:boolean=false;
+  isPasswordVisible: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -44,9 +44,9 @@ export class LoginFormComponent implements OnInit {
     });
   }
 
-  togglePasswordVisibility=() => {
+  togglePasswordVisibility = () => {
     this.isPasswordVisible = !this.isPasswordVisible;
-  }
+  };
 
   changePasswordMode() {
     debugger;
@@ -83,6 +83,7 @@ export class LoginFormComponent implements OnInit {
                 'sidemenuItems',
                 JSON.stringify(response.menus)
               );
+              this.inactive.setUserlogginValue();
               this.router.navigateByUrl('/analytics-dashboard');
             } else if (response.flag == 2) {
               const result = confirm(
@@ -118,6 +119,7 @@ export class LoginFormComponent implements OnInit {
                           'sidemenuItems',
                           JSON.stringify(response.menus)
                         );
+                        this.inactive.setUserlogginValue();
                         this.router.navigateByUrl('/analytics-dashboard');
                       }
                     });

@@ -10,7 +10,8 @@ import { confirm } from 'devextreme/ui/dialog';
 export class InactivityService {
   isUserLoggedIn: boolean = false;
   private timeoutId: any;
-  private readonly inactivityTimeout = 120000;
+  private readonly inactivityTimeout = 60000;
+
   constructor(
     private authservice: AuthService,
     private ngZone: NgZone,
@@ -18,12 +19,13 @@ export class InactivityService {
   ) {
     this.startWatching();
     this.setupEvents();
-    console.log('testing of trigger the page');
+    // console.log('testing of trigger the page',this.isUserLoggedIn);
   }
+
 
   setUserlogginValue() {
     this.isUserLoggedIn = !this.isUserLoggedIn;
-    console.log('user log in :', this.isUserLoggedIn);
+    // console.log('user log in :', this.isUserLoggedIn);
   }
   // Start watching for inactivity
   startWatching() {
