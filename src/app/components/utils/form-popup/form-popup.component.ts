@@ -13,6 +13,7 @@ import {
   DxPopupModule,
   DxValidationGroupModule,
   DxValidationGroupComponent,
+  DxFormComponent,
 } from 'devextreme-angular';
 import { ScreenService } from 'src/app/services';
 import { ApplyPipeModule } from 'src/app/pipes/apply.pipe';
@@ -25,6 +26,7 @@ import { ApplyPipeModule } from 'src/app/pipes/apply.pipe';
 export class FormPopupComponent {
   @ViewChild('validationGroup', { static: true })
   validationGroup: DxValidationGroupComponent;
+  @ViewChild(DxFormComponent) myForm!: DxFormComponent;
 
   @Input() titleText = '';
 

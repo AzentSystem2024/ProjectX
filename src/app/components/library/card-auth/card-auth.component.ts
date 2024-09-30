@@ -1,5 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, NgModule, Input } from '@angular/core';
+import { Router } from '@angular/router';
+import { DxButtonModule } from 'devextreme-angular';
 import { DxLoadIndicatorModule } from 'devextreme-angular/ui/load-indicator';
 
 @Component({
@@ -13,12 +15,22 @@ export class CardAuthComponent {
 
   @Input()
   description!: string;
+
+  constructor(private router: Router) {}
+
+  get isResetPasswordPage(): boolean {
+    return this.router.url.includes('reset-password');
+  }
+  redirectToLogin(){
+    this.router.navigateByUrl('auth/login')
+  }
 }
 
 @NgModule({
   imports: [
     CommonModule,
     DxLoadIndicatorModule,
+    DxButtonModule
   ],
   declarations: [CardAuthComponent],
   exports: [CardAuthComponent],

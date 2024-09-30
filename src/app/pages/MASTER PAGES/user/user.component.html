@@ -16,7 +16,14 @@
     <dxo-paging [pageSize]="10"></dxo-paging>
     <dxo-editing mode="popup" [allowUpdating]="true" [allowDeleting]="true">
     </dxo-editing>
-    <dxo-pager [visible]="true"> </dxo-pager>
+    <dxo-pager
+    [visible]="true"
+    [allowedPageSizes]="allowedPageSizes"
+    [displayMode]="displayMode"
+    [showPageSizeSelector]="showPageSizeSelector"
+    [showInfo]="showInfo"
+    [showNavigationButtons]="showNavButtons"
+  ></dxo-pager>
     <dxo-load-panel [showPane]="false"></dxo-load-panel>
     <dxo-scrolling mode="virtual"></dxo-scrolling>
     <dxo-sorting mode="multiple"></dxo-sorting>
@@ -91,6 +98,7 @@
     [height]="'100vh'"
     [width]="popupwidth"
     (save)="onClickSaveNewData()"
+    (onClose)="closeNewForm()"
   >
     <app-user-new-form></app-user-new-form>
   </form-popup>

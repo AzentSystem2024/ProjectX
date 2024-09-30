@@ -75,5 +75,13 @@
         text-align: center;
       }
     }
+      // Add these styles to position the close icon
+      .close-icon {
+        position: absolute;
+        right: 1px;
+        font-size: 20px;
+        z-index: 1;
+      }
   }
+  
 }
