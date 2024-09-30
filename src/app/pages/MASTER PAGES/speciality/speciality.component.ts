@@ -16,19 +16,19 @@ import { ReportService } from 'src/app/services/Report-data.service';
 import { MasterReportService } from '../master-report.service';
 import { SpecialityNewFormComponent } from '../../POP-UP_PAGES/speciality-new-form/speciality-new-form.component';
 import { SpecialityNewFormModule } from '../../POP-UP_PAGES/speciality-new-form/speciality-new-form.component';
+import DataSource from 'devextreme/data/data_source';
 @Component({
   selector: 'app-speciality',
   templateUrl: './speciality.component.html',
   styleUrls: ['./speciality.component.scss'],
-  providers:[ReportService]
+  providers: [ReportService],
 })
-export class SpecialityComponent implements OnInit {
+export class SpecialityComponent {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
   @ViewChild(SpecialityNewFormComponent, { static: false })
   SpecialityNewForm: SpecialityNewFormComponent;
 
-  dataSource: any;
   //========Variables for Pagination ====================
   readonly allowedPageSizes: any = [5, 10, 'all'];
   displayMode: any = 'full';
@@ -38,25 +38,27 @@ export class SpecialityComponent implements OnInit {
   facilityGroupDatasource: any;
   isAddFormPopupOpened: boolean = false;
 
+  dataSource = new DataSource<any>({
+    load: () =>
+      new Promise((resolve, reject) => {
+        this.masterService.get_Speciality_List().subscribe({
+          next: (response: any) => resolve(response.data),
+          error: (error) => reject(error.message), 
+        });
+      }),
+  });
+
   constructor(
     private service: ReportService,
     private masterService: MasterReportService
   ) {}
 
-  ngOnInit(): void {
-    this.get_Speciality_Data_List();
-  }
-  //=========================show new popup=========================
+  //========================show new popup=========================
   show_new_Form() {
     this.isAddFormPopupOpened = true;
   }
 
   //========================Get Datasource =======================
-  get_Speciality_Data_List() {
-    this.masterService.get_Speciality_List().subscribe((response: any) => {
-      this.dataSource = response.data;
-    });
-  }
 
   //====================Add data ================================
   onClickSaveNewData = () => {
@@ -72,7 +74,7 @@ export class SpecialityComponent implements OnInit {
       .subscribe((response: any) => {
         if (response) {
           this.dataGrid.instance.refresh();
-          this.get_Speciality_Data_List();
+
           notify(
             {
               message: `New speciality  saved Successfully`,
@@ -94,8 +96,8 @@ export class SpecialityComponent implements OnInit {
 
   //========================Export data ==========================
   onExporting(event: any) {
-    const fileName='Speciality'
-    this.service.exportDataGrid(event,fileName);
+    const fileName = 'Speciality';
+    this.service.exportDataGrid(event, fileName);
   }
 
   //====================Row Data Deleting========================
@@ -127,7 +129,6 @@ export class SpecialityComponent implements OnInit {
         }
         event.component.refresh();
         this.dataGrid.instance.refresh();
-        this.get_Speciality_Data_List();
       });
   }
 
@@ -154,7 +155,7 @@ export class SpecialityComponent implements OnInit {
       .subscribe((data: any) => {
         if (data) {
           this.dataGrid.instance.refresh();
-          this.get_Speciality_Data_List();
+
           notify(
             {
               message: `New speciality updated Successfully`,
@@ -196,7 +197,7 @@ export class SpecialityComponent implements OnInit {
     DxTextBoxModule,
     DxLookupModule,
     FormPopupModule,
-    SpecialityNewFormModule
+    SpecialityNewFormModule,
   ],
   providers: [],
   exports: [],

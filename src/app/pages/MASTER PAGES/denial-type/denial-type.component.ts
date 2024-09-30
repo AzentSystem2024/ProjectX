@@ -1,25 +1,33 @@
 import { CommonModule } from '@angular/common';
 import { Component, NgModule, OnInit, ViewChild } from '@angular/core';
-import { DxDataGridModule, DxButtonModule, DxDropDownButtonModule, DxSelectBoxModule, DxTextBoxModule, DxLookupModule, DxDataGridComponent } from 'devextreme-angular';
+import {
+  DxDataGridModule,
+  DxButtonModule,
+  DxDropDownButtonModule,
+  DxSelectBoxModule,
+  DxTextBoxModule,
+  DxLookupModule,
+  DxDataGridComponent,
+} from 'devextreme-angular';
 import { FormPopupModule } from 'src/app/components';
 import { DinialTypeNewFormComponent } from '../../POP-UP_PAGES/dinial-type-new-form/dinial-type-new-form.component';
 import { DenialTypeNewFormModule } from '../../POP-UP_PAGES/dinial-type-new-form/dinial-type-new-form.component';
 import { ReportService } from 'src/app/services/Report-data.service';
 import notify from 'devextreme/ui/notify';
 import { MasterReportService } from '../master-report.service';
+import DataSource from 'devextreme/data/data_source';
 @Component({
   selector: 'app-denial-type',
   templateUrl: './denial-type.component.html',
   styleUrls: ['./denial-type.component.scss'],
-  providers:[ReportService]
+  providers: [ReportService],
 })
-export class DenialTypeComponent implements OnInit{
+export class DenialTypeComponent {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
   @ViewChild(DinialTypeNewFormComponent, { static: false })
   DenialTypeNewForm: DinialTypeNewFormComponent;
 
-  dataSource: any;
   //========Variables for Pagination ====================
   readonly allowedPageSizes: any = [5, 10, 'all'];
   displayMode: any = 'full';
@@ -27,26 +35,26 @@ export class DenialTypeComponent implements OnInit{
   showInfo = true;
   showNavButtons = true;
   facilityGroupDatasource: any;
-  isAddFormPopupOpened: boolean=false;
+  isAddFormPopupOpened: boolean = false;
 
+  //========================Get Datasource =======================
+  dataSource = new DataSource<any>({
+    load: () =>
+      new Promise((resolve, reject) => {
+        this.masterService.get_DenialType_List().subscribe({
+          next: (response: any) => resolve(response.data), // Resolve with the data
+          error: (error) => reject(error.message), // Reject with the error message
+        });
+      }),
+  });
   constructor(
     private service: ReportService,
     private masterService: MasterReportService
   ) {}
 
-  ngOnInit(): void {
-    this.get_DenialType_Data_List();
-  }
-//=========================show new popup=========================
-  show_new_Form(){
+  //=========================show new popup=========================
+  show_new_Form() {
     this.isAddFormPopupOpened = true;
-  }
-
-  //========================Get Datasource =======================
-  get_DenialType_Data_List() {
-    this.masterService.get_DenialType_List().subscribe((response: any) => {
-      this.dataSource = response.data
-    });
   }
 
   //====================Add data ================================
@@ -58,8 +66,8 @@ export class DenialTypeComponent implements OnInit{
       .subscribe((response: any) => {
         if (response) {
           this.dataGrid.instance.refresh();
-          this.DenialTypeNewForm.resetDenialTypeData()
-          this.get_DenialType_Data_List();
+          this.DenialTypeNewForm.resetDenialTypeData();
+
           notify(
             {
               message: `New Denial Type "${DenialTypeValue} ${DescriptionValue}" saved Successfully`,
@@ -81,8 +89,8 @@ export class DenialTypeComponent implements OnInit{
 
   //========================Export data ==========================
   onExporting(event: any) {
-    const fileName='Denial Type'
-    this.service.exportDataGrid(event,fileName);
+    const fileName = 'Denial Type';
+    this.service.exportDataGrid(event, fileName);
   }
 
   //====================Row Data Deleting========================
@@ -113,7 +121,6 @@ export class DenialTypeComponent implements OnInit{
         }
         event.component.refresh();
         this.dataGrid.instance.refresh();
-        this.get_DenialType_Data_List();
       });
   }
   //===================RTow Data Update==========================
@@ -131,7 +138,7 @@ export class DenialTypeComponent implements OnInit{
       .subscribe((data: any) => {
         if (data) {
           this.dataGrid.instance.refresh();
-          this.get_DenialType_Data_List();
+
           notify(
             {
               message: `New Denial Type updated Successfully`,
@@ -161,8 +168,6 @@ export class DenialTypeComponent implements OnInit{
   refresh = () => {
     this.dataGrid.instance.refresh();
   };
-
-
 }
 @NgModule({
   imports: [
@@ -175,7 +180,7 @@ export class DenialTypeComponent implements OnInit{
     DxTextBoxModule,
     DxLookupModule,
     FormPopupModule,
-    DenialTypeNewFormModule
+    DenialTypeNewFormModule,
   ],
   providers: [],
   exports: [],

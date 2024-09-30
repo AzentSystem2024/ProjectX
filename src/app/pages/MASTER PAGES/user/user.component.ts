@@ -28,6 +28,7 @@ import {
   UserEditFormComponent,
   UserEditFormModule,
 } from '../../POP-UP_PAGES/user-edit-form/user-edit-form.component';
+import DataSource from 'devextreme/data/data_source';
 
 @Component({
   selector: 'app-user',
@@ -35,13 +36,12 @@ import {
   styleUrls: ['./user.component.scss'],
   providers: [MasterReportService, ReportService],
 })
-export class UserComponent implements OnInit {
+export class UserComponent {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
   @ViewChild(UserNewFormComponent, { static: false })
   userNewForm: UserNewFormComponent;
   popupwidth: any = '65%';
-  datasource: any;
 
   isAddFormPopupOpened: boolean = false;
   isEditPopupOpened: boolean = false;
@@ -51,6 +51,18 @@ export class UserComponent implements OnInit {
   showPageSizeSelector = true;
   showInfo = true;
   showNavButtons = true;
+
+  datasource = new DataSource<any>({
+    load: () =>
+      new Promise((resolve, reject) => {
+        this.service.get_User_data().subscribe({
+          next: (data: any) => {
+            resolve(data);
+          },
+          error: (error) => reject(error.message),
+        });
+      }),
+  });
 
   constructor(
     private service: MasterReportService,
@@ -67,19 +79,13 @@ export class UserComponent implements OnInit {
     this.service.get_User_Data_By_Id(Id).subscribe((res) => {
       this.selectedRowData = res;
       this.cdr.detectChanges(); // Ensure Angular picks up the change
-      console.log(this.selectedRowData);
     });
   }
 
   show_new_Form() {
     this.isAddFormPopupOpened = true;
   }
-  getUSerData() {
-    this.service.get_User_data().subscribe((data) => {
-      this.datasource = data;
-      console.log('datasource', this.datasource);
-    });
-  }
+
   onClickSaveNewData() {
     const data = this.userNewForm.getNewUserData();
     console.log('inserted data', data);
@@ -94,7 +100,8 @@ export class UserComponent implements OnInit {
             },
             'success'
           );
-          this.getUSerData();
+          // this.getUSerData();
+          this.dataGrid.instance.refresh();
         }
       } catch (error) {
         notify(
@@ -110,8 +117,8 @@ export class UserComponent implements OnInit {
   }
 
   closeNewForm() {
-    this.userNewForm.newUserData={};
-    console.log("hai...");
+    this.userNewForm.newUserData = {};
+    console.log('hai...');
   }
 
   onRowRemoving(event: any) {
@@ -142,7 +149,6 @@ export class UserComponent implements OnInit {
       }
       event.component.refresh();
       this.dataGrid.instance.refresh();
-      this.getUSerData();
     });
   }
 
@@ -154,13 +160,13 @@ export class UserComponent implements OnInit {
 
   CloseEditForm() {
     this.isEditPopupOpened = false;
-    this.getUSerData();
-    
+    // this.getUSerData();
+    this.dataGrid.instance.refresh();
   }
 
-  ngOnInit(): void {
-    this.getUSerData();
-  }
+  // ngOnInit(): void {
+  //   this.getUSerData();
+  // }
 }
 @NgModule({
   imports: [

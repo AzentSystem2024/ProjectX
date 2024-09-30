@@ -13,6 +13,7 @@ import { DataService } from 'src/app/services';
 import { ReportService } from 'src/app/services/Report-data.service';
 import { MasterReportService } from '../master-report.service';
 import notify from 'devextreme/ui/notify';
+import DataSource from 'devextreme/data/data_source';
 
 @Component({
   selector: 'app-facility-list',
@@ -23,7 +24,7 @@ import notify from 'devextreme/ui/notify';
 export class FacilityListComponent implements OnInit {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
-  dataSource: any;
+
   FacilityType_DataSource: any;
   Facilitygroup_DataSource: any;
   postOffice_DataSource: any;
@@ -33,13 +34,29 @@ export class FacilityListComponent implements OnInit {
   showPageSizeSelector = true;
   showInfo = true;
   showNavButtons = true;
+
+  dataSource = new DataSource<any>({
+    load: () =>
+      new Promise((resolve, reject) => {
+        this.masterService.Get_Facility_List_Data().subscribe({
+          next: (response: any) => {
+            if (response) {
+              resolve(response.data); // Resolve with the data if response exists
+            } else {
+              reject('No data received'); // Handle case when no response is returned
+            }
+          },
+          error: (error) => reject(error.message), // Reject with the error message
+        });
+      }),
+  });
+
   constructor(
     private service: ReportService,
     private masterService: MasterReportService
   ) {}
   ngOnInit(): void {
     this.get_All_DropDown_Data();
-    this.get_Facility_List();
   }
 
   get_All_DropDown_Data() {
@@ -68,17 +85,8 @@ export class FacilityListComponent implements OnInit {
 
   //========================Export data ==========================
   onExporting(event: any) {
-    const fileName='Facility'
-    this.service.exportDataGrid(event,fileName);
-  }
-
-  //====================Get Facility List Datasource==============
-  get_Facility_List() {
-    this.masterService.Get_Facility_List_Data().subscribe((response: any) => {
-      if (response) {
-        this.dataSource = response.data;
-      }
-    });
+    const fileName = 'Facility';
+    this.service.exportDataGrid(event, fileName);
   }
 
   //===================Row Data Update==========================
@@ -109,7 +117,7 @@ export class FacilityListComponent implements OnInit {
       .subscribe((data: any) => {
         if (data) {
           this.dataGrid.instance.refresh();
-          this.get_Facility_List();
+
           notify(
             {
               message: `New Facility Group updated Successfully`,
@@ -164,7 +172,6 @@ export class FacilityListComponent implements OnInit {
         }
         event.component.refresh();
         this.dataGrid.instance.refresh();
-        this.get_Facility_List();
       });
   }
   //=================== Page refreshing==========================

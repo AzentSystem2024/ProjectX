@@ -19,6 +19,7 @@ import {
   FacilityGroupNewFormModule,
 } from '../../POP-UP_PAGES/facility-group-new-form/facility-group-new-form.component';
 import { FormPopupModule } from 'src/app/components';
+import DataSource from 'devextreme/data/data_source';
 
 @Component({
   selector: 'app-facility-group-list',
@@ -26,14 +27,14 @@ import { FormPopupModule } from 'src/app/components';
   styleUrls: ['./facility-group-list.component.scss'],
   providers: [DataService, ReportService],
 })
-export class FacilityGroupListComponent implements OnInit {
+export class FacilityGroupListComponent {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
   @ViewChild(FacilityGroupNewFormComponent, { static: false })
   facilityGroupComponent: FacilityGroupNewFormComponent;
 
   isAddFormPopupOpened: any = false;
-  dataSource: any;
+
   //========Variables for Pagination ====================
   readonly allowedPageSizes: any = [5, 10, 'all'];
   displayMode: any = 'full';
@@ -42,14 +43,21 @@ export class FacilityGroupListComponent implements OnInit {
   showNavButtons = true;
   facilityGroupDatasource: any;
 
+  dataSource = new DataSource<any>({
+    load: () =>
+      new Promise((resolve, reject) => {
+        this.masterService.Get_Facility_Group_Data().subscribe({
+          next: (response: any) => resolve(response.data),
+          error: (error) => reject(error.message),
+        });
+      }),
+  });
+
   constructor(
     private service: ReportService,
     private masterService: MasterReportService
   ) {}
 
-  ngOnInit(): void {
-    this.get_Facility_Group_Data_List();
-  }
   //=============Showing the new Facility Form===================
   show_new_FacilityGroup_Form() {
     this.isAddFormPopupOpened = true;
@@ -63,15 +71,11 @@ export class FacilityGroupListComponent implements OnInit {
       });
   }
   //========================Get Datasource =======================
-  get_Facility_Group_Data_List() {
-    this.masterService.Get_Facility_Group_Data().subscribe((response: any) => {
-      this.dataSource = response.data;
-    });
-  }
+
   //========================Export data ==========================
   onExporting(event: any) {
-    const fileName='Facility Group'
-    this.service.exportDataGrid(event,fileName);
+    const fileName = 'Facility Group';
+    this.service.exportDataGrid(event, fileName);
   }
   //====================Add data ================================
   onClickSaveNewFacilityGroup = () => {
@@ -82,7 +86,7 @@ export class FacilityGroupListComponent implements OnInit {
       .subscribe((response: any) => {
         if (response) {
           this.dataGrid.instance.refresh();
-          this.get_Facility_Group_Data_List();
+
           notify(
             {
               message: `New Facility Group "${FacilityGroupValue} ${DescriptionValue}" saved Successfully`,
@@ -130,7 +134,6 @@ export class FacilityGroupListComponent implements OnInit {
         }
         event.component.refresh();
         this.dataGrid.instance.refresh();
-        this.get_Facility_Group_Data_List();
       });
   }
   //===================RTow Data Update==========================
@@ -148,7 +151,7 @@ export class FacilityGroupListComponent implements OnInit {
       .subscribe((data: any) => {
         if (data) {
           this.dataGrid.instance.refresh();
-          this.get_Facility_Group_Data_List();
+
           notify(
             {
               message: `New Facility Group updated Successfully`,

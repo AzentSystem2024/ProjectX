@@ -21,6 +21,7 @@ import notify from 'devextreme/ui/notify';
 import { ReportService } from 'src/app/services/Report-data.service';
 import { MasterReportService } from '../master-report.service';
 import { InsuranceNewFormModule } from '../../POP-UP_PAGES/insurance-new-form/insurance-new-form.component';
+import DataSource from 'devextreme/data/data_source';
 
 @Component({
   selector: 'app-insurance',
@@ -28,13 +29,12 @@ import { InsuranceNewFormModule } from '../../POP-UP_PAGES/insurance-new-form/in
   styleUrls: ['./insurance.component.scss'],
   providers: [ReportService],
 })
-export class InsuranceComponent implements OnInit {
+export class InsuranceComponent {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
   @ViewChild(InsuranceNewFormComponent, { static: false })
   InsuranceNewForm: InsuranceNewFormComponent;
 
-  dataSource: any;
   showSearchBox = false;
   showSearchIcon = true;
   //========Variables for Pagination ====================
@@ -46,14 +46,20 @@ export class InsuranceComponent implements OnInit {
   facilityGroupDatasource: any;
   isAddFormPopupOpened: boolean = false;
 
+  dataSource = new DataSource<any>({
+    load: () =>
+      new Promise((resolve, reject) => {
+        this.masterService.get_Insurance_List().subscribe({
+          next: (response: any) => resolve(response.data), // Resolve with the data
+          error: (error) => reject(error.message), // Reject with the error message
+        });
+      }),
+  });
+
   constructor(
     private service: ReportService,
     private masterService: MasterReportService
   ) {}
-
-  ngOnInit(): void {
-    this.get_InsuranceCompany_Data_List();
-  }
 
   ShowSearch = () => {
     this.showSearchIcon = !this.showSearchIcon;
@@ -66,11 +72,6 @@ export class InsuranceComponent implements OnInit {
   }
 
   //========================Get Datasource =======================
-  get_InsuranceCompany_Data_List() {
-    this.masterService.get_Insurance_List().subscribe((response: any) => {
-      this.dataSource = response.data;
-    });
-  }
 
   //====================Add data ================================
   onClickSaveNewData = () => {
@@ -81,7 +82,7 @@ export class InsuranceComponent implements OnInit {
       .subscribe((response: any) => {
         if (response) {
           this.dataGrid.instance.refresh();
-          this.get_InsuranceCompany_Data_List();
+
           notify(
             {
               message: `New Insurance "${InsuranceID} ${InsuranceName} ${InsuranceShortName}" saved Successfully`,
@@ -103,8 +104,8 @@ export class InsuranceComponent implements OnInit {
 
   //========================Export data ==========================
   onExporting(event: any) {
-    const fileName='Insurance'
-    this.service.exportDataGrid(event,fileName);
+    const fileName = 'Insurance';
+    this.service.exportDataGrid(event, fileName);
   }
 
   //====================Row Data Deleting========================
@@ -136,7 +137,6 @@ export class InsuranceComponent implements OnInit {
         }
         event.component.refresh();
         this.dataGrid.instance.refresh();
-        this.get_InsuranceCompany_Data_List();
       });
   }
 
@@ -155,7 +155,7 @@ export class InsuranceComponent implements OnInit {
       .subscribe((data: any) => {
         if (data) {
           this.dataGrid.instance.refresh();
-          this.get_InsuranceCompany_Data_List();
+
           notify(
             {
               message: `New Insurance updated Successfully`,

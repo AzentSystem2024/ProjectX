@@ -83,7 +83,7 @@ export class SystemServicesService {
 
   //=============================Security Notification ===================================================
   //==============lising data===========
-  getSecurityNotificationDdata() {
+  getSecurityNotificationData() {
     const url = `${BASE_URL}/notificationsettings/list`;
     return this.http.post(url, {});
   }

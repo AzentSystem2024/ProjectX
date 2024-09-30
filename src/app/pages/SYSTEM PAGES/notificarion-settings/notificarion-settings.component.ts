@@ -155,7 +155,7 @@ export class NotificationSettingsComponent implements OnInit {
 
   //=================Notification Settings Data===============
   getNotificationSettingsData() {
-    this.service.getSecurityNotificationDdata().subscribe((response: any) => {
+    this.service.getSecurityNotificationData().subscribe((response: any) => {
       this.formData = response.data[0];
     });
   }

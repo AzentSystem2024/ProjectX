@@ -1,25 +1,33 @@
 import { CommonModule } from '@angular/common';
 import { Component, NgModule, OnInit, ViewChild } from '@angular/core';
-import { DxButtonModule, DxDataGridComponent, DxDataGridModule, DxDropDownButtonModule, DxLookupModule, DxSelectBoxModule, DxTextBoxModule } from 'devextreme-angular';
+import {
+  DxButtonModule,
+  DxDataGridComponent,
+  DxDataGridModule,
+  DxDropDownButtonModule,
+  DxLookupModule,
+  DxSelectBoxModule,
+  DxTextBoxModule,
+} from 'devextreme-angular';
 import { FormPopupModule } from 'src/app/components';
 import { CptTypeNewFormModule } from '../../POP-UP_PAGES/cpt-type-new-form/cpt-type-new-form.component';
 import { ReportService } from 'src/app/services/Report-data.service';
 import { MasterReportService } from '../master-report.service';
 import notify from 'devextreme/ui/notify';
-import { CptTypeNewFormComponent,} from '../../POP-UP_PAGES/cpt-type-new-form/cpt-type-new-form.component';
+import { CptTypeNewFormComponent } from '../../POP-UP_PAGES/cpt-type-new-form/cpt-type-new-form.component';
+import DataSource from 'devextreme/data/data_source';
 @Component({
   selector: 'app-cpt-type',
   templateUrl: './cpt-type.component.html',
   styleUrls: ['./cpt-type.component.scss'],
-  providers: [ ReportService],
+  providers: [ReportService],
 })
-export class CPTTypeComponent implements OnInit {
+export class CPTTypeComponent {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
   @ViewChild(CptTypeNewFormComponent, { static: false })
   CptTypeComponent: CptTypeNewFormComponent;
 
-  dataSource: any;
   //========Variables for Pagination ====================
   readonly allowedPageSizes: any = [5, 10, 'all'];
   displayMode: any = 'full';
@@ -27,26 +35,26 @@ export class CPTTypeComponent implements OnInit {
   showInfo = true;
   showNavButtons = true;
   facilityGroupDatasource: any;
-  isAddFormPopupOpened: boolean=false;
+  isAddFormPopupOpened: boolean = false;
+
+  dataSource = new DataSource<any>({
+    load: () =>
+      new Promise((resolve, reject) => {
+        this.masterService.get_CptType_List().subscribe({
+          next: (response: any) => resolve(response.data), // Resolve with the data
+          error: (error) => reject(error.message), // Reject with the error message
+        });
+      }),
+  });
 
   constructor(
     private service: ReportService,
     private masterService: MasterReportService
   ) {}
 
-  ngOnInit(): void {
-    this.get_CptTypes_Data_List();
-  }
-//=========================show new popup=========================
-  show_new_Form(){
+  //=========================show new popup=========================
+  show_new_Form() {
     this.isAddFormPopupOpened = true;
-  }
-
-  //========================Get Datasource =======================
-  get_CptTypes_Data_List() {
-    this.masterService.get_CptType_List().subscribe((response: any) => {
-      this.dataSource = response.data
-    });
   }
 
   //====================Add data ================================
@@ -58,7 +66,7 @@ export class CPTTypeComponent implements OnInit {
       .subscribe((response: any) => {
         if (response) {
           this.dataGrid.instance.refresh();
-          this.get_CptTypes_Data_List();
+
           notify(
             {
               message: `New Cpt Type "${CptTypeValue} ${DescriptionValue}" saved Successfully`,
@@ -80,9 +88,9 @@ export class CPTTypeComponent implements OnInit {
 
   //========================Export data ==========================
   onExporting(event: any) {
-    const fileName='CPT type'
+    const fileName = 'CPT type';
 
-    this.service.exportDataGrid(event,fileName);
+    this.service.exportDataGrid(event, fileName);
   }
 
   //====================Row Data Deleting========================
@@ -90,32 +98,29 @@ export class CPTTypeComponent implements OnInit {
     event.cancel = true;
     let SelectedRow = event.key;
     console.log('selected row data :', SelectedRow);
-    this.masterService
-      .Remove_CPTType_Row_Data(SelectedRow.ID)
-      .subscribe(() => {
-        try {
-          notify(
-            {
-              message: 'Delete operation successful',
-              position: { at: 'top right', my: 'top right' },
-              displayTime: 500,
-            },
-            'success'
-          );
-        } catch (error) {
-          notify(
-            {
-              message: 'Delete operation failed',
-              position: { at: 'top right', my: 'top right' },
-              displayTime: 500,
-            },
-            'error'
-          );
-        }
-        event.component.refresh();
-        this.dataGrid.instance.refresh();
-        this.get_CptTypes_Data_List();
-      });
+    this.masterService.Remove_CPTType_Row_Data(SelectedRow.ID).subscribe(() => {
+      try {
+        notify(
+          {
+            message: 'Delete operation successful',
+            position: { at: 'top right', my: 'top right' },
+            displayTime: 500,
+          },
+          'success'
+        );
+      } catch (error) {
+        notify(
+          {
+            message: 'Delete operation failed',
+            position: { at: 'top right', my: 'top right' },
+            displayTime: 500,
+          },
+          'error'
+        );
+      }
+      event.component.refresh();
+      this.dataGrid.instance.refresh();
+    });
   }
   //===================RTow Data Update==========================
   onRowUpdating(event: any) {
@@ -132,7 +137,7 @@ export class CPTTypeComponent implements OnInit {
       .subscribe((data: any) => {
         if (data) {
           this.dataGrid.instance.refresh();
-          this.get_CptTypes_Data_List();
+
           notify(
             {
               message: `New Cpt Type updated Successfully`,
@@ -162,8 +167,6 @@ export class CPTTypeComponent implements OnInit {
   refresh = () => {
     this.dataGrid.instance.refresh();
   };
-
-
 }
 @NgModule({
   imports: [

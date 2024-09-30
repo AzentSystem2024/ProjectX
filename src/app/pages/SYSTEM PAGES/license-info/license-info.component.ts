@@ -11,6 +11,7 @@ import {
 } from 'devextreme-angular';
 import { ReportService } from 'src/app/services/Report-data.service';
 import { SystemServicesService } from '../system-services.service';
+import DataSource from 'devextreme/data/data_source';
 
 @Component({
   selector: 'app-license-info',
@@ -28,37 +29,65 @@ export class LicenseInfoComponent {
   showPageSizeSelector = true;
   showInfo = true;
   showNavButtons = true;
-  DataSource: any; //===DataSorce Variable==
+
   ProductKey: any;
   LicensedTo: any;
+
+
+  DataSource = new DataSource<any>({
+    load: () =>
+      new Promise((resolve, reject) => {
+        this.systemService.list_license_info_data().subscribe({
+          next: (response: any) => {
+            this.LicensedTo = response.CustomerName;
+            this.ProductKey = response.ProductKey;
+
+            // Modify the response data to add the serial number and format the expiry date
+            response.data.forEach((item: any, index: number) => {
+              item.serialNumber = index + 1;
+
+              const expiryDate = new Date(item.Expiry_Date);
+              item.Expiry_Date = expiryDate.toLocaleDateString('en-GB', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric',
+              });
+            });
+
+            resolve(response.data); // Resolve with the modified data
+          },
+          error: (error) => reject(error.message), // Reject with the error message
+        });
+      }),
+  });
 
   constructor(
     private service: ReportService,
     private systemService: SystemServicesService
   ) {
-    this.get_list_dataSource();
+    // this.get_list_dataSource();
   }
 
   //====================Get all listing Data======================
-  get_list_dataSource() {
-    this.systemService.list_license_info_data().subscribe((response: any) => {
-      this.LicensedTo = response.CustomerName;
-      this.ProductKey = response.ProductKey;
-      // Modify the response data to add the serial number and format the expiry date
-      response.data.forEach((item: any, index: number) => {
-        item.serialNumber = index + 1;
+  // get_list_dataSource() {
+  //   this.systemService.list_license_info_data().subscribe((response: any) => {
+  //     this.LicensedTo = response.CustomerName;
+  //     this.ProductKey = response.ProductKey;
+  //     // Modify the response data to add the serial number and format the expiry date
+  //     response.data.forEach((item: any, index: number) => {
+  //       item.serialNumber = index + 1;
 
-        const expiryDate = new Date(item.Expiry_Date);
-        item.Expiry_Date = expiryDate.toLocaleDateString('en-GB', {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric',
-        });
-      });
+  //       const expiryDate = new Date(item.Expiry_Date);
+  //       item.Expiry_Date = expiryDate.toLocaleDateString('en-GB', {
+  //         day: '2-digit',
+  //         month: 'short',
+  //         year: 'numeric',
+  //       });
+  //     });
 
-      this.DataSource = response.data;
-    });
-  }
+  //     this.DataSource = response.data;
+  //   });
+  // }
 
   //========================Export data ==========================
   onExporting(event: any) {
