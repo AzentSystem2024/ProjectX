@@ -177,7 +177,8 @@
     <dxi-column dataField="Gender" caption="Gender">
       <dxo-lookup
         [dataSource]="genderDatasource"
-        displayExpr="description"
+        displayExpr="DESCRIPTION"
+        valueExpr="ID"
       ></dxo-lookup>
     </dxi-column>
   </dx-data-grid>

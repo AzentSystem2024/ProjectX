@@ -16,6 +16,18 @@
           </dx-validator>
         </dx-text-box>
       </div>
+      <div class="inputBox ms-3">
+        <dx-select-box
+          [(value)]="CopiedUserLevelValue"
+          [items]="userRoles"
+          label="Copy User Role"
+          labelMode="floating"
+          [showClearButton]="true"
+          validationMessagePosition="right"
+          (onValueChanged)="onUserRoleCopySelectionChange($event)"
+        >
+        </dx-select-box>
+      </div>
     </div>
   </div>
 
@@ -39,7 +51,7 @@
           *ngIf="selectedTabData"
           class="grid theme-dependent"
           noDataText=""
-          [height]="'61vh'"
+          [height]="'58vh'"
           [dataSource]="selectedTabData"
           [allowColumnResizing]="true"
           [allowColumnReordering]="true"

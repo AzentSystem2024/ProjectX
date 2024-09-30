@@ -46,7 +46,6 @@ export class ClinicianComponent implements OnInit {
   genderDatasource: any;
   auto: string = 'auto';
 
-
   showSearchBar: boolean = false;
 
   constructor(
@@ -59,18 +58,9 @@ export class ClinicianComponent implements OnInit {
     this.get_Clinician_Data_List();
   }
 
-
   show_new__Form() {
     this.isAddClinicianPopupOpened = true;
   }
-
-
-  get_gender_dropDown() {
-    this.masterService.get_gender_Data().subscribe((res: any) => {
-      this.genderDatasource = res;
-    });
-  }
-
 
   get_DropDown_Data() {
     this.masterService.Get_GropDown('SPECIALITY').subscribe((response: any) => {
@@ -94,15 +84,17 @@ export class ClinicianComponent implements OnInit {
       .subscribe((response: any) => {
         this.clinicianCategoryDatasource = response;
       });
-  }
 
+    this.masterService.Get_GropDown('GENDER').subscribe((res: any) => {
+      this.genderDatasource = res;
+    });
+  }
 
   get_Clinician_Data_List() {
     this.masterService.get_Clinian_Table_Data().subscribe((response: any) => {
       this.dataSource = response.data;
     });
   }
-
 
   onClickSaveNewClinician = () => {
     const {
@@ -150,7 +142,6 @@ export class ClinicianComponent implements OnInit {
       });
   };
 
-
   onRowRemoving(event: any) {
     event.cancel = true;
     let SelectedRow = event.key;
@@ -182,7 +173,6 @@ export class ClinicianComponent implements OnInit {
         this.get_Clinician_Data_List();
       });
   }
-
 
   onRowUpdating(event: any) {
     const updataDate = event.newData;
@@ -239,17 +229,14 @@ export class ClinicianComponent implements OnInit {
     event.cancel = true;
   }
 
-
   onExporting(event: any) {
-    const fileName='Clinician'
-    this.service.exportDataGrid(event,fileName);
+    const fileName = 'Clinician';
+    this.service.exportDataGrid(event, fileName);
   }
-
 
   refresh = () => {
     this.dataGrid.instance.refresh();
   };
-
 
   onShowSearchBar() {
     this.showSearchBar = true;
@@ -258,7 +245,6 @@ export class ClinicianComponent implements OnInit {
   onHideSearchBar() {
     this.showSearchBar = false;
   }
-
 
   onSearchQueryChanged(event: any) {
     const query = event.value;
@@ -284,5 +270,3 @@ export class ClinicianComponent implements OnInit {
   declarations: [ClinicianComponent],
 })
 export class ClinicianListModule {}
-
-

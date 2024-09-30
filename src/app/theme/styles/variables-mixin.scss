@@ -1,7 +1,12 @@
 $theme-mode: null !default;
 
-@use "devextreme/scss/widgets/fluent/colors" as * with ($color: "blue", $mode: $theme-mode);
-@use "devextreme/scss/widgets/fluent/sizes" as * with ($size: "default");
+@use "devextreme/scss/widgets/fluent/colors" as * with (
+  $color: "blue",
+  $mode: $theme-mode
+);
+@use "devextreme/scss/widgets/fluent/sizes" as * with (
+  $size: "default"
+);
 @use "devextreme/scss/widgets/fluent/button/mixins" as *;
 @use "devextreme/scss/widgets/fluent/popup/sizes" as *;
 @use "devextreme/scss/widgets/fluent/textEditor/colors" as *;
@@ -9,7 +14,9 @@ $theme-mode: null !default;
 @use "devextreme/scss/widgets/fluent/toolbar/sizes" as toolbar_sizes;
 @use "devextreme/scss/widgets/fluent/list/sizes" as *;
 @use "devextreme/scss/widgets/fluent/button/sizes" as *;
-@use "theme-special" as * with ($theme: "fluent");
+@use "theme-special" as * with (
+  $theme: "fluent"
+);
 
 @forward "devextreme/scss/widgets/fluent/colors";
 @forward "devextreme/scss/widgets/fluent/textEditor/colors";
@@ -38,11 +45,13 @@ $theme-mode: null !default;
   --side-panel-background: var(--base-bg-darken-5);
   --card-background: var(--base-bg);
   --calendar-width: 292px;
-  --bg-side-panel:#00A1E0;
+  --bg-side-panel: #00a1e0;
+  // --filter-row-color: #00a1e0;
 
   @if $theme-mode == dark {
     --card-background: var(--base-bg-darken-5);
-    --bg-side-panel:rgb(41,41,41)
+    --bg-side-panel: rgb(41, 41, 41);
+    // --filter-row-color: #00a1e0;
   }
 
   --border-color: #{$base-border-color};

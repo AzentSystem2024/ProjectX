@@ -41,7 +41,7 @@ export class UserLevelMasterComponent implements OnInit {
   @ViewChild(UserLevelEditFormComponent, { static: false })
   userlevelEditForm: UserLevelEditFormComponent;
 
-  popup_width: any = '50%';
+  popup_width: any = '60%';
   isAddFormVisible: boolean = false;
   dataSource: any;
   //========Variables for Pagination ====================

@@ -10,7 +10,7 @@ import { confirm } from 'devextreme/ui/dialog';
 export class InactivityService {
   isUserLoggedIn: boolean = false;
   private timeoutId: any;
-  private readonly inactivityTimeout = 60000;
+  private readonly inactivityTimeout = 600000;
 
   constructor(
     private authservice: AuthService,

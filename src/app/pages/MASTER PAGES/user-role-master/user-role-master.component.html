@@ -100,7 +100,7 @@
     class="formPopupClass m-2"
     [(visible)]="isAddFormVisible"
     titleText="New User Role"
-    [height]="'100vh'"
+    [height]="'90vh'"
     [width]="popup_width"
     (save)="onClickSaveNewData()"
     (onHiding)="onPopupClose()"
@@ -109,12 +109,12 @@
       [sharedValue]="isAddFormVisible"
     ></app-user-level-new-form>
   </form-popup>
-  
+
   <form-popup
     class="formPopupClass m-2"
     [(visible)]="iseditFormVisible"
     titleText="Edit User Role"
-    [height]="'100vh'"
+    [height]="'90vh'"
     [width]="popup_width"
     (save)="onRowUpdating()"
     (onHiding)="onEditPopupClose()"

@@ -46,12 +46,17 @@ export class UserLevelNewFormComponent implements OnInit, OnChanges {
   MenuDatasource: any;
   UserLevelValue: any = '';
   isErrorVisible: boolean = false;
+  UserListdataSource: any;
+  userRoles: any;
+  CopiedUserLevelValue: any;
+
   constructor(private masterservice: MasterReportService) {}
 
   ngOnInit(): void {
     this.selectedTab = 0;
     this.UserLevelValue = '';
     this.get_All_MenuList();
+    this.fetch_all_UserLevel_list();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -59,6 +64,7 @@ export class UserLevelNewFormComponent implements OnInit, OnChanges {
       this.selectedTab = 0;
       this.UserLevelValue = '';
       this.selectedTabData = [];
+      this.CopiedUserLevelValue = '';
 
       //========Initialize selectedRows for each tab======
       this.MenuDatasource.forEach((tab, index) => {
@@ -67,6 +73,49 @@ export class UserLevelNewFormComponent implements OnInit, OnChanges {
       //==========Set the data for the initial tab========
       this.selectedTabData = this.MenuDatasource[this.selectedTab].Menus;
       // console.log('selected tab is :', this.selectedTabData);
+    }
+  }
+
+  //===============Fetch All User Level List===================
+  fetch_all_UserLevel_list() {
+    this.masterservice.get_userLevel_List().subscribe((response: any) => {
+      this.UserListdataSource = response.data;
+      this.userRoles = this.UserListdataSource.map(
+        (user: any) => user.UserRoles
+      );
+      // console.log('user roles list :', this.userRoles);
+    });
+  }
+
+  //============== copy data from already exis user ==========
+  onUserRoleCopySelectionChange(event: any) {
+    if (event.value) {
+      // Find the copied user with the selected user role
+      const copiedUser = this.UserListdataSource.find(
+        (user: any) => user.UserRoles === event.value
+      );
+      if (copiedUser && copiedUser.usermenulist) {
+        const userMenuList = copiedUser.usermenulist;
+        this.MenuDatasource.forEach((tab: any, tabIndex: number) => {
+          const userMenusInTab = userMenuList.filter((menu: any) =>
+            tab.Menus.some((tabMenu: any) => tabMenu.MenuId === menu.MenuId)
+          );
+          this.selectedRows[tabIndex] = userMenusInTab.map((menu: any) => {
+            const fullMenu = tab.Menus.find(
+              (tabMenu: any) => tabMenu.MenuId === menu.MenuId
+            );
+            return fullMenu ? fullMenu : menu;
+          });
+        });
+        this.selectedTabData = this.MenuDatasource[this.selectedTab].Menus;
+      }
+      this.combineSelectedRows();
+      console.log(
+        'Copied user menu list with full menu objects:',
+        this.selectedRows
+      );
+    } else {
+      this.selectedRows = [];
     }
   }
 
@@ -92,14 +141,12 @@ export class UserLevelNewFormComponent implements OnInit, OnChanges {
 
   combineSelectedRows(): void {
     this.allSelectedRows = [];
-
     Object.keys(this.selectedRows)
       .filter((key) => this.selectedRows[key].length > 0)
       .forEach((key) => {
         const existingEntry = this.allSelectedRows.find(
           (row) => row.userLevelname === this.UserLevelValue
         );
-
         if (existingEntry) {
           existingEntry.Menus = [
             ...existingEntry.Menus,
@@ -114,7 +161,6 @@ export class UserLevelNewFormComponent implements OnInit, OnChanges {
           });
         }
       });
-
     console.log('all selected row data :', this.allSelectedRows);
   }
 
