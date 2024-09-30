@@ -42,7 +42,13 @@ export class AppHeaderComponent implements OnInit {
     text: 'Logout',
     icon: 'runner',
     onClick: () => {
-      this.authService.logOut();
+      this.authService.logOut().subscribe((response:any)=>{
+        if(response){
+          localStorage.removeItem('sidemenuItems');
+          sessionStorage.clear();
+          this.router.navigate(['/auth/login']);
+        }
+      })
     },
   }];
 
