@@ -32,6 +32,7 @@ export class ResetPasswordFormComponent implements OnInit,OnDestroy {
   timer: number = 0; // Timer in seconds (e.g., 2 minutes)
   interval: any;
   isGetOtpButtonDisabled: boolean = false;  // Add this line
+  isVerifyOtpButtonDisabled:boolean = false ; 
   isSubmitPasswordButtonDisabled:boolean=true;
   UserID:number = 0;
   securityPolicyData: any;
@@ -39,6 +40,7 @@ export class ResetPasswordFormComponent implements OnInit,OnDestroy {
   isPasswordVisible: boolean = false; 
   isConfirmPasswordVisible: boolean =false;
   loading: boolean = false; // Add a loading flag
+  Verifyloading: boolean = false;
   constructor(private router:Router,private ngZone: NgZone,private cdr: ChangeDetectorRef,private userservice:MasterReportService){
 
   }
@@ -225,17 +227,21 @@ export class ResetPasswordFormComponent implements OnInit,OnDestroy {
 
   // Function called when "Verify OTP" button is clicked
   verifyOtp() {
+    this.Verifyloading=true;
     const otp = this.otpDigits.join('');
     console.log('Entered OTP:', otp);
     console.log('Generated OTP:', this.generatedOtp);
     if (otp === this.generatedOtp) {
+      this.isVerifyOtpButtonDisabled=true;
       clearInterval(this.interval);
+      this.Verifyloading=false;
       notify({ message: 'OTP verified successfully', position: { at: 'top center', my: 'top center' }, delay: 4000 }, 'success');
       this.otpSent = false;
       this.otpVerified = true; // Show new password form
       this.headerTitle = 'Set New Password'; // Change header after OTP is verified
       this.formHeight = 500;
     } else {
+      this.Verifyloading=false;
       notify({ message: 'Invalid OTP. Please try again.', position: { at: 'top center', my: 'top center' }, delay: 4000 }, 'error');
     }
   }

@@ -28,14 +28,14 @@
       dataField="password"
       editorType="dxTextBox"
       [editorOptions]="{
-        placeholder: 'password',
+        placeholder: 'Password',
         stylingMode: 'filled',
         mode: isPasswordVisible ? 'text' : 'password', 
         buttons: [{
           name: 'passwordToggle',
           location: 'after',
           options: {
-            icon: isPasswordVisible ? 'fas fa-eye-slash' : 'fas fa-eye', 
+            icon: isPasswordVisible ? 'fas fa-eye' : 'fas fa-eye-slash', 
             onClick: togglePasswordVisibility,
             stylingMode: 'text',
           }

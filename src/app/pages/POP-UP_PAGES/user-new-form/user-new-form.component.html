@@ -12,8 +12,7 @@
         stylingMode="text"
       ></dx-button>
     </div>
-  
-
+    
     <div *ngIf="showUserDetails">
       <!-- User Details Form in Two Columns -->
       <div class="user-details" style="display: flex; flex-wrap: wrap; gap: 20px;">
@@ -268,6 +267,7 @@
         keyExpr="ID"
         [(selectedRowKeys)]="selectedRows"
         (onSelectionChanged)="onSelectionChanged($event)"
+        width="100%"
       >
         <dxo-header-filter [visible]="true"></dxo-header-filter>
         <dxo-sorting mode="multiple"></dxo-sorting>
@@ -278,7 +278,7 @@
             <dxo-search [enabled]="true"></dxo-search>
           </dxo-header-filter>
         </dxi-column>   
-        <dxi-column dataField="FacilityName" caption="Facility Name">
+        <dxi-column [width]="'auto'" dataField="FacilityName" caption="Facility Name">
           <dxo-header-filter [allowSelectAll]="false">
             <dxo-search [enabled]="true"></dxo-search>
           </dxo-header-filter>

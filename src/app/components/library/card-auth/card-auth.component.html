@@ -1,6 +1,16 @@
-<div class="loginMainDiv" >
+<div class="loginMainDiv">
   <div class="auth-card">
     <div class="dx-card content">
+      <div style="position: relative;">
+      <dx-button 
+      icon="close" 
+      stylingMode="text" 
+      class="close-icon"
+      *ngIf="isResetPasswordPage"
+      (onClick)="redirectToLogin()"
+     >
+    </dx-button>
+    </div>
       
       <div class="header">
         <div class="title">{{ title }}</div>

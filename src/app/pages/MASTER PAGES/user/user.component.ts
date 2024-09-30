@@ -46,6 +46,11 @@ export class UserComponent implements OnInit {
   isAddFormPopupOpened: boolean = false;
   isEditPopupOpened: boolean = false;
   selectedRowData: any;
+  readonly allowedPageSizes: any = [5, 10, 'all'];
+  displayMode: any = 'full';
+  showPageSizeSelector = true;
+  showInfo = true;
+  showNavButtons = true;
 
   constructor(
     private service: MasterReportService,
@@ -104,6 +109,11 @@ export class UserComponent implements OnInit {
     });
   }
 
+  closeNewForm() {
+    this.userNewForm.newUserData={};
+    console.log("hai...");
+  }
+
   onRowRemoving(event: any) {
     console.log(event);
     event.cancel = true;
@@ -145,6 +155,7 @@ export class UserComponent implements OnInit {
   CloseEditForm() {
     this.isEditPopupOpened = false;
     this.getUSerData();
+    
   }
 
   ngOnInit(): void {

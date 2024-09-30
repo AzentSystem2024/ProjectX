@@ -57,6 +57,7 @@ export class UserEditFormComponent implements OnInit,OnChanges {
   @ViewChild('validationGroup', { static: true }) validationGroup: DxValidationGroupComponent;
   @ViewChild(UserEditFormComponent) editform: UserEditFormComponent;
   @ViewChild(UserComponent) list: UserComponent;
+  @ViewChild('fileInput', { static: false }) fileInput!: ElementRef;
 
   @Input() formdata: any;
 
@@ -239,12 +240,22 @@ checkEmailExists=(e: any): boolean => {
 
   // Function to handle selection changes
   onSelectionChanged(e: any) {
+    
+
     // Map selected row keys to the desired format
     this.newUserData.user_facility = e.selectedRowKeys.map((key: number) => ({      // Generate an ID for each entry starting from 1
       FacilityID: key        // Assign the selected FacilityID
     }));
     console.log('User Facility:', this.userData.user_facility);
     this.selectedRowCount = e.selectedRowKeys.length;
+
+    // Reorder facilityList based on selectedRows
+    this.facilityList = [
+      // Selected facilities first
+      ...this.facilityList.filter(facility => this.selectedRows.includes(facility.ID)),
+      // Non-selected facilities after
+      ...this.facilityList.filter(facility => !this.selectedRows.includes(facility.ID))
+    ];
 
     this.cdr.detectChanges();
   }
@@ -288,12 +299,21 @@ checkEmailExists=(e: any): boolean => {
   }
 
   handleFileInputChange(event: Event) {
-    const input = event.target as HTMLInputElement; // Explicitly cast to HTMLInputElement
+    const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       const file = input.files[0];
       this.readFile(file);
+      this.resetFileInput(); // Reset the file input after selecting a file
     }
   }
+
+  // Function to reset the file input
+  resetFileInput() {
+    if (this.fileInput && this.fileInput.nativeElement) {
+      this.fileInput.nativeElement.value = ''; // Reset the file input value
+    }
+  }
+  
 
   readFile(file: File) {
     const reader = new FileReader();
@@ -490,6 +510,7 @@ checkEmailExists=(e: any): boolean => {
       this.newUserData.countryCode = dialCode;
     }
   }
+  
   }
 
   getDropDownData(data:any){
@@ -602,6 +623,7 @@ checkEmailExists=(e: any): boolean => {
         this.images = this.newUserData.PhotoFile;
         console.log(this.images, "photo");
       } else {
+        this.isImageUploaded = false;
         this.images = [];  // Set images to empty if PhotoFile is not available
         console.log("No photo available");
       }
@@ -616,18 +638,18 @@ checkEmailExists=(e: any): boolean => {
       .filter(column => this.newUserData.user_facility.some(facility => facility.FacilityID === column.ID))
       .map(column => column.ID);
 
-      // this.facilityList = [
-      //   // Selected facilities first
-      //   ...this.facilityList.filter(facility => this.selectedRows.includes(facility.ID)),
-      //   // Non-selected facilities after
-      //   ...this.facilityList.filter(facility => !this.selectedRows.includes(facility.ID))
-      // ];
+      console.log(this.selectedRows,"selected rows");
+
+      // Reorder facilityList based on selectedRows
+      this.facilityList = [
+        // Selected facilities first
+        ...this.facilityList.filter(facility => this.selectedRows.includes(facility.ID)),
+        // Non-selected facilities after
+        ...this.facilityList.filter(facility => !this.selectedRows.includes(facility.ID))
+      ];
     }
-    // Reorder facilityList based on selectedRows   
   
     this.cdr.detectChanges();
-    
-    
   }
 }
 
