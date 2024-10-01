@@ -405,6 +405,13 @@ readFile(file: File) {
     this.isDropdownOpen = false;  // Mark dropdown as closed
   }
 
+  clearData(){
+    this.selectedRows=[];
+    this.newUserData.GenderID='';
+  this.cdr.detectChanges(); 
+    console.log(this.newUserData);
+  }
+
   
 
   ngOnInit(): void {

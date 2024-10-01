@@ -109,9 +109,11 @@ export class UserComponent implements OnInit {
     });
   }
 
-  closeNewForm() {
-    this.userNewForm.newUserData={};
+  onClearData() {
+    this.userNewForm.removeImage();
+    this.userNewForm.clearData();
     console.log("hai...");
+    
   }
 
   onRowRemoving(event: any) {

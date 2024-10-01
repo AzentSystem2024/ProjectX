@@ -48,6 +48,8 @@ export class FormPopupComponent {
 
   @Output() visibleChange = new EventEmitter<boolean>();
 
+  @Output() clear = new EventEmitter(); // New event to signal clearing
+
   constructor(protected screen: ScreenService) {}
 
   isValid() {
@@ -66,7 +68,7 @@ export class FormPopupComponent {
   close() {
     this.validationGroup.instance.reset();
     this.visible = false;
-
+    this.clear.emit(); // Emit clear event to parent component
     this.visibleChange.emit(this.visible);
   }
 
