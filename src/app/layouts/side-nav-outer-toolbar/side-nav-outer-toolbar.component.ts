@@ -27,6 +27,7 @@ import {
 } from 'devextreme-angular';
 import { Subscription } from 'rxjs';
 import { DxSortableTypes } from 'devextreme-angular/ui/sortable';
+import { InactivityService } from 'src/app/services/inactivity.service';
 
 @Component({
   selector: 'app-side-nav-outer-toolbar',
@@ -62,29 +63,27 @@ export class SideNavOuterToolbarComponent implements OnInit, OnDestroy {
   constructor(
     private screen: ScreenService,
     private router: Router,
-    public appInfo: AppInfoService
+    public appInfo: AppInfoService,
+    private inactiveservice: InactivityService
   ) {
     this.routerSubscription = this.router.events.subscribe((event: Event) => {
       if (event instanceof NavigationEnd) {
         this.selectedRoute = event.urlAfterRedirects.split('?')[0];
       }
     });
+    inactiveservice.startTheInactiveService();
   }
 
   ngOnInit() {
     const initalpage = this.router.url;
     let path = '/analytics-dashboard';
-    let title= 'Home';
+    let title = 'Home';
     this.tabs.push({
       title: title,
       path: path,
     });
     this.selectedIndex = this.tabs.findIndex((tab) => tab.path === path);
     this.router.navigate([path]);
-
-
-
-  
 
     this.menuOpened = this.screen.sizes['screen-large'];
     this.screenSubscription = this.screen.changed.subscribe(() =>
@@ -131,7 +130,6 @@ export class SideNavOuterToolbarComponent implements OnInit, OnDestroy {
         });
         this.selectedIndex = this.tabs.findIndex((tab) => tab.path === path);
         this.router.navigate([path]);
-        
       } else {
         this.selectedIndex = this.tabs.findIndex((tab) => tab.path === path);
         this.router.navigate([path]);
@@ -192,9 +190,7 @@ export class SideNavOuterToolbarComponent implements OnInit, OnDestroy {
       const selectedTab = this.tabs[this.selectedIndex];
       let path = selectedTab.path;
       this.router.navigate([path]);
-      
     } else {
-      
     }
   }
 }

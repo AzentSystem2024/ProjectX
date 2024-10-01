@@ -21,7 +21,7 @@ export class SecurityPolicyComponent implements OnInit {
   readOnlyValue: boolean = true;
 
   minPasswordLength: any | null = null;
-  conditionRequiredValue: boolean =false;
+  conditionRequiredValue: boolean = false;
 
   isNumberChecked: boolean = false;
   isUppercaseChecked: boolean = false;
@@ -43,6 +43,7 @@ export class SecurityPolicyComponent implements OnInit {
   changePasswordOnLogin: boolean = false;
   passwordExpiryDaysCount: any | null = null;
   passwordRepeatCycle: any | null = null;
+  sessionTimeOut: any | null = null;
 
   unautherizedMessage: any = '';
   disableUserOn: any | null = null;
@@ -61,7 +62,7 @@ export class SecurityPolicyComponent implements OnInit {
         this.presentSecurityData = response.data[0];
         this.tooltipData = response.Tooltip;
 
-        console.log('data received', this.presentSecurityData);
+        // console.log('data received', this.presentSecurityData);
         this.validationRequired =
           this.presentSecurityData.PasswordValidationRequired;
         this.minPasswordLength = this.presentSecurityData.MinimumLength;
@@ -71,16 +72,15 @@ export class SecurityPolicyComponent implements OnInit {
         this.isUppercaseChecked = this.presentSecurityData.UppercaseCharacters;
         this.isLowercaseChecked = this.presentSecurityData.LowercaseCharacters;
         this.isSpecialCharactersChecked =
-        this.presentSecurityData.SpecialCharacters;
+          this.presentSecurityData.SpecialCharacters;
         this.emailOtp = this.presentSecurityData.OTPEmailOnPasswordChange;
         this.smsOtp = this.presentSecurityData.OTPSMSOnPasswordChange;
         this.whatsAppOtp = this.presentSecurityData.OTPWhatsappOnPasswordChange;
         this.emailAlert = this.presentSecurityData.AlertEmailOnPasswordChange;
         this.smsAlert = this.presentSecurityData.AlertSMSOnPasswordChange;
         this.whatsAppAlert =
-          this.presentSecurityData.
-          AlertWhatsappOnPasswordChange;  
-
+          this.presentSecurityData.AlertWhatsappOnPasswordChange;
+        this.sessionTimeOut = this.presentSecurityData.SessionTimeoutMinutes;
         this.LoginAttempts = this.presentSecurityData.AccountLockAttempt;
         this.resetDuration = this.presentSecurityData.AccountLockDuration;
         this.failedLoginDuration =
@@ -100,7 +100,6 @@ export class SecurityPolicyComponent implements OnInit {
     const formData = {
       validationRequired: this.validationRequired,
       minPasswordLength: this.minPasswordLength,
-      // conditionRequiredValue: this.conditionRequiredValue,
       isNumberChecked: this.isNumberChecked,
       isUppercaseChecked: this.isUppercaseChecked,
       isLowercaseChecked: this.isLowercaseChecked,
@@ -115,12 +114,13 @@ export class SecurityPolicyComponent implements OnInit {
       resetDuration: this.resetDuration,
       failedLoginDuration: this.failedLoginDuration,
       changePasswordOnLogin: this.changePasswordOnLogin,
+      SessionTimeOut: this.sessionTimeOut,
       passwordExpiryDaysCount: this.passwordExpiryDaysCount,
       passwordRepeatCycle: this.passwordRepeatCycle,
       unautherizedMessage: this.unautherizedMessage,
       disableUserOn: this.disableUserOn,
     };
-    console.log(formData);
+    // console.log(formData);
     this.systemService
       .save_security_Policy_Data(formData)
       .subscribe((response: any) => {
@@ -162,6 +162,7 @@ export class SecurityPolicyComponent implements OnInit {
     this.resetDuration = null;
     this.failedLoginDuration = null;
     this.changePasswordOnLogin = false;
+    this.sessionTimeOut = null;
     this.passwordExpiryDaysCount = null;
     this.passwordRepeatCycle = null;
     this.unautherizedMessage = '';
@@ -173,10 +174,9 @@ export class SecurityPolicyComponent implements OnInit {
     this.readOnlyValue = !this.readOnlyValue;
   }
 
-  // onConditionEnableChange(newValue: boolean) {
-  //   this.conditionRequiredValue = newValue;
-  //   this.conditionEnableValue = !this.conditionEnableValue;
-  // }
+  format_minutes(value: number): string {
+    return `${value} minutes`;
+  }
 }
 @NgModule({
   imports: [
