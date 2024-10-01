@@ -116,9 +116,11 @@ export class UserComponent {
     });
   }
 
-  closeNewForm() {
-    this.userNewForm.newUserData = {};
-    console.log('hai...');
+  onClearData() {
+    this.userNewForm.removeImage();
+    this.userNewForm.clearData();
+    console.log("hai...");
+    
   }
 
   onRowRemoving(event: any) {

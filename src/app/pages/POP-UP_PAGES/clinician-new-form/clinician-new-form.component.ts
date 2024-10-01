@@ -37,9 +37,11 @@ export class ClinicianNewFormComponent {
   clinicianProfessionDatasource: any;
   clinicianCategoryDatasource: any;
   genderDatasource: any;
+  cliniciansList:any;
 
   constructor(private masterService: MasterReportService) {
     this.get_DropDown_Data()
+    this.getCliniciansData()
   }
 
   getnewClinicianData = () => ({ ...this.newClinician });
@@ -87,6 +89,52 @@ export class ClinicianNewFormComponent {
       });
       
   }
+
+  checkClinicianLicenseExists= (e: any): boolean => {
+    const clinicianLicense = e.value;
+    console.log(clinicianLicense,"clinician license")
+    const exists = this.cliniciansList.some(clinician => clinician.ClinicianLicense === clinicianLicense);
+    console.log(exists,"exists");
+  
+    // If it exists, mark as invalid and set the error message
+    if (exists) {
+      e.isValid = false; // Mark as invalid
+      e.message = "Clinician License already exists"; // Set the error message
+  } else {
+      e.isValid = true; // Mark as valid
+  }
+
+  return e.isValid;
+}
+
+onFacilityLicenseInput(event: Event): void {
+  const target = event.target as HTMLInputElement;
+
+    // Remove spaces from the current value and sanitize it
+    const sanitizedValue = target.value.replace(/\s/g, '').toUpperCase(); ;
+
+    // Check if the first character is an alphabet
+    if (sanitizedValue.length > 0) {
+        // Update the target value and the LoginName property
+        target.value = sanitizedValue; 
+        this.newClinician.ClinicianLicense = sanitizedValue; // Update the login name value
+
+        // Validate the login name directly
+        this.checkClinicianLicenseExists({ value: sanitizedValue });
+    } else {
+        // If the first character is not an alphabet, reset the input
+        target.value = ''; // Optionally clear the input
+        this.newClinician.ClinicianLicense = ''; // Reset the login name value
+    }
+}
+
+
+  getCliniciansData(){
+    this.masterService.get_Clinian_Table_Data().subscribe((res:any)=>{
+      this.cliniciansList=res.data;
+      console.log('datasource',this.cliniciansList);
+    })
+  }
 }
 
 @NgModule({
@@ -100,6 +148,7 @@ export class ClinicianNewFormComponent {
     ReactiveFormsModule,
     DxSelectBoxModule,
     DxRadioGroupModule,
+    DxTextBoxModule
   ],
   declarations: [ClinicianNewFormComponent],
   exports: [ClinicianNewFormComponent],

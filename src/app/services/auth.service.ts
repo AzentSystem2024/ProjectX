@@ -89,6 +89,7 @@ export class AuthService {
   //================Log In function===============================
   logIn(username: any, password: any, forcelogin: any) {
     const API_URL = ` ${BaseURL}user/LOGIN`;
+    const currentUTCDateTime = new Date().toISOString();
     const ReqBody = {
       LoginName: username,
       Password: password,
@@ -97,7 +98,7 @@ export class AuthService {
       DomainName: 'Domain1',
       ComputerUser: 'User1',
       InternetIP: '192.158.1.38',
-      SystemTimeUTC: '2020-09-07T00:08:09',
+      SystemTimeUTC: currentUTCDateTime,
       ForceLogin: forcelogin,
     };
    
