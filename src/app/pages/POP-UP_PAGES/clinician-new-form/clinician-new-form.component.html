@@ -17,7 +17,7 @@
             <dxi-validation-rule type="required" message="Clinician License is required"></dxi-validation-rule>
             <dxi-validation-rule
               type="custom"
-              [validationCallback]="checkClinicianLicenseExists.bind(this)"
+              [validationCallback]="checkClinicianLicenseExists"
               message="Clinician License already exists"
             ></dxi-validation-rule>
           </dx-validator>
