@@ -16,7 +16,7 @@ import notify from 'devextreme/ui/notify';
 import { DataService } from 'src/app/services';
 import { ClinicianNewFormModule } from '../../POP-UP_PAGES/clinician-new-form/clinician-new-form.component';
 import { ClinicianNewFormComponent } from '../../POP-UP_PAGES/clinician-new-form/clinician-new-form.component';
-
+import DataSource from 'devextreme/data/data_source';
 @Component({
   selector: 'app-clinician',
   templateUrl: './clinician.component.html',
@@ -31,7 +31,7 @@ export class ClinicianComponent implements OnInit {
   clinicianComponent: ClinicianNewFormComponent;
 
   isAddClinicianPopupOpened: any = false;
-  dataSource: any;
+  // dataSource: any;
   // Variables for Pagination
   readonly allowedPageSizes: any = [5, 10, 'all'];
   displayMode: any = 'full';
@@ -46,8 +46,17 @@ export class ClinicianComponent implements OnInit {
   genderDatasource: any;
   auto: string = 'auto';
 
-
   showSearchBar: boolean = false;
+
+  dataSource = new DataSource<any>({
+    load: () =>
+      new Promise((resolve, reject) => {
+        this.masterService.get_Clinian_Table_Data().subscribe({
+          next: (response: any) => resolve(response.data), // Resolve with the data
+          error: (error) => reject(error.message), // Reject with the error message
+        });
+      }),
+  });
 
   constructor(
     private service: ReportService,
@@ -56,21 +65,11 @@ export class ClinicianComponent implements OnInit {
 
   ngOnInit(): void {
     this.get_DropDown_Data();
-    this.get_Clinician_Data_List();
   }
-
 
   show_new__Form() {
     this.isAddClinicianPopupOpened = true;
   }
-
-
-  get_gender_dropDown() {
-    this.masterService.get_gender_Data().subscribe((res: any) => {
-      this.genderDatasource = res;
-    });
-  }
-
 
   get_DropDown_Data() {
     this.masterService.Get_GropDown('SPECIALITY').subscribe((response: any) => {
@@ -94,15 +93,17 @@ export class ClinicianComponent implements OnInit {
       .subscribe((response: any) => {
         this.clinicianCategoryDatasource = response;
       });
-  }
 
-
-  get_Clinician_Data_List() {
-    this.masterService.get_Clinian_Table_Data().subscribe((response: any) => {
-      this.dataSource = response.data;
+    this.masterService.Get_GropDown('GENDER').subscribe((res: any) => {
+      this.genderDatasource = res;
     });
   }
 
+  // get_Clinician_Data_List() {
+  //   this.masterService.get_Clinian_Table_Data().subscribe((response: any) => {
+  //     this.dataSource = response.data;
+  //   });
+  // }
 
   onClickSaveNewClinician = () => {
     const {
@@ -130,7 +131,6 @@ export class ClinicianComponent implements OnInit {
       .subscribe((response: any) => {
         if (response) {
           this.dataGrid.instance.refresh();
-          this.get_Clinician_Data_List();
           notify(
             {
               message: `New Clinician saved Successfully`,
@@ -149,7 +149,6 @@ export class ClinicianComponent implements OnInit {
         }
       });
   };
-
 
   onRowRemoving(event: any) {
     event.cancel = true;
@@ -179,10 +178,8 @@ export class ClinicianComponent implements OnInit {
         }
         event.component.refresh();
         this.dataGrid.instance.refresh();
-        this.get_Clinician_Data_List();
       });
   }
-
 
   onRowUpdating(event: any) {
     const updataDate = event.newData;
@@ -213,7 +210,6 @@ export class ClinicianComponent implements OnInit {
       .subscribe((data: any) => {
         if (data) {
           this.dataGrid.instance.refresh();
-          this.get_Clinician_Data_List();
           notify(
             {
               message: `Clinician updated Successfully`,
@@ -239,17 +235,14 @@ export class ClinicianComponent implements OnInit {
     event.cancel = true;
   }
 
-
   onExporting(event: any) {
-    const fileName='Clinician'
-    this.service.exportDataGrid(event,fileName);
+    const fileName = 'Clinician';
+    this.service.exportDataGrid(event, fileName);
   }
-
 
   refresh = () => {
     this.dataGrid.instance.refresh();
   };
-
 
   onShowSearchBar() {
     this.showSearchBar = true;
@@ -258,7 +251,6 @@ export class ClinicianComponent implements OnInit {
   onHideSearchBar() {
     this.showSearchBar = false;
   }
-
 
   onSearchQueryChanged(event: any) {
     const query = event.value;
@@ -284,5 +276,3 @@ export class ClinicianComponent implements OnInit {
   declarations: [ClinicianComponent],
 })
 export class ClinicianListModule {}
-
-

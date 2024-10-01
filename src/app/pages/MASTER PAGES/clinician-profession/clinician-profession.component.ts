@@ -15,6 +15,7 @@ import { ReportService } from 'src/app/services/Report-data.service';
 import { MasterReportService } from '../master-report.service';
 import { ClinicianProfessionNewFormComponent } from '../../POP-UP_PAGES/clinician-profession-new-form/clinician-profession-new-form.component';
 import notify from 'devextreme/ui/notify';
+import DataSource from 'devextreme/data/data_source';
 
 @Component({
   selector: 'app-clinician-profession',
@@ -29,7 +30,6 @@ export class ClinicianProfessionComponent {
   ClinicianProfession: ClinicianProfessionNewFormComponent;
 
   isAddFormPopupOpened: any = false;
-  dataSource: any;
   //========Variables for Pagination ====================
   readonly allowedPageSizes: any = [5, 10, 'all'];
   displayMode: any = 'full';
@@ -38,30 +38,31 @@ export class ClinicianProfessionComponent {
   showNavButtons = true;
   facilityGroupDatasource: any;
 
+  dataSource = new DataSource<any>({
+    load: () =>
+      new Promise((resolve, reject) => {
+        this.masterService.Get_ClinicianProfession_Data().subscribe({
+          next: (response: any) => resolve(response.data), // Resolve with the data
+          error: (error) => reject(error.message), // Reject with the error message
+        });
+      }),
+  });
+
   constructor(
     private service: ReportService,
     private masterService: MasterReportService
   ) {}
 
-  ngOnInit(): void {
-    this.get_clinicianProfession_List();
-  }
   //=============Showing the new Facility Form===================
   show_new_InsuranceClassification_Form() {
     this.isAddFormPopupOpened = true;
   }
   //========================Get Datasource =======================
-  get_clinicianProfession_List() {
-    this.masterService
-      .Get_ClinicianProfession_Data()
-      .subscribe((response: any) => {
-        this.dataSource = response.data;
-      });
-  }
+
   //========================Export data ==========================
   onExporting(event: any) {
-    const fileName='clinician Profession'
-    this.service.exportDataGrid(event,fileName);
+    const fileName = 'clinician Profession';
+    this.service.exportDataGrid(event, fileName);
   }
   //====================Add data ================================
   onClickSaveNewData = () => {
@@ -72,7 +73,6 @@ export class ClinicianProfessionComponent {
       .subscribe((response: any) => {
         if (response) {
           this.dataGrid.instance.refresh();
-          this.get_clinicianProfession_List();
           notify(
             {
               message: `New Insurance Classification saved Successfully`,
@@ -121,7 +121,6 @@ export class ClinicianProfessionComponent {
         }
         event.component.refresh();
         this.dataGrid.instance.refresh();
-        this.get_clinicianProfession_List();
       });
   }
   //===================RTow Data Update==========================
@@ -138,7 +137,6 @@ export class ClinicianProfessionComponent {
       .subscribe((data: any) => {
         if (data) {
           this.dataGrid.instance.refresh();
-          this.get_clinicianProfession_List();
           notify(
             {
               message: `Insurance classification updated Successfully`,

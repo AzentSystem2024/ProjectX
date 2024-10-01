@@ -42,6 +42,7 @@ export class SystemServicesService {
       AccountLockDuration: data.resetDuration,
       AccountLockFailedLogin: data.failedLoginDuration,
       UserMustChangePasswordOnLogin: data.changePasswordOnLogin,
+      SessionTimeoutMinutes: data.SessionTimeOut,
       PasswordAge: data.passwordExpiryDaysCount,
       PasswordRepeatCycle: data.passwordRepeatCycle,
       UnauthorizedBannerMessage: data.unautherizedMessage,
@@ -83,7 +84,7 @@ export class SystemServicesService {
 
   //=============================Security Notification ===================================================
   //==============lising data===========
-  getSecurityNotificationDdata() {
+  getSecurityNotificationData() {
     const url = `${BASE_URL}/notificationsettings/list`;
     return this.http.post(url, {});
   }
@@ -101,11 +102,11 @@ export class SystemServicesService {
   }
 
   //=========update a notificatin template ========
- updateNotificationSettingTemplate(formdata: any) {
-  const url = `${BASE_URL}/notificationsettings/updatenotification`;
-  const reqBody = formdata;
-  return this.http.post(url, reqBody);
-}
+  updateNotificationSettingTemplate(formdata: any) {
+    const url = `${BASE_URL}/notificationsettings/updatenotification`;
+    const reqBody = formdata;
+    return this.http.post(url, reqBody);
+  }
   //=============send a test mail==================
   sendTestMail(userid: any, receiverid: any, subject: any, message: any) {
     const url = `${BASE_URL}/changepassword/formail`;

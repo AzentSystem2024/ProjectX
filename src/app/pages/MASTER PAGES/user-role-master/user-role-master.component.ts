@@ -26,6 +26,7 @@ import { UserLevelEditFormModule } from '../../POP-UP_PAGES/user-level-edit-form
 import { FormPopupModule } from 'src/app/components';
 import { MasterReportService } from '../master-report.service';
 import { ReportService } from 'src/app/services/Report-data.service';
+import DataSource from 'devextreme/data/data_source';
 
 @Component({
   selector: 'app-user-role-master',
@@ -33,7 +34,7 @@ import { ReportService } from 'src/app/services/Report-data.service';
   styleUrls: ['./user-role-master.component.scss'],
   providers: [MasterReportService, ReportService],
 })
-export class UserLevelMasterComponent implements OnInit {
+export class UserLevelMasterComponent {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
   @ViewChild(UserLevelNewFormComponent, { static: false })
@@ -41,9 +42,9 @@ export class UserLevelMasterComponent implements OnInit {
   @ViewChild(UserLevelEditFormComponent, { static: false })
   userlevelEditForm: UserLevelEditFormComponent;
 
-  popup_width: any = '50%';
+  popup_width: any = '60%';
   isAddFormVisible: boolean = false;
-  dataSource: any;
+
   //========Variables for Pagination ====================
   readonly allowedPageSizes: any = [5, 10, 'all'];
   displayMode: any = 'full';
@@ -55,13 +56,22 @@ export class UserLevelMasterComponent implements OnInit {
   iseditFormVisible: boolean = false;
   clickedRowData: any;
 
+  dataSource = new DataSource<any>({
+    load: () =>
+      new Promise((resolve, reject) => {
+        this.masterService.get_userLevel_List().subscribe({
+          next: (response: any) => {
+            resolve(response.data);
+          },
+          error: (error) => reject(error.message),
+        });
+      }),
+  });
+
   constructor(
     private masterService: MasterReportService,
     private service: ReportService
   ) {}
-  ngOnInit() {
-    this.fetch_all_UserLevel_list();
-  }
 
   show_new_Form() {
     this.isAddFormVisible = true;
@@ -69,11 +79,10 @@ export class UserLevelMasterComponent implements OnInit {
 
   onPopupClose(): void {
     this.isAddFormVisible = false;
-
   }
   onEditPopupClose() {
     this.iseditFormVisible = false;
-    this.userlevelEditForm.resetUserChanges()
+    this.userlevelEditForm.resetUserChanges();
   }
   //=================== Page refreshing==========================
   refresh = () => {
@@ -84,12 +93,6 @@ export class UserLevelMasterComponent implements OnInit {
     const fileName = 'userRole';
     this.service.exportDataGrid(event, fileName);
   }
-  //===============Fetch All User Level List===================
-  fetch_all_UserLevel_list() {
-    this.masterService.get_userLevel_List().subscribe((response: any) => {
-      this.dataSource = response.data;
-    });
-  }
   //=================OnClick save new data=======================
   onClickSaveNewData() {
     const menuData: any = this.userlevelNewForm.getNewUSerLevelData();
@@ -98,7 +101,7 @@ export class UserLevelMasterComponent implements OnInit {
       .subscribe((response: any) => {
         if (response) {
           this.dataGrid.instance.refresh();
-          this.fetch_all_UserLevel_list();
+
           notify(
             {
               message: `New User Level  saved Successfully`,
@@ -132,7 +135,7 @@ export class UserLevelMasterComponent implements OnInit {
       .subscribe((data: any) => {
         if (data) {
           this.dataGrid.instance.refresh();
-          this.fetch_all_UserLevel_list();
+
           notify(
             {
               message: `User Level updated Successfully`,
@@ -183,7 +186,6 @@ export class UserLevelMasterComponent implements OnInit {
         }
         event.component.refresh();
         this.dataGrid.instance.refresh();
-        this.fetch_all_UserLevel_list();
       });
   }
 

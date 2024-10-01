@@ -15,6 +15,7 @@ import { CptMasterNewFormModule } from '../../POP-UP_PAGES/cpt-master-new-form/c
 import { ReportService } from 'src/app/services/Report-data.service';
 import notify from 'devextreme/ui/notify';
 import { MasterReportService } from '../master-report.service';
+import DataSource from 'devextreme/data/data_source';
 
 @Component({
   selector: 'app-cpt-master',
@@ -22,13 +23,12 @@ import { MasterReportService } from '../master-report.service';
   styleUrls: ['./cpt-master.component.scss'],
   providers: [ReportService],
 })
-export class CPTMasterComponent implements OnInit {
+export class CPTMasterComponent {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
   @ViewChild(CptMasterNewFormComponent, { static: false })
   CptNewFormComponent: CptMasterNewFormComponent;
 
-  dataSource: any;
   //========Variables for Pagination ====================
   readonly allowedPageSizes: any = [5, 10, 'all'];
   displayMode: any = 'full';
@@ -38,25 +38,27 @@ export class CPTMasterComponent implements OnInit {
   facilityGroupDatasource: any;
   isAddFormPopupOpened: boolean = false;
 
+  dataSource = new DataSource<any>({
+    load: () =>
+      new Promise((resolve, reject) => {
+        this.masterService.get_CptMaster_List().subscribe({
+          next: (response: any) => resolve(response.data), // Resolve with the data
+          error: (error) => reject(error.message), // Reject with the error message
+        });
+      }),
+  });
+
   constructor(
     private service: ReportService,
     private masterService: MasterReportService
   ) {}
 
-  ngOnInit(): void {
-    this.get_CptTMaster_Data_List();
-  }
   //=========================show new popup=========================
   show_new_Form() {
     this.isAddFormPopupOpened = true;
   }
 
   //========================Get Datasource =======================
-  get_CptTMaster_Data_List() {
-    this.masterService.get_CptMaster_List().subscribe((response: any) => {
-      this.dataSource = response.data;
-    });
-  }
 
   //====================Add data ================================
   onClickSaveNewCptType = () => {
@@ -73,7 +75,6 @@ export class CPTMasterComponent implements OnInit {
       .subscribe((response: any) => {
         if (response) {
           this.dataGrid.instance.refresh();
-          this.get_CptTMaster_Data_List();
           notify(
             {
               message: `New Cpt Master saved Successfully`,
@@ -118,7 +119,7 @@ export class CPTMasterComponent implements OnInit {
       .subscribe((data: any) => {
         if (data) {
           this.dataGrid.instance.refresh();
-          this.get_CptTMaster_Data_List();
+
           notify(
             {
               message: `New Cpt Master updated Successfully`,
@@ -174,14 +175,13 @@ export class CPTMasterComponent implements OnInit {
         }
         event.component.refresh();
         this.dataGrid.instance.refresh();
-        this.get_CptTMaster_Data_List();
       });
   }
 
   //========================Export data ==========================
   onExporting(event: any) {
-    const fileName='CPT master'
-    this.service.exportDataGrid(event,fileName);
+    const fileName = 'CPT master';
+    this.service.exportDataGrid(event, fileName);
   }
 
   //=================== Page refreshing==========================

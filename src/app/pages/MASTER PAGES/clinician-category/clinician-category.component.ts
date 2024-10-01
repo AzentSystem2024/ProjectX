@@ -15,6 +15,7 @@ import { ClinicianCategoryNewFormModule } from '../../POP-UP_PAGES/clinician-cat
 import { CommonModule } from '@angular/common';
 import { ClinicianCategoryNewFormComponent } from '../../POP-UP_PAGES/clinician-category-new-form/clinician-category-new-form.component';
 import { FormPopupModule } from 'src/app/components';
+import DataSource from 'devextreme/data/data_source';
 @Component({
   selector: 'app-clinician-category',
   templateUrl: './clinician-category.component.html',
@@ -28,7 +29,7 @@ export class ClinicianCategoryComponent {
   ClinicianCategory: ClinicianCategoryNewFormComponent;
 
   isAddFormPopupOpened: any = false;
-  dataSource: any;
+  // dataSource: any;
   //========Variables for Pagination ====================
   readonly allowedPageSizes: any = [5, 10, 'all'];
   displayMode: any = 'full';
@@ -37,26 +38,37 @@ export class ClinicianCategoryComponent {
   showNavButtons = true;
   facilityGroupDatasource: any;
 
+  dataSource = new DataSource<any>({
+    load: () =>
+      new Promise((resolve, reject) => {
+        this.masterService.Get_ClinicianCategory_Data().subscribe({
+          next: (response: any) => resolve(response.data), // Resolve with the data
+          error: (error) => reject(error.message), // Reject with the error message
+        });
+      }),
+  });
+
+
   constructor(
     private service: ReportService,
     private masterService: MasterReportService
   ) {}
 
-  ngOnInit(): void {
-    this.get_clinicianCategory_List();
-  }
+  // ngOnInit(): void {
+  //   this.get_clinicianCategory_List();
+  // }
   //=============Showing the new Facility Form===================
   show_new_InsuranceClassification_Form() {
     this.isAddFormPopupOpened = true;
   }
-  //========================Get Datasource =======================
-  get_clinicianCategory_List() {
-    this.masterService
-      .Get_ClinicianCategory_Data()
-      .subscribe((response: any) => {
-        this.dataSource = response.data;
-      });
-  }
+  // //========================Get Datasource =======================
+  // get_clinicianCategory_List() {
+  //   this.masterService
+  //     .Get_ClinicianCategory_Data()
+  //     .subscribe((response: any) => {
+  //       this.dataSource = response.data;
+  //     });
+  // }
   //========================Export data ==========================
   onExporting(event: any) {
     const fileName='Clinician Category'
@@ -71,7 +83,7 @@ export class ClinicianCategoryComponent {
       .subscribe((response: any) => {
         if (response) {
           this.dataGrid.instance.refresh();
-          this.get_clinicianCategory_List();
+          // this.get_clinicianCategory_List();
           notify(
             {
               message: `New data saved Successfully`,
@@ -120,7 +132,7 @@ export class ClinicianCategoryComponent {
         }
         event.component.refresh();
         this.dataGrid.instance.refresh();
-        this.get_clinicianCategory_List();
+        // this.get_clinicianCategory_List();
       });
   }
   //===================RTow Data Update==========================
@@ -137,7 +149,7 @@ export class ClinicianCategoryComponent {
       .subscribe((data: any) => {
         if (data) {
           this.dataGrid.instance.refresh();
-          this.get_clinicianCategory_List();
+          // this.get_clinicianCategory_List();
           notify(
             {
               message: `Data updated Successfully`,

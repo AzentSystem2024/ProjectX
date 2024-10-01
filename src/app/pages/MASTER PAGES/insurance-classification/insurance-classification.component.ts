@@ -15,6 +15,7 @@ import notify from 'devextreme/ui/notify';
 import { InsuranceClassificationNewFormComponent } from '../../POP-UP_PAGES/insurance-classification-new-form/insurance-classification-new-form.component';
 import { ReportService } from 'src/app/services/Report-data.service';
 import { MasterReportService } from '../master-report.service';
+import DataSource from 'devextreme/data/data_source';
 
 @Component({
   selector: 'app-insurance-classification',
@@ -29,7 +30,7 @@ export class InsuranceClassificationComponent {
   InsuranceClassification: InsuranceClassificationNewFormComponent;
 
   isAddFormPopupOpened: any = false;
-  dataSource: any;
+
   //========Variables for Pagination ====================
   readonly allowedPageSizes: any = [5, 10, 'all'];
   displayMode: any = 'full';
@@ -38,30 +39,31 @@ export class InsuranceClassificationComponent {
   showNavButtons = true;
   facilityGroupDatasource: any;
 
+  dataSource = new DataSource<any>({
+    load: () =>
+      new Promise((resolve, reject) => {
+        this.masterService.Get_InsuranceClassification_Data().subscribe({
+          next: (response: any) => resolve(response.data),
+          error: (error) => reject(error.message), 
+        });
+      }),
+  });
+
   constructor(
     private service: ReportService,
     private masterService: MasterReportService
   ) {}
 
-  ngOnInit(): void {
-    this.get_insuranceClassification_Data_List();
-  }
   //=============Showing the new Facility Form===================
   show_new_InsuranceClassification_Form() {
     this.isAddFormPopupOpened = true;
   }
   //========================Get Datasource =======================
-  get_insuranceClassification_Data_List() {
-    this.masterService
-      .Get_InsuranceClassification_Data()
-      .subscribe((response: any) => {
-        this.dataSource = response.data;
-      });
-  }
+
   //========================Export data ==========================
   onExporting(event: any) {
-    const fileName='Insurance-Classification'
-    this.service.exportDataGrid(event,fileName);
+    const fileName = 'Insurance-Classification';
+    this.service.exportDataGrid(event, fileName);
   }
   //====================Add data ================================
   onClickSaveNewInsuranceClassification = () => {
@@ -75,7 +77,7 @@ export class InsuranceClassificationComponent {
       .subscribe((response: any) => {
         if (response) {
           this.dataGrid.instance.refresh();
-          this.get_insuranceClassification_Data_List();
+
           notify(
             {
               message: `New Insurance Classification saved Successfully`,
@@ -124,7 +126,6 @@ export class InsuranceClassificationComponent {
         }
         event.component.refresh();
         this.dataGrid.instance.refresh();
-        this.get_insuranceClassification_Data_List();
       });
   }
   //===================RTow Data Update==========================
@@ -141,7 +142,7 @@ export class InsuranceClassificationComponent {
       .subscribe((data: any) => {
         if (data) {
           this.dataGrid.instance.refresh();
-          this.get_insuranceClassification_Data_List();
+
           notify(
             {
               message: `Insurance classification updated Successfully`,

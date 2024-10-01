@@ -15,6 +15,7 @@ import { FacilityRegionNewFormComponent } from '../../POP-UP_PAGES/facility-regi
 import { FacilityRegionNewFormModule } from '../../POP-UP_PAGES/facility-region-new-form/facility-region-new-form.component';
 import { ReportService } from 'src/app/services/Report-data.service';
 import { MasterReportService } from '../master-report.service';
+import DataSource from 'devextreme/data/data_source';
 
 @Component({
   selector: 'app-facility-region',
@@ -22,13 +23,12 @@ import { MasterReportService } from '../master-report.service';
   styleUrls: ['./facility-region.component.scss'],
   providers: [ReportService],
 })
-export class FacilityRegionComponent implements OnInit {
+export class FacilityRegionComponent {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
   @ViewChild(FacilityRegionNewFormComponent, { static: false })
   facilityRegionComponent: FacilityRegionNewFormComponent;
 
-  dataSource: any;
   //========Variables for Pagination ====================
   readonly allowedPageSizes: any = [5, 10, 'all'];
   displayMode: any = 'full';
@@ -38,25 +38,25 @@ export class FacilityRegionComponent implements OnInit {
   facilityGroupDatasource: any;
   isAddFormPopupOpened: boolean = false;
 
+  dataSource = new DataSource<any>({
+    load: () =>
+      new Promise((resolve, reject) => {
+        this.masterService.Get_Facility_Region_Data().subscribe({
+          next: (response: any) => resolve(response.data),
+          error: (error) => reject(error.message),
+        });
+      }),
+  });
+
   constructor(
     private service: ReportService,
     private masterService: MasterReportService
   ) {}
 
-  ngOnInit(): void {
-    this.get_FacilityRegion_Data_List();
-  }
   //=========================show new popup=========================
   show_new_Form = () => {
     this.isAddFormPopupOpened = true;
   };
-
-  //========================Get Datasource =======================
-  get_FacilityRegion_Data_List() {
-    this.masterService.Get_Facility_Region_Data().subscribe((response: any) => {
-      this.dataSource = response.data;
-    });
-  }
 
   //====================Add data ================================
   onClickSaveNewFacilityRegion = () => {
@@ -67,7 +67,7 @@ export class FacilityRegionComponent implements OnInit {
       .subscribe((response: any) => {
         if (response) {
           this.dataGrid.instance.refresh();
-          this.get_FacilityRegion_Data_List();
+
           notify(
             {
               message: `New Facility region "${FacilityregionValue} ${DescriptionValue}" saved Successfully`,
@@ -89,8 +89,8 @@ export class FacilityRegionComponent implements OnInit {
 
   //========================Export data ==========================
   onExporting(event: any) {
-    const fileName='Facility Region'
-    this.service.exportDataGrid(event,fileName);
+    const fileName = 'Facility Region';
+    this.service.exportDataGrid(event, fileName);
   }
 
   //====================Row Data Deleting========================
@@ -122,7 +122,6 @@ export class FacilityRegionComponent implements OnInit {
         }
         event.component.refresh();
         this.dataGrid.instance.refresh();
-        this.get_FacilityRegion_Data_List();
       });
   }
   //===================RTow Data Update==========================
@@ -140,7 +139,7 @@ export class FacilityRegionComponent implements OnInit {
       .subscribe((data: any) => {
         if (data) {
           this.dataGrid.instance.refresh();
-          this.get_FacilityRegion_Data_List();
+
           notify(
             {
               message: `New Facility Region updated Successfully`,

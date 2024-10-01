@@ -18,19 +18,19 @@ import {
   FacilityTypeNewFormComponent,
   FacilityTypeNewFormModule,
 } from '../../POP-UP_PAGES/facility-type-new-form/facility-type-new-form.component';
+import DataSource from 'devextreme/data/data_source';
 @Component({
   selector: 'app-facility-type',
   templateUrl: './facility-type.component.html',
   styleUrls: ['./facility-type.component.scss'],
   providers: [DataService, ReportService],
 })
-export class FacilityTypeComponent implements OnInit {
+export class FacilityTypeComponent {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
   @ViewChild(FacilityTypeNewFormComponent, { static: false })
   facilityTypeComponent: FacilityTypeNewFormComponent;
 
-  dataSource: any;
   //========Variables for Pagination ====================
   readonly allowedPageSizes: any = [5, 10, 'all'];
   displayMode: any = 'full';
@@ -40,25 +40,27 @@ export class FacilityTypeComponent implements OnInit {
   facilityGroupDatasource: any;
   isAddFormPopupOpened: boolean = false;
 
+  dataSource = new DataSource<any>({
+    load: () =>
+      new Promise((resolve, reject) => {
+        this.masterService.Get_Facility_Type_Data().subscribe({
+          next: (response: any) => resolve(response.data),
+          error: (error) => reject(error.message),
+        });
+      }),
+  });
+
   constructor(
     private service: ReportService,
     private masterService: MasterReportService
   ) {}
 
-  ngOnInit(): void {
-    this.get_FacilityType_Data_List();
-  }
   //=========================show new popup=========================
   show_new_Form() {
     this.isAddFormPopupOpened = true;
   }
 
   //========================Get Datasource =======================
-  get_FacilityType_Data_List() {
-    this.masterService.Get_Facility_Type_Data().subscribe((response: any) => {
-      this.dataSource = response.data;
-    });
-  }
 
   //====================Add data ================================
   onClickSaveNewFacilityType = () => {
@@ -69,7 +71,7 @@ export class FacilityTypeComponent implements OnInit {
       .subscribe((response: any) => {
         if (response) {
           this.dataGrid.instance.refresh();
-          this.get_FacilityType_Data_List();
+
           notify(
             {
               message: `New Facility type "${FacilityTypeValue} ${DescriptionValue}" saved Successfully`,
@@ -124,7 +126,6 @@ export class FacilityTypeComponent implements OnInit {
         }
         event.component.refresh();
         this.dataGrid.instance.refresh();
-        this.get_FacilityType_Data_List();
       });
   }
   //===================RTow Data Update==========================
@@ -142,7 +143,7 @@ export class FacilityTypeComponent implements OnInit {
       .subscribe((data: any) => {
         if (data) {
           this.dataGrid.instance.refresh();
-          this.get_FacilityType_Data_List();
+
           notify(
             {
               message: `New Facility type updated Successfully`,

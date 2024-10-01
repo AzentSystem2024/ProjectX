@@ -13,6 +13,7 @@ import {
 import { SystemServicesService } from '../system-services.service';
 import { ReportService } from 'src/app/services/Report-data.service';
 import notify from 'devextreme/ui/notify';
+import DataSource from 'devextreme/data/data_source';
 
 @Component({
   selector: 'app-post-office-credentials',
@@ -30,9 +31,25 @@ export class PostOfficeCredentialsComponent implements OnInit {
   showPageSizeSelector = true;
   showInfo = true;
   showNavButtons = true;
-  dataSource: any;
   isSearchPanelVisible = false;
   postOffice_DropDownData: any;
+
+  dataSource = new DataSource<any>({
+    load: () =>
+      new Promise((resolve, reject) => {
+        this.systemService.get_PostOfficeCredencial_List().subscribe({
+          next: (response: any) => {
+            if (response) {
+              const transformedData = this.transformData(response); // Transform the data
+              resolve(transformedData); // Resolve with the transformed data
+            } else {
+              resolve([]); // Resolve with an empty array if response is falsy
+            }
+          },
+          error: (error) => reject(error.message), // Reject with the error message
+        });
+      }),
+  });
 
   constructor(
     private systemService: SystemServicesService,
@@ -40,7 +57,6 @@ export class PostOfficeCredentialsComponent implements OnInit {
   ) {}
   ngOnInit(): void {
     this.getDenial_Type_DropDown();
-    this.get_PostOfficeCredencial_List();
   }
 
   //=============Get Denial Type Drop dwn Data==============================
@@ -52,15 +68,15 @@ export class PostOfficeCredentialsComponent implements OnInit {
   }
 
   //====================Get post office credentials List==============
-  get_PostOfficeCredencial_List() {
-    this.systemService
-      .get_PostOfficeCredencial_List()
-      .subscribe((response: any) => {
-        if (response) {
-          this.dataSource = this.transformData(response);
-        }
-      });
-  }
+  // get_PostOfficeCredencial_List() {
+  //   this.systemService
+  //     .get_PostOfficeCredencial_List()
+  //     .subscribe((response: any) => {
+  //       if (response) {
+  //         this.dataSource = this.transformData(response);
+  //       }
+  //     });
+  // }
 
   //===============Change the last modified data format =============
   formatDateTime(dateTimeString) {
@@ -106,7 +122,7 @@ export class PostOfficeCredentialsComponent implements OnInit {
       .subscribe((data: any) => {
         if (data) {
           this.dataGrid.instance.refresh();
-          this.get_PostOfficeCredencial_List();
+
           notify(
             {
               message: ` updated Successfully`,
@@ -125,7 +141,6 @@ export class PostOfficeCredentialsComponent implements OnInit {
             'error'
           );
         }
-        // event.component.refresh();
         event.component.cancelEditData(); // Close the popup
         this.dataGrid.instance.refresh();
       });
@@ -141,8 +156,8 @@ export class PostOfficeCredentialsComponent implements OnInit {
 
   //========================Export data ==========================
   onExporting(event: any) {
-    const fileName='Post-office-credentials'
-    this.service.exportDataGrid(event,fileName);
+    const fileName = 'Post-office-credentials';
+    this.service.exportDataGrid(event, fileName);
   }
 }
 @NgModule({

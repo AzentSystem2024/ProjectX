@@ -15,6 +15,7 @@ import { ReportService } from 'src/app/services/Report-data.service';
 import { MasterReportService } from '../master-report.service';
 import { CommonModule } from '@angular/common';
 import { FormPopupModule } from 'src/app/components';
+import DataSource from 'devextreme/data/data_source';
 @Component({
   selector: 'app-clinician-major',
   templateUrl: './clinician-major.component.html',
@@ -28,7 +29,6 @@ export class ClinicianMajorComponent {
   ClinicianMajor: ClinicianMajorNewFormComponent;
 
   isAddFormPopupOpened: any = false;
-  dataSource: any;
   //========Variables for Pagination ====================
   readonly allowedPageSizes: any = [5, 10, 'all'];
   displayMode: any = 'full';
@@ -37,28 +37,30 @@ export class ClinicianMajorComponent {
   showNavButtons = true;
   facilityGroupDatasource: any;
 
+  dataSource = new DataSource<any>({
+    load: () =>
+      new Promise((resolve, reject) => {
+        this.masterService.Get_ClinicianMajor_Data().subscribe({
+          next: (response: any) => resolve(response.data), // Resolve with the data
+          error: (error) => reject(error.message), // Reject with the error message
+        });
+      }),
+  });
+
   constructor(
     private service: ReportService,
     private masterService: MasterReportService
   ) {}
 
-  ngOnInit(): void {
-    this.get_clinicianMajor_List();
-  }
   //=============Showing the new Facility Form===================
   show_new_InsuranceClassification_Form() {
     this.isAddFormPopupOpened = true;
   }
-  //========================Get Datasource =======================
-  get_clinicianMajor_List() {
-    this.masterService.Get_ClinicianMajor_Data().subscribe((response: any) => {
-      this.dataSource = response.data;
-    });
-  }
+
   //========================Export data ==========================
   onExporting(event: any) {
-    const fileName='clinician Major'
-    this.service.exportDataGrid(event,fileName);
+    const fileName = 'clinician Major';
+    this.service.exportDataGrid(event, fileName);
   }
   //====================Add data ================================
   onClickSaveNewData = () => {
@@ -69,7 +71,6 @@ export class ClinicianMajorComponent {
       .subscribe((response: any) => {
         if (response) {
           this.dataGrid.instance.refresh();
-          this.get_clinicianMajor_List();
           notify(
             {
               message: `New data saved Successfully`,
@@ -116,7 +117,6 @@ export class ClinicianMajorComponent {
       }
       event.component.refresh();
       this.dataGrid.instance.refresh();
-      this.get_clinicianMajor_List();
     });
   }
   //===================Row Data Update==========================
@@ -133,7 +133,6 @@ export class ClinicianMajorComponent {
       .subscribe((data: any) => {
         if (data) {
           this.dataGrid.instance.refresh();
-          this.get_clinicianMajor_List();
           notify(
             {
               message: `Data updated Successfully`,
