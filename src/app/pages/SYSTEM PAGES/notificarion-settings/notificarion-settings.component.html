@@ -295,13 +295,13 @@
     <div class="datagridSection mt-2">
       <div class="SubHeading">Notification Event Templates</div>
       <dx-data-grid
+        class="grid"
         [dataSource]="dataSource"
         [showBorders]="true"
         [height]="'auto'"
         [paging]="{ pageSize: 10 }"
         [allowColumnReordering]="true"
         [allowColumnResizing]="true"
-
         (onRowUpdating)="onRowUpdating($event)"
         (onEditingStart)="onEditingStart($event)"
       >
@@ -455,7 +455,6 @@
     [showCloseButton]="true"
     [(visible)]="isRowDataEditing"
     (onHiding)="clearFormData()"
-
   >
     <div class="d-flex align-items-center">
       <!-- <div class="flex-grow-1 text-center">

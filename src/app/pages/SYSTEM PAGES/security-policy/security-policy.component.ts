@@ -51,10 +51,22 @@ export class SecurityPolicyComponent implements OnInit {
   tooltipData: any;
   conditionEnableValue: boolean = true;
 
+  minAllowedLength: number = 6;
+
   constructor(private systemService: SystemServicesService) {}
   ngOnInit() {
     this.get_Present_Security_Policy();
   }
+
+  onPasswordLengthChange(e: any) {
+    if (e.value < this.minAllowedLength) {
+      this.minPasswordLength = this.minAllowedLength; // Prevent reducing below minimum
+    } else {
+      this.minPasswordLength = e.value;
+    }
+  }
+
+
 
   get_Present_Security_Policy() {
     this.systemService.get_securityPolicy_List().subscribe((response: any) => {

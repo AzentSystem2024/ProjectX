@@ -20,6 +20,8 @@
         [readOnly]="readOnlyValue"
         [disabled]="readOnlyValue"
         hint="Minimum length of a Password"
+        [min]="minAllowedLength"
+        (onValueChanged)="onPasswordLengthChange($event)"
       >
         <dxi-button name="spins"></dxi-button>
       </dx-number-box>
@@ -172,7 +174,7 @@
 
     <div class="rightDiv BorderBox">
       <div class="headingText">General</div>
-      <div class="dx-field m-1 ">
+      <div class="dx-field m-1">
         <dx-check-box
           class=""
           [(value)]="changePasswordOnLogin"
@@ -211,7 +213,6 @@
           label="Session Time Out"
           [width]="'75%'"
           hint="Session will logout after N minutes of inactivity"
-
         >
         </dx-number-box>
       </div>
