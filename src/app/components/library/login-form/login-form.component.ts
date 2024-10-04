@@ -126,7 +126,7 @@ export class LoginFormComponent implements OnInit {
                 } else {
                   notify(
                     {
-                      message: `invalid login...!!!`,
+                      message: response.message,
                       position: { at: 'top right', my: 'top right' },
                     },
                     'error'
@@ -136,7 +136,7 @@ export class LoginFormComponent implements OnInit {
             } else {
               notify(
                 {
-                  message: `invalid username or password...!!!`,
+                  message: response.message,
                   position: { at: 'top right', my: 'top right' },
                 },
                 'error'

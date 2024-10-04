@@ -545,12 +545,20 @@ body {
   padding-inline: 12px;
   background-color: #00a0e028;
 }
-.user-panel[_ngcontent-ng-c2123993514] .user-button.dx-dropdownbutton .dx-buttongroup .dx-button.dx-button-has-icon:not(.dx-button-has-text) .dx-button-content {
+.user-panel[_ngcontent-ng-c2123993514]
+  .user-button.dx-dropdownbutton
+  .dx-buttongroup
+  .dx-button.dx-button-has-icon:not(.dx-button-has-text)
+  .dx-button-content {
   padding: 0;
   background-color: #ffffff0a;
 }
 
-
-// .dx-datagrid-filter-row {
-//   background-color: var( --filter-row-color);
-// }
+.grid .dx-checkbox-checked.dx-state-readonly .dx-checkbox-icon {
+  color: #ffffff;
+  background-color: rgb(28, 142, 255);
+  border: 1px solid #00a1e0;
+}
+.grid .dx-checkbox.dx-state-readonly .dx-checkbox-icon {
+  border: 1px solid #00a1e0;
+}
