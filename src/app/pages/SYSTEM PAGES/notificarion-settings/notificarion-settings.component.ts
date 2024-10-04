@@ -16,6 +16,7 @@ import {
   DxDataGridComponent,
 } from 'devextreme-angular';
 import {
+  DxHtmlEditorComponent,
   DxHtmlEditorModule,
   DxHtmlEditorTypes,
 } from 'devextreme-angular/ui/html-editor';
@@ -39,72 +40,8 @@ export class NotificationSettingsComponent implements OnInit {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
 
-  tabsWithIconAndText: any = [
-    {
-      id: 0,
-      text: 'E-mail',
-      icon: 'bi bi-envelope',
-    },
-    {
-      id: 1,
-      text: 'SMS',
-      icon: 'bi bi-chat-square-text-fill',
-    },
-    {
-      id: 2,
-      text: 'WhatsApp',
-      icon: 'bi bi-whatsapp',
-    },
-  ];
+  @ViewChild('editor') editor: DxHtmlEditorComponent;
 
-  HtmleditorOptions: any = {
-    height: 200,
-    toolbar: {
-      items: [
-        'undo',
-        'redo',
-        'separator',
-        'bold',
-        'italic',
-        'underline',
-        'separator',
-        'color',
-        'background',
-        'separator',
-        'clear',
-        'separator',
-        'insertLink',
-        'insertImage',
-      ],
-    },
-  };
-
-  formData = {
-    EmailSenderID: '',
-    EmailSenderName: '',
-    EmailSenderPassword: '',
-    EmailSMTPHost: '',
-    EmailSMTPPort: '',
-    EmailEnableSSL: false,
-    SMSProviderURL: '',
-    SMSUserID: '',
-    SMSPassword: '',
-    SMSMobileNo: '',
-    WhatsappSource: '',
-    WhatsappNumber: '',
-  };
-
-  defaultRowData: any = {
-    NotificationType: '',
-    SendEmail: false,
-    EmailSubject: '',
-    EmailMessage: '',
-    SendSMS: false,
-    SMSTemplate: '',
-    SendWhatsapp: false,
-    WhatsappTemplate: '',
-    Notification: '',
-  };
   //========Variables for Pagination ====================
   readonly allowedPageSizes: any = [5, 10, 'all'];
   displayMode: any = 'full';
@@ -144,6 +81,55 @@ export class NotificationSettingsComponent implements OnInit {
   clickedEditRowData: any;
   isRowDataEditing: boolean = false;
   editpopupHeading: any;
+  templateKeyWords: any;
+
+  HtmleditorOptions: any;
+
+  tabsWithIconAndText: any = [
+    {
+      id: 0,
+      text: 'E-mail',
+      icon: 'bi bi-envelope',
+    },
+    {
+      id: 1,
+      text: 'SMS',
+      icon: 'bi bi-chat-square-text-fill',
+    },
+    {
+      id: 2,
+      text: 'WhatsApp',
+      icon: 'bi bi-whatsapp',
+    },
+  ];
+
+  formData = {
+    EmailSenderID: '',
+    EmailSenderName: '',
+    EmailSenderPassword: '',
+    EmailSMTPHost: '',
+    EmailSMTPPort: '',
+    EmailEnableSSL: false,
+    SMSProviderURL: '',
+    SMSUserID: '',
+    SMSPassword: '',
+    SMSMobileNo: '',
+    WhatsappSource: '',
+    WhatsappNumber: '',
+  };
+
+  defaultRowData: any = {
+    NotificationType: '',
+    SendEmail: false,
+    EmailSubject: '',
+    EmailMessage: '',
+    SendSMS: false,
+    SMSTemplate: '',
+    SendWhatsapp: false,
+    WhatsappTemplate: '',
+    Notification: '',
+  };
+  htmlEditorInstance: any;
 
   constructor(private service: SystemServicesService) {}
 
@@ -151,6 +137,26 @@ export class NotificationSettingsComponent implements OnInit {
     this.getNotificationSettingsData();
     this.getNotificationSettingsTemplateList();
     this.updateVisibility(); // Set visibility when component is loaded
+  }
+
+  addToEmailMessage(selectedValue: string) {
+    if (selectedValue) {
+      let currentMessage = this.clickedEditRowData.EmailMessage || '';
+      const lastPIndex = currentMessage.lastIndexOf('</p>');
+      if (lastPIndex !== -1) {
+        currentMessage =
+          currentMessage.substring(0, lastPIndex) +
+          ` ${selectedValue}` +
+          currentMessage.substring(lastPIndex);
+      } else {
+        currentMessage = `${currentMessage} ${selectedValue}`;
+      }
+      this.clickedEditRowData.EmailMessage = currentMessage;
+      console.log(
+        'Updated EmailMessage:',
+        this.clickedEditRowData.EmailMessage
+      );
+    }
   }
 
   //=================Notification Settings Data===============
@@ -166,8 +172,42 @@ export class NotificationSettingsComponent implements OnInit {
         item.serialNumber = index + 1;
       });
       this.dataSource = response.data;
+      this.templateKeyWords = response.keywords[0].EmailValue.replace(
+        /[]/g,
+        ''
+      ).split(',');
+      this.HtmleditorOptions = {
+        height: 200,
+        toolbar: {
+          items: [
+            'undo',
+            'redo',
+            'separator',
+            'bold',
+            'italic',
+            'underline',
+            'separator',
+            'color',
+            'background',
+            'separator',
+            'clear',
+            'separator',
+            {
+              name: 'Template Values',
+              widget: 'dxSelectBox',
+              options: {
+                items: this.templateKeyWords,
+                placeholder: 'Key Words',
+                onValueChanged: (e) => this.addToEmailMessage(e.value),
+              },
+              location: 'before',
+            },
+          ],
+        },
+      };
     });
   }
+
   //================Tab Click event===============
   onTabClick(e: any) {
     this.clickedTabName = e.itemData.text;
@@ -233,7 +273,7 @@ export class NotificationSettingsComponent implements OnInit {
           this.isRowDataEditing = false;
           notify(
             {
-              message: `Your notification template updated successfully`,
+              message: response.message,
               position: { at: 'top right', my: 'top right' },
             },
             'success'
@@ -243,7 +283,7 @@ export class NotificationSettingsComponent implements OnInit {
           this.isRowDataEditing = false;
           notify(
             {
-              message: `Sorry..! Your notification template update failed`,
+              message: response.message,
               position: { at: 'top right', my: 'top right' },
             },
             'error'
@@ -253,15 +293,8 @@ export class NotificationSettingsComponent implements OnInit {
   }
 
   clearFormData() {
-    this.clickedEditRowData = { ...this.defaultRowData };
+    this.getNotificationSettingsTemplateList();
     this.isRowDataEditing = false;
-    // this.clickedEditRowData.EmailMessage = '';
-    // this.clickedEditRowData.SendEmail = false;
-    // this.clickedEditRowData.EmailSubject = '';
-    // this.clickedEditRowData.SendSMS = false;
-    // this.clickedEditRowData.SMSTemplate = '';
-    // this.clickedEditRowData.SendWhatsapp = false;
-    // this.clickedEditRowData.WhatsappTemplate = '';
   }
 
   onRowUpdating(event: any) {}
