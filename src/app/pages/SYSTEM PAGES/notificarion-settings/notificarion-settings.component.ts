@@ -208,7 +208,7 @@ export class NotificationSettingsComponent implements OnInit {
     });
   }
 
-  //================Tab Click event===============
+  //=====================Tab Click event==============
   onTabClick(e: any) {
     this.clickedTabName = e.itemData.text;
     this.updateVisibility();
