@@ -345,12 +345,15 @@ toggleConfirmPasswordVisibility() : void {
   }
 
   checkPasswordStrength(): boolean {
-    if (!this.securityPolicyData) return false;
+    // Skip password validation if not required
+    if (!this.securityPolicyData || !this.securityPolicyData.PasswordValidationRequired) {
+      return true;
+    }
 
     return this.checkNumbers() && this.checkUppercase() && this.checkLowercase() &&
            this.checkSpecialCharacters() && this.checkMinimumLength();
   }
-
+  
   onConfirmPasswordKeyDown(event: Event): void {
     // Capture current input value
     const target = event.target as HTMLInputElement;

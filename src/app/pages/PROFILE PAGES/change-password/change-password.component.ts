@@ -30,6 +30,7 @@ export class ChangePasswordComponent implements OnInit {
   showConfirmPassword: boolean = false;
   isPasswordVisible: boolean = false;
   isOldPasswordVisible: boolean = false;
+  isSaving: boolean = false; // Property to track saving state
 
   constructor(private service: MasterReportService,private authService:AuthService,private route:Router) {
     this.UserID=sessionStorage.getItem('UserID');
@@ -53,16 +54,20 @@ export class ChangePasswordComponent implements OnInit {
 
   saveNewPassword(){
 
+  this.isSaving=true;
+
     // Validate the entire validation group
   const validationResult = this.validationGroup.instance.validate();
 
   // Check if the form is valid before proceeding
   if (!validationResult.isValid) {
+    this.isSaving=false;
     return; // Stop execution if form is not valid; error messages will be shown next to the fields
   }
 
   // Check if the new password meets the security policy
   if (!this.checkPasswordStrength()) {
+    this.isSaving=false;
     // Show error message if the password does not meet the security policy
     notify(
       {
@@ -97,8 +102,24 @@ export class ChangePasswordComponent implements OnInit {
         );
         // Navigate to login page after notification
         setTimeout(() => {
-          this.authService.logOut();
-        }, 500); // Wait for notification to display before navigating
+          this.authService.logOut();this.authService.logOut().subscribe((response:any)=>{
+            if(response){
+              localStorage.removeItem('sidemenuItems');
+              sessionStorage.clear();
+              this.route.navigate(['/auth/login']);
+            }
+          })
+        }); // Wait for notification to display before navigating
+      }
+      else{
+        notify(
+          {
+            message: res.message,
+            position: { at: 'top right', my: 'top right' },
+            displayTime: 500,
+          },
+          'error'
+        );
       }
       } catch (error) {
         notify(
@@ -193,7 +214,10 @@ export class ChangePasswordComponent implements OnInit {
 
   // Function to check if the password meets all security requirements
   checkPasswordStrength(): boolean {
-    if (!this.securityPolicyData) return false;
+    // Skip password validation if not required
+    if (!this.securityPolicyData || !this.securityPolicyData.PasswordValidationRequired) {
+      return true;
+    }
 
     return this.checkNumbers() && this.checkUppercase() && this.checkLowercase() &&
            this.checkSpecialCharacters() && this.checkMinimumLength();

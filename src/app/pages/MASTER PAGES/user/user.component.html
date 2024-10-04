@@ -12,9 +12,10 @@
     (onEditingStart)="onEditingRow($event)"
     (onRowRemoving)="onRowRemoving($event)"
     height="84vh"
+  
   >
     <dxo-paging [pageSize]="10"></dxo-paging>
-    <dxo-editing mode="popup" [allowUpdating]="true" [allowDeleting]="true">
+    <dxo-editing mode="popup" [allowUpdating]="true" [allowDeleting]="isDeleteIconVisible">
     </dxo-editing>
     <dxo-pager
     [visible]="true"
