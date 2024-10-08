@@ -457,9 +457,6 @@
     (onHiding)="clearFormData()"
   >
     <div class="d-flex align-items-center">
-      <!-- <div class="flex-grow-1 text-center">
-        <h4>{{ editpopupHeading }}</h4>
-      </div> -->
       <div class="ms-auto me-4">
         <dx-button
           stylingMode="contained"
@@ -470,7 +467,7 @@
       </div>
     </div>
 
-    <dx-form [formData]="clickedEditRowData" caption=" hello testing">
+    <dx-form [formData]="clickedEditRowData" caption="Hello Testing">
       <!-- First Group -->
       <dxi-item itemType="group" [colCount]="2" class="mb-3">
         <!-- First Row: SendEmail -->
@@ -487,6 +484,7 @@
 
         <!-- Third Row: EmailMessage -->
         <dxi-item
+          #editor
           dataField="EmailMessage"
           editorType="dxHtmlEditor"
           [colSpan]="2"
@@ -494,7 +492,7 @@
         ></dxi-item>
       </dxi-item>
 
-      <!-- -------Second Row Of SmS and WhatsApp-------- -->
+      <!-- Second Row of SMS and WhatsApp -->
       <dxi-item itemType="group" [colCount]="1" class="mb-3">
         <!-- Second Group: SMS -->
         <dxi-item itemType="group" [colCount]="1">

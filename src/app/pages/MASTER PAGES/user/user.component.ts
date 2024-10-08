@@ -82,6 +82,11 @@ export class UserComponent {
     });
   }
 
+  isDeleteIconVisible({ row }: { row: any }): boolean {
+    // Allow delete only if the UserRoleName is not 'Administrator'
+    return row.data.UserRoleName !== 'Administrator';
+  }
+
   show_new_Form() {
     this.isAddFormPopupOpened = true;
   }
