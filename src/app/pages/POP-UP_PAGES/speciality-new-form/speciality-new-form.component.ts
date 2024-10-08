@@ -39,6 +39,7 @@ export class SpecialityNewFormComponent {
     CommonModule,
     ReactiveFormsModule,
     DxSelectBoxModule,
+    DxTextAreaModule,
   ],
   declarations: [SpecialityNewFormComponent],
   exports: [SpecialityNewFormComponent],

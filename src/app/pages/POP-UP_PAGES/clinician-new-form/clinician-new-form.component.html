@@ -28,31 +28,31 @@
   
       <dxi-item>
         <div *dxTemplate>
-          <form-textbox
+          <dx-text-box
             
             label="Clinician Name"
             [(value)]="newClinician.ClinicianName"
-            [isEditing]="true"
+           
           >
-          </form-textbox>
+          </dx-text-box>
         </div>
       </dxi-item>
 
       <dxi-item>
         <div *dxTemplate>
-          <form-textbox
+          <dx-text-box
             
             label="Clinician Short Name"
             [(value)]="newClinician.ClinicianShortName"
-            [isEditing]="true"
+           
           >
-          </form-textbox>
+          </dx-text-box>
         </div>
       </dxi-item>
   
       <dxi-item>
         <div *dxTemplate>
-          <div>Speciality</div>
+          <div class="select-box-label">Speciality</div>
           <dx-select-box
             
             [items]="specialityDatasource"
@@ -66,7 +66,7 @@
   
       <dxi-item>
         <div *dxTemplate>
-          <div>Major</div>
+          <div class="select-box-label">Major</div>
           <dx-select-box
             
             [items]="clinicianMajorDatasource"
@@ -80,7 +80,7 @@
 
       <dxi-item>
         <div *dxTemplate>
-          <div>Profession</div>
+          <div class="select-box-label">Profession</div>
           <dx-select-box
            
             [items]="clinicianProfessionDatasource"
@@ -94,7 +94,7 @@
 
       <dxi-item>
         <div *dxTemplate>
-          <div>Category</div>
+          <div class="select-box-label">Category</div>
           <dx-select-box
            
             [items]="clinicianCategoryDatasource"
@@ -108,7 +108,7 @@
 
        <dxi-item>
         <div *dxTemplate>
-          <div>Gender</div>
+          <div class="select-box-label">Gender</div>
           <dx-select-box
             [items]="genderDatasource"
             displayExpr="DESCRIPTION"
