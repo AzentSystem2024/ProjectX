@@ -8,7 +8,8 @@ import { Workbook } from 'exceljs';
 import { saveAs } from 'file-saver-es';
 
 import { environment } from 'src/environments/environment';
-const BASE_URL=environment.PROJECTX_API_BASE_URL
+import { Router } from '@angular/router';
+const BASE_URL = environment.PROJECTX_API_BASE_URL;
 // const baseURL2 = InitData_URL;
 
 @Injectable()
@@ -29,7 +30,7 @@ export class ReportService {
     { name: 'December', value: 11 },
   ];
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   //============Share months to component ================
   getMonths(): { name: string; value: number }[] {
@@ -44,13 +45,11 @@ export class ReportService {
     EncounterType: any,
     DateFrom: any,
     DateTo: any,
-    ReceiverId:any,
-    PayerId:any,
-    Payer:any,
-    Clinician:any,
-    OrderingClinician:any,
-
-
+    ReceiverId: any,
+    PayerId: any,
+    Payer: any,
+    Clinician: any,
+    OrderingClinician: any
   ) {
     const url = `${BASE_URL}reports/claimdetails`;
     const reqBodyData = {
@@ -60,38 +59,47 @@ export class ReportService {
       DateTo: DateTo,
       EncounterType: EncounterType,
       Facility: Facility,
-      ReceiverId:ReceiverId,
-      PayerId:PayerId,
-      Payer:Payer,
-      Clinician:Clinician,
-      OrderingClinician:OrderingClinician
-
-
-
+      ReceiverId: ReceiverId,
+      PayerId: PayerId,
+      Payer: Payer,
+      Clinician: Clinician,
+      OrderingClinician: OrderingClinician,
     };
     return this.http.post(url, reqBodyData);
   }
 
-  //==================Fetch DropDown Data ==============================
-  get_Init_Data() {
-    const url = `${BASE_URL}/reports/parametervalues`;
-    const reqBody = {};
-    return this.http.post(url, reqBody);
-  }
   //===============Fetch all search parametrs dropdown values===========
   get_SearchParametrs_Data() {
+    const userid = sessionStorage.getItem('UserID');
+    const currentPathName = this.router.url.replace('/', '');
     const url = `${BASE_URL}/reports/parametervalues`;
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: 'dXNlcmlkPTEmdGltZT0yMDI0MDYyMTExMDk=',
-    });
-    return this.http.post(url, headers);
+    const reqBody = { userid: userid, reportid: currentPathName };
+    return this.http.post(url, reqBody);
+  }
+
+  //================fetch datasource of Claim-Details-With_Activity=============
+  fetch_Claim_Details_With_Activity(formData:any) {
+    const userid = sessionStorage.getItem('UserID');
+    const url = `${BASE_URL}reports/claimdetailswithactivity`;
+    const reqBody = {
+      userid: userid,
+      SearchOn: formData.SearchOn,
+      DateFrom: formData.From_Date,
+      DateTo: formData.To_Date,
+      Facility: '',
+      ReceiverId: '',
+      PayerId: '',
+      Payer: '',
+      Clinician: '',
+      OrderingClinician: '',
+    };
+    return this.http.post(url, reqBody);
   }
   //=========================Fetch System Currency Format==================
   getSystemCurrencyCode(): string {
     return new Intl.NumberFormat(navigator.language, {
       style: 'currency',
-      currency: 'USD', // Default currency code
+      currency: 'USD',
     }).resolvedOptions().currency;
   }
   //=========================Save memorise Report==========================
@@ -113,7 +121,7 @@ export class ReportService {
   }
 
   //==============Export function==================
-  exportDataGrid(e: any,fileName:any) {
+  exportDataGrid(e: any, fileName: any) {
     if (e.format === 'pdf') {
       const doc = new jsPDF();
       exportDataGridToPdf({

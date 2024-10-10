@@ -86,7 +86,6 @@ export class SideNavigationMenuComponent
     if (!this.menu.instance) {
       return;
     }
-
     this.menu.instance.selectItem(this.selectedItem);
   }
 

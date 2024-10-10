@@ -49,6 +49,7 @@ import { ChangePasswordComponent } from './pages/PROFILE PAGES/change-password/c
 import { LicenseInfoComponent } from './pages/SYSTEM PAGES/license-info/license-info.component';
 import { FacilityRegionComponent } from './pages/MASTER PAGES/facility-region/facility-region.component';
 import { NotificationSettingsComponent } from './pages/SYSTEM PAGES/notificarion-settings/notificarion-settings.component';
+import { ClaimDetailsActivityComponent } from './pages/REPORT PAGES/claim-details-activity/claim-details-activity.component';
 const routes: Routes = [
   {
     path: '',
@@ -148,7 +149,6 @@ const routes: Routes = [
       {
         path: 'change-password',
         component: ChangePasswordComponent,
-       
       },
       {
         path: 'ctp-master-page',
@@ -218,6 +218,11 @@ const routes: Routes = [
       {
         path: 'reset-password-form',
         component: AppResetPasswordComponent,
+        canActivate: [AuthGuardService],
+      },
+      {
+        path: 'claim-details-activity',
+        component: ClaimDetailsActivityComponent,
         canActivate: [AuthGuardService],
       },
       {

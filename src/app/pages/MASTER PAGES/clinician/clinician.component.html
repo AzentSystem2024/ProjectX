@@ -74,8 +74,8 @@
 
     <dxo-export
       [enabled]="true"
-      [allowExportSelectedData]="true"
-      [formats]="['xlsx', 'pdf']"
+      [allowExportSelectedData]="false"
+      [formats]="['xlsx']"
     ></dxo-export>
 
     <dxo-toolbar>
@@ -95,7 +95,7 @@
           icon="plus"
           type="default"
           stylingMode="contained"
-         
+
           class="add-button"
           hint="Add new clinician"
           (onClick)="show_new__Form()"

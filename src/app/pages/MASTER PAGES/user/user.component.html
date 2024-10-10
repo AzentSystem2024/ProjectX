@@ -12,19 +12,22 @@
     (onEditingStart)="onEditingRow($event)"
     (onRowRemoving)="onRowRemoving($event)"
     height="84vh"
-  
   >
     <dxo-paging [pageSize]="10"></dxo-paging>
-    <dxo-editing mode="popup" [allowUpdating]="true" [allowDeleting]="isDeleteIconVisible">
+    <dxo-editing
+      mode="popup"
+      [allowUpdating]="true"
+      [allowDeleting]="isDeleteIconVisible"
+    >
     </dxo-editing>
     <dxo-pager
-    [visible]="true"
-    [allowedPageSizes]="allowedPageSizes"
-    [displayMode]="displayMode"
-    [showPageSizeSelector]="showPageSizeSelector"
-    [showInfo]="showInfo"
-    [showNavigationButtons]="showNavButtons"
-  ></dxo-pager>
+      [visible]="true"
+      [allowedPageSizes]="allowedPageSizes"
+      [displayMode]="displayMode"
+      [showPageSizeSelector]="showPageSizeSelector"
+      [showInfo]="showInfo"
+      [showNavigationButtons]="showNavButtons"
+    ></dxo-pager>
     <dxo-load-panel [showPane]="false"></dxo-load-panel>
     <dxo-scrolling mode="virtual"></dxo-scrolling>
     <dxo-sorting mode="multiple"></dxo-sorting>
@@ -33,11 +36,11 @@
     <dxo-column-chooser [enabled]="true" [height]="400"></dxo-column-chooser>
     <dxo-search-panel [visible]="true" placeholder=" Search"></dxo-search-panel>
     <dxo-export
-    [enabled]="true"
-    [allowExportSelectedData]="true"
-    [formats]="['xlsx', 'pdf']"
-  >
-  </dxo-export>
+      [enabled]="true"
+      [allowExportSelectedData]="false"
+      [formats]="['xlsx']"
+    >
+    </dxo-export>
 
     <dxo-toolbar>
       <dxi-item location="before">

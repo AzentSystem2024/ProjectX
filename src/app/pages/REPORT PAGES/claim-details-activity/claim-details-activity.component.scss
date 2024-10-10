@@ -63,6 +63,29 @@
 .importItem {
   width: 600px;
 }
+.center-Button-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0px;
+  margin: 0px;
+}
 
-// -------------------------------------------
+.btnDemo {
+  padding: 0px;
+  margin: 0px;
+  background-color: #1b1e20;
+  color: white;
+  border: none;
+  width: 150px;
+  height: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
+.btnDemo i {
+  font-size: 24px;
+}

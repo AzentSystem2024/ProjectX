@@ -52,9 +52,11 @@ export class SecurityPolicyComponent implements OnInit {
   conditionEnableValue: boolean = true;
 
   minAllowedLength: number = 6;
+  userId: any;
 
   constructor(private systemService: SystemServicesService) {}
   ngOnInit() {
+    this.userId=sessionStorage.getItem('UserID')
     this.get_Present_Security_Policy();
   }
 
@@ -69,7 +71,7 @@ export class SecurityPolicyComponent implements OnInit {
 
 
   get_Present_Security_Policy() {
-    this.systemService.get_securityPolicy_List().subscribe((response: any) => {
+    this.systemService.get_securityPolicy_List(this.userId).subscribe((response: any) => {
       if (response) {
         this.presentSecurityData = response.data[0];
         this.tooltipData = response.Tooltip;
@@ -109,6 +111,7 @@ export class SecurityPolicyComponent implements OnInit {
   }
 
   onClickSave() {
+
     const formData = {
       validationRequired: this.validationRequired,
       minPasswordLength: this.minPasswordLength,
@@ -131,8 +134,9 @@ export class SecurityPolicyComponent implements OnInit {
       passwordRepeatCycle: this.passwordRepeatCycle,
       unautherizedMessage: this.unautherizedMessage,
       disableUserOn: this.disableUserOn,
+      UserID:this.userId
     };
-    // console.log(formData);
+
     this.systemService
       .save_security_Policy_Data(formData)
       .subscribe((response: any) => {

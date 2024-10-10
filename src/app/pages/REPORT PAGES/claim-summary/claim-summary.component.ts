@@ -89,6 +89,7 @@ export class ClaimSummaryComponent implements AfterViewInit {
   denialComponent: DenialNewFormComponent;
 
   @ViewChild('lookup', { static: false }) lookup: DxLookupComponent;
+
   @ViewChild(DxTreeViewComponent, { static: false })
   treeView: DxTreeViewComponent;
 
@@ -179,16 +180,8 @@ export class ClaimSummaryComponent implements AfterViewInit {
   constructor(
     private service: ReportService,
     private router: Router,
-    private route: ActivatedRoute,
-    private fb: FormBuilder,
     private reportEngine: ReportEngineService
   ) {
-    console.log(
-      '',
-      this.Facility_Value,
-      this.ReceiverID_Value,
-      this.PayerID_Value
-    );
     this.minDate = new Date(2000, 1, 1); // Set the minimum date
     this.maxDate = new Date(); // Set the maximum date
     // this.fetch_Dropdown_InitData();
@@ -212,14 +205,12 @@ export class ClaimSummaryComponent implements AfterViewInit {
     // }
   }
 
-
   ngAfterViewInit() {
     if (this.dataGrid) {
       const columns = this.dataGrid.instance.getVisibleColumns();
     }
   }
   //================Year value change ===========================
-
   onYearChanged(e: any): void {
     this.selectedYear = e.value;
     if (this.selectedmonth != '') {
@@ -275,17 +266,6 @@ export class ClaimSummaryComponent implements AfterViewInit {
     });
   }
 
-  //============Fetching DropDown Init Data==============
-  fetch_Dropdown_InitData() {
-    this.service.get_Init_Data().subscribe((response: any) => {
-      this.SearchOn_DataSource = response.SearchOn;
-      this.Facility_DataSource = response.facility.filter(
-        (item) => item.Name !== 'All'
-      );
-      this.EncounterType_DataSource = response.EncounterType;
-    });
-  }
-
   //============Get search parameters dropdown values=======
   get_searchParameters_Dropdown_Values() {
     this.service.get_SearchParametrs_Data().subscribe((response: any) => {
@@ -318,73 +298,54 @@ export class ClaimSummaryComponent implements AfterViewInit {
     OrderingClinician: any
   ) {
     this.dataSource = '';
-    this.service
-      .get_Claim_Summary_Date_wise(
-        userId,
-        searchOn,
-        Facility,
-        encounterType,
-        fromData,
-        toDate,
-        receiverId,
-        payerId,
-        payer,
-        Clinician,
-        OrderingClinician
-      )
-      .subscribe((data: any) => {
-        console.log('report data loaded', data);
-        const personalReportData = data.PersonalReports;
-        console.log('data loaded', personalReportData);
-        this.memorise_Dropdown_Data = personalReportData.map(
-          (personalReport) => {
-            return {
-              name: personalReport.name,
-            };
-          }
-        );
-
-        const personalReport = data.PersonalReports.find(
-          (report) => report.name === this.memoriseDropDownSelectedValue
-        );
-
-        // Extract the columns if the personalReport is found
-        this.MemoriseReportColumns = personalReport
-          ? personalReport.Columns
-          : [];
-        console.log('memo loaded', this.MemoriseReportColumns);
-        this.columnsData =
-          this.memoriseEnable === 'true'
-            ? this.MemoriseReportColumns
-            : data.ReportColumns;
-        console.log('columns are ', this.columnsData);
-        this.ColumnNames = this.columnsData.map((column) => column.Name);
-        // console.log("columns are fetched",this.columnsData)
-
-        // Assuming columnsData is the array of column objects you provided
-        this.columnsConfig = this.columnsData.map((column) => {
-          return {
-            dataField: column.Name,
-            caption: column.Title,
-            visible: column.Visibility === 'true' ? true : false,
-            type: column.Type,
-            format:
-              column.Type === 'Decimal'
-                ? {
-                    type: 'fixedPoint',
-                    precision: 2,
-                    // currency: this.systemCurrencyCode,
-                  }
-                : undefined,
-          };
-        });
-        console.log('testing 1', this.columnsConfig);
-        this.dataSource = data.ReportData;
-        console.log('report data is ', this.dataSource);
-        // sessionStorage.setItem('DataSource', JSON.stringify(data));
-        this.show_Pagination = true;
-        // this.refresh;
+    this.service.fetch_Claim_Details_With_Activity({}).subscribe((data: any) => {
+      // console.log('report data loaded', data);
+      const personalReportData = data.PersonalReports;
+      // console.log('data loaded', personalReportData);
+      this.memorise_Dropdown_Data = personalReportData.map((personalReport) => {
+        return {
+          name: personalReport.name,
+        };
       });
+
+      const personalReport = data.PersonalReports.find(
+        (report) => report.name === this.memoriseDropDownSelectedValue
+      );
+
+      // Extract the columns if the personalReport is found
+      this.MemoriseReportColumns = personalReport ? personalReport.Columns : [];
+      // console.log('memo loaded', this.MemoriseReportColumns);
+      this.columnsData =
+        this.memoriseEnable === 'true'
+          ? this.MemoriseReportColumns
+          : data.ReportColumns;
+      // console.log('columns are ', this.columnsData);
+      this.ColumnNames = this.columnsData.map((column) => column.Name);
+      // console.log("columns are fetched",this.columnsData)
+
+      // Assuming columnsData is the array of column objects you provided
+      this.columnsConfig = this.columnsData.map((column) => {
+        return {
+          dataField: column.Name,
+          caption: column.Title,
+          visible: column.Visibility === true ? true : false,
+          type: column.Type,
+          format:
+            column.Type === 'Decimal'
+              ? {
+                  type: 'fixedPoint',
+                  precision: 2,
+                }
+              : undefined,
+        };
+      });
+      // console.log('testing 1', this.columnsConfig);
+      this.dataSource = data.ReportData;
+      // console.log('report data is ', this.dataSource);
+      // sessionStorage.setItem('DataSource', JSON.stringify(data));
+      this.show_Pagination = true;
+      // this.refresh;
+    });
   }
   //============Call DataSource Using Selected Values====
   get_Report_DataSource() {
@@ -479,7 +440,7 @@ export class ClaimSummaryComponent implements AfterViewInit {
       ? 'Hide Parameters'
       : 'Show Parameters';
   };
-  //=================Show advance filter popup============
+  //=================Show advance filter popup==========
   get_advance_Filter() {
     this.isAdvancefilterOpened = true;
   }
@@ -501,7 +462,6 @@ export class ClaimSummaryComponent implements AfterViewInit {
   //=============DataGrid Refreshing=====================
   refresh = () => {
     this.dataGrid.instance.refresh();
-    // // console.log('grid console:', this.dataGrid.instance);
   };
   //=====================Search on Each Column===========
   applyFilter() {
@@ -514,8 +474,8 @@ export class ClaimSummaryComponent implements AfterViewInit {
   };
   //================Exporting Function===================
   onExporting(event: any) {
-    const fileName='Cliam-Summary'
-    this.service.exportDataGrid(event,fileName);
+    const fileName = 'Cliam-Summary';
+    this.service.exportDataGrid(event, fileName);
   }
   //==========show memorise save pop up==================
   show_Memorise_popup = () => {
