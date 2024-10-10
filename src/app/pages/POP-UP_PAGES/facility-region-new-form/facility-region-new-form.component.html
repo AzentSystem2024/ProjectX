@@ -18,16 +18,17 @@
       </div>
     </dxi-item>
 
-    <dxi-item height="30px">
+    <dxi-item>
       <div *dxTemplate>
         <dx-text-area
           label="Description"
           [(value)]="newFacilityRegionData.DescriptionValue"
-          [height]="300"
+          [height]="200"
           [width]="'100%'"
           [maxHeight]="200"
           [minHeight]="50"
           [autoResizeEnabled]="true"
+          placeholder="Enter a desciption..."
         >
         </dx-text-area>
       </div>
