@@ -81,17 +81,18 @@ export class ReportService {
   fetch_Claim_Details_With_Activity(formData:any) {
     const userid = sessionStorage.getItem('UserID');
     const url = `${BASE_URL}reports/claimdetailswithactivity`;
+    ""
     const reqBody = {
       userid: userid,
       SearchOn: formData.SearchOn,
       DateFrom: formData.From_Date,
       DateTo: formData.To_Date,
-      Facility: '',
-      ReceiverId: '',
-      PayerId: '',
-      Payer: '',
-      Clinician: '',
-      OrderingClinician: '',
+      Facility: formData.Facility,
+      ReceiverId: formData.ReceiverID,
+      PayerId: formData.PayerID,
+      Payer: formData.Payer,
+      Clinician: formData.Clinician,
+      OrderingClinician: formData.OrderingClinician,
     };
     return this.http.post(url, reqBody);
   }
@@ -104,16 +105,16 @@ export class ReportService {
   }
   //=========================Save memorise Report==========================
   save_Memorise_report(
-    userId: any,
-    reportId: any,
     reportName: any,
     memoriseColumnData: any,
     filterParameters: any
-  ): any {
+  ) {
+    const userid = sessionStorage.getItem('UserID');
+    const currentPathName = this.router.url.replace('/', '');
     const url = `${BASE_URL}userreports/insert`;
     const reqBody = {
-      USER_ID: userId,
-      REPORT_ID: reportId,
+      USER_ID: userid,
+      REPORT_ID: currentPathName,
       USER_REPORT_NAME: reportName,
       columns: memoriseColumnData,
     };

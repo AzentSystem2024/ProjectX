@@ -35,6 +35,8 @@ import { ReportService } from 'src/app/services/Report-data.service';
 import { ReportEngineService } from '../report-engine.service';
 import DataSource from 'devextreme/data/data_source';
 import { Router } from '@angular/router';
+import notify from 'devextreme/ui/notify';
+import { AdvanceFilterPopupModule } from '../../POP-UP_PAGES/advance-filter-popup/advance-filter-popup.component';
 @Component({
   selector: 'app-claim-details-activity',
   templateUrl: './claim-details-activity.component.html',
@@ -94,7 +96,7 @@ export class ClaimDetailsActivityComponent implements OnInit {
   paymentStatus_Value: any = null;
 
   //========Variables for Pagination ====================
-  readonly allowedPageSizes: any = [5, 10, 'all'];
+  readonly allowedPageSizes: any = [10, 20, 'all'];
   displayMode: any = 'full';
   showPageSizeSelector = true;
   showInfo = true;
@@ -113,9 +115,13 @@ export class ClaimDetailsActivityComponent implements OnInit {
   isFilterOpened = false; //filter row enable-desable variable
   GridSource: any;
   isDatagridLoaded: boolean = false;
-  // isSummaryOpened: boolean = false;
   summaryColumnsData: any[] = [];
   columndata: any;
+  isAdvancefilterOpened: boolean = false;
+  filterpopupWidth: any = '70%';
+  advanceFilterGridColumns: any;
+  MemoriseReportName: any;
+  isSaveMemorisedOpened: boolean = false;
 
   constructor(
     private service: ReportService,
@@ -153,27 +159,23 @@ export class ClaimDetailsActivityComponent implements OnInit {
       this.ResubmissionType_DataSource = response.ResubmissionType;
       this.CliamStatus_DataSource = response.ClaimStatus;
       this.paymentStatus_DataSource = response.PaymentStatus;
+      this.advanceFilterGridColumns = response.AdvanceFilter;
     });
-  }
-
-  loadDataSource() {
-    this.get_Datagrid_DataSource();
-    this.saveVisibleColumnNames();
   }
 
   //===========Fetch DataSource For The Datagrid Table=============
   get_Datagrid_DataSource() {
     const FormData = {
       SearchOn: this.SearchOn_Value,
-      Facility: this.Facility_Value,
+      Facility: this.Facility_Value.join(', '),
       EncounterType: this.EncounterType_Value,
       From_Date: this.reportengine.formatDate(this.From_Date_Value),
       To_Date: this.reportengine.formatDate(this.To_Date_Value),
-      ReceiverID: this.ReceiverID_Value,
-      PayerID: this.PayerID_Value,
-      Payer: this.Payer_Value,
-      Clinician: this.Clinician_Value,
-      OrderingClinician: this.OrderingClinician_Value,
+      ReceiverID: this.ReceiverID_Value.join(', '),
+      PayerID: this.PayerID_Value.join(', '),
+      Payer: this.Payer_Value.join(', '),
+      Clinician: this.Clinician_Value.join(', '),
+      OrderingClinician: this.OrderingClinician_Value.join(', '),
       ClaimNumber: this.ClaimNumber_Value,
       PatientID: this.PatientID_Value,
       Resubmission: this.Resubmission_Value,
@@ -182,6 +184,7 @@ export class ClaimDetailsActivityComponent implements OnInit {
       memberID: this.memberID_Value,
       paymentStatus: this.paymentStatus_Value,
     };
+    console.log('form data loaded:', FormData);
     this.dataGrid_DataSource = new DataSource<any>({
       load: () =>
         new Promise((resolve, reject) => {
@@ -205,9 +208,9 @@ export class ClaimDetailsActivityComponent implements OnInit {
                 };
               });
 
-              // this.ColumnNames = this.columnsConfig.map(
-              //   (column) => column.dataField
-              // );
+              this.ColumnNames = this.columnsConfig.map(
+                (column) => column.dataField
+              );
 
               this.memorise_Dropdown_DataList = response.PersonalReports.map(
                 (personalReport) => {
@@ -227,21 +230,33 @@ export class ClaimDetailsActivityComponent implements OnInit {
     });
   }
 
-  //====================List of The Columns for find Column Location==============
-  saveVisibleColumnNames() {
-    // Get visible columns from the grid instance
-    const visibleColumns = this.dataGrid.instance.getVisibleColumns();
-    // Save only the column names that have visibility set to true
-    this.ColumnNames = visibleColumns.map((column) => column.dataField);
-  }
+  import_Advance_Filter() {
+    const filterData = this.reportengine.getData();
+    console.log('advance filter imported data', filterData);
+    this.Facility_Value = this.Facility_DataSource.filter((item) =>
+      filterData.ReceiverID.split(',').includes(item.Name)
+    ).map((item) => item.ID);
 
-  //=================Making summaru column data======================
-  // getSummaryItemsForDecimalColumns() {
-  //   this.summaryColumnsData = this.columndata.filter(
-  //     (column) => column.Type === 'Decimal'
-  //   );
-  //   console.log('ghgdfdjhfdhlfkhdj', this.summaryColumnsData);
-  // }
+    this.ReceiverID_Value = this.RecieverID_DataSource.filter((item) =>
+      filterData.ReceiverID.split(',').includes(item.Name)
+    ).map((item) => item.ID);
+
+    this.PayerID_Value = this.PayerID_DataSource.filter((item) =>
+      filterData.PayerID.split(',').includes(item.Name)
+    ).map((item) => item.ID);
+
+    this.Payer_Value = this.Payer_DataSource.filter((item) =>
+      filterData.ReceiverID.split(',').includes(item.Name)
+    ).map((item) => item.ID);
+
+    this.Clinician_Value = this.Clinician_DataSource.filter((item) =>
+      filterData.Clinician.split(',').includes(item.Name)
+    ).map((item) => item.ID);
+
+    this.OrderingClinician_Value = this.OrderingClinician_DataSource.filter(
+      (item) => filterData.OrderingClinician.split(',').includes(item.Name)
+    ).map((item) => item.ID);
+  }
 
   //============Show Parametrs Div=======================
   show_Parameter_Div = () => {
@@ -321,6 +336,11 @@ export class ClaimDetailsActivityComponent implements OnInit {
     });
   }
 
+  //=================Show advance filter popup==========
+  get_advance_Filter() {
+    this.isAdvancefilterOpened = true;
+  }
+
   //=====================Search on Each Column===========
   applyFilter() {
     this.GridSource.filter();
@@ -344,6 +364,62 @@ export class ClaimDetailsActivityComponent implements OnInit {
     // this.memoriseEnable = 'true';
     // this.get_Report_DataSource();
   };
+
+  //==========show memorise save pop up==================
+  show_Memorise_popup = () => {
+    this.isSaveMemorisedOpened = !this.isSaveMemorisedOpened;
+  };
+  //==========fetch custome memorise report name==========
+  onMemoriseReportNameChanged(e) {
+    this.MemoriseReportName = e.value;
+  }
+  //================Save Memorize Reports=================
+  save_Memorise_Report() {
+    const memoriseName = this.MemoriseReportName;
+    const filterParameters = JSON.parse(sessionStorage.getItem('reportData'));
+    const reportColumns = this.columndata;
+    const allColumns = this.ColumnNames;
+    const columns = this.dataGrid.instance.getVisibleColumns();
+    const VisiblecolumnNames = columns
+      .map((col) => col.caption || col.dataField)
+      .filter((name) => name !== undefined);
+    const hiddenColumns = allColumns.filter(
+      (colName) => !VisiblecolumnNames.includes(colName)
+    );
+    const memoriseReportColumns = reportColumns.map((column) => {
+      return {
+        ...column,
+        Visibility: hiddenColumns.includes(column.Name) ? 'false' : 'true',
+      };
+    });
+
+    console.log('save memorise details', memoriseName, filterParameters);
+    this.service
+      .save_Memorise_report(
+        memoriseName,
+        memoriseReportColumns,
+        filterParameters
+      )
+      .subscribe((response: any) => {
+        if (response) {
+          notify(
+            {
+              message: `${response.message}`,
+              position: { at: 'top right', my: 'top right' },
+            },
+            'success'
+          );
+        } else {
+          notify(
+            {
+              message: `${response.message}`,
+              position: { at: 'top right', my: 'top right' },
+            },
+            'error'
+          );
+        }
+      });
+  }
 
   findColumnLocation = (e: any) => {
     const columnName = e.value;
@@ -390,6 +466,7 @@ export class ClaimDetailsActivityComponent implements OnInit {
     DxListModule,
     DxValidatorModule,
     DxValidationSummaryModule,
+    AdvanceFilterPopupModule,
   ],
   providers: [],
   exports: [],

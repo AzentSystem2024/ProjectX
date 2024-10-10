@@ -298,54 +298,60 @@ export class ClaimSummaryComponent implements AfterViewInit {
     OrderingClinician: any
   ) {
     this.dataSource = '';
-    this.service.fetch_Claim_Details_With_Activity({}).subscribe((data: any) => {
-      // console.log('report data loaded', data);
-      const personalReportData = data.PersonalReports;
-      // console.log('data loaded', personalReportData);
-      this.memorise_Dropdown_Data = personalReportData.map((personalReport) => {
-        return {
-          name: personalReport.name,
-        };
+    this.service
+      .fetch_Claim_Details_With_Activity({})
+      .subscribe((data: any) => {
+        // console.log('report data loaded', data);
+        const personalReportData = data.PersonalReports;
+        // console.log('data loaded', personalReportData);
+        this.memorise_Dropdown_Data = personalReportData.map(
+          (personalReport) => {
+            return {
+              name: personalReport.name,
+            };
+          }
+        );
+
+        const personalReport = data.PersonalReports.find(
+          (report) => report.name === this.memoriseDropDownSelectedValue
+        );
+
+        // Extract the columns if the personalReport is found
+        this.MemoriseReportColumns = personalReport
+          ? personalReport.Columns
+          : [];
+        // console.log('memo loaded', this.MemoriseReportColumns);
+        this.columnsData =
+          this.memoriseEnable === 'true'
+            ? this.MemoriseReportColumns
+            : data.ReportColumns;
+        // console.log('columns are ', this.columnsData);
+        this.ColumnNames = this.columnsData.map((column) => column.Name);
+        // console.log("columns are fetched",this.columnsData)
+
+        // Assuming columnsData is the array of column objects you provided
+        this.columnsConfig = this.columnsData.map((column) => {
+          return {
+            dataField: column.Name,
+            caption: column.Title,
+            visible: column.Visibility === true ? true : false,
+            type: column.Type,
+            format:
+              column.Type === 'Decimal'
+                ? {
+                    type: 'fixedPoint',
+                    precision: 2,
+                  }
+                : undefined,
+          };
+        });
+        // console.log('testing 1', this.columnsConfig);
+        this.dataSource = data.ReportData;
+        // console.log('report data is ', this.dataSource);
+        // sessionStorage.setItem('DataSource', JSON.stringify(data));
+        this.show_Pagination = true;
+        // this.refresh;
       });
-
-      const personalReport = data.PersonalReports.find(
-        (report) => report.name === this.memoriseDropDownSelectedValue
-      );
-
-      // Extract the columns if the personalReport is found
-      this.MemoriseReportColumns = personalReport ? personalReport.Columns : [];
-      // console.log('memo loaded', this.MemoriseReportColumns);
-      this.columnsData =
-        this.memoriseEnable === 'true'
-          ? this.MemoriseReportColumns
-          : data.ReportColumns;
-      // console.log('columns are ', this.columnsData);
-      this.ColumnNames = this.columnsData.map((column) => column.Name);
-      // console.log("columns are fetched",this.columnsData)
-
-      // Assuming columnsData is the array of column objects you provided
-      this.columnsConfig = this.columnsData.map((column) => {
-        return {
-          dataField: column.Name,
-          caption: column.Title,
-          visible: column.Visibility === true ? true : false,
-          type: column.Type,
-          format:
-            column.Type === 'Decimal'
-              ? {
-                  type: 'fixedPoint',
-                  precision: 2,
-                }
-              : undefined,
-        };
-      });
-      // console.log('testing 1', this.columnsConfig);
-      this.dataSource = data.ReportData;
-      // console.log('report data is ', this.dataSource);
-      // sessionStorage.setItem('DataSource', JSON.stringify(data));
-      this.show_Pagination = true;
-      // this.refresh;
-    });
   }
   //============Call DataSource Using Selected Values====
   get_Report_DataSource() {
@@ -377,6 +383,7 @@ export class ClaimSummaryComponent implements AfterViewInit {
         CLINICIAN: Clinician,
         ORDERING_CLINICIAN: OrderingClinician,
       };
+      console.log('report data loaded', reportData);
       // Store the object in session storage
       sessionStorage.setItem('reportData', JSON.stringify(reportData));
       this.loadData(
@@ -508,13 +515,11 @@ export class ClaimSummaryComponent implements AfterViewInit {
     console.log('save memorise details', memoriseName, filterParameters);
     this.service
       .save_Memorise_report(
-        this.user_Id,
-        this.Report_Page,
         memoriseName,
         memoriseReportColumns,
         filterParameters
       )
-      .subscribe((response) => {
+      .subscribe((response: any) => {
         if (response) {
           notify(
             {
