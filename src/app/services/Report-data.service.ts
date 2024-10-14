@@ -78,12 +78,13 @@ export class ReportService {
   }
 
   //================fetch datasource of Claim-Details-With_Activity=============
-  fetch_Claim_Details_With_Activity(formData:any) {
+  fetch_Claim_Details_With_Activity(formData: any) {
     const userid = sessionStorage.getItem('UserID');
+    const currentPathName = this.router.url.replace('/', '');
     const url = `${BASE_URL}reports/claimdetailswithactivity`;
-    ""
     const reqBody = {
       userid: userid,
+      reportid: currentPathName,
       SearchOn: formData.SearchOn,
       DateFrom: formData.From_Date,
       DateTo: formData.To_Date,

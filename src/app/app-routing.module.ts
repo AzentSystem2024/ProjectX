@@ -221,7 +221,7 @@ const routes: Routes = [
         canActivate: [AuthGuardService],
       },
       {
-        path: 'claim-details-activity',
+        path: 'claim-detail-activity',
         component: ClaimDetailsActivityComponent,
         canActivate: [AuthGuardService],
       },

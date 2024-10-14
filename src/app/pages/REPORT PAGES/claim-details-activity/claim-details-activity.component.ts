@@ -114,7 +114,7 @@ export class ClaimDetailsActivityComponent implements OnInit {
   memorise_Dropdown_DataList: any;
   isFilterOpened = false; //filter row enable-desable variable
   GridSource: any;
-  isDatagridLoaded: boolean = false;
+  isEmptyDatagrid: boolean = true;
   summaryColumnsData: any[] = [];
   columndata: any;
   isAdvancefilterOpened: boolean = false;
@@ -122,6 +122,9 @@ export class ClaimDetailsActivityComponent implements OnInit {
   advanceFilterGridColumns: any;
   MemoriseReportName: any;
   isSaveMemorisedOpened: boolean = false;
+  personalReportData: any;
+
+  
 
   constructor(
     private service: ReportService,
@@ -184,13 +187,13 @@ export class ClaimDetailsActivityComponent implements OnInit {
       memberID: this.memberID_Value,
       paymentStatus: this.paymentStatus_Value,
     };
-    console.log('form data loaded:', FormData);
+    this.isParamsOpend = false;
     this.dataGrid_DataSource = new DataSource<any>({
       load: () =>
         new Promise((resolve, reject) => {
-          this.isParamsOpend = false;
           this.service.fetch_Claim_Details_With_Activity(FormData).subscribe({
             next: (response: any) => {
+              this.isEmptyDatagrid = false;
               this.columndata = response.ReportColumns;
               this.columnsConfig = response.ReportColumns.map((column) => {
                 return {
@@ -207,11 +210,11 @@ export class ClaimDetailsActivityComponent implements OnInit {
                       : undefined,
                 };
               });
+              this.ColumnNames = this.columnsConfig
+                .filter((column) => column.visible)
+                .map((column) => column.dataField);
 
-              this.ColumnNames = this.columnsConfig.map(
-                (column) => column.dataField
-              );
-
+              this.personalReportData = response.PersonalReports;
               this.memorise_Dropdown_DataList = response.PersonalReports.map(
                 (personalReport) => {
                   return {
@@ -220,8 +223,6 @@ export class ClaimDetailsActivityComponent implements OnInit {
                 }
               );
 
-              // this.getSummaryItemsForDecimalColumns();
-              this.isDatagridLoaded = true;
               resolve(response.ReportData); // Resolve with the fetched ReportData
             },
             error: (error) => reject(error.message), // Reject with the error message
@@ -359,10 +360,32 @@ export class ClaimDetailsActivityComponent implements OnInit {
 
   //==============Show Memorise Report===================
   ShowMemoriseTable = (e: any) => {
-    // this.memoriseDropDownSelectedValue = e.value;
-    // // this.memoriseEnable = this.memoriseEnable === 'true' ? 'false' : 'true';
-    // this.memoriseEnable = 'true';
-    // this.get_Report_DataSource();
+    const SelectedValue = e.value;
+    if (SelectedValue === null) {
+      this.get_Datagrid_DataSource();
+    }
+    this.columnsConfig = this.personalReportData
+      .filter((report: any) => report.name == SelectedValue)
+      .map((report: any) => {
+        return report.Columns.map((column: any) => ({
+          dataField: column.Name,
+          caption: column.Title,
+          visible: column.Visibility,
+          type: column.Type,
+          format:
+            column.Type === 'Decimal'
+              ? {
+                  type: 'fixedPoint',
+                  precision: 2,
+                }
+              : undefined,
+        }));
+      })
+      .flat(); // Flatten the array in case each report has multiple columns
+
+    this.ColumnNames = this.columnsConfig
+      .filter((column) => column.visible)
+      .map((column) => column.dataField);
   };
 
   //==========show memorise save pop up==================
@@ -389,11 +412,11 @@ export class ClaimDetailsActivityComponent implements OnInit {
     const memoriseReportColumns = reportColumns.map((column) => {
       return {
         ...column,
-        Visibility: hiddenColumns.includes(column.Name) ? 'false' : 'true',
+        Visibility: hiddenColumns.includes(column.Name) ? false : true,
       };
     });
 
-    console.log('save memorise details', memoriseName, filterParameters);
+    // console.log('save memorise details', memoriseName, filterParameters);
     this.service
       .save_Memorise_report(
         memoriseName,
