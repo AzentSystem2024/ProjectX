@@ -90,7 +90,7 @@ export class ClaimDetailsActivityComponent implements OnInit {
   ClaimNumber_Value: any = null;
   PatientID_Value: any = null;
   Resubmission_Value: any = null;
-  DenialCodes_Value: any[] = [];
+  DenialCodes_Value: any;
   CliamStatus_Value: any[] = [];
   memberID_Value: any = null;
   paymentStatus_Value: any = null;
@@ -124,8 +124,6 @@ export class ClaimDetailsActivityComponent implements OnInit {
   isSaveMemorisedOpened: boolean = false;
   personalReportData: any;
 
-  
-
   constructor(
     private service: ReportService,
     private router: Router,
@@ -146,6 +144,13 @@ export class ClaimDetailsActivityComponent implements OnInit {
     this.userId = sessionStorage.getItem('UserID');
     this.currentPathName = this.router.url.replace('/', '');
     this.get_searchParameters_Dropdown_Values();
+  }
+  //=================Row click drill Down====================
+  handleRowDoubleClick(e: any) {
+    const clickedRowData = e.data; // Access the double-clicked row data
+    console.log('Row double-clicked:', clickedRowData);
+    // Perform any action based on the double-clicked row
+    alert(`Row double-clicked:`);
   }
 
   //============Get search parameters dropdown values=======
@@ -361,7 +366,7 @@ export class ClaimDetailsActivityComponent implements OnInit {
   //==============Show Memorise Report===================
   ShowMemoriseTable = (e: any) => {
     const SelectedValue = e.value;
-    if (SelectedValue === null) {
+    if (SelectedValue == null) {
       this.get_Datagrid_DataSource();
     }
     this.columnsConfig = this.personalReportData
@@ -445,7 +450,7 @@ export class ClaimDetailsActivityComponent implements OnInit {
   }
 
   findColumnLocation = (e: any) => {
-    const columnName = e.value;
+    const columnName = e.itemData;
     this.reportengine.makeColumnVisible(this.dataGrid, columnName);
   };
 

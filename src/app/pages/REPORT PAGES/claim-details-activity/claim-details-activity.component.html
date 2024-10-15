@@ -287,8 +287,8 @@
         <dxi-item
           itemType="group"
           cssClass="form-group"
-          [colCount]="8"
-          [colCountByScreen]="{ xs: 8, sm: 8, md: 8, lg: 8 }"
+          [colCount]="10"
+          [colCountByScreen]="{ xs: 10, sm: 10, md: 10, lg: 10 }"
         >
           <dxi-item [colSpan]="2">
             <dx-select-box
@@ -307,33 +307,16 @@
 
           <dxi-item [colSpan]="2">
             <div>
-              <dx-tag-box
+              <dx-text-box
                 labelMode="floating"
                 labelLocation="left"
-                label="select Denial Codes"
-                [dataSource]="DenialCodes_DataSource"
-                displayExpr="Name"
-                valueExpr="ID"
+                label="Enter Denial Code"
                 [(value)]="DenialCodes_Value"
-                [searchEnabled]="true"
-                [searchExpr]="['Name', 'ID']"
-                [multiline]="false"
-                [applyValueMode]="'instantly'"
-                [showSelectionControls]="true"
-                (valueChanged)="onDropdownValueChanged()"
-                [dropDownOptions]="{ width: 'auto' }"
               >
-              </dx-tag-box>
+              </dx-text-box>
             </div>
           </dxi-item>
-        </dxi-item>
 
-        <dxi-item
-          itemType="group"
-          cssClass="form-group"
-          [colCount]="6"
-          [colCountByScreen]="{ xs: 6, sm: 6, md: 6, lg: 6 }"
-        >
           <dxi-item [colSpan]="2">
             <dx-tag-box
               labelMode="floating"
@@ -404,22 +387,22 @@
   <ng-container>
     <dx-data-grid
       #dataGrid
-      id="main-grid"
-      class="grid reportGrid theme-dependent"
-      [height]="'100vh'"
+      class="grid reportGrid reportGridFooter theme-dependent"
+      [height]="'85vh'"
       noDataText="no data"
       [dataSource]="dataGrid_DataSource"
       [showBorders]="true"
       [allowColumnResizing]="true"
       [columnAutoWidth]="true"
       [allowColumnReordering]="true"
+      [filterRow]="{ visible: false }"
+      [headerFilter]="{ visible: false }"
       [columnFixing]="{
         enabled: true,
         texts: { fix: 'Freeze', unfix: 'Unfreeze' }
       }"
       (onExporting)="onExporting($event)"
-      [filterRow]="{ visible: false }"
-      [headerFilter]="{ visible: false }"
+      (onRowDblClick)="handleRowDoubleClick($event)"
     >
       <dxi-column
         *ngFor="let column of columnsConfig"
@@ -431,9 +414,8 @@
       ></dxi-column>
 
       <dxo-search-panel [visible]="true"></dxo-search-panel>
-      <dxo-paging *ngIf="show_Pagination" [pageSize]="10"></dxo-paging>
+      <dxo-paging [pageSize]="10"></dxo-paging>
       <dxo-pager
-        *ngIf="show_Pagination"
         [visible]="true"
         [allowedPageSizes]="allowedPageSizes"
         [displayMode]="displayMode"
@@ -467,7 +449,7 @@
       </dxo-export>
       <dxo-toolbar>
         <dxi-item location="before">
-          <div class="grid-header">Claim Details with Action</div>
+          <div class="grid-header">Claim Details with Activity</div>
         </dxi-item>
         <dxi-item
           widget="dxButton"
@@ -570,22 +552,27 @@
         ></dxi-item>
         <dxi-item
           class="columnfinderclass"
-          widget="dxSelectBox"
+          widget="dxDropDownButton"
           [options]="{
+            width:'50px',
             dataSource: ColumnNames,
-            searchEnabled: true,
-            onValueChanged: findColumnLocation,
+            onItemClick: findColumnLocation,
             placeholder: 'Search Column',
-            noDataText: 'load data and try again',
-            showDropDownButton: true,
+            noDataText: 'Load data and try again',
             disabled: isEmptyDatagrid,
             hint: 'Column location finder',
+            icon:'columnproperties',
+            showArrowIcon: true,
+            useSelectMode: true,
+            deferRendering: false,
             dropDownOptions: {
               width: 'auto',
-            }
+              height: '60vh',
+              searchEnabled: true,
+            },
+
           }"
-        >
-        </dxi-item>
+        ></dxi-item>
       </dxo-toolbar>
 
       <dxo-grouping
@@ -595,7 +582,9 @@
       ></dxo-grouping>
 
       <dxo-selection mode="multiple"></dxo-selection>
-      <dxo-header-filter [visible]="true"></dxo-header-filter>
+      <dxo-header-filter [visible]="true">
+        <dxo-search [enabled]="true"></dxo-search>
+      </dxo-header-filter>
       <dxo-summary class="mainSummaryDiv" summaryText="Total">
         <!-- ==========================Group item Summary===================== -->
         <dxi-group-item
@@ -791,6 +780,7 @@
   </ng-container>
 
   <dx-popup
+    class="m-0 p-0"
     [(visible)]="isSaveMemorisedOpened"
     [title]="'Memorise Report'"
     [width]="350"
@@ -830,7 +820,7 @@
   </dx-popup>
 
   <form-popup
-    class="formPopupClass hide-buttons dx-popup-content"
+    class="formPopupClass hide-buttons dx-popup-content m-0 p-0"
     [(visible)]="isAdvancefilterOpened"
     titleText="Advance filter"
     height="80vh"
