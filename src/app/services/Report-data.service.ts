@@ -71,9 +71,9 @@ export class ReportService {
   //===============Fetch all search parametrs dropdown values===========
   get_SearchParametrs_Data() {
     const userid = sessionStorage.getItem('UserID');
-    const currentPathName = this.router.url.replace('/', '');
-    const url = `${BASE_URL}/reports/parametervalues`;
-    const reqBody = { userid: userid, reportid: currentPathName };
+    // const currentPathName = this.router.url.replace('/', '');
+    const url = `${BASE_URL}/reports/claimdetailswithactivity/parametervalues`;
+    const reqBody = { userid: userid };
     return this.http.post(url, reqBody);
   }
 
@@ -81,7 +81,7 @@ export class ReportService {
   fetch_Claim_Details_With_Activity(formData: any) {
     const userid = sessionStorage.getItem('UserID');
     const currentPathName = this.router.url.replace('/', '');
-    const url = `${BASE_URL}reports/claimdetailswithactivity`;
+    const url = `${BASE_URL}reports/claimdetailswithactivity/main`;
     const reqBody = {
       userid: userid,
       reportid: currentPathName,

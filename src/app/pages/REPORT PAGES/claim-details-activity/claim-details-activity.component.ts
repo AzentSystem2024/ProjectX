@@ -145,6 +145,12 @@ export class ClaimDetailsActivityComponent implements OnInit {
     this.currentPathName = this.router.url.replace('/', '');
     this.get_searchParameters_Dropdown_Values();
   }
+  //=================Hint for ll row in datagrid=============
+  onRowPrepared(e: any) {
+    if (e.rowType === 'data') {
+      e.rowElement.title = `Double click the row to open drill down`;
+    }
+  }
   //=================Row click drill Down====================
   handleRowDoubleClick(e: any) {
     const clickedRowData = e.data; // Access the double-clicked row data

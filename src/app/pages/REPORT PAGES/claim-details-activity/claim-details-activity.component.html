@@ -402,6 +402,7 @@
         texts: { fix: 'Freeze', unfix: 'Unfreeze' }
       }"
       (onExporting)="onExporting($event)"
+      (onRowPrepared)="onRowPrepared($event)"
       (onRowDblClick)="handleRowDoubleClick($event)"
     >
       <dxi-column
@@ -550,11 +551,11 @@
             }
           }"
         ></dxi-item>
+
         <dxi-item
           class="columnfinderclass"
-          widget="dxDropDownButton"
+          widget="dxSelectBox"
           [options]="{
-            width:'50px',
             dataSource: ColumnNames,
             onItemClick: findColumnLocation,
             placeholder: 'Search Column',
@@ -564,11 +565,11 @@
             icon:'columnproperties',
             showArrowIcon: true,
             useSelectMode: true,
+            searchEnabled:true,
             deferRendering: false,
             dropDownOptions: {
               width: 'auto',
-              height: '60vh',
-              searchEnabled: true,
+              height: '60vh'
             },
 
           }"
