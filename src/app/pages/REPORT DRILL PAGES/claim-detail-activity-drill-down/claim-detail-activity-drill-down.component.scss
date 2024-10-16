@@ -1,0 +1,56 @@
+// .AccountLockandGeneralDiv {
+//   width: 100%;
+//   height: 100%;
+//   padding: 5px;
+// }
+
+// .BorderBox {
+//   position: relative;
+//   margin-top: 5px;
+//   padding: 10px;
+//   width: 100%;
+//   border-radius: 8px;
+//   background-color: var(--base-bg);
+//   box-shadow: -2px 2px 2px rgba(0, 0, 0, 0.1), 2px 2px 2px rgba(0, 0, 0, 0.1),
+//     0 2px 2px rgba(0, 0, 0, 0.1);
+// }
+
+// .items {
+//   width: 100%;
+// }
+
+.headingText {
+  position: absolute;
+  top: -23px;
+  left: 10px;
+  margin-bottom: 5px;
+  font-size: larger;
+  font-weight: bold;
+}
+.label-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+.custom-label {
+  margin-right: 10px; /* Space between label and input field */
+  width: 40%;
+}
+.parentDiv {
+  height: 100%;
+  width: 100%;
+  margin: 0px;
+  padding: 5px;
+}
+.RowgroupDiv {
+  padding: 5px;
+  width: 100%;
+  height: auto;
+  border: 1px solid rgb(42, 41, 41);
+  box-shadow: -2px 2px 2px rgba(0, 0, 0, 0.1), 2px 2px 2px rgba(0, 0, 0, 0.1),
+    0 2px 2px rgba(0, 0, 0, 0.1);
+}
+.BorderBox {
+  width: 50%;
+  height: auto;
+}

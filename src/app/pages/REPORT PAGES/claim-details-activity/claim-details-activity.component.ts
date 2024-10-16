@@ -36,6 +36,8 @@ import { ReportEngineService } from '../report-engine.service';
 import DataSource from 'devextreme/data/data_source';
 import { Router } from '@angular/router';
 import notify from 'devextreme/ui/notify';
+import { ClaimDetailActivityDrillDownComponent } from '../../REPORT DRILL PAGES/claim-detail-activity-drill-down/claim-detail-activity-drill-down.component';
+import { ClaimDetailActivityDrillDownModule } from '../../REPORT DRILL PAGES/claim-detail-activity-drill-down/claim-detail-activity-drill-down.component';
 import { AdvanceFilterPopupModule } from '../../POP-UP_PAGES/advance-filter-popup/advance-filter-popup.component';
 @Component({
   selector: 'app-claim-details-activity',
@@ -49,6 +51,9 @@ export class ClaimDetailsActivityComponent implements OnInit {
 
   @ViewChild(DxTreeViewComponent, { static: false })
   treeView: DxTreeViewComponent;
+
+  @ViewChild(ClaimDetailActivityDrillDownComponent, { static: false })
+  claimDrill: ClaimDetailActivityDrillDownComponent;
 
   @ViewChild('lookup', { static: false }) lookup: DxLookupComponent;
 
@@ -123,6 +128,7 @@ export class ClaimDetailsActivityComponent implements OnInit {
   MemoriseReportName: any;
   isSaveMemorisedOpened: boolean = false;
   personalReportData: any;
+  isDrillDownPopupOpened: boolean = false;
 
   constructor(
     private service: ReportService,
@@ -155,8 +161,7 @@ export class ClaimDetailsActivityComponent implements OnInit {
   handleRowDoubleClick(e: any) {
     const clickedRowData = e.data; // Access the double-clicked row data
     console.log('Row double-clicked:', clickedRowData);
-    // Perform any action based on the double-clicked row
-    alert(`Row double-clicked:`);
+    this.isDrillDownPopupOpened = true;
   }
 
   //============Get search parameters dropdown values=======
@@ -501,6 +506,7 @@ export class ClaimDetailsActivityComponent implements OnInit {
     DxValidatorModule,
     DxValidationSummaryModule,
     AdvanceFilterPopupModule,
+    ClaimDetailActivityDrillDownModule,
   ],
   providers: [],
   exports: [],

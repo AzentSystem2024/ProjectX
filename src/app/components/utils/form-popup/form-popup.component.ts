@@ -30,7 +30,7 @@ export class FormPopupComponent {
 
   @Input() titleText = '';
 
-  @Input() width = 480;
+  @Input() width:any = 480;
 
   @Input() height: string | number = 'auto';
 

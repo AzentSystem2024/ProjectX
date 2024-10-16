@@ -450,7 +450,7 @@
       </dxo-export>
       <dxo-toolbar>
         <dxi-item location="before">
-          <div class="grid-header">Claim Details with Activity</div>
+          <div class="grid-header">Claim Detail with Activity</div>
         </dxi-item>
         <dxi-item
           widget="dxButton"
@@ -835,4 +835,13 @@
       [columnData]="advanceFilterGridColumns"
     ></app-advance-filter-popup>
   </form-popup>
+
 </div>
+ <dx-popup
+    [(visible)]="isDrillDownPopupOpened"
+    title="Claim submission & Remittance details"
+    height="90vh"
+    [width]="'90%'"
+  >
+    <app-claim-detail-activity-drill-down></app-claim-detail-activity-drill-down>
+  </dx-popup>
