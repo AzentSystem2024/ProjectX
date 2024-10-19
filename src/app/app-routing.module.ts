@@ -149,7 +149,6 @@ const routes: Routes = [
       {
         path: 'change-password',
         component: ChangePasswordComponent,
-       
       },
       {
         path: 'ctp-master-page',
@@ -221,7 +220,7 @@ const routes: Routes = [
         component: AppResetPasswordComponent,
         canActivate: [AuthGuardService],
       },
-      {
+            {
         path: 'claim-summary-report',
         component: ClaimSummaryComponent,
         canActivate: [AuthGuardService],
