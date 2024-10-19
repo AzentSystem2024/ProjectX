@@ -49,6 +49,7 @@ import { ChangePasswordComponent } from './pages/PROFILE PAGES/change-password/c
 import { LicenseInfoComponent } from './pages/SYSTEM PAGES/license-info/license-info.component';
 import { FacilityRegionComponent } from './pages/MASTER PAGES/facility-region/facility-region.component';
 import { NotificationSettingsComponent } from './pages/SYSTEM PAGES/notificarion-settings/notificarion-settings.component';
+import { ImportMasterDataComponent } from './pages/MASTER PAGES/import-master-data/import-master-data.component';
 const routes: Routes = [
   {
     path: '',
@@ -263,6 +264,11 @@ const routes: Routes = [
       {
         path: 'license-info-page',
         component: LicenseInfoComponent,
+        canActivate: [AuthGuardService],
+      },
+      {
+        path: 'import-master-data',
+        component: ImportMasterDataComponent,
         canActivate: [AuthGuardService],
       },
       {

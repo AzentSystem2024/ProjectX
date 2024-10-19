@@ -50,6 +50,7 @@ export class FormPopupComponent {
 
   @Output() clear = new EventEmitter(); // New event to signal clearing
 
+ 
   constructor(protected screen: ScreenService) {}
 
   isValid() {
@@ -60,7 +61,7 @@ export class FormPopupComponent {
     if (!this.isValid()) {
       return;
     }
-
+    
     this.save.emit();
     this.close();
   }

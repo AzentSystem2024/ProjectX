@@ -112,6 +112,7 @@ export class ChangePasswordComponent implements OnInit {
         }); // Wait for notification to display before navigating
       }
       else{
+        this.isSaving=false;
         notify(
           {
             message: res.message,
@@ -122,6 +123,7 @@ export class ChangePasswordComponent implements OnInit {
         );
       }
       } catch (error) {
+        this.isSaving=false;
         notify(
           {
             message: 'Password update operation failed',
