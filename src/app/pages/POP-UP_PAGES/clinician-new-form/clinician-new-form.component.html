@@ -24,103 +24,8 @@
               message="Clinician License already exists"
             ></dxi-validation-rule>
           </dx-validator>
- 
-          </dx-text-box>
-        </div>
-      </dxi-item>
-  
-      <dxi-item>
-        <div *dxTemplate>
-          <dx-text-box
-            
-            label="Clinician Name"
-            [(value)]="newClinician.ClinicianName"
-           
-          >
-          </dx-text-box>
-        </div>
-      </dxi-item>
-
-      <dxi-item>
-        <div *dxTemplate>
-          <dx-text-box
-            
-            label="Clinician Short Name"
-            [(value)]="newClinician.ClinicianShortName"
-           
-          >
-          </dx-text-box>
-        </div>
-      </dxi-item>
-  
-      <dxi-item>
-        <div *dxTemplate>
-          <div class="select-box-label">Speciality</div>
-          <dx-select-box
-            
-            [items]="specialityDatasource"
-            displayExpr="DESCRIPTION"
-            valueExpr="ID"
-            placeholder="Select a speciality"
-            [(value)]="newClinician.SpecialityID"
-          ></dx-select-box>
-        </div>
-      </dxi-item>
-  
-      <dxi-item>
-        <div *dxTemplate>
-          <div class="select-box-label">Major</div>
-          <dx-select-box
-            
-            [items]="clinicianMajorDatasource"
-            displayExpr="DESCRIPTION"
-            valueExpr="ID"
-            placeholder="Select a value"
-            [(value)]="newClinician.MajorID"
-          ></dx-select-box>
-        </div>
-      </dxi-item>
-
-      <dxi-item>
-        <div *dxTemplate>
-          <div class="select-box-label">Profession</div>
-          <dx-select-box
-           
-            [items]="clinicianProfessionDatasource"
-            displayExpr="DESCRIPTION"
-            valueExpr="ID"
-            placeholder="Select a value"
-            [(value)]="newClinician.ProfessionID"
-          ></dx-select-box>
-        </div>
-      </dxi-item>
-
-      <dxi-item>
-        <div *dxTemplate>
-          <div class="select-box-label">Category</div>
-          <dx-select-box
-           
-            [items]="clinicianCategoryDatasource"
-            displayExpr="DESCRIPTION"
-            valueExpr="ID"
-            placeholder="Select a value"
-            [(value)]="newClinician.CategoryID"
-          ></dx-select-box>
-        </div>
-      </dxi-item>
-
-       <dxi-item>
-        <div *dxTemplate>
-          <div class="select-box-label">Gender</div>
-          <dx-select-box
-            [items]="genderDatasource"
-            displayExpr="DESCRIPTION"
-            valueExpr="DESCRIPTION"
-            placeholder="Select a value"
-            [(value)]="newClinician.Gender"
-          ></dx-select-box>
-        </div>
-      </dxi-item> 
+        </dx-text-box>
+      </div>
     </dxi-item>
 
     <dxi-item>
@@ -145,7 +50,7 @@
 
     <dxi-item>
       <div *dxTemplate>
-        <div>Speciality</div>
+        <div class="select-box-label">Speciality</div>
         <dx-select-box
           [items]="specialityDatasource"
           displayExpr="DESCRIPTION"
@@ -158,7 +63,7 @@
 
     <dxi-item>
       <div *dxTemplate>
-        <div>Major</div>
+        <div class="select-box-label">Major</div>
         <dx-select-box
           [items]="clinicianMajorDatasource"
           displayExpr="DESCRIPTION"
@@ -171,7 +76,7 @@
 
     <dxi-item>
       <div *dxTemplate>
-        <div>Profession</div>
+        <div class="select-box-label">Profession</div>
         <dx-select-box
           [items]="clinicianProfessionDatasource"
           displayExpr="DESCRIPTION"
@@ -184,7 +89,7 @@
 
     <dxi-item>
       <div *dxTemplate>
-        <div>Category</div>
+        <div class="select-box-label">Category</div>
         <dx-select-box
           [items]="clinicianCategoryDatasource"
           displayExpr="DESCRIPTION"
@@ -197,7 +102,7 @@
 
     <dxi-item>
       <div *dxTemplate>
-        <div>Gender</div>
+        <div class="select-box-label">Gender</div>
         <dx-select-box
           [items]="genderDatasource"
           displayExpr="DESCRIPTION"
@@ -207,5 +112,5 @@
         ></dx-select-box>
       </div>
     </dxi-item>
- 
+  </dxi-item>
 </dx-form>
