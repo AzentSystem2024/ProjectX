@@ -44,8 +44,8 @@
     <dxo-search-panel [visible]="true" placeholder=" Search"></dxo-search-panel>
     <dxo-export
       [enabled]="true"
-      [allowExportSelectedData]="true"
-      [formats]="['xlsx', 'pdf']"
+      [allowExportSelectedData]="false"
+      [formats]="['xlsx']"
     >
     </dxo-export>
     <dxo-toolbar>
@@ -63,6 +63,8 @@
           type="default"
           hint="Add New Data"
           stylingMode="contained"
+          class="add-button"
+          [width]="40"
           (onClick)="show_new_InsuranceClassification_Form()"
         ></dx-button>
       </dxi-item>

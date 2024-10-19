@@ -16,7 +16,8 @@
     <div *ngIf="showUserDetails">
       <!-- User Details Form in Two Columns -->
       <div class="user-details" style="display: flex; flex-wrap: wrap; gap: 20px;">
-        <div class="form-column" style="flex: 2;">
+       
+        <div class="form-column" style="flex: 2;">  
           <dx-text-box [(value)]="newUserData.UserName" label="User Name" hint="User Name" (input)="onUserNameInput($event)">
             <dx-validator>
               <dxi-validation-rule type="required" message="User Name is required"></dxi-validation-rule>
@@ -32,13 +33,11 @@
               width="100%"
               hint="Password"
             ></dx-text-box>
-
             <!-- Refresh Button -->
             <button 
             width="'70px'"
             (click)="refreshPassword()"
-            style="top: 10px; background: none;color: var(--base-text-color); border: none; cursor: pointer;"
-          >
+            style="top: 10px; background: none;color: var(--base-text-color); border: none; cursor: pointer;">
             <i class="dx-icon-refresh"></i>  <!-- DevExtreme refresh icon -->
           </button>
             <!-- [mode]="isPasswordVisible ? 'text' : 'password'"  -->
@@ -57,7 +56,7 @@
             [showEvent]="'click'"
             [hideEvent]="'click'"
             [animation]="{ show: { type: 'fade', duration: 300 }, hide: { type: 'fade', duration: 300 } }"
-          >
+            >
           <div>Copied!</div>
           </dx-tooltip>
           <button 
@@ -65,24 +64,25 @@
             type="button"
             (click)="copyToClipboard()"
             style="position: absolute; right: 35px;color: var(--base-text-color); top: 30px; transform: translateY(-50%); background: none; border: none; cursor: pointer;"
-          >
+            >
             <i class="dx-icon-copy"></i>  <!-- Use appropriate icon for copy action -->
           </button>
           </div>
-          
-          <dx-date-box
-            label="Date of Birth"
-            type="date"
-            [displayFormat]="'dd/MM/yyyy'"
-            placeholder="Select Date of Birth"
-            stylingMode="outlined"
-            hint="Date Of Birth"
-            (onValueChanged)="onDateOfBirthChange($event)"
-          ></dx-date-box>
- 
+        
+          <dx-select-box
+            label="Gender"
+            [(value)]="newUserData.GenderID"
+            [items]="gender"
+            displayExpr="DESCRIPTION"
+            valueExpr="ID"
+            placeholder="Select Gender"
+            hint="Gender"
+           >
+          </dx-select-box>
+
           <div style="display: flex;">
             <dx-select-box
-            label=" "
+            label="Mobile"
             [searchEnabled]="true"
             [acceptCustomValue]="false"
             [(value)]="newUserData.countryCode"
@@ -96,31 +96,31 @@
             (valueChange)="updateMobileNumber()" 
             (onOpened)="onDropdownOpened()"
             (onClosed)="onDropdownClosed()"   
-    >
-        <!-- Custom template for the dropdown list items -->
-        <div *dxTemplate="let item of 'item'">
-          <span>{{ item.data.flag }} </span>
-          <span>{{ item.data.dial_code }} </span>
-          <span>{{ item.data.name }}</span>
-        </div>
-
-
-    <dx-validator>
-      <dxi-validation-rule type="required" message="Country code is required"></dxi-validation-rule>
-    </dx-validator>
-  </dx-select-box>
+              >
+                 <!-- Custom template for the dropdown list items -->
+                 <div *dxTemplate="let item of 'item'">
+                 <span>{{ item.data.flag }} </span>
+                 <span>{{ item.data.dial_code }} </span>
+                 <span>{{ item.data.name }}</span>
+                 </div>
+  
+  
+                      <dx-validator>
+                      <dxi-validation-rule type="required" message="Country code is required"></dxi-validation-rule>
+                      </dx-validator>
+                      </dx-select-box>
         
-            <dx-text-box 
-              label="Mobile No" 
-              [(value)]="newUserData.Mobile"
-              [width]="'100%'"
-              style="margin-left: 10px;"
-              hint="Mobile No"
-              [valueChangeEvent]="'input'"
-              (input)="onMobileInputChange($event)"
-              [maxLength]="17"
-            >
-            <dx-validator>
+                      <dx-text-box 
+                         label="No." 
+                         [(value)]="newUserData.Mobile"
+                         [width]="'100%'"
+                         style="margin-left: 10px;"
+                         hint="Mobile No"
+                         [valueChangeEvent]="'input'"
+                         (input)="onMobileInputChange($event)"
+                         [maxLength]="17"
+                         >
+                         <dx-validator>
               <dxi-validation-rule type="required" message="Mobile No is required"></dxi-validation-rule>
               <dxi-validation-rule
               type="custom"
@@ -130,9 +130,10 @@
             </dx-validator>
           </dx-text-box>
           </div>
-          
-        </div>
-        <div class="form-column" style="flex: 2;">
+    
+      </div>
+
+        <div class="form-column" style="flex: 2;">     
           <dx-text-box label="Login Name" [(value)]="newUserData.LoginName" hint="Login Name"
           (input)="onLoginNameInput($event)">
             <dx-validator>
@@ -151,70 +152,55 @@
           type="stringLength"
           max="20"
           message="Login Name cannot exceed 20 characters"
-        ></dxi-validation-rule>
+          ></dxi-validation-rule>
             </dx-validator>
           </dx-text-box>
+
           <dx-select-box
-            label="User Role"
-            [(value)]="newUserData.UserRoleID"
-            [items]="userRole"
-            displayExpr="DESCRIPTION"
-            valueExpr="ID"
-            placeholder="Select User Role"
-            hint="User Role"
+          label="User Role"
+          [(value)]="newUserData.UserRoleID"
+          [items]="userRole"
+          displayExpr="DESCRIPTION"
+          valueExpr="ID"
+          placeholder="Select User Role"
+          hint="User Role"
           >
           <dx-validator>
-            <dxi-validation-rule type="required" message="User Role is required"></dxi-validation-rule>
+          <dxi-validation-rule type="required" message="User Role is required"></dxi-validation-rule>
           </dx-validator>
-        </dx-select-box>
-          <dx-select-box
-            label="Gender"
-            [(value)]="newUserData.GenderID"
-            [items]="gender"
-            displayExpr="DESCRIPTION"
-            valueExpr="ID"
-            placeholder="Select Gender"
-            hint="Gender"
-          ></dx-select-box>
-          
-          <dx-text-box label="Email" [(value)]="newUserData.Email" hint="Email" (input)="onEmailInput($event)">
-            <dx-validator>
-              <dxi-validation-rule type="required" message="Email is required"></dxi-validation-rule>
-              <dxi-validation-rule
-              type="custom"
-              message="Invalid Email Format"
-              [validationCallback]="customEmailValidation">
-            </dxi-validation-rule>
-              <dxi-validation-rule
-              type="custom"
-              message="Email already exists"
-              [validationCallback]="checkEmailExists">
-            </dxi-validation-rule>
-            </dx-validator>
-          </dx-text-box>
-          <dx-text-box 
-          label="Whatsapp No" 
-          [(value)]="newUserData.Whatsapp" 
-          (input)="validateWhatsapp($event)" 
-          hint="Whatsapp No" 
-          (onFocusIn)="autoBindWhatsapp()"
-          [maxLength]="17">
-          <dx-validator>
-            <dxi-validation-rule
-              type="required"
-              message="Whatsapp no. is required"
-          ></dxi-validation-rule>
-          <dxi-validation-rule
-              type="custom"
-              message="Mobile no. must be at least 10 digits long"
-              [validationCallback]="WhatsappValidate"
-          ></dxi-validation-rule>
-          </dx-validator>
-        </dx-text-box>
+          </dx-select-box>
+
+          <dx-date-box
+          label="Date of Birth"
+          type="date"
+          [displayFormat]="'dd/MM/yyyy'"
+          placeholder="Select Date of Birth"
+          stylingMode="outlined"
+          hint="Date Of Birth"
+          (onValueChanged)="onDateOfBirthChange($event)"
+          ></dx-date-box>
+           
+           
+            <dx-text-box label="Email" [(value)]="newUserData.Email" hint="Email" (input)="onEmailInput($event)">
+              <dx-validator>
+                <dxi-validation-rule type="required" message="Email is required"></dxi-validation-rule>
+                <dxi-validation-rule
+                type="custom"
+                message="Invalid Email Format"
+                [validationCallback]="customEmailValidation">
+              </dxi-validation-rule>
+                <dxi-validation-rule
+                type="custom"
+                message="Email already exists"
+                [validationCallback]="checkEmailExists">
+              </dxi-validation-rule>
+              </dx-validator>
+            </dx-text-box>
+      
           
         </div>
-        <div class="form-column" style="flex: 1;">
-          <label>Profile Image</label>
+        <div class="form-column" style="flex: 2;">
+          <label class="profile-img-label">Profile Image</label>
           <div id="drop-area" (dragenter)="preventDefaults($event)" (dragover)="preventDefaults($event)"
                (dragleave)="handleDragLeave($event)" (drop)="handleDrop($event)" [class.image-uploaded]="isImageUploaded">
              
@@ -234,8 +220,28 @@
               </div>
             </div>
           </div>
-    
-        </div>
+
+          <dx-text-box 
+          label="Whatsapp No" 
+          [(value)]="newUserData.Whatsapp" 
+          (input)="validateWhatsapp($event)" 
+          hint="Whatsapp No" 
+          (onFocusIn)="autoBindWhatsapp()"
+          [maxLength]="17">
+          <dx-validator>
+            <dxi-validation-rule
+              type="required"
+              message="Whatsapp no. is required"
+          ></dxi-validation-rule>
+          <dxi-validation-rule
+              type="custom"
+              message="Mobile no. must be at least 10 digits long"
+              [validationCallback]="WhatsappValidate"
+          ></dxi-validation-rule>
+          </dx-validator>
+        </dx-text-box>
+            
+       </div>
     </div>
   </div>
 

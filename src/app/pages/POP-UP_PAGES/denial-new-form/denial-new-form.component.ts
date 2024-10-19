@@ -1,6 +1,6 @@
 import { Component, NgModule, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DxFormModule, DxValidatorModule } from 'devextreme-angular';
+import { DxFormModule, DxTextAreaModule, DxValidatorModule } from 'devextreme-angular';
 import { FormTextboxModule, FormPhotoUploaderModule } from 'src/app/components';
 import { getSizeQualifier } from 'src/app/services/screen.service';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -64,6 +64,7 @@ export class DenialNewFormComponent {
     CommonModule,
     ReactiveFormsModule,
     DxSelectBoxModule,
+    DxTextAreaModule
   ],
   declarations: [DenialNewFormComponent],
   exports: [DenialNewFormComponent],

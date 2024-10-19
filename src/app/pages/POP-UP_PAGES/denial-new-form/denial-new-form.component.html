@@ -6,10 +6,10 @@
       [md]="2"
       [lg]="2"
     ></dxo-col-count-by-screen>
-    <dxi-item>
+    <dxi-item [colSpan]="2" >
       <div *dxTemplate>
         <form-textbox
-          label="CODE"
+          label="Code"
           [(value)]="newDenial.DenialCode"
           [isEditing]="true"
         >
@@ -19,18 +19,7 @@
 
     <dxi-item>
       <div *dxTemplate>
-        <form-textbox
-          label="DESCRIPTION"
-          [(value)]="newDenial.Description"
-          [isEditing]="true"
-        >
-        </form-textbox>
-      </div>
-    </dxi-item>
-
-    <dxi-item>
-      <div *dxTemplate>
-        <div>TYPE</div>
+        <div>Type</div>
         <dx-select-box
           class="inputBox"
           [items]="Denial_Type_DropDownData"
@@ -44,7 +33,7 @@
 
     <dxi-item>
       <div *dxTemplate>
-        <div>CATEGORY</div>
+        <div>Category</div>
         <dx-select-box
           class="inputBox"
           [items]="Denial_Category_DropDownData"
@@ -52,8 +41,16 @@
           valueExpr="ID"
           placeholder="Select a Category"
           [(value)]="newDenial.DenialCategoryID"
-        ></dx-select-box>
+        ></dx-select-box>  
       </div>
     </dxi-item>
+    <dxi-item  [colSpan]="2" >
+      <div *dxTemplate >
+          <dx-text-area label="Description" [(value)]="newDenial.Description" [height]="160"
+          [width]="'100%'" [maxHeight]="250" [minHeight]="50"
+          [autoResizeEnabled]="true"  placeholder="Enter a description...">
+          </dx-text-area>
+      </div>
+  </dxi-item>
   </dxi-item>
 </dx-form>

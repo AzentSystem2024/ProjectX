@@ -39,7 +39,12 @@
     <dxo-header-filter [visible]="true"></dxo-header-filter>
     <dxo-filter-row [visible]="true"></dxo-filter-row>
     <dxo-search-panel [visible]="true" placeholder=" Search"></dxo-search-panel>
-    <dxo-export [enabled]="true" [formats]="['xlsx', 'pdf']"> </dxo-export>
+    <dxo-export
+    [enabled]="true"
+    [allowExportSelectedData]="false"
+    [formats]="['xlsx']"
+  >
+  </dxo-export>
     <dxo-toolbar>
       <dxi-item location="before">
         <div class="grid-header">Insurance</div>
@@ -55,6 +60,8 @@
           type="default"
           hint="Add Nea Data"
           stylingMode="contained"
+          class="add-button"
+          [width]="40"
           (onClick)="show_new_Form()"
         ></dx-button>
       </dxi-item>

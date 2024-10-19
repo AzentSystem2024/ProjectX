@@ -1,0 +1,47 @@
+.headingText {
+  margin-bottom: 5px;
+  font-size: large;
+  font-weight: bold;
+}
+.label-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+.custom-label {
+  width: 35%;
+  margin-left: 15px;
+  font-size: larger;
+}
+.parentDiv {
+  height: 100%;
+  width: 100%;
+  margin: 0px;
+  padding: 5px;
+}
+.RowgroupDiv {
+  padding: 5px;
+  width: 100%;
+  min-height: 30vh;
+  max-height: auto;
+  border: 1px solid var(--div-border-color);
+  border-radius: 8px;
+  box-shadow: -2px 2px 2px rgba(0, 0, 0, 0.1), 2px 2px 2px rgba(0, 0, 0, 0.1),
+    0 2px 2px rgba(0, 0, 0, 0.1);
+}
+.RowgroupDiv2 {
+  padding: 5px;
+  width: 100%;
+  min-height: 50vh;
+  max-height: auto;
+  border: 1px solid var(--div-border-color);
+  border-radius: 8px;
+  box-shadow: -2px 2px 2px rgba(0, 0, 0, 0.1), 2px 2px 2px rgba(0, 0, 0, 0.1),
+    0 2px 2px rgba(0, 0, 0, 0.1);
+}
+.BorderBox {
+  width: 40%;
+  height: auto;
+  margin-left: 10px;
+}

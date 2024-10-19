@@ -47,7 +47,6 @@ import { ViewImportedMasterDataFormModule } from './pages/POP-UP_PAGES/view-impo
     RejectedClaimsComponent,
     BalanceAmountToBeReceivedComponent,
     ResubmissionSummaryComponent,
-    // SessionTimeoutDialogComponent
   ],
   imports: [
     TaskListModule,

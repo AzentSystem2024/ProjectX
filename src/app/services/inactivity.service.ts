@@ -25,7 +25,8 @@ export class InactivityService {
   }
   //===============fetch the security policy data for session time out duration==========
   get_securityPolicy_List() {
-    this.systemservice.get_securityPolicy_List().subscribe((response: any) => {
+    const userid=sessionStorage.getItem('UserID')
+    this.systemservice.get_securityPolicy_List(userid).subscribe((response: any) => {
       if (response) {
         const presentSecurityData = response.data[0];
         this.inactivityTimeout =

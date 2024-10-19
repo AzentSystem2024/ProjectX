@@ -17,9 +17,9 @@ export class SystemServicesService {
     return this.http.post(Url, reqBody);
   }
   //===================================Security Policy===================================
-  get_securityPolicy_List() {
+  get_securityPolicy_List(userid: any) {
     const Url = `${BASE_URL}/securitysettings/list`;
-    return this.http.post(Url, {});
+    return this.http.post(Url, { UserID: userid });
   }
   //========================Insert OR Update security policy list==========================
   save_security_Policy_Data(data: any) {
@@ -47,6 +47,7 @@ export class SystemServicesService {
       PasswordRepeatCycle: data.passwordRepeatCycle,
       UnauthorizedBannerMessage: data.unautherizedMessage,
       DisableUserOnInactiveDays: data.disableUserOn,
+      UserID: data.UserID,
     };
     return this.http.post(Url, reqBody);
   }

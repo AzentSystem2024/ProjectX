@@ -578,3 +578,25 @@ body {
   font-size: 12px; // Font size
   transform: translatey(-80%);
 }
+.grid .dx-button-mode-text {
+  background-color: #00a0e028;
+  color: #ffffff;
+  border-radius: 4px;
+}
+
+.reportGrid {
+  .dx-gridbase-container {
+    > .dx-bordered-bottom-view {
+      border-radius: 0 0 8px 8px;
+    }
+  }
+}
+
+.reportGridFooter {
+  .dx-gridbase-container {
+    > .dx-bordered-bottom-view {
+      border-radius: 0 0 8px 8px;
+      display: none;
+    }
+  }
+}

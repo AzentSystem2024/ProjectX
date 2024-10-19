@@ -89,6 +89,7 @@ export class ClaimSummaryComponent implements AfterViewInit {
   denialComponent: DenialNewFormComponent;
 
   @ViewChild('lookup', { static: false }) lookup: DxLookupComponent;
+
   @ViewChild(DxTreeViewComponent, { static: false })
   treeView: DxTreeViewComponent;
 
@@ -179,16 +180,8 @@ export class ClaimSummaryComponent implements AfterViewInit {
   constructor(
     private service: ReportService,
     private router: Router,
-    private route: ActivatedRoute,
-    private fb: FormBuilder,
     private reportEngine: ReportEngineService
   ) {
-    console.log(
-      '',
-      this.Facility_Value,
-      this.ReceiverID_Value,
-      this.PayerID_Value
-    );
     this.minDate = new Date(2000, 1, 1); // Set the minimum date
     this.maxDate = new Date(); // Set the maximum date
     // this.fetch_Dropdown_InitData();
@@ -212,14 +205,12 @@ export class ClaimSummaryComponent implements AfterViewInit {
     // }
   }
 
-
   ngAfterViewInit() {
     if (this.dataGrid) {
       const columns = this.dataGrid.instance.getVisibleColumns();
     }
   }
   //================Year value change ===========================
-
   onYearChanged(e: any): void {
     this.selectedYear = e.value;
     if (this.selectedmonth != '') {
@@ -275,17 +266,6 @@ export class ClaimSummaryComponent implements AfterViewInit {
     });
   }
 
-  //============Fetching DropDown Init Data==============
-  fetch_Dropdown_InitData() {
-    this.service.get_Init_Data().subscribe((response: any) => {
-      this.SearchOn_DataSource = response.SearchOn;
-      this.Facility_DataSource = response.facility.filter(
-        (item) => item.Name !== 'All'
-      );
-      this.EncounterType_DataSource = response.EncounterType;
-    });
-  }
-
   //============Get search parameters dropdown values=======
   get_searchParameters_Dropdown_Values() {
     this.service.get_SearchParametrs_Data().subscribe((response: any) => {
@@ -319,23 +299,11 @@ export class ClaimSummaryComponent implements AfterViewInit {
   ) {
     this.dataSource = '';
     this.service
-      .get_Claim_Summary_Date_wise(
-        userId,
-        searchOn,
-        Facility,
-        encounterType,
-        fromData,
-        toDate,
-        receiverId,
-        payerId,
-        payer,
-        Clinician,
-        OrderingClinician
-      )
+      .fetch_Claim_Details_With_Activity({})
       .subscribe((data: any) => {
-        console.log('report data loaded', data);
+        // console.log('report data loaded', data);
         const personalReportData = data.PersonalReports;
-        console.log('data loaded', personalReportData);
+        // console.log('data loaded', personalReportData);
         this.memorise_Dropdown_Data = personalReportData.map(
           (personalReport) => {
             return {
@@ -352,12 +320,12 @@ export class ClaimSummaryComponent implements AfterViewInit {
         this.MemoriseReportColumns = personalReport
           ? personalReport.Columns
           : [];
-        console.log('memo loaded', this.MemoriseReportColumns);
+        // console.log('memo loaded', this.MemoriseReportColumns);
         this.columnsData =
           this.memoriseEnable === 'true'
             ? this.MemoriseReportColumns
             : data.ReportColumns;
-        console.log('columns are ', this.columnsData);
+        // console.log('columns are ', this.columnsData);
         this.ColumnNames = this.columnsData.map((column) => column.Name);
         // console.log("columns are fetched",this.columnsData)
 
@@ -366,21 +334,20 @@ export class ClaimSummaryComponent implements AfterViewInit {
           return {
             dataField: column.Name,
             caption: column.Title,
-            visible: column.Visibility === 'true' ? true : false,
+            visible: column.Visibility === true ? true : false,
             type: column.Type,
             format:
               column.Type === 'Decimal'
                 ? {
                     type: 'fixedPoint',
                     precision: 2,
-                    // currency: this.systemCurrencyCode,
                   }
                 : undefined,
           };
         });
-        console.log('testing 1', this.columnsConfig);
+        // console.log('testing 1', this.columnsConfig);
         this.dataSource = data.ReportData;
-        console.log('report data is ', this.dataSource);
+        // console.log('report data is ', this.dataSource);
         // sessionStorage.setItem('DataSource', JSON.stringify(data));
         this.show_Pagination = true;
         // this.refresh;
@@ -416,6 +383,7 @@ export class ClaimSummaryComponent implements AfterViewInit {
         CLINICIAN: Clinician,
         ORDERING_CLINICIAN: OrderingClinician,
       };
+      console.log('report data loaded', reportData);
       // Store the object in session storage
       sessionStorage.setItem('reportData', JSON.stringify(reportData));
       this.loadData(
@@ -479,7 +447,7 @@ export class ClaimSummaryComponent implements AfterViewInit {
       ? 'Hide Parameters'
       : 'Show Parameters';
   };
-  //=================Show advance filter popup============
+  //=================Show advance filter popup==========
   get_advance_Filter() {
     this.isAdvancefilterOpened = true;
   }
@@ -501,7 +469,6 @@ export class ClaimSummaryComponent implements AfterViewInit {
   //=============DataGrid Refreshing=====================
   refresh = () => {
     this.dataGrid.instance.refresh();
-    // // console.log('grid console:', this.dataGrid.instance);
   };
   //=====================Search on Each Column===========
   applyFilter() {
@@ -514,8 +481,8 @@ export class ClaimSummaryComponent implements AfterViewInit {
   };
   //================Exporting Function===================
   onExporting(event: any) {
-    const fileName='Cliam-Summary'
-    this.service.exportDataGrid(event,fileName);
+    const fileName = 'Cliam-Summary';
+    this.service.exportDataGrid(event, fileName);
   }
   //==========show memorise save pop up==================
   show_Memorise_popup = () => {
@@ -548,13 +515,11 @@ export class ClaimSummaryComponent implements AfterViewInit {
     console.log('save memorise details', memoriseName, filterParameters);
     this.service
       .save_Memorise_report(
-        this.user_Id,
-        this.Report_Page,
         memoriseName,
         memoriseReportColumns,
         filterParameters
       )
-      .subscribe((response) => {
+      .subscribe((response: any) => {
         if (response) {
           notify(
             {
