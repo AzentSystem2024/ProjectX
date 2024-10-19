@@ -87,7 +87,7 @@ export class ClaimDetailsActivityComponent implements OnInit {
   To_Date_Value: any = new Date();
   ReceiverID_Value: any[] = [];
   PayerID_Value: any[] = [];
-  Payer_Value: any[] = [];
+  Payer_Value: any;
   Clinician_Value: any[] = [];
   OrderingClinician_Value: any[] = [];
   selectedmonth: any = '';
@@ -197,7 +197,7 @@ export class ClaimDetailsActivityComponent implements OnInit {
       To_Date: this.reportengine.formatDate(this.To_Date_Value),
       ReceiverID: this.ReceiverID_Value.join(', '),
       PayerID: this.PayerID_Value.join(', '),
-      Payer: this.Payer_Value.join(', '),
+      Payer: this.Payer_Value,
       Clinician: this.Clinician_Value.join(', '),
       OrderingClinician: this.OrderingClinician_Value.join(', '),
       ClaimNumber: this.ClaimNumber_Value,
@@ -467,7 +467,9 @@ export class ClaimDetailsActivityComponent implements OnInit {
 
   findColumnLocation = (e: any) => {
     const columnName = e.itemData;
-    this.reportengine.makeColumnVisible(this.dataGrid, columnName);
+    if (columnName != '' && columnName != null) {
+      this.reportengine.makeColumnVisible(this.dataGrid, columnName);
+    }
   };
 
   //=============DataGrid Refreshing=====================

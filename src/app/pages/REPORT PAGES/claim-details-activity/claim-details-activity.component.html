@@ -142,7 +142,7 @@
           [colCountByScreen]="{ xs: 8, sm: 8, md: 8, lg: 8 }"
         >
           <dxi-item [colSpan]="2">
-            <dx-tag-box
+            <dx-select-box
               labelMode="floating"
               labelLocation="left"
               label="select payer"
@@ -151,13 +151,9 @@
               valueExpr="ID"
               [(value)]="Payer_Value"
               [searchEnabled]="true"
-              [searchExpr]="['Name', 'ID']"
-              [multiline]="false"
-              [applyValueMode]="'instantly'"
-              [showSelectionControls]="true"
               (valueChanged)="onDropdownValueChanged()"
             >
-            </dx-tag-box>
+            </dx-select-box>
           </dxi-item>
 
           <dxi-item [colSpan]="2">
@@ -318,7 +314,7 @@
           </dxi-item>
 
           <dxi-item [colSpan]="2">
-            <dx-tag-box
+            <dx-select-box
               labelMode="floating"
               labelLocation="left"
               label="Select Claim Status"
@@ -327,14 +323,9 @@
               valueExpr="ID"
               [(value)]="CliamStatus_Value"
               [searchEnabled]="true"
-              [searchExpr]="['Name', 'ID']"
-              [multiline]="false"
-              [applyValueMode]="'instantly'"
-              [showSelectionControls]="true"
-              [dropDownOptions]="{ width: 'auto' }"
               (valueChanged)="onDropdownValueChanged()"
             >
-            </dx-tag-box>
+            </dx-select-box>
           </dxi-item>
 
           <dxi-item [colSpan]="2">
@@ -580,6 +571,7 @@
             useSelectMode: true,
             searchEnabled:true,
             deferRendering: false,
+            showClearButton: true,
             dropDownOptions: {
               width: 'auto',
               height: '60vh'
