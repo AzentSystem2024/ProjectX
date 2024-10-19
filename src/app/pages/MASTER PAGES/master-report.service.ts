@@ -1065,4 +1065,37 @@ export class MasterReportService {
       return this.http.post(url, data)
     }
 
+    get_Importing_Master_Log_List() {
+      const Url = `${BASE_URL}/importmaster/listimport`;
+      const reqBody = {
+        list: [],
+      };
+      // const headers = new HttpHeaders({
+      //   'Content-Type': 'application/json',
+      //   'x-api-key': Token,
+      // });
+      return this.http.post(Url, reqBody);
+    }
+
+    get_Importing_Master_List() {
+      const Url = `${BASE_URL}/importmaster/importmasterlist`;
+      const reqBody = {
+        list: [],
+      };
+      // const headers = new HttpHeaders({
+      //   'Content-Type': 'application/json',
+      //   'x-api-key': Token,
+      // });
+      return this.http.post(Url, reqBody);
+    }
+
+    Insert_Imported_Data(data: any) {
+      const url = `${BASE_URL}importmaster/insert`;
+      return this.http.post(url, data);
+    }
+
+    get_Imported_Data_By_Id(id:number){
+      return this.http.post(`${BASE_URL}importmaster/select/`+id,{});
+    }
+
 }

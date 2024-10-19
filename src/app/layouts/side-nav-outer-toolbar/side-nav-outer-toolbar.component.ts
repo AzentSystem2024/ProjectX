@@ -89,7 +89,6 @@ export class SideNavOuterToolbarComponent implements OnInit, OnDestroy {
     this.screenSubscription = this.screen.changed.subscribe(() =>
       this.updateDrawer()
     );
-
     this.updateDrawer();
   }
 

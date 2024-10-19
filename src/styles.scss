@@ -562,6 +562,22 @@ body {
 .grid .dx-checkbox.dx-state-readonly .dx-checkbox-icon {
   border: 1px solid #00a1e0;
 }
+.mandatory-header {
+  color: red; /* Change text color to red */
+  font-weight: bold; /* Make it bold */
+  background-color: #ffcccc; /* Optional: Add a light background color */
+}
+.error-tooltip {
+  position: absolute;
+  background-color: rgba(255, 0, 0, 0.9);
+  color: white;
+  padding: 5px;
+  border-radius: 4px;
+  z-index: 1000;
+  white-space: nowrap; // Prevent text wrapping
+  font-size: 12px; // Font size
+  transform: translatey(-80%);
+}
 .grid .dx-button-mode-text {
   background-color: #00a0e028;
   color: #ffffff;
