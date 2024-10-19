@@ -37,7 +37,7 @@ export class ReportService {
     return this.months;
   }
 
-  //==========Fetch data of Claim Summary Date Wise=============
+  //==========Fetch data of Claim Summary Date Wise===============
   get_Claim_Summary_Date_wise(
     userId: any,
     SearchOn: any,
@@ -68,7 +68,7 @@ export class ReportService {
     return this.http.post(url, reqBodyData);
   }
 
-  //===============Fetch all search parametrs dropdown values===========
+  //===============Fetch all search parametrs dropdown values======
   get_SearchParametrs_Data() {
     const userid = sessionStorage.getItem('UserID');
     // const currentPathName = this.router.url.replace('/', '');
@@ -77,7 +77,7 @@ export class ReportService {
     return this.http.post(url, reqBody);
   }
 
-  //================fetch datasource of Claim-Details-With_Activity=============
+  //========fetch datasource of Claim-Details-With_Activity========
   fetch_Claim_Details_With_Activity(formData: any) {
     const userid = sessionStorage.getItem('UserID');
     const currentPathName = this.router.url.replace('/', '');
@@ -97,14 +97,22 @@ export class ReportService {
     };
     return this.http.post(url, reqBody);
   }
-  //=========================Fetch System Currency Format==================
+
+  //===============Fetch claim details drill down values===========
+  get_CliamDetails_DrillDown_Data(ClaimNumber: any, FacilityID: any) {
+    const url = `${BASE_URL}/reports/claimdetailswithactivity/claimdetails`;
+    const reqBody = { ClaimNumber: ClaimNumber, FacilityID: FacilityID };
+    return this.http.post(url, reqBody);
+  }
+
+  //=========================Fetch System Currency Format==========
   getSystemCurrencyCode(): string {
     return new Intl.NumberFormat(navigator.language, {
       style: 'currency',
       currency: 'USD',
     }).resolvedOptions().currency;
   }
-  //=========================Save memorise Report==========================
+  //=========================Save memorise Report==================
   save_Memorise_report(
     reportName: any,
     memoriseColumnData: any,
@@ -150,4 +158,13 @@ export class ReportService {
       e.cancel = true;
     }
   }
+
+    //===============Format the data needful================
+    formatDate(dateString: any) {
+      const date = new Date(dateString);
+      const year = date.getFullYear();
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const day = date.getDate().toString().padStart(2, '0');
+      return `${day}-${month}-${year}`;
+    }
 }

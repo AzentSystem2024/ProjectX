@@ -1,4 +1,4 @@
-<div class="view-wrapper list-page">
+<div class="view-wrapper list-page drilldown">
   <div *ngIf="isParamsOpend" class="paramsDiv">
     <div *ngIf="isParamsOpend">
       <dx-form>
@@ -402,9 +402,22 @@
         texts: { fix: 'Freeze', unfix: 'Unfreeze' }
       }"
       (onExporting)="onExporting($event)"
-      (onRowPrepared)="onRowPrepared($event)"
-      (onRowDblClick)="handleRowDoubleClick($event)"
     >
+      <dxi-column
+        type="buttons"
+        [width]="40"
+        [fixed]="false"
+        fixedPosition="left"
+        [allowResizing]="false"
+        [allowReordering]="false"
+      >
+        <dxi-button
+          icon="info"
+          text="Details"
+          hint="View Details"
+          [onClick]="handleRowDoubleClick"
+        ></dxi-button>
+      </dxi-column>
       <dxi-column
         *ngFor="let column of columnsConfig"
         [dataField]="column.dataField"
@@ -836,12 +849,15 @@
     ></app-advance-filter-popup>
   </form-popup>
 
-</div>
- <dx-popup
+  <dx-popup
     [(visible)]="isDrillDownPopupOpened"
-    title="Claim submission & Remittance details"
-    height="90vh"
+    title="Claim Details"
+    height="100vh"
     [width]="'90%'"
   >
-    <app-claim-detail-activity-drill-down></app-claim-detail-activity-drill-down>
+    <app-claim-detail-activity-drill-down
+      [ClaimNumber]="claimNumber"
+      [FacilityID]="facilityID"
+    ></app-claim-detail-activity-drill-down>
   </dx-popup>
+</div>

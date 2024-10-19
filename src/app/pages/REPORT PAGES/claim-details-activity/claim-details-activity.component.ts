@@ -129,6 +129,8 @@ export class ClaimDetailsActivityComponent implements OnInit {
   isSaveMemorisedOpened: boolean = false;
   personalReportData: any;
   isDrillDownPopupOpened: boolean = false;
+  claimNumber: any;
+  facilityID: any;
 
   constructor(
     private service: ReportService,
@@ -158,11 +160,14 @@ export class ClaimDetailsActivityComponent implements OnInit {
     }
   }
   //=================Row click drill Down====================
-  handleRowDoubleClick(e: any) {
-    const clickedRowData = e.data; // Access the double-clicked row data
-    console.log('Row double-clicked:', clickedRowData);
+  handleRowDoubleClick = (e: any) => {
+    const clickedRowData = e.row.data;
+    this.claimNumber = clickedRowData.InvoiceNo;
+    this.facilityID = clickedRowData.FacilityID;
+    console.log('njsdkvcsdlkjvl');
     this.isDrillDownPopupOpened = true;
-  }
+    console.log('njsdkvcsdlkjvl sfgdfhgfhj');
+  };
 
   //============Get search parameters dropdown values=======
   get_searchParameters_Dropdown_Values() {

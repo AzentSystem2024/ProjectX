@@ -1,40 +1,18 @@
-// .AccountLockandGeneralDiv {
-//   width: 100%;
-//   height: 100%;
-//   padding: 5px;
-// }
-
-// .BorderBox {
-//   position: relative;
-//   margin-top: 5px;
-//   padding: 10px;
-//   width: 100%;
-//   border-radius: 8px;
-//   background-color: var(--base-bg);
-//   box-shadow: -2px 2px 2px rgba(0, 0, 0, 0.1), 2px 2px 2px rgba(0, 0, 0, 0.1),
-//     0 2px 2px rgba(0, 0, 0, 0.1);
-// }
-
-// .items {
-//   width: 100%;
-// }
-
 .headingText {
-  position: absolute;
-  top: -23px;
-  left: 10px;
   margin-bottom: 5px;
-  font-size: larger;
+  font-size: large;
   font-weight: bold;
 }
 .label-container {
   width: 100%;
   display: flex;
   align-items: center;
+  margin-bottom: 5px;
 }
 .custom-label {
-  margin-right: 10px; /* Space between label and input field */
-  width: 40%;
+  width: 35%;
+  margin-left: 15px;
+  font-size: larger;
 }
 .parentDiv {
   height: 100%;
@@ -45,12 +23,25 @@
 .RowgroupDiv {
   padding: 5px;
   width: 100%;
-  height: auto;
-  border: 1px solid rgb(42, 41, 41);
+  min-height: 30vh;
+  max-height: auto;
+  border: 1px solid var(--div-border-color);
+  border-radius: 8px;
+  box-shadow: -2px 2px 2px rgba(0, 0, 0, 0.1), 2px 2px 2px rgba(0, 0, 0, 0.1),
+    0 2px 2px rgba(0, 0, 0, 0.1);
+}
+.RowgroupDiv2 {
+  padding: 5px;
+  width: 100%;
+  min-height: 50vh;
+  max-height: auto;
+  border: 1px solid var(--div-border-color);
+  border-radius: 8px;
   box-shadow: -2px 2px 2px rgba(0, 0, 0, 0.1), 2px 2px 2px rgba(0, 0, 0, 0.1),
     0 2px 2px rgba(0, 0, 0, 0.1);
 }
 .BorderBox {
-  width: 50%;
+  width: 40%;
   height: auto;
+  margin-left: 10px;
 }
