@@ -1,4 +1,4 @@
-<div class="view-wrapper list-page drilldown">
+<div id="reportPage" class="view-wrapper list-page drilldown">
   <div *ngIf="isParamsOpend" class="paramsDiv">
     <div *ngIf="isParamsOpend">
       <dx-form>
@@ -212,8 +212,6 @@
               [showSelectionControls]="true"
               [dropDownOptions]="{ width: 'auto' }"
               (valueChanged)="onDropdownValueChanged()"
-              (opened)="loadOrderingClinicianData()"
-
             >
             </dx-tag-box>
           </dxi-item>
@@ -385,7 +383,7 @@
       noDataText="no data"
       [dataSource]="dataGrid_DataSource"
       [showBorders]="true"
-      [allowColumnResizing]="true"
+      [allowColumnResizing]="false"
       [columnAutoWidth]="true"
       [allowColumnReordering]="true"
       [filterRow]="{ visible: false }"
@@ -399,9 +397,8 @@
       <dxi-column
         type="buttons"
         [width]="40"
-        [fixed]="false"
+        [fixed]="true"
         fixedPosition="left"
-       
         [allowResizing]="false"
         [allowReordering]="false"
       >
@@ -409,7 +406,7 @@
           icon="info"
           text="Details"
           hint="View Details"
-          [onClick]="handleRowDoubleClick"
+          [onClick]="handleRowDrillDownClick"
         ></dxi-button>
       </dxi-column>
       <dxi-column
@@ -453,7 +450,6 @@
         [enabled]="true"
         [allowExportSelectedData]="true"
         [formats]="['xlsx']"
-
       >
       </dxo-export>
       <dxo-toolbar>
@@ -598,8 +594,18 @@
       <dxo-summary class="mainSummaryDiv" summaryText="Total">
         <!-- ==========================Group item Summary===================== -->
         <dxi-group-item
-          column="Quantity"
+          column="FacilityGroupID"
           summaryType="sum"
+          displayFormat="{0}"
+          [customizeText]="customiseCountText"
+          [alignByColumn]="true"
+          [showInGroupFooter]="false"
+        >
+        </dxi-group-item>
+
+        <dxi-group-item
+          column="Quantity"
+          summaryType="count"
           displayFormat="{0}"
           [customizeText]="customiseTotal"
           [alignByColumn]="true"
@@ -857,3 +863,15 @@
     ></app-claim-detail-activity-drill-down>
   </dx-popup>
 </div>
+<dx-load-panel
+  #loadPanel
+  shadingColor="rgba(0,0,0,0.4)"
+  [position]="{ of: '#reportPage' }"
+  [(visible)]="loadingVisible"
+  [showIndicator]="true"
+  [showPane]="true"
+  [shading]="true"
+  [hideOnOutsideClick]="false"
+  [message]="'Initializing...'"
+>
+</dx-load-panel>

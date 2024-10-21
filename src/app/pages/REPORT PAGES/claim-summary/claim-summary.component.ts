@@ -198,7 +198,7 @@ export class ClaimSummaryComponent implements AfterViewInit {
     this.Report_Page = this.router.url.slice(1);
     const parametrs = JSON.parse(sessionStorage.getItem('reportData'));
     this.Parameters.push(parametrs);
-    this.systemCurrencyCode = this.service.getSystemCurrencyCode();
+    // this.systemCurrencyCode = this.service.getSystemCurrencyCode();
     const loadedPAgeFlag = JSON.parse(sessionStorage.getItem('loadedFlag'));
     // if (loadedPAgeFlag == 'true') {
     //   this.DataSorce_After_reload_Page();
@@ -513,7 +513,7 @@ export class ClaimSummaryComponent implements AfterViewInit {
     });
 
     console.log('save memorise details', memoriseName, filterParameters);
-    this.service
+    this.reportEngine
       .save_Memorise_report(
         memoriseName,
         memoriseReportColumns,

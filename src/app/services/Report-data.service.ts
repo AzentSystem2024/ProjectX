@@ -113,30 +113,7 @@ export class ReportService {
     return this.http.post(url, reqBody);
   }
 
-  //=========================Fetch System Currency Format==========
-  getSystemCurrencyCode(): string {
-    return new Intl.NumberFormat(navigator.language, {
-      style: 'currency',
-      currency: 'USD',
-    }).resolvedOptions().currency;
-  }
-  //=========================Save memorise Report==================
-  save_Memorise_report(
-    reportName: any,
-    memoriseColumnData: any,
-    filterParameters: any
-  ) {
-    const userid = sessionStorage.getItem('UserID');
-    const currentPathName = this.router.url.replace('/', '');
-    const url = `${BASE_URL}userreports/insert`;
-    const reqBody = {
-      USER_ID: userid,
-      REPORT_ID: currentPathName,
-      USER_REPORT_NAME: reportName,
-      columns: memoriseColumnData,
-    };
-    return this.http.post(url, reqBody);
-  }
+
 
   //==============Export function==================
   exportDataGrid(e: any, fileName: any) {

@@ -598,3 +598,14 @@ body {
     }
   }
 }
+.drilldown .dx-tab.dx-tab-selected .dx-tab-text .dx-tab-text-span {
+  visibility: visible;
+  font-size: larger;
+  font-weight: bold;
+}
+.drilldown .dx-tab .dx-tab-text .dx-tab-text-span {
+  position: relative;
+  display: block;
+  font-weight: 1000;
+  visibility: hidden;
+}

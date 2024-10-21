@@ -28,6 +28,7 @@ import {
   DxTreeViewComponent,
   DxLookupComponent,
   DxDataGridComponent,
+  DxLoadPanelModule,
 } from 'devextreme-angular';
 import { FormPopupModule } from 'src/app/components';
 import { formatNumber } from 'devextreme/localization';
@@ -131,12 +132,26 @@ export class ClaimDetailsActivityComponent implements OnInit {
   isDrillDownPopupOpened: boolean = false;
   claimNumber: any;
   facilityID: any;
+  loadingVisible: boolean = false;
+  columnFixed: boolean = true;
+
+  customButtons = [
+    {
+      hint: 'Drill Down',
+      icon: 'info',
+      text: 'Drill Down',
+      onClick: (e) => this.handleRowDrillDownClick(e),
+      visible: true,
+    },
+  ];
 
   constructor(
     private service: ReportService,
     private router: Router,
     private reportengine: ReportEngineService
   ) {
+    this.loadingVisible = true;
+
     this.minDate = new Date(2000, 1, 1); // Set the minimum date
     this.maxDate = new Date(); // Set the maximum date
     //============Year field dataSource===============
@@ -149,24 +164,16 @@ export class ClaimDetailsActivityComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.get_searchParameters_Dropdown_Values();
     this.userId = sessionStorage.getItem('UserID');
     this.currentPathName = this.router.url.replace('/', '');
-    this.get_searchParameters_Dropdown_Values();
-  }
-  //=================Hint for ll row in datagrid=============
-  onRowPrepared(e: any) {
-    if (e.rowType === 'data') {
-      e.rowElement.title = `Double click the row to open drill down`;
-    }
   }
   //=================Row click drill Down====================
-  handleRowDoubleClick = (e: any) => {
+  handleRowDrillDownClick = (e: any) => {
     const clickedRowData = e.row.data;
     this.claimNumber = clickedRowData.InvoiceNo;
     this.facilityID = clickedRowData.FacilityID;
-    console.log('njsdkvcsdlkjvl');
     this.isDrillDownPopupOpened = true;
-    console.log('njsdkvcsdlkjvl sfgdfhgfhj');
   };
 
   //============Get search parameters dropdown values=======
@@ -185,20 +192,10 @@ export class ClaimDetailsActivityComponent implements OnInit {
         this.CliamStatus_DataSource = response.ClaimStatus;
         this.paymentStatus_DataSource = response.PaymentStatus;
         this.advanceFilterGridColumns = response.AdvanceFilter;
+        this.loadingVisible = false;
       },
       (error) => {
         console.error('Error fetching data:', error);
-      }
-    );
-  }
-
-  loadOrderingClinicianData() {
-    this.service.get_SearchParametrs_Data().subscribe(
-      (response: any) => {
-        this.OrderingClinician_DataSource = response.OrderingClinician || [];
-      },
-      (error) => {
-        console.error('Error fetching Ordering Clinician data:', error);
       }
     );
   }
@@ -224,7 +221,9 @@ export class ClaimDetailsActivityComponent implements OnInit {
       memberID: this.memberID_Value,
       paymentStatus: this.paymentStatus_Value,
     };
+
     this.isParamsOpend = false;
+
     this.dataGrid_DataSource = new DataSource<any>({
       load: () =>
         new Promise((resolve, reject) => {
@@ -232,21 +231,55 @@ export class ClaimDetailsActivityComponent implements OnInit {
             next: (response: any) => {
               this.isEmptyDatagrid = false;
               this.columndata = response.ReportColumns;
+
+              // Get user's locale for formatting
+              const userLocale = navigator.language || 'en-US'; // Default to 'en-US' if locale not found
+
               this.columnsConfig = response.ReportColumns.map((column) => {
+                let columnFormat;
+
+                // Format dates
+                if (column.Type === 'DateTime') {
+                  columnFormat = {
+                    type: 'date',
+                    formatter: (date) => {
+                      const formattedDate = new Intl.DateTimeFormat(
+                        userLocale,
+                        {
+                          year: 'numeric',
+                          month: 'short', // Use 'short' for abbreviated month names
+                          day: '2-digit',
+                        }
+                      ).format(new Date(date));
+                      return formattedDate;
+                    },
+                  };
+                }
+
+                // Format decimals
+                if (column.Type === 'Decimal') {
+                  columnFormat = {
+                    type: 'fixedPoint',
+                    precision: 2, // Adjust precision as needed
+                    formatter: (value) => {
+                      // Format decimal based on user's locale
+                      return new Intl.NumberFormat(userLocale, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      }).format(value);
+                    },
+                  };
+                }
+
                 return {
                   dataField: column.Name,
                   caption: column.Title,
                   visible: column.Visibility,
                   type: column.Type,
-                  format:
-                    column.Type === 'Decimal'
-                      ? {
-                          type: 'fixedPoint',
-                          precision: 2,
-                        }
-                      : undefined,
+                  format: columnFormat,
                 };
               });
+
               this.ColumnNames = this.columnsConfig
                 .filter((column) => column.visible)
                 .map((column) => column.dataField);
@@ -429,6 +462,7 @@ export class ClaimDetailsActivityComponent implements OnInit {
 
   //==========show memorise save pop up==================
   show_Memorise_popup = () => {
+    this.MemoriseReportName = '';
     this.isSaveMemorisedOpened = !this.isSaveMemorisedOpened;
   };
   //==========fetch custome memorise report name==========
@@ -454,9 +488,7 @@ export class ClaimDetailsActivityComponent implements OnInit {
         Visibility: hiddenColumns.includes(column.Name) ? false : true,
       };
     });
-
-    // console.log('save memorise details', memoriseName, filterParameters);
-    this.service
+    this.reportengine
       .save_Memorise_report(
         memoriseName,
         memoriseReportColumns,
@@ -471,6 +503,9 @@ export class ClaimDetailsActivityComponent implements OnInit {
             },
             'success'
           );
+          this.show_Memorise_popup();
+          // this.isSaveMemorisedOpened = false;
+          this.get_Datagrid_DataSource();
         } else {
           notify(
             {
@@ -482,7 +517,7 @@ export class ClaimDetailsActivityComponent implements OnInit {
         }
       });
   }
-
+  //====================Find the column location from the datagrid================
   findColumnLocation = (e: any) => {
     const columnName = e.itemData;
     if (columnName != '' && columnName != null) {
@@ -530,6 +565,7 @@ export class ClaimDetailsActivityComponent implements OnInit {
     DxListModule,
     DxValidatorModule,
     DxValidationSummaryModule,
+    DxLoadPanelModule,
     AdvanceFilterPopupModule,
     ClaimDetailActivityDrillDownModule,
   ],
