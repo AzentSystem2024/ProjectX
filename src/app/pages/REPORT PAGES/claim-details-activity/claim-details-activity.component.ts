@@ -96,7 +96,7 @@ export class ClaimDetailsActivityComponent implements OnInit {
   PatientID_Value: any = null;
   Resubmission_Value: any = null;
   DenialCodes_Value: any;
-  CliamStatus_Value: any[] = [];
+  CliamStatus_Value: any;
   memberID_Value: any = null;
   paymentStatus_Value: any = null;
 
@@ -171,20 +171,36 @@ export class ClaimDetailsActivityComponent implements OnInit {
 
   //============Get search parameters dropdown values=======
   get_searchParameters_Dropdown_Values() {
-    this.service.get_SearchParametrs_Data().subscribe((response: any) => {
-      this.SearchOn_DataSource = response.SearchOn;
-      this.Facility_DataSource = response.facility;
-      this.EncounterType_DataSource = response.EncounterType;
-      this.RecieverID_DataSource = response.ReceiverID;
-      this.PayerID_DataSource = response.PayerID;
-      this.Payer_DataSource = response.Payer;
-      this.Clinician_DataSource = response.Clinician;
-      this.OrderingClinician_DataSource = response.OrderingClinician;
-      this.ResubmissionType_DataSource = response.ResubmissionType;
-      this.CliamStatus_DataSource = response.ClaimStatus;
-      this.paymentStatus_DataSource = response.PaymentStatus;
-      this.advanceFilterGridColumns = response.AdvanceFilter;
-    });
+    this.service.get_SearchParametrs_Data().subscribe(
+      (response: any) => {
+        this.SearchOn_DataSource = response.SearchOn;
+        this.Facility_DataSource = response.facility;
+        this.EncounterType_DataSource = response.EncounterType;
+        this.RecieverID_DataSource = response.ReceiverID;
+        this.PayerID_DataSource = response.PayerID;
+        this.Payer_DataSource = response.Payer;
+        this.Clinician_DataSource = response.Clinician;
+        this.OrderingClinician_DataSource = response.OrderingClinician;
+        this.ResubmissionType_DataSource = response.ResubmissionType;
+        this.CliamStatus_DataSource = response.ClaimStatus;
+        this.paymentStatus_DataSource = response.PaymentStatus;
+        this.advanceFilterGridColumns = response.AdvanceFilter;
+      },
+      (error) => {
+        console.error('Error fetching data:', error);
+      }
+    );
+  }
+
+  loadOrderingClinicianData() {
+    this.service.get_SearchParametrs_Data().subscribe(
+      (response: any) => {
+        this.OrderingClinician_DataSource = response.OrderingClinician || [];
+      },
+      (error) => {
+        console.error('Error fetching Ordering Clinician data:', error);
+      }
+    );
   }
 
   //===========Fetch DataSource For The Datagrid Table=============
@@ -254,10 +270,12 @@ export class ClaimDetailsActivityComponent implements OnInit {
 
   import_Advance_Filter() {
     const filterData = this.reportengine.getData();
-    console.log('advance filter imported data', filterData);
-    this.Facility_Value = this.Facility_DataSource.filter((item) =>
-      filterData.ReceiverID.split(',').includes(item.Name)
-    ).map((item) => item.ID);
+    // console.log('advance filter imported data', filterData);
+    this.ClaimNumber_Value = filterData.ClaimNumber;
+
+    // this.Facility_Value = this.Facility_DataSource.filter((item) =>
+    //   filterData.ReceiverID.split(',').includes(item.Name)
+    // ).map((item) => item.ID);
 
     this.ReceiverID_Value = this.RecieverID_DataSource.filter((item) =>
       filterData.ReceiverID.split(',').includes(item.Name)
@@ -267,9 +285,9 @@ export class ClaimDetailsActivityComponent implements OnInit {
       filterData.PayerID.split(',').includes(item.Name)
     ).map((item) => item.ID);
 
-    this.Payer_Value = this.Payer_DataSource.filter((item) =>
-      filterData.ReceiverID.split(',').includes(item.Name)
-    ).map((item) => item.ID);
+    // this.Payer_Value = this.Payer_DataSource.filter((item) =>
+    //   filterData.ReceiverID.split(',').includes(item.Name)
+    // ).map((item) => item.ID);
 
     this.Clinician_Value = this.Clinician_DataSource.filter((item) =>
       filterData.Clinician.split(',').includes(item.Name)

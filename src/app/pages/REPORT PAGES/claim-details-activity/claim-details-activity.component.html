@@ -210,8 +210,10 @@
               [multiline]="false"
               [applyValueMode]="'instantly'"
               [showSelectionControls]="true"
-              (valueChanged)="onDropdownValueChanged()"
               [dropDownOptions]="{ width: 'auto' }"
+              (valueChanged)="onDropdownValueChanged()"
+              (opened)="loadOrderingClinicianData()"
+
             >
             </dx-tag-box>
           </dxi-item>
@@ -399,6 +401,7 @@
         [width]="40"
         [fixed]="false"
         fixedPosition="left"
+       
         [allowResizing]="false"
         [allowReordering]="false"
       >
@@ -450,6 +453,7 @@
         [enabled]="true"
         [allowExportSelectedData]="true"
         [formats]="['xlsx']"
+
       >
       </dxo-export>
       <dxo-toolbar>

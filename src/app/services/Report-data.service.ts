@@ -78,6 +78,7 @@ export class ReportService {
   }
 
   //========fetch datasource of Claim-Details-With_Activity========
+
   fetch_Claim_Details_With_Activity(formData: any) {
     const userid = sessionStorage.getItem('UserID');
     const currentPathName = this.router.url.replace('/', '');
@@ -94,6 +95,13 @@ export class ReportService {
       Payer: formData.Payer,
       Clinician: formData.Clinician,
       OrderingClinician: formData.OrderingClinician,
+      ClaimStatus: formData.CliamStatus,
+      ResubmissionType: formData.Resubmission,
+      PaymentStatus: formData.paymentStatus,
+      ClaimNumber: formData.ClaimNumber,
+      PatientID: formData.PatientID,
+      MemberID: formData.memberID,
+      DenialCode: formData.DenialCodes,
     };
     return this.http.post(url, reqBody);
   }
@@ -159,12 +167,12 @@ export class ReportService {
     }
   }
 
-    //===============Format the data needful================
-    formatDate(dateString: any) {
-      const date = new Date(dateString);
-      const year = date.getFullYear();
-      const month = (date.getMonth() + 1).toString().padStart(2, '0');
-      const day = date.getDate().toString().padStart(2, '0');
-      return `${day}-${month}-${year}`;
-    }
+  //===============Format the data needful================
+  formatDate(dateString: any) {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${day}-${month}-${year}`;
+  }
 }
