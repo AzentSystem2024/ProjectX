@@ -121,7 +121,7 @@ export class ClaimDetailsActivityComponent implements OnInit {
   isFilterOpened = false; //filter row enable-desable variable
   GridSource: any;
   isEmptyDatagrid: boolean = true;
-  summaryColumnsData: any[] = [];
+  summaryColumnsData: any;
   columndata: any;
   isAdvancefilterOpened: boolean = false;
   filterpopupWidth: any = '70%';
@@ -223,7 +223,6 @@ export class ClaimDetailsActivityComponent implements OnInit {
     };
 
     this.isParamsOpend = false;
-
     this.dataGrid_DataSource = new DataSource<any>({
       load: () =>
         new Promise((resolve, reject) => {
@@ -235,6 +234,10 @@ export class ClaimDetailsActivityComponent implements OnInit {
               // Get user's locale for formatting
               const userLocale = navigator.language || 'en-US'; // Default to 'en-US' if locale not found
 
+              this.summaryColumnsData = response.ReportColumns.filter(
+                (col) => col.Type === 'Decimal' && col.Summary
+              );
+              
               this.columnsConfig = response.ReportColumns.map((column) => {
                 let columnFormat;
 

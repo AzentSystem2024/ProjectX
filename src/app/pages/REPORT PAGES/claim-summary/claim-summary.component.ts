@@ -334,7 +334,7 @@ export class ClaimSummaryComponent implements AfterViewInit {
           return {
             dataField: column.Name,
             caption: column.Title,
-            visible: column.Visibility === true ? true : false,
+            visible: column.Visibility,
             type: column.Type,
             format:
               column.Type === 'Decimal'

@@ -190,6 +190,12 @@
                 showInfo: true
               }"
             >
+              <dxi-column
+                *ngFor="let column of transactionColumns"
+                [dataField]="column.Title"
+                [caption]="column.ToolTip"
+                [visible]="column.Visibility"
+              ></dxi-column>
             </dx-data-grid>
           </div>
 
@@ -214,6 +220,12 @@
                 showInfo: true
               }"
             >
+              <dxi-column
+                *ngFor="let column of SubmisstionActivityColumns"
+                [dataField]="column.Title"
+                [caption]="column.ToolTip"
+                [visible]="column.Visibility"
+              ></dxi-column>
             </dx-data-grid>
           </div>
 
@@ -238,6 +250,12 @@
                 showInfo: true
               }"
             >
+              <dxi-column
+                *ngFor="let column of DiagnosisColumns"
+                [dataField]="column.Title"
+                [caption]="column.ToolTip"
+                [visible]="column.Visibility"
+              ></dxi-column>
             </dx-data-grid>
           </div>
         </div>

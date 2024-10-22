@@ -10,7 +10,6 @@ const BASE_URL = environment.PROJECTX_API_BASE_URL;
 export class ReportEngineService {
   private sharedData: any[] = [];
 
-
   constructor(private http: HttpClient, private router: Router) {}
   // ========================================================
   setData(data: any[]) {
@@ -20,7 +19,7 @@ export class ReportEngineService {
     return this.sharedData;
   }
   // ========================================================
-    //=========================Fetch System Currency Format==========
+  //=========================Fetch System Currency Format==========
   // getSystemCurrencyCode(): string {
   //   return new Intl.NumberFormat(navigator.language, {
   //     style: 'currency',
@@ -73,8 +72,8 @@ export class ReportEngineService {
     const date = new Date(dateString);
     return date.toLocaleDateString(undefined, {
       year: 'numeric',
-      month: '2-digit',
+      month: 'short',
       day: '2-digit',
-    }); // Adjusts to system locale while ensuring MM/DD/YYYY or DD/MM/YYYY format based on locale
+    });
   }
 }
