@@ -50,6 +50,7 @@ import { LicenseInfoComponent } from './pages/SYSTEM PAGES/license-info/license-
 import { FacilityRegionComponent } from './pages/MASTER PAGES/facility-region/facility-region.component';
 import { NotificationSettingsComponent } from './pages/SYSTEM PAGES/notificarion-settings/notificarion-settings.component';
 import { ClaimDetailsActivityComponent } from './pages/REPORT PAGES/claim-details-activity/claim-details-activity.component';
+import { ImportMasterDataComponent } from './pages/MASTER PAGES/import-master-data/import-master-data.component';
 const routes: Routes = [
   {
     path: '',
@@ -218,6 +219,11 @@ const routes: Routes = [
       {
         path: 'reset-password-form',
         component: AppResetPasswordComponent,
+        canActivate: [AuthGuardService],
+      },
+      {
+        path: 'import-master-data',
+        component: ImportMasterDataComponent,
         canActivate: [AuthGuardService],
       },
       {

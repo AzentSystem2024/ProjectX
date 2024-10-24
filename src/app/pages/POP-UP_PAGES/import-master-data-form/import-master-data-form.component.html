@@ -29,7 +29,7 @@
     [showIndicator]="true"
     [showPane]="false"
 ></dxo-load-panel>
-    <dxo-scrolling mode="virtual"></dxo-scrolling>
+<dxo-scrolling mode="virtual" [useNative]="false"></dxo-scrolling>
 
   <dxo-toolbar class="toolBarDiv p-0 m-0">
     <!-- <dxi-item location="" *ngIf="isFileNameAvailable">
@@ -145,4 +145,14 @@
   [shading]="true"
   message="Saving..."
 >
-</dx-load-panel>
+
+<dx-load-panel
+  #loadPanel
+  shadingColor="rgba(0,0,0,0.4)"
+  [position]="{ of: '#dataGrid' }"
+  [(visible)]="beforeLoading"
+  [showIndicator]="true"
+  [showPane]="true"
+  [shading]="true"
+  message="Loading..."
+>
