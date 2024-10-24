@@ -19,6 +19,7 @@ import {
 } from 'devextreme-angular';
 import { FormPopupModule } from 'src/app/components';
 import { ReportService } from 'src/app/services/Report-data.service';
+import { ReportEngineService } from '../../REPORT PAGES/report-engine.service';
 
 @Component({
   selector: 'app-claim-detail-activity-drill-down',
@@ -70,8 +71,15 @@ export class ClaimDetailActivityDrillDownComponent implements OnChanges {
       text: 'Diagnosis details',
     },
   ];
+  //===============Column storing variables================
+  transactionColumns: any;
+  SubmisstionActivityColumns: any;
+  DiagnosisColumns: any;
 
-  constructor(private service: ReportService) {}
+  constructor(
+    private service: ReportService,
+    private reportEngine: ReportEngineService
+  ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     this.selectedTab = 0;
@@ -109,15 +117,18 @@ export class ClaimDetailActivityDrillDownComponent implements OnChanges {
         this.ActivityDataSource = response.Activity.map((item) => {
           return {
             ...item,
-            StartDate: this.service.formatDate(item.StartDate),
+            StartDate: this.reportEngine.formatDate(item.StartDate),
           };
         });
         this.TransactionDataSource = response.Transaction.map((item) => {
           return {
             ...item,
-            TransactionDate: this.service.formatDate(item.TransactionDate),
+            TransactionDate: this.reportEngine.formatDate(item.TransactionDate),
           };
         });
+        this.transactionColumns = response.TransactionColumns;
+        this.SubmisstionActivityColumns = response.ActivityColumns;
+        this.DiagnosisColumns = response.DiagnosisColumns;
       });
   }
 }

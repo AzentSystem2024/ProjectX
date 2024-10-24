@@ -1,4 +1,4 @@
-<div class="view-wrapper list-page drilldown">
+<div id="reportPage" class="view-wrapper list-page drilldown">
   <div *ngIf="isParamsOpend" class="paramsDiv">
     <div *ngIf="isParamsOpend">
       <dx-form>
@@ -210,8 +210,8 @@
               [multiline]="false"
               [applyValueMode]="'instantly'"
               [showSelectionControls]="true"
-              (valueChanged)="onDropdownValueChanged()"
               [dropDownOptions]="{ width: 'auto' }"
+              (valueChanged)="onDropdownValueChanged()"
             >
             </dx-tag-box>
           </dxi-item>
@@ -383,7 +383,7 @@
       noDataText="no data"
       [dataSource]="dataGrid_DataSource"
       [showBorders]="true"
-      [allowColumnResizing]="true"
+      [allowColumnResizing]="false"
       [columnAutoWidth]="true"
       [allowColumnReordering]="true"
       [filterRow]="{ visible: false }"
@@ -395,20 +395,24 @@
       (onExporting)="onExporting($event)"
     >
       <dxi-column
+        *ngIf="!isEmptyDatagrid"
         type="buttons"
         [width]="40"
         [fixed]="false"
         fixedPosition="left"
+        [allowFixing]="false"
+        [allowHiding]="false"
         [allowResizing]="false"
         [allowReordering]="false"
       >
         <dxi-button
-          icon="info"
+          icon="detailslayout"
           text="Details"
           hint="View Details"
-          [onClick]="handleRowDoubleClick"
+          [onClick]="handleRowDrillDownClick"
         ></dxi-button>
       </dxi-column>
+
       <dxi-column
         *ngFor="let column of columnsConfig"
         [dataField]="column.dataField"
@@ -417,6 +421,20 @@
         [visible]="column.visible"
         [width]="200"
       ></dxi-column>
+
+      <!-- <dxo-summary class="mainSummaryDiv">
+        <dxi-total-item>
+          <dxi-total-item
+            *ngFor="let col of summaryColumnsData"
+            [column]="col.Name"
+            summaryType="sum"
+            valueFormat="decimal"
+            displayFormat="{0}"
+            [customizeText]="customiseTotal"
+          >
+          </dxi-total-item>
+        </dxi-total-item>
+      </dxo-summary> -->
 
       <dxo-search-panel [visible]="true"></dxo-search-panel>
       <dxo-paging [pageSize]="10"></dxo-paging>
@@ -434,7 +452,12 @@
       <dxo-sorting mode="multiple"></dxo-sorting>
       <dxo-header-filter [visible]="true" highlight="true"></dxo-header-filter>
 
-      <dxo-column-chooser [height]="500" [enabled]="true" mode="select">
+      <dxo-column-chooser
+        [height]="500"
+        hideOnOutsideClick="true"
+        [enabled]="true"
+        mode="select"
+      >
       </dxo-column-chooser>
 
       <dxo-search-panel
@@ -519,7 +542,7 @@
         <dxi-item location="after" locateInMenu="auto">
           <div class="separator"></div>
         </dxi-item>
-        <dxi-item name="exportButton"></dxi-item>
+        <dxi-item name="exportButton" [disabled]="isEmptyDatagrid"></dxi-item>
         <dxi-item location="after" locateInMenu="auto">
           <div class="separator"></div>
         </dxi-item>
@@ -529,7 +552,8 @@
             text: '',
             icon: 'newfolder',
             onClick: show_Memorise_popup,
-            hint: 'Save Memorize Report'
+            hint: 'Save Memorize Report',
+            disabled: isEmptyDatagrid
           }"
         ></dxi-item>
         <dxi-item location="after" locateInMenu="auto">
@@ -591,8 +615,19 @@
       <dxo-header-filter [visible]="true">
         <dxo-search [enabled]="true"></dxo-search>
       </dxo-header-filter>
+
       <dxo-summary class="mainSummaryDiv" summaryText="Total">
         <!-- ==========================Group item Summary===================== -->
+        <!-- <dxi-group-item
+          column="FacilityGroupID"
+          summaryType="sum"
+          displayFormat="{0}"
+          [customizeText]="customiseCountText"
+          [alignByColumn]="true"
+          [showInGroupFooter]="false"
+        >
+        </dxi-group-item> -->
+
         <dxi-group-item
           column="Quantity"
           summaryType="sum"
@@ -695,13 +730,27 @@
 
         <!-- ==========================Grand Total Summary==================== -->
         <ng-container visible="isSummaryOpened" class="totalsummaryDiv">
-          <dxi-total-item
-            column="Quantity"
-            summaryType="sum"
+          <!-- <dxi-total-item
+            column="FacilityGroupID"
+            summaryType="count"
             displayFormat="{0}"
-            [customizeText]="customiseTotal"
+            [customizeText]="customiseCountText"
           >
           </dxi-total-item>
+          <dxi-total-item
+            column="EncounterType"
+            summaryType="count"
+            displayFormat="{0}"
+            [customizeText]="customiseCountText"
+          >
+          </dxi-total-item>
+          <dxi-total-item
+            column="CPTType"
+            summaryType="count"
+            displayFormat="{0}"
+            [customizeText]="customiseCountText"
+          >
+          </dxi-total-item> -->
           <dxi-total-item
             column="NetAmt"
             summaryType="sum"
@@ -765,21 +814,72 @@
             [customizeText]="customiseTotal"
           >
           </dxi-total-item>
+
           <dxi-total-item
             column="SettledAmt"
             summaryType="sum"
-            [customizeText]="customiseTotal"
             displayFormat="{0}"
             [customizeText]="customiseTotal"
           >
           </dxi-total-item>
-
-          <dxi-total-item
-            column="CPTType"
+          <!-- <dxi-total-item
+            column="DenialCategory"
             summaryType="count"
+            [customizeText]="customiseCountText"
+            displayFormat="{0}"
+          >
+          </dxi-total-item>
+          <dxi-total-item
+            column="DenialType"
+            summaryType="count"
+            [customizeText]="customiseCountText"
+            displayFormat="{0}"
+          >
+          </dxi-total-item>
+          <dxi-total-item
+            column="InitialDenialCategory"
+            summaryType="count"
+            displayFormat="{0}"
             [customizeText]="customiseCountText"
           >
           </dxi-total-item>
+
+          <dxi-total-item
+            column="InitialDenialType"
+            summaryType="count"
+            displayFormat="{0}"
+            [customizeText]="customiseCountText"
+          >
+          </dxi-total-item>
+
+          <dxi-total-item
+            column="ResubmissionCount"
+            summaryType="count"
+            displayFormat="{0}"
+            [customizeText]="customiseCountText"
+          >
+          </dxi-total-item>
+          <dxi-total-item
+            column="RemittanceCount"
+            summaryType="count"
+            displayFormat="{0}"
+            [customizeText]="customiseCountText"
+          >
+          </dxi-total-item>
+          <dxi-total-item
+            column="ClaimYear"
+            summaryType="count"
+            displayFormat="{0}"
+            [customizeText]="customiseCountText"
+          >
+          </dxi-total-item>
+          <dxi-total-item
+            column="ClaimMonth"
+            summaryType="count"
+            displayFormat="{0}"
+            [customizeText]="customiseCountText"
+          >
+          </dxi-total-item> -->
         </ng-container>
       </dxo-summary>
     </dx-data-grid>
@@ -853,3 +953,15 @@
     ></app-claim-detail-activity-drill-down>
   </dx-popup>
 </div>
+<dx-load-panel
+  #loadPanel
+  shadingColor="rgba(0,0,0,0.0)"
+  [position]="{ of: '#reportPage' }"
+  [(visible)]="loadingVisible"
+  [showIndicator]="true"
+  [showPane]="true"
+  [shading]="true"
+  [hideOnOutsideClick]="false"
+  [message]="'Initializing...'"
+>
+</dx-load-panel>

@@ -8,25 +8,16 @@ import {
   ChangePasswordFormComponent,
 } from './components';
 import { AuthGuardService } from './services';
-
 import {
   SideNavOuterToolbarComponent,
   UnauthenticatedContentComponent,
 } from './layouts';
-
 import { DenialListComponent } from './pages/MASTER PAGES/denial/denial-list.component';
 import { AnalyticsDashboardComponent } from './pages/HOME/analytics-dashboard/analytics-dashboard.component';
 import { AppSignInComponent } from './pages/sign-in-form/sign-in-form.component';
 import { AppSignUpComponent } from './pages/sign-up-form/sign-up-form.component';
 import { AppResetPasswordComponent } from './pages/reset-password-form/reset-password-form.component';
 import { ClaimSummaryComponent } from './pages/REPORT PAGES/claim-summary/claim-summary.component';
-import { ClaimSummaryMonthWiseComponent } from './pages/REPORT PAGES/claim-summary-month-wise/claim-summary-month-wise.component';
-import { ResubmissionSummaryComponent } from './pages/REPORT PAGES/resubmission-summary/resubmission-summary.component';
-import { BalanceAmountToBeReceivedComponent } from './pages/REPORT PAGES/balance-amount-to-be-received/balance-amount-to-be-received.component';
-import { RejectedClaimsComponent } from './pages/REPORT PAGES/rejected-claims/rejected-claims.component';
-import { DoctorWithHighDenialsComponent } from './pages/REPORT PAGES/doctor-with-high-denials/doctor-with-high-denials.component';
-import { DoctorWithHighIncomeComponent } from './pages/REPORT PAGES/doctor-with-high-income/doctor-with-high-income.component';
-import { ClaimSummaryPayerWiseComponent } from './pages/REPORT PAGES/claim-summary-payer-wise/claim-summary-payer-wise.component';
 import { FacilityListComponent } from './pages/MASTER PAGES/facility/facility-list.component';
 import { FacilityGroupListComponent } from './pages/MASTER PAGES/facility-group/facility-group-list.component';
 import { CPTMasterComponent } from './pages/MASTER PAGES/cpt-master/cpt-master.component';
@@ -234,41 +225,6 @@ const routes: Routes = [
       {
         path: 'claim-summary-report',
         component: ClaimSummaryComponent,
-        canActivate: [AuthGuardService],
-      },
-      {
-        path: 'claim-summary-month-page',
-        component: ClaimSummaryMonthWiseComponent,
-        canActivate: [AuthGuardService],
-      },
-      {
-        path: 'claim-summary-payer-page',
-        component: ClaimSummaryPayerWiseComponent,
-        canActivate: [AuthGuardService],
-      },
-      {
-        path: 'doctor-high-income-page',
-        component: DoctorWithHighIncomeComponent,
-        canActivate: [AuthGuardService],
-      },
-      {
-        path: 'doctor-high-denials-page',
-        component: DoctorWithHighDenialsComponent,
-        canActivate: [AuthGuardService],
-      },
-      {
-        path: 'rejected-claims-page',
-        component: RejectedClaimsComponent,
-        canActivate: [AuthGuardService],
-      },
-      {
-        path: 'balance-amount-page',
-        component: BalanceAmountToBeReceivedComponent,
-        canActivate: [AuthGuardService],
-      },
-      {
-        path: 'resubmission-summary-page',
-        component: ResubmissionSummaryComponent,
         canActivate: [AuthGuardService],
       },
       {

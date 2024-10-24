@@ -485,8 +485,6 @@ body {
   .dx-datagrid-headers.dx-datagrid-nowrap.dx-bordered-top-view {
     border-radius: 8px 8px 0 0;
     background-color: #00a0e020;
-    // height: auto;
-    // padding: 3px;
     font-size: larger;
     font-weight: bolder;
   }
@@ -599,4 +597,15 @@ body {
       display: none;
     }
   }
+}
+.drilldown .dx-tab.dx-tab-selected .dx-tab-text .dx-tab-text-span {
+  visibility: visible;
+  font-size: larger;
+  font-weight: bold;
+}
+.drilldown .dx-tab .dx-tab-text .dx-tab-text-span {
+  position: relative;
+  display: block;
+  font-weight: 1000;
+  visibility: hidden;
 }
