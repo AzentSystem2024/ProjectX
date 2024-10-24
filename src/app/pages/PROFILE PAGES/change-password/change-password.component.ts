@@ -188,6 +188,8 @@ export class ChangePasswordComponent implements OnInit {
   getSecurityPolicyData() {
     this.service.getUserSecurityPolicityData().subscribe((res: any) => {
       this.securityPolicyData = res.data[0];
+      console.log(res,"secpolicy")
+      console.log("hhh")
       console.log('user security policy data', this.securityPolicyData);
     });
   }

@@ -31,9 +31,6 @@ export class ResetPasswordComponent implements OnInit,OnChanges {
         console.log('user security policy data',this.securityPolicyData)
         this.generatedPassword = this.generateRandomPassword();
       })
-      
-  
-
 
   this.formData = {
     NewPassword: '',
@@ -41,18 +38,12 @@ export class ResetPasswordComponent implements OnInit,OnChanges {
     ModifiedFrom:this.loginuserId,
     UserID:''
   }
-
   this.newFormData = this.formData;
-  
 }
 
   ngOnInit(): void {
     // this.securityPolicyData();
   }
-
- 
-
-
 
   generateRandomPassword(): string {
     // Fetch the minimum length from security policy; default to 8 if not provided

@@ -3,6 +3,7 @@ import { Component, Input, NgModule, SimpleChanges } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { DxButtonModule, DxDataGridModule, DxProgressBarModule, DxTemplateModule, DxTextBoxModule, DxTooltipModule, DxValidatorModule } from 'devextreme-angular';
 import { MasterReportService } from '../../MASTER PAGES/master-report.service';
+import DataSource from 'devextreme/data/data_source';
 
 @Component({
   selector: 'app-view-imported-master-data-form',
@@ -47,19 +48,45 @@ export class ViewImportedMasterDataFormComponent {
 
       switch (this.formdata.MasterID) {
         case 1: // Case for "Clinician" or relevant master
-          this.dataSource = this.selectedData.import_clinician.map(({ ID, LogID, ...rest }) => rest);
+          this.dataSource = new DataSource<any>({
+            load: () => 
+              new Promise((resolve) => {
+                const data = this.selectedData.import_clinician.map(({ ID, LogID, ...rest }) => rest);
+                resolve(data);
+              }),
+          });
           break;
         case 2: // Case for "Denial" or relevant master
-          this.dataSource = this.selectedData.import_Denial.map(({ ID, LogID, ...rest }) => rest);
+          this.dataSource = new DataSource<any>({
+            load: () => 
+              new Promise((resolve) => {
+                const data = this.selectedData.import_Denial.map(({ ID, LogID, ...rest }) => rest);
+                resolve(data);
+              }),
+          });
           break;
         case 3: // Case for "Insurance" or relevant master
-          this.dataSource = this.selectedData.import_Insurance.map(({ ID, LogID, ...rest }) => rest);
+          this.dataSource = new DataSource<any>({
+            load: () => 
+              new Promise((resolve) => {
+                const data = this.selectedData.import_Insurance.map(({ ID, LogID, ...rest }) => rest);
+                resolve(data);
+              }),
+          });
           break;
         case 4: // Case for "CPT" or relevant master
-          this.dataSource = this.selectedData.import_Cpt.map(({ ID, LogID, ...rest }) => rest);
+          this.dataSource = new DataSource<any>({
+            load: () => 
+              new Promise((resolve) => {
+                const data = this.selectedData.import_Cpt.map(({ ID, LogID, ...rest }) => rest);
+                resolve(data);
+              }),
+          });
           break;
         default:
-          this.dataSource = [];
+          this.dataSource = new DataSource<any>({
+            load: () => new Promise((resolve) => resolve([])), // Default to empty data
+          });
           break;
       }
     })
