@@ -609,3 +609,7 @@ body {
   font-weight: 1000;
   visibility: hidden;
 }
+.DetailsDrillDown .view-wrapper .grid .dx-datagrid-content .dx-row {
+  cursor: pointer;
+  height: 1rem;
+}

@@ -1,4 +1,4 @@
-<div class="parentDiv">
+<div id="parent" class="parentDiv">
   <div class="headingText">Basic info</div>
   <div class="d-flex align-items-center RowgroupDiv">
     <div class="BorderBox">
@@ -150,116 +150,97 @@
     </div>
   </div>
 
-  <div class="RowgroupDiv2 mt-3">
+  <div class="DetailsDrillDown RowgroupDiv2 mt-3">
     <div class="tabs-demo view-wrapper">
       <div class="widget-container">
-        <div>
-          <!-- Tabs Component -->
-          <dx-tabs
-            class="mb-2"
-            [width]="width"
-            [selectedIndex]="selectedTab"
-            [scrollByContent]="scrollByContent"
-            [showNavButtons]="showNavButtons"
-            [dataSource]="MenuDatasource"
-            [orientation]="orientations"
-            [stylingMode]="stylingMode"
-            [iconPosition]="iconPosition"
-            (onItemClick)="onTabClick($event)"
+        <!-- ------------------ Transaction DataGrid (Visible for Tab 0)---------------- -->
+        <div class="gridDataDiv mt-1">
+          <div class="headingText">Transaction Details</div>
+          <dx-data-grid
+            class="grid theme-dependent"
+            noDataText="No Data Available"
+            [height]="'auto'"
+            [dataSource]="TransactionDataSource"
+            [allowColumnResizing]="true"
+            [allowColumnReordering]="true"
+            [hoverStateEnabled]="true"
+            [columnAutoWidth]="true"
+            [focusedRowEnabled]="true"
+            [autoNavigateToFocusedRow]="false"
+            [keyExpr]="'TransactionDate'"
+            [(focusedRowKey)]="focusedRow"
+            (onFocusedRowChanged)="onTransactionGridFocusedRowChanged($event)"
           >
-          </dx-tabs>
+            <dxi-column
+              *ngFor="let column of transactionColumns"
+              [dataField]="column.Title"
+              [caption]="column.ToolTip"
+              [visible]="column.Visibility"
+            ></dxi-column>
+          </dx-data-grid>
+        </div>
 
-          <!-- Transaction DataGrid (Visible for Tab 0) -->
-          <div class="dridDataDiv" *ngIf="selectedTab === 0">
-            <div class="headingText">Transaction Details</div>
-            <dx-data-grid
-              class="grid theme-dependent"
-              noDataText="No Data Available"
-              [height]="'35vh'"
-              [dataSource]="TransactionDataSource"
-              [allowColumnResizing]="true"
-              [allowColumnReordering]="true"
-              [rowAlternationEnabled]="true"
-              [hoverStateEnabled]="true"
-              rowAlternationInterval="2"
-              [columnAutoWidth]="true"
-              [paging]="{ pageSize: 10 }"
-              [pager]="{
-                showPageSizeSelector: true,
-                allowedPageSizes: [5, 10, 'all'],
-                showInfo: true
-              }"
-            >
-              <dxi-column
-                *ngFor="let column of transactionColumns"
-                [dataField]="column.Title"
-                [caption]="column.ToolTip"
-                [visible]="column.Visibility"
-              ></dxi-column>
-            </dx-data-grid>
-          </div>
+        <!-- -------------------Activity DataGrid (Visible for Tab 1)------------------- -->
+        <div class="gridDataDiv mt-1" *ngIf="isActivityGridVisible">
+          <div class="headingText">Submission Activities</div>
+          <dx-data-grid
+            class="grid theme-dependent"
+            noDataText="No Data Available"
+            [height]="'auto'"
+            [dataSource]="filteredActivityDataSource"
+            [allowColumnResizing]="true"
+            [allowColumnReordering]="true"
+            [hoverStateEnabled]="true"
+            [columnAutoWidth]="true"
+            [focusedRowEnabled]="true"
+            [autoNavigateToFocusedRow]="false"
+            [keyExpr]="'ClaimActivityNumber'"
+            [(focusedRowKey)]="activityFocusRow"
+            (onFocusedRowChanged)="onActivityGridFocusedRowChanged($event)"
+          >
+            <dxi-column
+              *ngFor="let column of SubmisstionActivityColumns"
+              [dataField]="column.Title"
+              [caption]="column.ToolTip"
+              [visible]="column.Visibility"
+            ></dxi-column>
+          </dx-data-grid>
+        </div>
 
-          <!-- Activity DataGrid (Visible for Tab 1) -->
-          <div class="dridDataDiv" *ngIf="selectedTab === 1">
-            <div class="headingText">Submission Activities</div>
-            <dx-data-grid
-              class="grid theme-dependent"
-              noDataText="No Data Available"
-              [height]="'35vh'"
-              [dataSource]="ActivityDataSource"
-              [allowColumnResizing]="true"
-              [allowColumnReordering]="true"
-              [rowAlternationEnabled]="true"
-              [hoverStateEnabled]="true"
-              rowAlternationInterval="2"
-              [columnAutoWidth]="true"
-              [paging]="{ pageSize: 10 }"
-              [pager]="{
-                showPageSizeSelector: true,
-                allowedPageSizes: [5, 10, 'all'],
-                showInfo: true
-              }"
-            >
-              <dxi-column
-                *ngFor="let column of SubmisstionActivityColumns"
-                [dataField]="column.Title"
-                [caption]="column.ToolTip"
-                [visible]="column.Visibility"
-              ></dxi-column>
-            </dx-data-grid>
-          </div>
-
-          <!-- Diagnosis DataGrid (Visible for Tab 2) -->
-          <div class="dridDataDiv" *ngIf="selectedTab === 2">
-            <div class="headingText">Details of Diagnosis</div>
-            <dx-data-grid
-              class="grid theme-dependent"
-              noDataText="No Data Available"
-              [height]="'35vh'"
-              [dataSource]="DiagnosisDataSource"
-              [allowColumnResizing]="true"
-              [allowColumnReordering]="true"
-              [rowAlternationEnabled]="true"
-              [hoverStateEnabled]="true"
-              rowAlternationInterval="2"
-              [columnAutoWidth]="true"
-              [paging]="{ pageSize: 10 }"
-              [pager]="{
-                showPageSizeSelector: true,
-                allowedPageSizes: [5, 10, 'all'],
-                showInfo: true
-              }"
-            >
-              <dxi-column
-                *ngFor="let column of DiagnosisColumns"
-                [dataField]="column.Title"
-                [caption]="column.ToolTip"
-                [visible]="column.Visibility"
-              ></dxi-column>
-            </dx-data-grid>
-          </div>
+        <!-- ------------------Diagnosis DataGrid (Visible for Tab 2)------------------- -->
+        <div class="gridDataDiv mt-1" *ngIf="isDiagnosisGridVisible">
+          <div class="headingText">Details of Diagnosis</div>
+          <dx-data-grid
+            class="grid theme-dependent"
+            noDataText="No Data Available"
+            [height]="'auto'"
+            [dataSource]="filteredDiagnosisDataSource"
+            [allowColumnResizing]="true"
+            [allowColumnReordering]="true"
+            [hoverStateEnabled]="true"
+            [columnAutoWidth]="true"
+          >
+            <dxi-column
+              *ngFor="let column of DiagnosisColumns"
+              [dataField]="column.Title"
+              [caption]="column.ToolTip"
+              [visible]="column.Visibility"
+            ></dxi-column>
+          </dx-data-grid>
         </div>
       </div>
     </div>
   </div>
 </div>
+<dx-load-panel
+  #loadPanel
+  shadingColor="rgba(0,0,0,0.0)"
+  [position]="{ of: '#parent' }"
+  [(visible)]="loadingVisible"
+  [showIndicator]="true"
+  [showPane]="true"
+  [shading]="true"
+  [hideOnOutsideClick]="false"
+  [message]="'Loading...'"
+>
+</dx-load-panel>

@@ -14,7 +14,7 @@ import {
   DxTextBoxModule,
   DxLookupModule,
   DxNumberBoxModule,
-  DxTabPanelModule,
+  DxLoadPanelModule,
   DxTabsModule,
 } from 'devextreme-angular';
 import { FormPopupModule } from 'src/app/components';
@@ -27,9 +27,7 @@ import { ReportEngineService } from '../../REPORT PAGES/report-engine.service';
   styleUrls: ['./claim-detail-activity-drill-down.component.scss'],
 })
 export class ClaimDetailActivityDrillDownComponent implements OnChanges {
-  @Input() ClaimNumber: any | '';
-
-  @Input() FacilityID: any | '';
+  @Input() clickedRowData: any | '';
 
   width: any = '100%';
   rtlEnabled: boolean = false;
@@ -41,11 +39,14 @@ export class ClaimDetailActivityDrillDownComponent implements OnChanges {
   selectedRows: { [key: number]: any[] } = {};
   selectedTab: number = 0;
 
-  //====================datasource variables and value fields============
+  //====================DataSource Variables and Value Fields============
   TransactionDataSource: any;
   ActivityDataSource: any;
   DiagnosisDataSource: any;
-  // =========================================
+
+  filteredActivityDataSource: any;
+  filteredDiagnosisDataSource: any;
+  // ================== Field Values ===================
   ClaimNumberValue: any;
   EmiratesIDvalue: any;
   ReceiverIDValue: any;
@@ -56,53 +57,51 @@ export class ClaimDetailActivityDrillDownComponent implements OnChanges {
   ClaimAmountValue: any;
   RemittanceAmountValue: any;
   RemittanceCountValue: any;
-
-  MenuDatasource: any[] = [
-    {
-      id: 0,
-      text: 'Claim Transactions',
-    },
-    {
-      id: 1,
-      text: 'Submission activities',
-    },
-    {
-      id: 2,
-      text: 'Diagnosis details',
-    },
-  ];
   //===============Column storing variables================
   transactionColumns: any;
   SubmisstionActivityColumns: any;
   DiagnosisColumns: any;
 
+  isActivityGridVisible: boolean = false;
+  isDiagnosisGridVisible: boolean = false;
+
+  ClaimNumber: any;
+  FacilityID: any;
+  focusedRow: any;
+  activityFocusRow: any;
+
+  loadingVisible: boolean;
+
   constructor(
     private service: ReportService,
     private reportEngine: ReportEngineService
   ) {}
-
+  //=====================value change event of the component===============
   ngOnChanges(changes: SimpleChanges): void {
-    this.selectedTab = 0;
-    // Log changes for ClaimNumber and FacilityID
-    if (changes['ClaimNumber'] || changes['FacilityID']) {
-      // Call get_DataSource() only if both ClaimNumber and FacilityID are available
+    if (changes['clickedRowData'] && this.clickedRowData) {
+      this.loadingVisible = true;
+      this.focusedRow = null;
+      this.activityFocusRow = null;
+      this.isActivityGridVisible = false;
+      this.isDiagnosisGridVisible = false;
+
+      // Extract ClaimNumber and FacilityID from clickedRowData
+      this.ClaimNumber = this.clickedRowData.ClaimNumber;
+      this.FacilityID = this.clickedRowData.FacilityID;
+
+      // Call get_DataSource() if ClaimNumber and FacilityID are available
       if (this.ClaimNumber && this.FacilityID) {
-        // this.selectedTab = 0;
-        this.get_DataSource();
+        this.get_All_DataSource();
       }
     }
   }
 
-  onTabClick(event: any): void {
-    this.selectedTab = event.itemIndex;
-  }
-
   //===============Get all Data source Of the drill dowm ==================
-  get_DataSource() {
+  get_All_DataSource() {
+    this.loadingVisible = true;
     this.service
       .get_CliamDetails_DrillDown_Data(this.ClaimNumber, this.FacilityID)
       .subscribe((response: any) => {
-        console.log('drill data loaded successfully :', response.Summary[0]);
         this.ClaimNumberValue = response.Summary[0].ClaimNumber;
         this.EmiratesIDvalue = response.Summary[0].EmiratesIDNumber;
         this.ReceiverIDValue = response.Summary[0].ReceiverID;
@@ -129,7 +128,43 @@ export class ClaimDetailActivityDrillDownComponent implements OnChanges {
         this.transactionColumns = response.TransactionColumns;
         this.SubmisstionActivityColumns = response.ActivityColumns;
         this.DiagnosisColumns = response.DiagnosisColumns;
+        this.loadingVisible = false;
       });
+  }
+  //=================row selection event of transaction table=============
+  onTransactionGridFocusedRowChanged(e: any) {
+    this.isDiagnosisGridVisible = false;
+    this.filteredActivityDataSource = '';
+    let selectedRowClaimRemittanceHeaderUID =
+      e.row.data.ClaimRemittanceHeaderUID;
+
+    this.filteredActivityDataSource = this.ActivityDataSource.filter(
+      (item) =>
+        item.ClaimRemittanceHeaderUID === selectedRowClaimRemittanceHeaderUID
+    );
+    console.log('filtered datasource :', this.filteredActivityDataSource);
+    this.isActivityGridVisible = true;
+  }
+  //==========row selection event of submission activity table============
+  onActivityGridFocusedRowChanged(e: any) {
+    this.filteredDiagnosisDataSource = '';
+    console.log('selected row data :', e.row.data);
+
+    let selectedRowClaimRemittanceHeaderUID =
+      e.row.data.ClaimRemittanceHeaderUID;
+
+    let selectedRowClaimRemittanceUID = e.row.data.ClaimRemittanceUID;
+
+    let selectedRowSerialNumber = e.row.data.SerialNumber;
+
+    this.filteredDiagnosisDataSource = this.DiagnosisDataSource.filter(
+      (item) =>
+        item.ClaimRemittanceHeaderUID === selectedRowClaimRemittanceHeaderUID &&
+        item.ClaimRemittanceUID === selectedRowClaimRemittanceUID &&
+        item.SerialNumber === selectedRowSerialNumber
+    );
+    console.log('filtered datasource :', this.filteredDiagnosisDataSource);
+    this.isDiagnosisGridVisible = true;
   }
 }
 @NgModule({
@@ -145,6 +180,7 @@ export class ClaimDetailActivityDrillDownComponent implements OnChanges {
     DxNumberBoxModule,
     FormPopupModule,
     DxTabsModule,
+    DxLoadPanelModule,
   ],
   providers: [],
   exports: [ClaimDetailActivityDrillDownComponent],

@@ -130,20 +130,11 @@ export class ClaimDetailsActivityComponent implements OnInit {
   isSaveMemorisedOpened: boolean = false;
   personalReportData: any;
   isDrillDownPopupOpened: boolean = false;
-  claimNumber: any;
-  facilityID: any;
+  clickedRowData: any;
   loadingVisible: boolean = false;
   columnFixed: boolean = true;
 
-  customButtons = [
-    {
-      hint: 'Drill Down',
-      icon: 'info',
-      text: 'Drill Down',
-      onClick: (e) => this.handleRowDrillDownClick(e),
-      visible: true,
-    },
-  ];
+
 
   constructor(
     private service: ReportService,
@@ -170,9 +161,8 @@ export class ClaimDetailsActivityComponent implements OnInit {
   }
   //=================Row click drill Down====================
   handleRowDrillDownClick = (e: any) => {
-    const clickedRowData = e.row.data;
-    this.claimNumber = clickedRowData.InvoiceNo;
-    this.facilityID = clickedRowData.FacilityID;
+    this.clickedRowData = e.row.data;
+
     this.isDrillDownPopupOpened = true;
   };
 
@@ -180,19 +170,21 @@ export class ClaimDetailsActivityComponent implements OnInit {
   get_searchParameters_Dropdown_Values() {
     this.service.get_SearchParametrs_Data().subscribe(
       (response: any) => {
-        this.SearchOn_DataSource = response.SearchOn;
-        this.Facility_DataSource = response.facility;
-        this.EncounterType_DataSource = response.EncounterType;
-        this.RecieverID_DataSource = response.ReceiverID;
-        this.PayerID_DataSource = response.PayerID;
-        this.Payer_DataSource = response.Payer;
-        this.Clinician_DataSource = response.Clinician;
-        this.OrderingClinician_DataSource = response.OrderingClinician;
-        this.ResubmissionType_DataSource = response.ResubmissionType;
-        this.CliamStatus_DataSource = response.ClaimStatus;
-        this.paymentStatus_DataSource = response.PaymentStatus;
-        this.advanceFilterGridColumns = response.AdvanceFilter;
-        this.loadingVisible = false;
+        if (response) {
+          this.loadingVisible = false;
+          this.SearchOn_DataSource = response.SearchOn;
+          this.Facility_DataSource = response.facility;
+          this.EncounterType_DataSource = response.EncounterType;
+          this.RecieverID_DataSource = response.ReceiverID;
+          this.PayerID_DataSource = response.PayerID;
+          this.Payer_DataSource = response.Payer;
+          this.Clinician_DataSource = response.Clinician;
+          this.OrderingClinician_DataSource = response.OrderingClinician;
+          this.ResubmissionType_DataSource = response.ResubmissionType;
+          this.CliamStatus_DataSource = response.ClaimStatus;
+          this.paymentStatus_DataSource = response.PaymentStatus;
+          this.advanceFilterGridColumns = response.AdvanceFilter;
+        }
       },
       (error) => {
         console.error('Error fetching data:', error);
@@ -237,10 +229,9 @@ export class ClaimDetailsActivityComponent implements OnInit {
               this.summaryColumnsData = response.ReportColumns.filter(
                 (col) => col.Type === 'Decimal' && col.Summary
               );
-              
+
               this.columnsConfig = response.ReportColumns.map((column) => {
                 let columnFormat;
-
                 // Format dates
                 if (column.Type === 'DateTime') {
                   columnFormat = {
@@ -263,7 +254,7 @@ export class ClaimDetailsActivityComponent implements OnInit {
                 if (column.Type === 'Decimal') {
                   columnFormat = {
                     type: 'fixedPoint',
-                    precision: 2, // Adjust precision as needed
+                    precision: 2,
                     formatter: (value) => {
                       // Format decimal based on user's locale
                       return new Intl.NumberFormat(userLocale, {
@@ -296,9 +287,9 @@ export class ClaimDetailsActivityComponent implements OnInit {
                 }
               );
 
-              resolve(response.ReportData); // Resolve with the fetched ReportData
+              resolve(response.ReportData);
             },
-            error: (error) => reject(error.message), // Reject with the error message
+            error: (error) => reject(error.message),
           });
         }),
     });
