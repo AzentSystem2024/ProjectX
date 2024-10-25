@@ -133,6 +133,7 @@ export class ClaimDetailActivityDrillDownComponent implements OnChanges {
   }
   //=================row selection event of transaction table=============
   onTransactionGridFocusedRowChanged(e: any) {
+    this.activityFocusRow = null;
     this.isDiagnosisGridVisible = false;
     this.filteredActivityDataSource = '';
     let selectedRowClaimRemittanceHeaderUID =
