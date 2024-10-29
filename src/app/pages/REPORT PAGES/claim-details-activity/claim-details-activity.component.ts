@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { Component, NgModule, OnInit, ViewChild } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import {
@@ -44,7 +44,7 @@ import { AdvanceFilterPopupModule } from '../../POP-UP_PAGES/advance-filter-popu
   selector: 'app-claim-details-activity',
   templateUrl: './claim-details-activity.component.html',
   styleUrls: ['./claim-details-activity.component.scss'],
-  providers: [ReportService, ReportEngineService],
+  providers: [ReportService, ReportEngineService, DatePipe],
 })
 export class ClaimDetailsActivityComponent implements OnInit {
   @ViewChild(DxDataGridComponent, { static: true })
@@ -134,12 +134,11 @@ export class ClaimDetailsActivityComponent implements OnInit {
   loadingVisible: boolean = false;
   columnFixed: boolean = true;
 
-
-
   constructor(
     private service: ReportService,
     private router: Router,
-    private reportengine: ReportEngineService
+    private reportengine: ReportEngineService,
+    private datePipe: DatePipe
   ) {
     this.loadingVisible = true;
 
@@ -159,6 +158,7 @@ export class ClaimDetailsActivityComponent implements OnInit {
     this.userId = sessionStorage.getItem('UserID');
     this.currentPathName = this.router.url.replace('/', '');
   }
+
   //=================Row click drill Down====================
   handleRowDrillDownClick = (e: any) => {
     this.clickedRowData = e.row.data;
@@ -193,8 +193,8 @@ export class ClaimDetailsActivityComponent implements OnInit {
   }
 
   //===========Fetch DataSource For The Datagrid Table=============
-  get_Datagrid_DataSource() {
-    const FormData = {
+  async get_Datagrid_DataSource() {
+    const formData = {
       SearchOn: this.SearchOn_Value,
       Facility: this.Facility_Value.join(', '),
       EncounterType: this.EncounterType_Value,
@@ -215,83 +215,136 @@ export class ClaimDetailsActivityComponent implements OnInit {
     };
 
     this.isParamsOpend = false;
-    this.dataGrid_DataSource = new DataSource<any>({
-      load: () =>
-        new Promise((resolve, reject) => {
-          this.service.fetch_Claim_Details_With_Activity(FormData).subscribe({
-            next: (response: any) => {
-              this.isEmptyDatagrid = false;
-              this.columndata = response.ReportColumns;
 
-              // Get user's locale for formatting
-              const userLocale = navigator.language || 'en-US'; // Default to 'en-US' if locale not found
+    try {
+      const response: any = await this.service
+        .fetch_Claim_Details_With_Activity(formData)
+        .toPromise();
 
-              this.summaryColumnsData = response.ReportColumns.filter(
-                (col) => col.Type === 'Decimal' && col.Summary
-              );
+      this.isEmptyDatagrid = false;
+      this.columndata = response.ReportColumns;
 
-              this.columnsConfig = response.ReportColumns.map((column) => {
-                let columnFormat;
-                // Format dates
-                if (column.Type === 'DateTime') {
-                  columnFormat = {
-                    type: 'date',
-                    formatter: (date) => {
-                      const formattedDate = new Intl.DateTimeFormat(
-                        userLocale,
-                        {
-                          year: 'numeric',
-                          month: 'short', // Use 'short' for abbreviated month names
-                          day: '2-digit',
-                        }
-                      ).format(new Date(date));
-                      return formattedDate;
-                    },
-                  };
-                }
+      const userLocale = navigator.language || 'en-US'; // Get user's locale
+      console.log('user locale settigns :', userLocale);
 
-                // Format decimals
-                if (column.Type === 'Decimal') {
-                  columnFormat = {
-                    type: 'fixedPoint',
-                    precision: 2,
-                    formatter: (value) => {
-                      // Format decimal based on user's locale
-                      return new Intl.NumberFormat(userLocale, {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      }).format(value);
-                    },
-                  };
-                }
+      this.summaryColumnsData = this.generateSummaryColumns(
+        response.ReportColumns
+      );
+      console.log('Summary columns are:', this.summaryColumnsData);
 
-                return {
-                  dataField: column.Name,
-                  caption: column.Title,
-                  visible: column.Visibility,
-                  type: column.Type,
-                  format: columnFormat,
-                };
-              });
+      this.columnsConfig = this.generateColumnsConfig(
+        response.ReportColumns,
+        userLocale
+      );
 
-              this.ColumnNames = this.columnsConfig
-                .filter((column) => column.visible)
-                .map((column) => column.dataField);
+      this.ColumnNames = this.columnsConfig
+        .filter((column) => column.visible)
+        .map((column) => column.dataField);
 
-              this.personalReportData = response.PersonalReports;
-              this.memorise_Dropdown_DataList = response.PersonalReports.map(
-                (personalReport) => {
-                  return {
-                    name: personalReport.name,
-                  };
-                }
-              );
+      this.personalReportData = response.PersonalReports;
 
-              resolve(response.ReportData);
-            },
-            error: (error) => reject(error.message),
-          });
-        }),
+      this.memorise_Dropdown_DataList = response.PersonalReports.map(
+        (personalReport) => ({
+          name: personalReport.name,
+        })
+      );
+      // Format dates in ReportData
+      response.ReportData = response.ReportData.map((data) => ({
+        ...data,
+        TransactionDate: this.datePipe.transform(
+          data.TransactionDate,
+          'dd-MMM-yyyy'
+        ),
+        ActivityStartDate: this.datePipe.transform(
+          data.ActivityStartDate,
+          'dd-MMM-yyyy'
+        ),
+        EncounterStartDate: this.datePipe.transform(
+          data.EncounterStartDate,
+          'dd-MMM-yyyy'
+        ),
+        EncounterEndDate: this.datePipe.transform(
+          data.EncounterEndDate,
+          'dd-MMM-yyyy'
+        ),
+        LastResubmissionDate: this.datePipe.transform(
+          data.LastResubmissionDate,
+          'dd-MMM-yyyy'
+        ),
+        InitialDateSettlement: this.datePipe.transform(
+          data.InitialDateSettlement,
+          'dd-MMM-yyyy'
+        ),
+      }));
+
+      this.dataGrid_DataSource = new DataSource<any>({
+        load: () => Promise.resolve(response.ReportData),
+      });
+    } catch (error) {
+      console.error('Error fetching claim details:', error);
+    }
+  }
+
+  generateSummaryColumns(reportColumns) {
+    const decimalColumns = reportColumns.filter(
+      (col) => col.Type === 'Decimal' && col.Summary
+    );
+    return {
+      totalItems: decimalColumns.map((col) => this.createSummaryItem(col)),
+      groupItems: decimalColumns.map((col) =>
+        this.createSummaryItem(col, true)
+      ),
+    };
+  }
+
+  createSummaryItem(col, isGroupItem = false) {
+    return {
+      column: col.Name,
+      summaryType: 'sum',
+      displayFormat: '{0}',
+      valueFormat: {
+        style: 'decimal',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      },
+      alignByColumn: isGroupItem, // Align by column if it's a group item
+      showInGroupFooter: isGroupItem, // Show in group footer for group items
+    };
+  }
+
+  generateColumnsConfig(reportColumns, userLocale) {
+    return reportColumns.map((column) => {
+      let columnFormat;
+
+      if (column.Type === 'DateTime') {
+        columnFormat = {
+          type: 'date',
+          formatter: (date) =>
+            new Intl.DateTimeFormat(userLocale, {
+              year: 'numeric',
+              month: 'short',
+              day: '2-digit',
+            }).format(new Date(date)),
+        };
+      }
+      if (column.Type === 'Decimal') {
+        columnFormat = {
+          type: 'fixedPoint',
+          precision: 2,
+          formatter: (value) =>
+            new Intl.NumberFormat(userLocale, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            }).format(value),
+        };
+      }
+      return {
+        dataField: column.Name,
+        caption: column.Title,
+        visible: column.Visibility,
+        type: column.Type,
+        format: columnFormat,
+      };
     });
   }
 
