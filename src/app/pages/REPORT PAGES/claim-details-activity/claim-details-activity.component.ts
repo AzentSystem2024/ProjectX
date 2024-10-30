@@ -58,8 +58,8 @@ export class ClaimDetailsActivityComponent implements OnInit {
 
   @ViewChild('lookup', { static: false }) lookup: DxLookupComponent;
 
-  //=================DAtaSource for data Grid Table========
-  dataGrid_DataSource: any;
+  //=================DataSource for data Grid Table========
+  dataGrid_DataSource: DataSource<any>;
 
   columnsConfig: any; //==============Column data storing variable
 
@@ -215,6 +215,7 @@ export class ClaimDetailsActivityComponent implements OnInit {
     };
 
     this.isParamsOpend = false;
+    this.loadingVisible = true;
 
     try {
       const response: any = await this.service
@@ -224,8 +225,8 @@ export class ClaimDetailsActivityComponent implements OnInit {
       this.isEmptyDatagrid = false;
       this.columndata = response.ReportColumns;
 
-      const userLocale = navigator.language || 'en-US'; // Get user's locale
-      console.log('user locale settigns :', userLocale);
+      const userLocale = navigator.language || 'en-US';
+      console.log('user locale settings:', userLocale);
 
       this.summaryColumnsData = this.generateSummaryColumns(
         response.ReportColumns
@@ -236,20 +237,19 @@ export class ClaimDetailsActivityComponent implements OnInit {
         response.ReportColumns,
         userLocale
       );
-
       this.ColumnNames = this.columnsConfig
         .filter((column) => column.visible)
         .map((column) => column.dataField);
 
       this.personalReportData = response.PersonalReports;
-
       this.memorise_Dropdown_DataList = response.PersonalReports.map(
         (personalReport) => ({
           name: personalReport.name,
         })
       );
+
       // Format dates in ReportData
-      response.ReportData = response.ReportData.map((data) => ({
+      const formattedReportData = response.ReportData.map((data) => ({
         ...data,
         TransactionDate: this.datePipe.transform(
           data.TransactionDate,
@@ -277,9 +277,11 @@ export class ClaimDetailsActivityComponent implements OnInit {
         ),
       }));
 
+      // Initialize dataGrid_DataSource with the pre-loaded data
       this.dataGrid_DataSource = new DataSource<any>({
-        load: () => Promise.resolve(response.ReportData),
+        load: () => Promise.resolve(formattedReportData),
       });
+      this.loadingVisible = false;
     } catch (error) {
       console.error('Error fetching claim details:', error);
     }

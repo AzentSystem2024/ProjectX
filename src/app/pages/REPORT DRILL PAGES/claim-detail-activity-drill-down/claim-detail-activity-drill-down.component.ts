@@ -71,6 +71,7 @@ export class ClaimDetailActivityDrillDownComponent implements OnChanges {
   activityFocusRow: any;
 
   loadingVisible: boolean;
+  isContentVisible: boolean = true;
 
   constructor(
     private service: ReportService,
@@ -80,6 +81,7 @@ export class ClaimDetailActivityDrillDownComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['clickedRowData'] && this.clickedRowData) {
       this.loadingVisible = true;
+      this.isContentVisible = true;
       this.focusedRow = null;
       this.activityFocusRow = null;
       this.isActivityGridVisible = false;
@@ -96,9 +98,14 @@ export class ClaimDetailActivityDrillDownComponent implements OnChanges {
     }
   }
 
+  toggleContent() {
+    this.isContentVisible = !this.isContentVisible;
+  }
+
   //===============Get all Data source Of the drill dowm ==================
   get_All_DataSource() {
     this.loadingVisible = true;
+    this.isContentVisible = true;
     this.service
       .get_CliamDetails_DrillDown_Data(this.ClaimNumber, this.FacilityID)
       .subscribe((response: any) => {

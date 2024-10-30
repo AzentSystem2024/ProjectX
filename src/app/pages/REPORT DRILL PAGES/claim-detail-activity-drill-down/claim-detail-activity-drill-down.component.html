@@ -1,152 +1,138 @@
 <div id="parent" class="parentDiv">
-  <div class="headingText">Basic info</div>
-  <div class="d-flex align-items-center RowgroupDiv">
-    <div class="BorderBox">
-      <div class="mt-1">
-        <div class="label-container">
-          <label class="custom-label"
-            >Facility <i class="icon-dataportability"></i
-          ></label>
-          <dx-text-box
-            labelMode="static"
-            [width]="'60%'"
-            [(value)]="FacilityID"
-          >
-          </dx-text-box>
-        </div>
-      </div>
-
-      <div class="mt-1">
-        <div class="label-container">
-          <label class="custom-label">Member ID</label>
-          <dx-text-box
-            [(value)]="MemberIDValue"
-            labelMode="static"
-            [width]="'60%'"
-          >
-          </dx-text-box>
-        </div>
-      </div>
-
-      <div class="mt-1">
-        <div class="label-container">
-          <label class="custom-label">Receiver ID</label>
-          <dx-text-box
-            [(value)]="ReceiverIDValue"
-            labelMode="static"
-            [width]="'60%'"
-          >
-          </dx-text-box>
-        </div>
-      </div>
-
-      <div class="mt-1">
-        <div class="label-container">
-          <label class="custom-label">Payer</label>
-          <dx-text-box
-            [(value)]="PayerIDValue"
-            labelMode="static"
-            [width]="'60%'"
-          >
-          </dx-text-box>
-        </div>
-      </div>
+  <div>
+    <div class="button-container">
+      <dx-button
+        class="toggleButton"
+        icon="{{ isContentVisible ? 'chevronup' : 'chevrondown' }}"
+        stylingMode="outlined"
+        type="normal"
+        [hint]="isContentVisible ? 'Hide Basic Info' : 'Show Basic Info'"
+        [width]="120"
+        [height]="15"
+        (onClick)="toggleContent()"
+      >
+      </dx-button>
     </div>
 
-    <div class="BorderBox">
-      <div class="mt-1">
-        <div class="label-container">
-          <label class="custom-label">Claim Number</label>
-          <dx-text-box
-            labelMode="static"
-            [width]="'60%'"
-            [(value)]="ClaimNumberValue"
-          >
-          </dx-text-box>
-        </div>
-      </div>
+    <div
+      class="data-container"
+      [ngClass]="{ 'hide-content': !isContentVisible }"
+    >
+      <div class="headingText">Basic info</div>
+      <div class="d-flex align-items-center RowgroupDiv">
+        <div class="BorderBox">
+          <div class="mt-1">
+            <div class="label-container">
+              <label class="custom-label"
+                >Facility <i class="icon-dataportability"></i
+              ></label>
+              <dx-text-box
+                labelMode="static"
+                [width]="'60%'"
+                [(value)]="FacilityID"
+              >
+              </dx-text-box>
+            </div>
+          </div>
 
-      <div class="mt-1">
-        <div class="label-container">
-          <label class="custom-label">Claim Count</label>
-          <dx-text-box
-            [(value)]="ClaimCountValue"
-            labelMode="static"
-            [width]="'60%'"
-          >
-          </dx-text-box>
-        </div>
-      </div>
-      <div class="mt-1">
-        <div class="label-container">
-          <label class="custom-label">Remittance Count</label>
-          <dx-text-box
-            [(value)]="RemittanceCountValue"
-            labelMode="static"
-            [width]="'60%'"
-          >
-          </dx-text-box>
-        </div>
-      </div>
+          <div class="mt-1">
+            <div class="label-container">
+              <label class="custom-label">Member ID</label>
+              <dx-text-box
+                [(value)]="MemberIDValue"
+                labelMode="static"
+                [width]="'60%'"
+              >
+              </dx-text-box>
+            </div>
+          </div>
 
-      <!-- <div class="mt-1">
-        <div class="label-container">
-          <label class="custom-label">Claim Amount</label>
-          <dx-text-box
-            [(value)]="ClaimAmountValue"
-            labelMode="static"
-            [width]="'60%'"
-          >
-          </dx-text-box>
-        </div>
-      </div> -->
+          <div class="mt-1">
+            <div class="label-container">
+              <label class="custom-label">Receiver ID</label>
+              <dx-text-box
+                [(value)]="ReceiverIDValue"
+                labelMode="static"
+                [width]="'60%'"
+              >
+              </dx-text-box>
+            </div>
+          </div>
 
-      <div class="mt-1">
-        <div class="label-container">
-          <label class="custom-label">ID Payer</label>
-          <dx-text-box
-            [(value)]="IDPayerValue"
-            labelMode="static"
-            [width]="'60%'"
-          >
-          </dx-text-box>
+          <div class="mt-1">
+            <div class="label-container">
+              <label class="custom-label">Payer</label>
+              <dx-text-box
+                [(value)]="PayerIDValue"
+                labelMode="static"
+                [width]="'60%'"
+              >
+              </dx-text-box>
+            </div>
+          </div>
+        </div>
+
+        <div class="BorderBox">
+          <div class="mt-1">
+            <div class="label-container">
+              <label class="custom-label">Claim Number</label>
+              <dx-text-box
+                labelMode="static"
+                [width]="'60%'"
+                [(value)]="ClaimNumberValue"
+              >
+              </dx-text-box>
+            </div>
+          </div>
+
+          <div class="mt-1">
+            <div class="label-container">
+              <label class="custom-label">Claim Count</label>
+              <dx-text-box
+                [(value)]="ClaimCountValue"
+                labelMode="static"
+                [width]="'60%'"
+              >
+              </dx-text-box>
+            </div>
+          </div>
+          <div class="mt-1">
+            <div class="label-container">
+              <label class="custom-label">Remittance Count</label>
+              <dx-text-box
+                [(value)]="RemittanceCountValue"
+                labelMode="static"
+                [width]="'60%'"
+              >
+              </dx-text-box>
+            </div>
+          </div>
+
+          <div class="mt-1">
+            <div class="label-container">
+              <label class="custom-label">ID Payer</label>
+              <dx-text-box
+                [(value)]="IDPayerValue"
+                labelMode="static"
+                [width]="'60%'"
+              >
+              </dx-text-box>
+            </div>
+          </div>
+
+          <div class="mt-1">
+            <div class="label-container">
+              <label class="custom-label">Emirates ID</label>
+              <dx-text-box
+                [(value)]="EmiratesIDvalue"
+                labelMode="static"
+                [width]="'60%'"
+              >
+              </dx-text-box>
+            </div>
+          </div>
         </div>
       </div>
-
-      <div class="mt-1">
-        <div class="label-container">
-          <label class="custom-label">Emirates ID</label>
-          <dx-text-box
-            [(value)]="EmiratesIDvalue"
-            labelMode="static"
-            [width]="'60%'"
-          >
-          </dx-text-box>
-        </div>
-      </div>
-      <!--
-      <div class="mt-1">
-        <div class="label-container">
-          <label class="custom-label">Remittance Amount</label>
-          <dx-text-box
-            [(value)]="RemittanceAmountValue"
-            labelMode="static"
-            [width]="'60%'"
-          >
-          </dx-text-box>
-        </div>
-      </div> -->
-      <!-- <div class="mt-1">
-        <div class="label-container">
-          <label class="custom-label">Remittance Count</label>
-          <dx-text-box
-            [(value)]="RemittanceCountValue"
-            labelMode="static"
-            [width]="'60%'"
-          >
-          </dx-text-box>
-        </div>
-      </div> -->
     </div>
   </div>
 
@@ -159,7 +145,7 @@
           <dx-data-grid
             class="grid theme-dependent"
             noDataText="No Data Available"
-            [height]="'auto'"
+            [height]="'25vh'"
             [dataSource]="TransactionDataSource"
             [allowColumnResizing]="true"
             [allowColumnReordering]="true"
@@ -186,7 +172,7 @@
           <dx-data-grid
             class="grid theme-dependent"
             noDataText="No Data Available"
-            [height]="'auto'"
+            [height]="'38vh'"
             [dataSource]="filteredActivityDataSource"
             [allowColumnResizing]="true"
             [allowColumnReordering]="true"
@@ -213,7 +199,7 @@
           <dx-data-grid
             class="grid theme-dependent"
             noDataText="No Data Available"
-            [height]="'auto'"
+            [height]="'30vh'"
             [dataSource]="filteredDiagnosisDataSource"
             [allowColumnResizing]="true"
             [allowColumnReordering]="true"

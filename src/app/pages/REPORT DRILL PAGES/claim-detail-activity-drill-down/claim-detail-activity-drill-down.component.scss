@@ -23,7 +23,7 @@
   height: 100%;
   width: 100%;
   margin: 0px;
-  padding: 5px;
+  // padding: 5px;
 }
 .RowgroupDiv {
   padding: 5px;
@@ -64,4 +64,32 @@
 .DetailsDrillDown .view-wrapper .grid .dx-datagrid-content .dx-row {
   cursor: pointer;
   height: 1rem;
+}
+
+
+.button-container {
+  margin: 0px;
+  padding: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.toggleButton {
+  border-radius: 7px;
+}
+
+.data-container {
+  transition: transform 0.5s ease, opacity 0.5s ease, max-height 0.5s ease;
+  transform: translateY(0);
+  opacity: 1;
+  max-height: 500px; /* Set this to the maximum height of your content */
+}
+
+.hide-content {
+  transform: translateY(-20px);
+  opacity: 0;
+  max-height: 0; /* Transition from max-height to 0 */
+  padding: 0;
+  margin: 0;
+  overflow: hidden; /* Prevents content overflow */
 }
