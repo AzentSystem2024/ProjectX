@@ -1,6 +1,22 @@
-<div id="reportPage" class="view-wrapper list-page drilldown">
-  <div *ngIf="isParamsOpend" class="paramsDiv">
-    <div *ngIf="isParamsOpend">
+<div id="reportPage" class="view-wrapper list-page drilldown mt-0">
+  <div class="paramsDiv">
+    <div class="button-container">
+      <dx-button
+        class="toggleButton"
+        icon="{{ isContentVisible ? 'chevronup' : 'chevrondown' }}"
+        stylingMode="outlined"
+        type="normal"
+        [hint]="isContentVisible ? 'Hide Basic Info' : 'Show Basic Info'"
+        [width]="120"
+        [height]="15"
+        (onClick)="toggleContent()"
+      >
+      </dx-button>
+    </div>
+    <div
+      class="SearchParams-container"
+      [ngClass]="{ 'hide-content': !isContentVisible }"
+    >
       <dx-form>
         <dxi-item
           itemType="group"
@@ -393,7 +409,7 @@
         texts: { fix: 'Freeze', unfix: 'Unfreeze' }
       }"
       (onExporting)="onExporting($event)"
-      [summary]='summaryColumnsData'
+      [summary]="summaryColumnsData"
     >
       <dxi-column
         *ngIf="!isEmptyDatagrid"
@@ -422,21 +438,6 @@
         [visible]="column.visible"
         [width]="200"
       ></dxi-column>
-
-      <!-- <dxo-summary class="mainSummaryDiv">
-
-          <dxi-total-item
-            *ngFor="let col of summaryColumnsData"
-            [column]="col.Name"
-            summaryType="sum"
-            valueFormat="decimal"
-            displayFormat="{0}"
-            [customizeText]="customiseTotal"
-          >
-          </dxi-total-item>
-
-      </dxo-summary> -->
-
       <dxo-search-panel [visible]="true"></dxo-search-panel>
       <dxo-paging [pageSize]="10"></dxo-paging>
       <dxo-pager
@@ -480,7 +481,7 @@
         <dxi-item location="before">
           <div class="grid-header">Claim Detail with Activity</div>
         </dxi-item>
-        <dxi-item
+        <!-- <dxi-item
           widget="dxButton"
           [options]="{
             text: '',
@@ -488,10 +489,10 @@
             onClick: show_Parameter_Div,
             hint: hint_for_Parametr_div
           }"
-        ></dxi-item>
-        <dxi-item location="after" locateInMenu="auto">
+        ></dxi-item> -->
+        <!-- <dxi-item location="after" locateInMenu="auto">
           <div class="separator"></div>
-        </dxi-item>
+        </dxi-item> -->
         <dxi-item
           location="after"
           locateInMenu="auto"

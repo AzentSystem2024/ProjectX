@@ -110,7 +110,7 @@ export class ClaimDetailsActivityComponent implements OnInit {
   show_Pagination = true;
 
   //=====================other variables==================
-  isParamsOpend: boolean = true;
+  isContentVisible: boolean = true;
   hint_for_Parametr_div: any = 'Hide Parameters';
   currentPathName: any;
   userId: string;
@@ -133,6 +133,7 @@ export class ClaimDetailsActivityComponent implements OnInit {
   clickedRowData: any;
   loadingVisible: boolean = false;
   columnFixed: boolean = true;
+ 
 
   constructor(
     private service: ReportService,
@@ -158,11 +159,14 @@ export class ClaimDetailsActivityComponent implements OnInit {
     this.userId = sessionStorage.getItem('UserID');
     this.currentPathName = this.router.url.replace('/', '');
   }
+  //================Show and Hide Search parameters==========
+  toggleContent() {
+    this.isContentVisible = !this.isContentVisible;
+  }
 
   //=================Row click drill Down====================
   handleRowDrillDownClick = (e: any) => {
     this.clickedRowData = e.row.data;
-
     this.isDrillDownPopupOpened = true;
   };
 
@@ -214,7 +218,7 @@ export class ClaimDetailsActivityComponent implements OnInit {
       paymentStatus: this.paymentStatus_Value,
     };
 
-    this.isParamsOpend = false;
+    this.isContentVisible = false;
     this.loadingVisible = true;
 
     try {
@@ -382,8 +386,8 @@ export class ClaimDetailsActivityComponent implements OnInit {
 
   //============Show Parametrs Div=======================
   show_Parameter_Div = () => {
-    this.isParamsOpend = !this.isParamsOpend;
-    this.hint_for_Parametr_div = this.isParamsOpend
+    this.isContentVisible = !this.isContentVisible;
+    this.hint_for_Parametr_div = this.isContentVisible
       ? 'Hide Parameters'
       : 'Show Parameters';
   };
