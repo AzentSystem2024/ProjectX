@@ -20,9 +20,24 @@
       [allowUpdating]="true"
       [allowDeleting]="true"
       [allowAdding]="true"
-      [popup]="{ width: '40%', height: '60vh' }"
+      [popup]="{ width: '30%', height: '70vh' }"
     >
-      <dxo-popup title="Edit Clinician Category" [showTitle]="true"></dxo-popup>
+      <dxo-popup title="Edit Clinician Category" [showTitle]="true">
+      </dxo-popup>
+      <dxo-form [colCount]="1">
+        <!-- Form Field for Category -->
+        <dxi-item dataField="Category" editorType="dxTextBox">
+          <dxo-label text="Category"></dxo-label>
+        </dxi-item>
+        <!-- Form Field for Description -->
+        <dxi-item
+          dataField="Description"
+          editorType="dxTextArea"
+          [editorOptions]="{ height: 200 }"
+        >
+          <dxo-label text="Description"></dxo-label>
+        </dxi-item>
+      </dxo-form>
     </dxo-editing>
     <dxo-pager
       [visible]="true"

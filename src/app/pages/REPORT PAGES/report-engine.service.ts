@@ -18,14 +18,6 @@ export class ReportEngineService {
   getData(): any {
     return this.sharedData;
   }
-  // ========================================================
-  //=========================Fetch System Currency Format==========
-  // getSystemCurrencyCode(): string {
-  //   return new Intl.NumberFormat(navigator.language, {
-  //     style: 'currency',
-  //     currency: 'USD',
-  //   }).resolvedOptions().currency;
-  // }
   //=========================Save memorise Report==================
   save_Memorise_report(
     reportName: any,
@@ -50,12 +42,14 @@ export class ReportEngineService {
     const columnIndex = columns.findIndex(
       (column) => column.dataField === columnName
     );
-
     if (columnIndex !== -1) {
       const columnWidth = 200;
-      const scrollLeft = (columnIndex - 1) * columnWidth;
+      const gridElement = dataGrid.instance.element();
+      const visibleWidth = gridElement.clientWidth + 400;
+      const scrollLeft = columnIndex * columnWidth - visibleWidth / 2;
+      // Scroll to the calculated position
       dataGrid.instance.getScrollable().scrollTo({ left: scrollLeft });
-
+      // Highlight the column
       dataGrid.instance.columnOption(
         columnName,
         'cssClass',
@@ -63,11 +57,11 @@ export class ReportEngineService {
       );
       setTimeout(() => {
         dataGrid.instance.columnOption(columnName, 'cssClass', null);
-      }, 3000); // 3000 milliseconds = 3 seconds
+      }, 3000);
     }
   }
 
-  //===============Format the data needful================
+  //===============Format the data needful==================
   formatDate(dateString: any) {
     const date = new Date(dateString);
     return date.toLocaleDateString(undefined, {
@@ -76,4 +70,5 @@ export class ReportEngineService {
       day: '2-digit',
     });
   }
+
 }
