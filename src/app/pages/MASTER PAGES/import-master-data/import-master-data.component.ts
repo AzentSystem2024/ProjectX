@@ -17,6 +17,8 @@ export class ImportMasterDataComponent implements OnInit {
   dataGrid: DxDataGridComponent;
   @ViewChild(ImportMasterDataFormComponent, { static: false })
   importMasterDataForm: ImportMasterDataFormComponent;
+  @ViewChild(ViewImportedMasterDataFormComponent, { static: false })
+  viewImportedMasterDataForm: ViewImportedMasterDataFormComponent;
   @ViewChild('validationGroup', { static: true })
   validationGroup: DxValidationGroupComponent;
   isNewFormPopupOpened: boolean = false;
@@ -192,6 +194,9 @@ export class ImportMasterDataComponent implements OnInit {
 
   onClearData() {
     this.importMasterDataForm.clearData();
+  }
+  onClearViewData() {
+    this.viewImportedMasterDataForm.clearData();
   }
 }
 

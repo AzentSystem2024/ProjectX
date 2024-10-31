@@ -192,6 +192,7 @@ export class ImportMasterDataFormComponent implements OnInit{
                 position: 'top right'
             });
             this.resetFileInput();
+            this.beforeLoading=false;
             return;
             }
 
@@ -203,6 +204,7 @@ export class ImportMasterDataFormComponent implements OnInit{
                     displayTime: 1000,
                     position: 'top right'
                 });
+                this.beforeLoading=false;
                 this.resetFileInput();
                 return;
             }
@@ -230,6 +232,7 @@ export class ImportMasterDataFormComponent implements OnInit{
                     displayTime: 1000,
                     position: 'top right'
                 });
+                this.beforeLoading=false;
                 this.resetFileInput();
             } else {
               // Map the data to match the grid's dataField structure
@@ -258,7 +261,9 @@ export class ImportMasterDataFormComponent implements OnInit{
               // Load the mapped data into the grid
               this.dataGrid.instance.refresh();
               this.gridData = mappedData;
+              this.beforeLoading=false;
               console.log('Grid data:', this.gridData);
+              this.validateMandatoryFields();
                // Validate mandatory fields after data is loaded
           //  this.validateMandatoryFields();
           }
@@ -413,292 +418,181 @@ validateMandatoryFields() {
     this.gridData = [];  // Adjust based on your data source
   }
 
-  // onSaveClick(){
-  //   if(this.gridData.length>0){
 
-  //     this.isLoading = true;
-      
-  //   if (this.hasError) {
-  //     notify({
-  //       message: 'Please fix the validation errors before saving.',
-  //       position: { at: 'top right', my: 'top right' }
-  //     }, 'error');
-  //     this.resetFileInput();
-  //     this.isLoading = false;
-  //     this.isSaving=false;
-  //     return; // Stop execution if there are validation errors
-  //   }
-
-  //   this.isSaving = true;
-    
-  
-  //   // Get the master ID and grid data
-  //   const masterid = this.newImportData.masters;
-  //   const gridData = this.gridData;
-  
-  //   // Prepare the data object to be sent
-  //   let data: any = {
-  //     MasterID: masterid,
-  //     UserID: this.UserID,
-  //     NewRecordOnly: this.selectedImportOption
-  //   };
-  
-  //   // Switch case to assign the correct import key
-  //   switch (masterid) {
-  //     case 1:
-  //       data.import_clinician = gridData;
-  //       break;
-  //     case 2:
-  //       data.import_Denial = gridData;
-  //       break;
-  //       case 3:
-  //         data.import_insurance = gridData;
-  //         break;
-  //       case 4:
-  //         data.import_cpt = gridData;
-  //         break;
-  //     default:
-  //       notify({
-  //         message: 'Invalid master ID selected.',
-  //         position: { at: 'top right', my: 'top right' }
-  //       }, 'error');
-  //       this.isSaving = false;
-  //       this.isLoading = false;
-  //       return; // Exit if an invalid master ID is selected
-  //   }
-  
-  //   // Log the final data object
-  //   console.log(data);
-
-  //   // const jsonData = JSON.stringify(data);
-   
-  //   this.service.Insert_Imported_Data(data).subscribe(
-  //     (res: any) => {
-  //       console.log("Result",res);
-  //       try {
-  //         if (res.flag===1) {
-  //           console.log('Data uploaded successfully');
-  //           notify({
-  //             message: 'Data imported successfully.',
-  //             position: { at: 'top right', my: 'top right' },
-  //             displayTime: 1000,
-  //           }, 'success');
-  //           this.close();
-  //         }
-  //         else{
-  //           notify({
-  //             message: 'Import operation failed.....',
-  //             position: { at: 'top right', my: 'top right' },
-  //             displayTime: 1000,
-  //           }, 'error');
-  //           this.isLoading=false
-  //           this.isSaving=false;
-  //         }
-  //       } catch (error) {
-  //         notify({
-  //           message: 'Import operation failed due to an unexpected error.',
-  //           position: { at: 'top right', my: 'top right' },
-  //           displayTime: 1000,
-  //         }, 'error');
-  //         this.isSaving=false;
-  //         this.isLoading=false;
-  //       }
-  //     },
-  //     (error) => {
-  //       // Handle the error case if service call fails
-  //       if (error.status === 0) {
-  //         notify({
-  //           message: 'Network error: Please check your internet connection and try again.',
-  //           position: { at: 'top right', my: 'top right' },
-  //           displayTime: 1000,
-  //         }, 'error');
-  //       } else if (error.status === 500) {
-  //         notify({
-  //           message: 'Server error: Unable to process the request right now. Please try again later.',
-  //           position: { at: 'top right', my: 'top right' },
-  //           displayTime: 1000,
-  //         }, 'error');
-  //       } else {
-  //         // General error message for other cases
-  //         notify({
-  //           message: 'Failed to import data. Please try again.',
-  //           position: { at: 'top right', my: 'top right' },
-  //           displayTime: 1000,
-  //         }, 'error');
-  //       }
-    
-  //       console.error('Error during data import:', error);
-  //       this.isSaving = false;
-  //       this.isLoading = false;
-  //     }
-  //   );
-  // }
-  // else{
-  //   notify({
-  //     message: 'Please Import your file',
-  //     position: { at: 'top right', my: 'top right' },
-  //     displayTime: 500,
-  //   }, 'error');
-  //   this.isSaving=false;
-  //   this.isLoading=false;
-  // }
-  // }
   onSaveClick() {
     if (this.gridData.length > 0) {
-  
-      this.isLoading = true;
-  
-      if (this.hasError) {
-        notify({
-          message: 'Please fix the validation errors before saving.',
-          position: { at: 'top right', my: 'top right' }
-        }, 'error');
-        this.resetFileInput();
-        this.isLoading = false;
-        this.isSaving = false;
-        return; // Stop execution if there are validation errors
-      }
-  
-      this.isSaving = true;
+        this.isLoading = true;
 
-       // Generate unique batch number
-    const generateBatchNo = () => {
-      const now = new Date();
-      const datePart = now.toISOString().replace(/[-:.]/g, '').slice(0, 14); // YYYYMMDDHHMMSS
-      return `1${datePart}`;
-    };
-
-    const batchNo = generateBatchNo(); // Unique batch number
-
-    console.log(batchNo,"batchNo");
-  
-      // Get the master ID and grid data
-      const masterid = this.newImportData.masters;
-      let gridData = this.gridData;
-  
-      // Prepare the data object to be sent
-      let baseData: any = {
-        MasterID: masterid,
-        UserID: this.UserID,
-        NewRecordOnly: this.selectedImportOption,
-        BatchNo:batchNo
-      };
-  
-      // Function to send chunks of data
-      const sendChunk = (chunkData: any[], index: number) => {
-        let data = { ...baseData };
-  
-        switch (masterid) {
-          case 1:
-            data.import_clinician = chunkData;
-            break;
-          case 2:
-            data.import_Denial = chunkData;
-            break;
-          case 3:
-            data.import_insurance = chunkData;
-            break;
-          case 4:
-            data.import_cpt = chunkData;
-            break;
-          default:
+        if (this.hasError) {
             notify({
-              message: 'Invalid master ID selected.',
-              position: { at: 'top right', my: 'top right' }
+                message: 'Please fix the validation errors before saving.',
+                position: { at: 'top right', my: 'top right' }
             }, 'error');
-            this.isSaving = false;
+            this.resetFileInput();
             this.isLoading = false;
-            return; // Exit if an invalid master ID is selected
+            this.isSaving = false;
+            return;
         }
 
-        // Log the base data with the chunkData
-      console.log(`Sending chunk ${index}:`, data);
-  
-        // Send chunk to the server
-        this.service.Insert_Imported_Data(data).subscribe(
-          (res: any) => {
-            try {
-              if (res.flag === 1) {
-                console.log(`Chunk ${index} uploaded successfully`);
-                if (gridData.length > 0) {
-                  sendNextChunk(); // Continue with the next chunk
-                } else {
-                  notify({
+        this.isSaving = true;
+
+        // Generate a unique batch number only once
+        const batchNo = (() => {
+            const now = new Date();
+            const datePart = now.toISOString().replace(/[-:.]/g, '').slice(0, 14); // YYYYMMDDHHMMSS
+            return `1${datePart}`;
+        })();
+
+        const masterid = this.newImportData.masters;
+        let gridData = this.gridData;
+
+        const baseData: any = {
+            MasterID: masterid,
+            UserID: this.UserID,
+            NewRecordOnly: this.selectedImportOption,
+            BatchNo: batchNo,
+            Action: 1
+        };
+
+        // Function to send chunks of data
+        const sendChunk = (chunkData: any[], index: number) => {
+            let data = { ...baseData };
+
+            switch (masterid) {
+                case 1:
+                    data.import_clinician = chunkData;
+                    break;
+                case 2:
+                    data.import_Denial = chunkData;
+                    break;
+                case 3:
+                    data.import_Insurance = chunkData;
+                    break;
+                case 4:
+                    data.import_cpt = chunkData;
+                    break;
+                default:
+                    notify({
+                        message: 'Invalid master ID selected.',
+                        position: { at: 'top right', my: 'top right' }
+                    }, 'error');
+                    this.isSaving = false;
+                    this.isLoading = false;
+                    return;
+            }
+
+            console.log(`Sending chunk ${index}:`, data);
+
+            // Send chunk to the server
+            this.service.Insert_Imported_Data(data).subscribe(
+                (res: any) => {
+                    if (res.flag === 1) {
+                        console.log(`Chunk ${index} uploaded successfully`);
+                        if (gridData.length > 0) {
+                            sendNextChunk(); // Continue with the next chunk
+                        } else {
+                            // Call final request with Action: 2 after all chunks are sent
+                            this.sendFinalRequest(batchNo);
+                        }
+                    } else {
+                        notify({
+                            message: 'Import operation failed.',
+                            position: { at: 'top right', my: 'top right' },
+                            displayTime: 1000,
+                        }, 'error');
+                        this.isLoading = false;
+                        this.isSaving = false;
+                    }
+                },
+                (error) => {
+                    this.handleError(error);
+                }
+            );
+        };
+
+        // Function to send the next chunk of data
+        const sendNextChunk = () => {
+            const chunkSize = 15000;
+            const chunk = gridData.slice(0, chunkSize);
+            gridData = gridData.slice(chunkSize);
+            sendChunk(chunk, Math.ceil(this.gridData.length / chunkSize) - Math.ceil(gridData.length / chunkSize));
+        };
+
+        // Start sending the first chunk
+        sendNextChunk();
+
+    } else {
+        notify({
+            message: 'Please import your file',
+            position: { at: 'top right', my: 'top right' },
+            displayTime: 500,
+        }, 'error');
+        this.isSaving = false;
+        this.isLoading = false;
+    }
+}
+
+// New function to handle final request with consistent batchNo
+sendFinalRequest(batchNo: string) {
+    const finalData = {
+        MasterID: this.newImportData.masters,
+        UserID: this.UserID,
+        NewRecordOnly: this.selectedImportOption,
+        BatchNo: batchNo,
+        Action: 2
+    };
+
+    this.service.Insert_Imported_Data(finalData).subscribe(
+        (res: any) => {
+            if (res.flag === 1) {
+                notify({
                     message: 'Data imported successfully.',
                     position: { at: 'top right', my: 'top right' },
                     displayTime: 1000,
-                  }, 'success');
-                  this.close();
-                }
-              } else {
-                notify({
-                  message: 'Import operation failed.',
-                  position: { at: 'top right', my: 'top right' },
-                  displayTime: 1000,
-                }, 'error');
-                this.isLoading = false;
-                this.isSaving = false;
-              }
-            } catch (error) {
-              notify({
-                message: 'Import operation failed due to an unexpected error.',
-                position: { at: 'top right', my: 'top right' },
-                displayTime: 1000,
-              }, 'error');
-              this.isSaving = false;
-              this.isLoading = false;
-            }
-          },
-          (error) => {
-            // Error handling for service failure
-            if (error.status === 0) {
-              notify({
-                message: 'Network error: Please check your internet connection and try again.',
-                position: { at: 'top right', my: 'top right' },
-                displayTime: 1000,
-              }, 'error');
-            } else if (error.status === 500) {
-              notify({
-                message: 'Server error: Unable to process the request right now. Please try again later.',
-                position: { at: 'top right', my: 'top right' },
-                displayTime: 1000,
-              }, 'error');
+                }, 'success');
+                this.close();
             } else {
-              notify({
-                message: 'Failed to import data. Please try again.',
-                position: { at: 'top right', my: 'top right' },
-                displayTime: 1000,
-              }, 'error');
+                notify({
+                    message: 'Import operation failed.',
+                    position: { at: 'top right', my: 'top right' },
+                    displayTime: 1000,
+                }, 'error');
             }
-  
-            console.error('Error during data import:', error);
-            this.isSaving = false;
             this.isLoading = false;
-          }
-        );
-      };
-  
-      // Function to send the next chunk of data
-      const sendNextChunk = () => {
-        const chunkSize = 20000;
-        const chunk = gridData.slice(0, chunkSize);
-        gridData = gridData.slice(chunkSize);
-        sendChunk(chunk, Math.ceil(this.gridData.length / chunkSize) - Math.ceil(gridData.length / chunkSize));
-      };
-  
-      // Start sending the first chunk
-      sendNextChunk();
-  
+            this.isSaving = false;
+        },
+        (error) => {
+            this.handleError(error);
+        }
+    );
+}
+
+// Error handler to manage error notifications and state
+handleError(error: any) {
+    if (error.status === 0) {
+        notify({
+            message: 'Network error: Please check your internet connection and try again.',
+            position: { at: 'top right', my: 'top right' },
+            displayTime: 1000,
+        }, 'error');
+    } else if (error.status === 500) {
+        notify({
+            message: 'Server error: Unable to process the request right now. Please try again later.',
+            position: { at: 'top right', my: 'top right' },
+            displayTime: 1000,
+        }, 'error');
     } else {
-      notify({
-        message: 'Please import your file',
-        position: { at: 'top right', my: 'top right' },
-        displayTime: 500,
-      }, 'error');
-      this.isSaving = false;
-      this.isLoading = false;
+        notify({
+            message: 'Failed to import data. Please try again.',
+            position: { at: 'top right', my: 'top right' },
+            displayTime: 1000,
+        }, 'error');
     }
-  }
+    console.error('Error during data import:', error);
+    this.isSaving = false;
+    this.isLoading = false;
+}
+
   
   
 
