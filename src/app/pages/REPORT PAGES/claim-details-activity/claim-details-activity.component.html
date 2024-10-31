@@ -6,7 +6,9 @@
         icon="{{ isContentVisible ? 'chevronup' : 'chevrondown' }}"
         stylingMode="outlined"
         type="normal"
-        [hint]="isContentVisible ? 'Hide Basic Info' : 'Show Basic Info'"
+        [hint]="
+          isContentVisible ? 'Hide Filter Contend' : 'Show Filter Contend'
+        "
         [width]="120"
         [height]="15"
         (onClick)="toggleContent()"
@@ -395,7 +397,7 @@
     <dx-data-grid
       #dataGrid
       class="grid reportGrid reportGridFooter theme-dependent"
-      [height]="'83vh'"
+      [height]="'84vh'"
       noDataText="no data"
       [dataSource]="dataGrid_DataSource"
       [showBorders]="true"
