@@ -20,9 +20,23 @@
       [allowUpdating]="true"
       [allowDeleting]="true"
       [allowAdding]="true"
-      [popup]="{ width: '40%', height: '60vh' }"
+      [popup]="{ width: '35%', height: '70vh' }"
     >
       <dxo-popup title="Edit Clinician Major" [showTitle]="true"></dxo-popup>
+      <dxo-form [colCount]="1">
+        <dxi-item
+          dataField="Major"
+          [isRequired]="true"
+          editorType="dxTextBox"
+          [label]="{ text: 'Major' }"
+        ></dxi-item>
+        <dxi-item
+          dataField="Description"
+          editorType="dxTextArea"
+          [label]="{ text: 'Description' }"
+          [editorOptions]="{ height: 200 }"
+        ></dxi-item>
+      </dxo-form>
     </dxo-editing>
     <dxo-pager
       [visible]="true"

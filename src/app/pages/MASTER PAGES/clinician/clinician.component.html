@@ -23,8 +23,8 @@
       [popup]="{ width: '40%', height: 'auto' }"
     >
       <dxo-popup title="Edit Clinician" [showTitle]="true">
-        <dxo-form [colCount]="1"></dxo-form>
       </dxo-popup>
+      
     </dxo-editing>
 
     <dxo-pager
@@ -95,7 +95,6 @@
           icon="plus"
           type="default"
           stylingMode="contained"
-
           class="add-button"
           hint="Add new clinician"
           (onClick)="show_new__Form()"
@@ -125,18 +124,18 @@
       </dxi-item>
 
       <dxi-item name="exportButton"></dxi-item>
-
-      <!-- <dxi-item location="after" locateInMenu="auto">
-        <div class="separator"></div>
-      </dxi-item> -->
     </dxo-toolbar>
 
-    <!-- <dxo-selection mode="multiple"></dxo-selection> -->
     <dxo-header-filter [visible]="true">
       <dxo-search [enabled]="true"></dxo-search>
     </dxo-header-filter>
 
-    <dxi-column dataField="ClinicianLicense" caption="License" [allowEditing]="false" disable="true"></dxi-column>
+    <dxi-column
+      dataField="ClinicianLicense"
+      caption="License"
+      [allowEditing]="false"
+      disable="true"
+    ></dxi-column>
     <dxi-column dataField="ClinicianName" caption="Name"></dxi-column>
     <dxi-column
       dataField="ClinicianShortName"
@@ -174,7 +173,7 @@
       ></dxo-lookup>
     </dxi-column>
 
-    <dxi-column dataField="Gender"caption="Gender">
+    <dxi-column dataField="Gender" caption="Gender">
       <dxo-lookup
         [dataSource]="genderDatasource"
         displayExpr="DESCRIPTION"
@@ -188,7 +187,7 @@
     [(visible)]="isAddClinicianPopupOpened"
     (save)="onClickSaveNewClinician()"
     titleText="New Clinician"
-    height="70vh"
+    height="'auto'"
   >
     <app-clinician-new-form></app-clinician-new-form>
   </form-popup>

@@ -20,9 +20,39 @@
       [allowUpdating]="true"
       [allowDeleting]="true"
       [allowAdding]="true"
-      [popup]="{ width: '40%', height: '60vh' }"
+      [popup]="{ width: '40%', height: 'auto' }"
     >
       <dxo-popup title="Edit CPT data" [showTitle]="true"></dxo-popup>
+      <dxo-form [colCount]="2">
+        <dxi-item
+          dataField="CPTTypeID"
+          editorType="dxTextBox"
+          [editorOptions]="{ disabled: true }"
+          caption="TypeID"
+        ></dxi-item>
+        <dxi-item
+          dataField="CPTCode"
+          editorType="dxTextBox"
+          caption="Code"
+        ></dxi-item>
+        <dxi-item
+          dataField="CPTName"
+          editorType="dxTextBox"
+          caption="Name"
+        ></dxi-item>
+        <dxi-item
+          dataField="CPTShortName"
+          editorType="dxTextBox"
+          caption="Short Name"
+        ></dxi-item>
+        <dxi-item
+          dataField="Description"
+          editorType="dxTextArea"
+          caption="Description"
+          [colSpan]="2"
+          [editorOptions]="{ height: 200 }"
+        ></dxi-item>
+      </dxo-form>
     </dxo-editing>
     <dxo-pager
       [visible]="true"
@@ -108,7 +138,7 @@
     [(visible)]="isAddFormPopupOpened"
     (save)="onClickSaveNewCptType()"
     titleText="New CPT Master"
-    height="80vh"
+    height="auto"
   >
     <app-cpt-master-new-form></app-cpt-master-new-form>
   </form-popup>
