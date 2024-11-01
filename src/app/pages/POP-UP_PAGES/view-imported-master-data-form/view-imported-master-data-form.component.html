@@ -2,7 +2,7 @@
   #dataGrid
   [showBorders]="true"
   [paging]="{ pageSize: 10 }"
-  [pager]="{ showPageSizeSelector: true, allowedPageSizes: [10, 25, 50] }"
+  [pager]="{ showPageSizeSelector: true, allowedPageSizes: [50, 100, 1000] }"
   [allowColumnResizing]="true"
   [allowColumnReordering]="true"
   [rowAlternationEnabled]="true"
@@ -81,4 +81,15 @@
   </dxo-toolbar>
  
 </dx-data-grid>
+
+<dx-load-panel
+  #loadPanel
+  shadingColor="rgba(0,0,0,0.4)"
+  [position]="{ of: '#dataGrid' }"
+  [(visible)]="isLoading"
+  [showIndicator]="true"
+  [showPane]="true"
+  [shading]="true"
+  message="Loading..."
+> </dx-load-panel>
 

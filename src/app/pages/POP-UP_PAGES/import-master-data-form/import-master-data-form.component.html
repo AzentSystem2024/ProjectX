@@ -123,9 +123,7 @@
         text="Cancel"
         stylingMode="outlined"
         type="normal"
-        (onClick)="close()"
-        
-        
+        (onClick)="close()"  
       ></dx-button>
       <dx-button
         text="Save"
@@ -136,15 +134,15 @@
       ></dx-button>
     </div>
     <dx-load-panel
-  #loadPanel
-  shadingColor="rgba(0,0,0,0.4)"
-  [position]="{ of: '#dataGrid' }"
-  [(visible)]="isLoading"
-  [showIndicator]="true"
-  [showPane]="true"
-  [shading]="true"
-  message="Saving..."
->
+    #loadPanel
+    shadingColor="rgba(0,0,0,0.4)"
+    [position]="{ of: '#dataGrid' }"
+    [(visible)]="isLoading"
+    [showIndicator]="true"
+    [showPane]="true"
+    [shading]="true"
+    message="Saving..."
+  ></dx-load-panel>
 
 <dx-load-panel
   #loadPanel
@@ -155,4 +153,4 @@
   [showPane]="true"
   [shading]="true"
   message="Loading..."
->
+></dx-load-panel>

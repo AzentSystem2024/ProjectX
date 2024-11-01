@@ -112,6 +112,7 @@
         title="View Imported Master Data"
         [width]="popupwidth"
         [height]="'100vh'"
+        (onHiding)="onClearViewData()"
       >
       <app-view-imported-master-data-form [formdata]="selectedData" ></app-view-imported-master-data-form>
       </dx-popup>
