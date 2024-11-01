@@ -46,11 +46,11 @@ export class DenialListComponent {
 
   isPanelOpened = false;
 
-  isAddContactPopupOpened = false;
+  isAddDenialPopupOpened = false;
 
-  selectedItemKeys: any[] = [];
-  Denial_Type_DropDownData: dropdownData[];
-  Denial_category_DropDownData: dropdownData[];
+
+  Denial_Type_DropDownData: any;
+  Denial_category_DropDownData: any;
   ID: any;
   isFilterOpened = true;
   //========Variables for Pagination ====================
@@ -86,7 +86,7 @@ export class DenialListComponent {
   }
 
   addDenial() {
-    this.isAddContactPopupOpened = true;
+    this.isAddDenialPopupOpened = true;
   }
 
   refresh = () => {
@@ -95,8 +95,8 @@ export class DenialListComponent {
 
   //================Exporting Function=====================
   onExporting(event: any) {
-    const fileName='Denial'
-    this.reportservice.exportDataGrid(event,fileName);
+    const fileName = 'Denial';
+    this.reportservice.exportDataGrid(event, fileName);
   }
 
   //=============Get Denial Type Drop dwn Data==============================

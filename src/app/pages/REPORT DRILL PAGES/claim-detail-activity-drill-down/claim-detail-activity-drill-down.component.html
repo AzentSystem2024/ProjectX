@@ -3,11 +3,11 @@
     <div class="button-container">
       <dx-button
         class="toggleButton"
-        icon="{{ isContentVisible ? 'chevronup' : 'chevrondown' }}"
+        icon="{{ isContentVisible ? 'spinup' : 'spindown' }}"
         stylingMode="outlined"
         type="normal"
         [hint]="isContentVisible ? 'Hide Basic Info' : 'Show Basic Info'"
-        [width]="120"
+        [width]="200"
         [height]="15"
         (onClick)="toggleContent()"
       >

@@ -613,3 +613,13 @@ body {
   cursor: pointer;
   height: 1rem;
 }
+
+.button-container .toggleButton .dx-icon {
+  font-size: 35px;
+  font-weight: bold;
+  width: 100px;
+  height: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}

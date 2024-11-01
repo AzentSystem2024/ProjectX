@@ -9,7 +9,7 @@
 }
 .view-wrapper {
   position: absolute;
-  height: 100vh;
+  height: auto;
   top: 0;
   bottom: 0px;
   left: 0;
@@ -93,15 +93,16 @@
 }
 
 .button-container {
-  margin: 0px;
   padding: 0px;
-  height: 1vh;
+  height: 0.5vh;
   display: flex;
   justify-content: center;
   align-items: center;
+
 }
 .toggleButton {
   border-radius: 7px;
+  background-color: #00a0e028;
 }
 
 .SearchParams-container {
@@ -118,4 +119,11 @@
   padding: 0;
   margin: 0;
   overflow: hidden; /* Prevents content overflow */
+}
+
+/* Adjust the size of the icon inside the button */
+.button-container .toggleButton .dx-icon {
+  font-size: 50px;  /* Adjust the icon size */
+  width: 50px;      /* Adjust width to match the font-size */
+  // height: 20px;     /* Adjust height to match the font-size */
 }

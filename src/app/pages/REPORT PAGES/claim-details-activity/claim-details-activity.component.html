@@ -1,400 +1,400 @@
 <div id="reportPage" class="view-wrapper list-page drilldown mt-0">
-  <div class="paramsDiv">
-    <div class="button-container">
-      <dx-button
-        class="toggleButton"
-        icon="{{ isContentVisible ? 'chevronup' : 'chevrondown' }}"
-        stylingMode="outlined"
-        type="normal"
-        [hint]="
-          isContentVisible ? 'Hide Filter Contend' : 'Show Filter Contend'
-        "
-        [width]="120"
-        [height]="15"
-        (onClick)="toggleContent()"
-      >
-      </dx-button>
-    </div>
-    <div
-      class="SearchParams-container"
-      [ngClass]="{ 'hide-content': !isContentVisible }"
+  <div class="button-container mt-2 mb-2">
+    <dx-button
+      class="toggleButton"
+      icon="{{ isContentVisible ? 'spinup' : 'spindown' }}"
+      stylingMode="outlined"
+      type="normal"
+      [hint]="isContentVisible ? 'Hide Filter Contend' : 'Show Filter Contend'"
+      [width]="200"
+      [height]="15"
+      (onClick)="toggleContent()"
     >
-      <dx-form>
-        <dxi-item
-          itemType="group"
-          cssClass="form-group"
-          class="rowGroup"
-          [colCount]="8"
-          [colCountByScreen]="{ xs: 8, sm: 8, md: 8, lg: 8 }"
-        >
-          <dxi-item [colSpan]="8">
-            <div class="">
-              <dx-tag-box
-                labelMode="floating"
-                labelLocation="left"
-                label="Select Facility value"
-                [(value)]="Facility_Value"
-                valueExpr="ID"
-                displayExpr="Name"
-                [showClearButton]="false"
-                [multiline]="false"
-                [searchEnabled]="true"
-                [searchExpr]="['Name', 'Code']"
-                [dataSource]="Facility_DataSource"
-                [showSelectionControls]="true"
-                [applyValueMode]="'instantly'"
-                (onValueChanged)="onDropDownBoxValueChanged()"
-                [dropDownOptions]="{ width: 'auto' }"
-              >
-              </dx-tag-box>
-            </div>
-          </dxi-item>
-        </dxi-item>
-
-        <dxi-item
-          itemType="group"
-          cssClass="form-group"
-          [colCount]="8"
-          [colCountByScreen]="{ xs: 8, sm: 8, md: 8, lg: 8 }"
-        >
-          <dxi-item [colSpan]="2">
-            <div>
-              <dx-select-box
-                labelMode="floating"
-                labelLocation="left"
-                label="select searchOn value"
-                [dataSource]="SearchOn_DataSource"
-                displayExpr="Name"
-                valueExpr="ID"
-                [(value)]="SearchOn_Value"
-                [searchEnabled]="true"
-                (valueChanged)="onDropdownValueChanged()"
-                [dropDownOptions]="{ width: 'auto' }"
-              >
-              </dx-select-box>
-            </div>
-          </dxi-item>
-
-          <dxi-item [colSpan]="1">
-            <dx-select-box
-              labelMode="floating"
-              labelLocation="left"
-              label="select Year"
-              [(value)]="selectedYear"
-              [dataSource]="years"
-              (onValueChanged)="onYearChanged($event)"
-              placeholder="Year"
-              [width]="'auto'"
-            ></dx-select-box>
-          </dxi-item>
-
-          <dxi-item [colSpan]="1">
-            <div>
-              <dx-select-box
-                labelMode="floating"
-                labelLocation="left"
-                label="select month"
-                [dataSource]="monthDataSource"
-                displayExpr="name"
-                valueExpr="value"
-                [(value)]="selectedmonth"
-                (onValueChanged)="onMonthValueChanged($event)"
-                [dropDownOptions]="{ width: 'auto' }"
-              >
-              </dx-select-box>
-            </div>
-          </dxi-item>
-
-          <dxi-item [colSpan]="1">
-            <dx-date-box
-              labelMode="floating"
-              labelLocation="left"
-              label="From Date"
-              type="date"
-              displayFormat="dd/MM/yyyy"
-              valueFormat="yyyy/MM/dd"
-              [(value)]="From_Date_Value"
-              [min]="minDate"
-              [max]="maxDate"
-            >
-            </dx-date-box>
-          </dxi-item>
-
-          <dxi-item [colSpan]="1">
-            <dx-date-box
-              labelMode="floating"
-              labelLocation="left"
-              label="To Date"
-              type="date"
-              displayFormat="dd/MM/yyyy"
-              valueFormat="yyyy/MM/dd"
-              [(value)]="To_Date_Value"
-              [min]="minDate"
-              [max]="maxDate"
-            >
-            </dx-date-box>
-          </dxi-item>
-
-          <dxi-item [colSpan]="2">
-            <div>
-              <dx-select-box
-                labelMode="floating"
-                labelLocation="left"
-                label="select encounter type"
-                [dataSource]="EncounterType_DataSource"
-                displayExpr="Name"
-                valueExpr="ID"
-                [(value)]="EncounterType_Value"
-                [searchEnabled]="true"
-                (valueChanged)="onDropdownValueChanged()"
-              >
-              </dx-select-box>
-            </div>
-          </dxi-item>
-        </dxi-item>
-
-        <dxi-item
-          itemType="group"
-          cssClass="form-group"
-          [colCount]="8"
-          [colCountByScreen]="{ xs: 8, sm: 8, md: 8, lg: 8 }"
-        >
-          <dxi-item [colSpan]="2">
-            <dx-select-box
-              labelMode="floating"
-              labelLocation="left"
-              label="select payer"
-              [dataSource]="Payer_DataSource"
-              displayExpr="Name"
-              valueExpr="ID"
-              [(value)]="Payer_Value"
-              [searchEnabled]="true"
-              (valueChanged)="onDropdownValueChanged()"
-            >
-            </dx-select-box>
-          </dxi-item>
-
-          <dxi-item [colSpan]="2">
-            <dx-tag-box
-              labelMode="floating"
-              labelLocation="left"
-              label="select payer ID"
-              [dataSource]="PayerID_DataSource"
-              displayExpr="Name"
-              valueExpr="ID"
-              [(value)]="PayerID_Value"
-              [searchEnabled]="true"
-              [searchExpr]="['Name', 'ID']"
-              [multiline]="false"
-              [applyValueMode]="'instantly'"
-              [showSelectionControls]="true"
-              (valueChanged)="onDropdownValueChanged()"
-              [dropDownOptions]="{ width: 'auto' }"
-            >
-            </dx-tag-box>
-          </dxi-item>
-
-          <dxi-item [colSpan]="2">
-            <dx-tag-box
-              labelMode="floating"
-              labelLocation="left"
-              label="select clinician"
-              [dataSource]="Clinician_DataSource"
-              displayExpr="Name"
-              valueExpr="ID"
-              [(value)]="Clinician_Value"
-              [searchEnabled]="true"
-              [searchExpr]="['Name', 'ID']"
-              [multiline]="false"
-              [applyValueMode]="'instantly'"
-              [showSelectionControls]="true"
-              (valueChanged)="onDropdownValueChanged()"
-              [dropDownOptions]="{ width: 'auto' }"
-            >
-            </dx-tag-box>
-          </dxi-item>
-
-          <dxi-item [colSpan]="2">
-            <dx-tag-box
-              labelMode="floating"
-              labelLocation="left"
-              label="select ordering clinician"
-              [dataSource]="OrderingClinician_DataSource"
-              displayExpr="Name"
-              valueExpr="ID"
-              [(value)]="OrderingClinician_Value"
-              [searchEnabled]="true"
-              [searchExpr]="['Name', 'ID']"
-              [multiline]="false"
-              [applyValueMode]="'instantly'"
-              [showSelectionControls]="true"
-              [dropDownOptions]="{ width: 'auto' }"
-              (valueChanged)="onDropdownValueChanged()"
-            >
-            </dx-tag-box>
-          </dxi-item>
-        </dxi-item>
-
-        <dxi-item
-          itemType="group"
-          cssClass="form-group"
-          [colCount]="8"
-          [colCountByScreen]="{ xs: 8, sm: 8, md: 8, lg: 8 }"
-        >
-          <dxi-item [colSpan]="2">
-            <dx-tag-box
-              labelMode="floating"
-              labelLocation="left"
-              label="Select Reciever ID"
-              [dataSource]="RecieverID_DataSource"
-              displayExpr="Name"
-              valueExpr="ID"
-              [(value)]="ReceiverID_Value"
-              [searchEnabled]="true"
-              [searchExpr]="['Name', 'ID']"
-              [multiline]="false"
-              [applyValueMode]="'instantly'"
-              [showSelectionControls]="true"
-              [dropDownOptions]="{ width: 'auto' }"
-              (valueChanged)="onDropdownValueChanged()"
-            >
-            </dx-tag-box>
-          </dxi-item>
-
-          <dxi-item [colSpan]="2">
-            <div>
-              <dx-text-box
-                labelMode="floating"
-                labelLocation="left"
-                label="Enter Claim Number"
-                [(value)]="ClaimNumber_Value"
-              >
-              </dx-text-box>
-            </div>
-          </dxi-item>
-
-          <dxi-item [colSpan]="2">
-            <div>
-              <dx-text-box
-                labelMode="floating"
-                labelLocation="left"
-                label="Enter Patient ID"
-                [(value)]="PatientID_Value"
-              >
-              </dx-text-box>
-            </div>
-          </dxi-item>
-
-          <dxi-item [colSpan]="2">
-            <div>
-              <dx-text-box
-                labelMode="floating"
-                labelLocation="left"
-                label="Enter Member ID"
-                [(value)]="memberID_Value"
-              >
-              </dx-text-box>
-            </div>
-          </dxi-item>
-        </dxi-item>
-
-        <dxi-item
-          itemType="group"
-          cssClass="form-group"
-          [colCount]="10"
-          [colCountByScreen]="{ xs: 10, sm: 10, md: 10, lg: 10 }"
-        >
-          <dxi-item [colSpan]="2">
-            <dx-select-box
-              labelMode="floating"
-              labelLocation="left"
-              label="Select Resubmission Type"
-              [dataSource]="ResubmissionType_DataSource"
-              displayExpr="Name"
-              valueExpr="ID"
-              [(value)]="Resubmission_Value"
-              [searchEnabled]="true"
-              (valueChanged)="onDropdownValueChanged()"
-            >
-            </dx-select-box>
-          </dxi-item>
-
-          <dxi-item [colSpan]="2">
-            <div>
-              <dx-text-box
-                labelMode="floating"
-                labelLocation="left"
-                label="Enter Denial Code"
-                [(value)]="DenialCodes_Value"
-              >
-              </dx-text-box>
-            </div>
-          </dxi-item>
-
-          <dxi-item [colSpan]="2">
-            <dx-select-box
-              labelMode="floating"
-              labelLocation="left"
-              label="Select Claim Status"
-              [dataSource]="CliamStatus_DataSource"
-              displayExpr="Name"
-              valueExpr="ID"
-              [(value)]="CliamStatus_Value"
-              [searchEnabled]="true"
-              (valueChanged)="onDropdownValueChanged()"
-            >
-            </dx-select-box>
-          </dxi-item>
-
-          <dxi-item [colSpan]="2">
-            <div>
-              <dx-select-box
-                labelMode="floating"
-                labelLocation="left"
-                label="select Payment Status"
-                [dataSource]="paymentStatus_DataSource"
-                displayExpr="Name"
-                valueExpr="ID"
-                [(value)]="paymentStatus_Value"
-                [searchEnabled]="true"
-                (valueChanged)="onDropdownValueChanged()"
-              >
-              </dx-select-box>
-            </div>
-          </dxi-item>
-
-          <dxi-item [colSpan]="1" class="mt-1 ms-5">
-            <dx-button
-              class="add-card"
-              icon="download"
-              text=""
-              hint="import search parameters from your excel"
-              type="default"
-              stylingMode="contained"
-              (onClick)="get_advance_Filter()"
-            >
-            </dx-button>
-          </dxi-item>
-
-          <dxi-item [colSpan]="1" class="mt-1">
-            <dx-button
-              class="add-card"
-              icon="todo"
-              text="Apply"
-              type="default"
-              stylingMode="contained"
-              (onClick)="get_Datagrid_DataSource()"
-            >
-            </dx-button>
-          </dxi-item>
-        </dxi-item>
-      </dx-form>
-    </div>
+    </dx-button>
   </div>
+  <!-- <div class="paramsDiv"> -->
+  <div
+    id="reportPageParams"
+    class="paramsDiv SearchParams-container"
+    [ngClass]="{ 'hide-content': !isContentVisible }"
+  >
+    <dx-form>
+      <dxi-item
+        itemType="group"
+        cssClass="form-group"
+        class="rowGroup"
+        [colCount]="8"
+        [colCountByScreen]="{ xs: 8, sm: 8, md: 8, lg: 8 }"
+      >
+        <dxi-item [colSpan]="8">
+          <div class="">
+            <dx-tag-box
+              labelMode="floating"
+              labelLocation="left"
+              label="Select Facility value"
+              [(value)]="Facility_Value"
+              valueExpr="ID"
+              displayExpr="Name"
+              [showClearButton]="false"
+              [multiline]="false"
+              [searchEnabled]="true"
+              [searchExpr]="['Name', 'Code']"
+              [dataSource]="Facility_DataSource"
+              [showSelectionControls]="true"
+              [applyValueMode]="'instantly'"
+              (onValueChanged)="onDropDownBoxValueChanged()"
+              [dropDownOptions]="{ width: 'auto' }"
+            >
+            </dx-tag-box>
+          </div>
+        </dxi-item>
+      </dxi-item>
+
+      <dxi-item
+        itemType="group"
+        cssClass="form-group"
+        [colCount]="8"
+        [colCountByScreen]="{ xs: 8, sm: 8, md: 8, lg: 8 }"
+      >
+        <dxi-item [colSpan]="2">
+          <div>
+            <dx-select-box
+              labelMode="floating"
+              labelLocation="left"
+              label="select searchOn value"
+              [dataSource]="SearchOn_DataSource"
+              displayExpr="Name"
+              valueExpr="ID"
+              [(value)]="SearchOn_Value"
+              [searchEnabled]="true"
+              (valueChanged)="onDropdownValueChanged()"
+              [dropDownOptions]="{ width: 'auto' }"
+            >
+            </dx-select-box>
+          </div>
+        </dxi-item>
+
+        <dxi-item [colSpan]="1">
+          <dx-select-box
+            labelMode="floating"
+            labelLocation="left"
+            label="select Year"
+            [(value)]="selectedYear"
+            [dataSource]="years"
+            (onValueChanged)="onYearChanged($event)"
+            placeholder="Year"
+            [width]="'auto'"
+          ></dx-select-box>
+        </dxi-item>
+
+        <dxi-item [colSpan]="1">
+          <div>
+            <dx-select-box
+              labelMode="floating"
+              labelLocation="left"
+              label="select month"
+              [dataSource]="monthDataSource"
+              displayExpr="name"
+              valueExpr="value"
+              [(value)]="selectedmonth"
+              (onValueChanged)="onMonthValueChanged($event)"
+              [dropDownOptions]="{ width: 'auto' }"
+            >
+            </dx-select-box>
+          </div>
+        </dxi-item>
+
+        <dxi-item [colSpan]="1">
+          <dx-date-box
+            labelMode="floating"
+            labelLocation="left"
+            label="From Date"
+            type="date"
+            displayFormat="dd/MM/yyyy"
+            valueFormat="yyyy/MM/dd"
+            [(value)]="From_Date_Value"
+            [min]="minDate"
+            [max]="maxDate"
+          >
+          </dx-date-box>
+        </dxi-item>
+
+        <dxi-item [colSpan]="1">
+          <dx-date-box
+            labelMode="floating"
+            labelLocation="left"
+            label="To Date"
+            type="date"
+            displayFormat="dd/MM/yyyy"
+            valueFormat="yyyy/MM/dd"
+            [(value)]="To_Date_Value"
+            [min]="minDate"
+            [max]="maxDate"
+          >
+          </dx-date-box>
+        </dxi-item>
+
+        <dxi-item [colSpan]="2">
+          <div>
+            <dx-select-box
+              labelMode="floating"
+              labelLocation="left"
+              label="select encounter type"
+              [dataSource]="EncounterType_DataSource"
+              displayExpr="Name"
+              valueExpr="ID"
+              [(value)]="EncounterType_Value"
+              [searchEnabled]="true"
+              (valueChanged)="onDropdownValueChanged()"
+            >
+            </dx-select-box>
+          </div>
+        </dxi-item>
+      </dxi-item>
+
+      <dxi-item
+        itemType="group"
+        cssClass="form-group"
+        [colCount]="8"
+        [colCountByScreen]="{ xs: 8, sm: 8, md: 8, lg: 8 }"
+      >
+        <dxi-item [colSpan]="2">
+          <dx-select-box
+            labelMode="floating"
+            labelLocation="left"
+            label="select payer"
+            [dataSource]="Payer_DataSource"
+            displayExpr="Name"
+            valueExpr="ID"
+            [(value)]="Payer_Value"
+            [searchEnabled]="true"
+            (valueChanged)="onDropdownValueChanged()"
+          >
+          </dx-select-box>
+        </dxi-item>
+
+        <dxi-item [colSpan]="2">
+          <dx-tag-box
+            labelMode="floating"
+            labelLocation="left"
+            label="select payer ID"
+            [dataSource]="PayerID_DataSource"
+            displayExpr="Name"
+            valueExpr="ID"
+            [(value)]="PayerID_Value"
+            [searchEnabled]="true"
+            [searchExpr]="['Name', 'ID']"
+            [multiline]="false"
+            [applyValueMode]="'instantly'"
+            [showSelectionControls]="true"
+            (valueChanged)="onDropdownValueChanged()"
+            [dropDownOptions]="{ width: 'auto' }"
+          >
+          </dx-tag-box>
+        </dxi-item>
+
+        <dxi-item [colSpan]="2">
+          <dx-tag-box
+            labelMode="floating"
+            labelLocation="left"
+            label="select clinician"
+            [dataSource]="Clinician_DataSource"
+            displayExpr="Name"
+            valueExpr="ID"
+            [(value)]="Clinician_Value"
+            [searchEnabled]="true"
+            [searchExpr]="['Name', 'ID']"
+            [multiline]="false"
+            [applyValueMode]="'instantly'"
+            [showSelectionControls]="true"
+            (valueChanged)="onDropdownValueChanged()"
+            [dropDownOptions]="{ width: 'auto' }"
+          >
+          </dx-tag-box>
+        </dxi-item>
+
+        <dxi-item [colSpan]="2">
+          <dx-tag-box
+            labelMode="floating"
+            labelLocation="left"
+            label="select ordering clinician"
+            [dataSource]="OrderingClinician_DataSource"
+            displayExpr="Name"
+            valueExpr="ID"
+            [(value)]="OrderingClinician_Value"
+            [searchEnabled]="true"
+            [searchExpr]="['Name', 'ID']"
+            [multiline]="false"
+            [applyValueMode]="'instantly'"
+            [showSelectionControls]="true"
+            [dropDownOptions]="{ width: 'auto' }"
+            (valueChanged)="onDropdownValueChanged()"
+          >
+          </dx-tag-box>
+        </dxi-item>
+      </dxi-item>
+
+      <dxi-item
+        itemType="group"
+        cssClass="form-group"
+        [colCount]="8"
+        [colCountByScreen]="{ xs: 8, sm: 8, md: 8, lg: 8 }"
+      >
+        <dxi-item [colSpan]="2">
+          <dx-tag-box
+            labelMode="floating"
+            labelLocation="left"
+            label="Select Reciever ID"
+            [dataSource]="RecieverID_DataSource"
+            displayExpr="Name"
+            valueExpr="ID"
+            [(value)]="ReceiverID_Value"
+            [searchEnabled]="true"
+            [searchExpr]="['Name', 'ID']"
+            [multiline]="false"
+            [applyValueMode]="'instantly'"
+            [showSelectionControls]="true"
+            [dropDownOptions]="{ width: 'auto' }"
+            (valueChanged)="onDropdownValueChanged()"
+          >
+          </dx-tag-box>
+        </dxi-item>
+
+        <dxi-item [colSpan]="2">
+          <div>
+            <dx-text-box
+              labelMode="floating"
+              labelLocation="left"
+              label="Enter Claim Number"
+              [(value)]="ClaimNumber_Value"
+            >
+            </dx-text-box>
+          </div>
+        </dxi-item>
+
+        <dxi-item [colSpan]="2">
+          <div>
+            <dx-text-box
+              labelMode="floating"
+              labelLocation="left"
+              label="Enter Patient ID"
+              [(value)]="PatientID_Value"
+            >
+            </dx-text-box>
+          </div>
+        </dxi-item>
+
+        <dxi-item [colSpan]="2">
+          <div>
+            <dx-text-box
+              labelMode="floating"
+              labelLocation="left"
+              label="Enter Member ID"
+              [(value)]="memberID_Value"
+            >
+            </dx-text-box>
+          </div>
+        </dxi-item>
+      </dxi-item>
+
+      <dxi-item
+        itemType="group"
+        cssClass="form-group"
+        [colCount]="10"
+        [colCountByScreen]="{ xs: 10, sm: 10, md: 10, lg: 10 }"
+      >
+        <dxi-item [colSpan]="2">
+          <dx-select-box
+            labelMode="floating"
+            labelLocation="left"
+            label="Select Resubmission Type"
+            [dataSource]="ResubmissionType_DataSource"
+            displayExpr="Name"
+            valueExpr="ID"
+            [(value)]="Resubmission_Value"
+            [searchEnabled]="true"
+            (valueChanged)="onDropdownValueChanged()"
+          >
+          </dx-select-box>
+        </dxi-item>
+
+        <dxi-item [colSpan]="2">
+          <div>
+            <dx-text-box
+              labelMode="floating"
+              labelLocation="left"
+              label="Enter Denial Code"
+              [(value)]="DenialCodes_Value"
+            >
+            </dx-text-box>
+          </div>
+        </dxi-item>
+
+        <dxi-item [colSpan]="2">
+          <dx-select-box
+            labelMode="floating"
+            labelLocation="left"
+            label="Select Claim Status"
+            [dataSource]="CliamStatus_DataSource"
+            displayExpr="Name"
+            valueExpr="ID"
+            [(value)]="CliamStatus_Value"
+            [searchEnabled]="true"
+            (valueChanged)="onDropdownValueChanged()"
+          >
+          </dx-select-box>
+        </dxi-item>
+
+        <dxi-item [colSpan]="2">
+          <div>
+            <dx-select-box
+              labelMode="floating"
+              labelLocation="left"
+              label="select Payment Status"
+              [dataSource]="paymentStatus_DataSource"
+              displayExpr="Name"
+              valueExpr="ID"
+              [(value)]="paymentStatus_Value"
+              [searchEnabled]="true"
+              (valueChanged)="onDropdownValueChanged()"
+            >
+            </dx-select-box>
+          </div>
+        </dxi-item>
+
+        <dxi-item [colSpan]="1" class="mt-1 ms-5">
+          <dx-button
+            class="add-card"
+            icon="download"
+            text=""
+            hint="import search parameters from your excel"
+            type="default"
+            stylingMode="contained"
+            (onClick)="get_advance_Filter()"
+          >
+          </dx-button>
+        </dxi-item>
+
+        <dxi-item [colSpan]="1" class="mt-1">
+          <dx-button
+            class="add-card"
+            icon="todo"
+            text="Apply"
+            type="default"
+            stylingMode="contained"
+            (onClick)="get_Datagrid_DataSource()"
+          >
+          </dx-button>
+        </dxi-item>
+      </dxi-item>
+    </dx-form>
+  </div>
+  <!-- </div> -->
 
   <!-- ====================================Data GRid Table started================================ -->
   <ng-container>
     <dx-data-grid
+      id="dataGrid"
       #dataGrid
       class="grid reportGrid reportGridFooter theme-dependent"
       [height]="'84vh'"
@@ -483,18 +483,6 @@
         <dxi-item location="before">
           <div class="grid-header">Claim Detail with Activity</div>
         </dxi-item>
-        <!-- <dxi-item
-          widget="dxButton"
-          [options]="{
-            text: '',
-            icon: 'filter',
-            onClick: show_Parameter_Div,
-            hint: hint_for_Parametr_div
-          }"
-        ></dxi-item> -->
-        <!-- <dxi-item location="after" locateInMenu="auto">
-          <div class="separator"></div>
-        </dxi-item> -->
         <dxi-item
           location="after"
           locateInMenu="auto"
@@ -688,16 +676,18 @@
       [clickedRowData]="clickedRowData"
     ></app-claim-detail-activity-drill-down>
   </dx-popup>
+
+  <dx-load-panel
+    #loadPanel
+    class="loadPanel"
+    shadingColor="rgba(0,0,0,0.3)"
+    [position]="{ of: '.view-wrapper' }"
+    [(visible)]="loadingVisible"
+    [showIndicator]="true"
+    [showPane]="false"
+    [shading]="true"
+    [hideOnOutsideClick]="false"
+    [message]="'Loading...'"
+  >
+  </dx-load-panel>
 </div>
-<dx-load-panel
-  #loadPanel
-  shadingColor="rgba(0,0,0,0.0)"
-  [position]="{ of: '#reportPage' }"
-  [(visible)]="loadingVisible"
-  [showIndicator]="true"
-  [showPane]="false"
-  [shading]="true"
-  [hideOnOutsideClick]="false"
-  [message]="'Loading...'"
->
-</dx-load-panel>

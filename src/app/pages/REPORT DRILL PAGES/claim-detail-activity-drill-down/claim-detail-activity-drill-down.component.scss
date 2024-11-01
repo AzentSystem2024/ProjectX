@@ -68,14 +68,16 @@
 
 
 .button-container {
-  margin: 0px;
   padding: 0px;
+  height: 0.5vh;
   display: flex;
   justify-content: center;
   align-items: center;
+
 }
 .toggleButton {
   border-radius: 7px;
+  background-color: #00a0e028;
 }
 
 .data-container {

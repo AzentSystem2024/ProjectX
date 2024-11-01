@@ -24,6 +24,19 @@
       [popup]="{ width: '40%', height: '60vh' }"
     >
       <dxo-popup title="Edit Denial Category" [showTitle]="true"></dxo-popup>
+      <dxo-form [colCount]="1">
+        <dxi-item dataField="DenialCategorys" editorType="dxTextBox">
+          <dxo-label text="Category"></dxo-label>
+        </dxi-item>
+
+        <dxi-item
+          dataField="Description"
+          editorType="dxTextArea"
+          [editorOptions]="{ height: 200 }"
+        >
+          <dxo-label text="Description"></dxo-label>
+        </dxi-item>
+      </dxo-form>
     </dxo-editing>
     <dxo-pager
       [visible]="true"
