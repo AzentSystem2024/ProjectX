@@ -17,7 +17,6 @@ import { AnalyticsDashboardComponent } from './pages/HOME/analytics-dashboard/an
 import { AppSignInComponent } from './pages/sign-in-form/sign-in-form.component';
 import { AppSignUpComponent } from './pages/sign-up-form/sign-up-form.component';
 import { AppResetPasswordComponent } from './pages/reset-password-form/reset-password-form.component';
-import { ClaimSummaryComponent } from './pages/REPORT PAGES/claim-summary/claim-summary.component';
 import { FacilityListComponent } from './pages/MASTER PAGES/facility/facility-list.component';
 import { FacilityGroupListComponent } from './pages/MASTER PAGES/facility-group/facility-group-list.component';
 import { CPTMasterComponent } from './pages/MASTER PAGES/cpt-master/cpt-master.component';
@@ -42,6 +41,7 @@ import { FacilityRegionComponent } from './pages/MASTER PAGES/facility-region/fa
 import { NotificationSettingsComponent } from './pages/SYSTEM PAGES/notificarion-settings/notificarion-settings.component';
 import { ClaimDetailsActivityComponent } from './pages/REPORT PAGES/claim-details-activity/claim-details-activity.component';
 import { ImportMasterDataComponent } from './pages/MASTER PAGES/import-master-data/import-master-data.component';
+import { ClaimDetailsComponent } from './pages/REPORT PAGES/claim-details/claim-details.component';
 const routes: Routes = [
   {
     path: '',
@@ -218,13 +218,13 @@ const routes: Routes = [
         canActivate: [AuthGuardService],
       },
       {
-        path: 'claim-detail-activity',
-        component: ClaimDetailsActivityComponent,
+        path: 'claim-details',
+        component: ClaimDetailsComponent,
         canActivate: [AuthGuardService],
       },
       {
-        path: 'claim-summary-report',
-        component: ClaimSummaryComponent,
+        path: 'claim-detail-activity',
+        component: ClaimDetailsActivityComponent,
         canActivate: [AuthGuardService],
       },
       {

@@ -45,7 +45,7 @@
             <dxi-item class="m-0 p-0">
               <dx-text-box
                 [(value)]="formData.EmailSenderID"
-                mode="email"
+                mode="text"
                 label="Sender ID"
                 labelMode="floating"
                 labelLocation="left"
@@ -153,8 +153,8 @@
             </dxi-item>
           </dxi-item>
 
-          <!-- SMS Tab -->
 
+          <!-- SMS Tab -->
           <dxi-item
             *ngIf="clickedTabName === 'SMS'"
             [visible]="isSMSVisible"
@@ -235,8 +235,8 @@
             </dxi-item>
           </dxi-item>
 
+          
           <!-- WhatsApp Tab -->
-
           <dxi-item
             *ngIf="clickedTabName === 'WhatsApp'"
             [visible]="iswhatsAppVisible"
