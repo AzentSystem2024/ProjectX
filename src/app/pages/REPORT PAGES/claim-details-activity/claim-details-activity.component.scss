@@ -9,7 +9,7 @@
 }
 .view-wrapper {
   position: absolute;
-  height: auto;
+  // height: 100vh;
   top: 0;
   bottom: 0px;
   left: 0;
@@ -94,7 +94,7 @@
 
 .button-container {
   padding: 0px;
-  height: 0.5vh;
+  height: 0.3vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -102,7 +102,7 @@
 }
 .toggleButton {
   border-radius: 7px;
-  background-color: #00a0e028;
+  background-color: #00a0e007;
 }
 
 .SearchParams-container {

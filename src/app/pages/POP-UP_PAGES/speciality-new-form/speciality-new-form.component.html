@@ -7,49 +7,46 @@
       [lg]="2"
     ></dxo-col-count-by-screen>
 
-    <dxi-item [colSpan]="2" >
+    <dxi-item [colSpan]="2">
       <div *dxTemplate>
-        <form-textbox 
+        <dx-text-box
           label="Insurance ID"
           [(value)]="newSpecialityData.SpecialityCode"
-          [isEditing]="true"
         >
-        </form-textbox>
+        </dx-text-box>
       </div>
     </dxi-item>
 
     <dxi-item>
       <div *dxTemplate>
-        <form-textbox
+        <dx-text-box
           label="Insurance Name"
           [(value)]="newSpecialityData.SpecialityName"
-          [isEditing]="true"
         >
-        </form-textbox>
+        </dx-text-box>
       </div>
     </dxi-item>
 
     <dxi-item>
       <div *dxTemplate>
-        <form-textbox
+        <dx-text-box
           label="Speciality ShortName"
           [(value)]="newSpecialityData.SpecialityShortName"
-          [isEditing]="true"
         >
-        </form-textbox>
+        </dx-text-box>
       </div>
     </dxi-item>
 
-    <dxi-item [colSpan]="2" >
+    <dxi-item [colSpan]="2">
       <div *dxTemplate>
         <dx-text-area
           label="Description"
           [(value)]="newSpecialityData.Description"
           [height]="160"
-          placeholder="Enter a desciption..." 
-          [width]="'100%'" 
-          [maxHeight]="250" 
-          [minHeight]="50" 
+          placeholder="Enter a desciption..."
+          [width]="'100%'"
+          [maxHeight]="250"
+          [minHeight]="50"
           [autoResizeEnabled]="true"
         >
         </dx-text-area>

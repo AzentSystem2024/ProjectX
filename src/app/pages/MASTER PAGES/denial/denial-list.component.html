@@ -20,9 +20,9 @@
       [allowUpdating]="true"
       [allowDeleting]="true"
       [allowAdding]="true"
-      [popup]="{ width: '40%', height: '60vh' }"
+      [popup]="{ width: '30%', height: 'auto' }"
     >
-      <dxo-popup title="Edit Denial" [showTitle]="true"></dxo-popup>\
+      <dxo-popup title="Edit Denial" [showTitle]="true"></dxo-popup>
       <dxo-form [colCount]="1">
         <dxi-item
           dataField="DenialCode"
@@ -57,7 +57,7 @@
           editorType="dxTextArea"
           caption="Description"
           [colSpan]="2"
-          [height]="250"
+          [editorOptions]="{ height: 160, maxHeight: 250 }"
         ></dxi-item>
       </dxo-form>
     </dxo-editing>
@@ -155,7 +155,7 @@
     [(visible)]="isAddDenialPopupOpened"
     (save)="onClickSaveNewDenial()"
     titleText="New Denial"
-    height="70vh"
+    height="auto"
   >
     <denial-new-form></denial-new-form>
   </form-popup>
