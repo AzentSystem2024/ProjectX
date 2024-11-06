@@ -3,6 +3,7 @@ import {
   Component,
   EventEmitter,
   NgModule,
+  OnDestroy,
   OnInit,
   ViewChild,
 } from '@angular/core';
@@ -27,14 +28,16 @@ import { FormPopupModule } from 'src/app/components';
 import { MasterReportService } from '../master-report.service';
 import { ReportService } from 'src/app/services/Report-data.service';
 import DataSource from 'devextreme/data/data_source';
+import { Router } from '@angular/router';
+import { DataService } from 'src/app/services';
 
 @Component({
   selector: 'app-user-role-master',
   templateUrl: './user-role-master.component.html',
   styleUrls: ['./user-role-master.component.scss'],
-  providers: [MasterReportService, ReportService],
+  providers: [MasterReportService, ReportService, DataService],
 })
-export class UserLevelMasterComponent {
+export class UserLevelMasterComponent implements OnInit, OnDestroy {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
   @ViewChild(UserLevelNewFormComponent, { static: false })
@@ -67,11 +70,38 @@ export class UserLevelMasterComponent {
         });
       }),
   });
+  currentPathName: string;
+  initialized: boolean;
 
   constructor(
+    private service: ReportService,
     private masterService: MasterReportService,
-    private service: ReportService
+    private router: Router,
+    private dataService: DataService
   ) {}
+
+  ngOnInit(): void {
+    const Action = 0;
+    this.currentPathName = this.router.url.replace('/', '');
+    this.dataService
+      .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
+      .subscribe((response: any) => {
+        console.log(response);
+      });
+
+    this.initialized = true;
+  }
+
+  ngOnDestroy(): void {
+    if (this.initialized) {
+      const Action = 10;
+      this.dataService
+        .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
+        .subscribe((response: any) => {
+          console.log(response);
+        });
+    }
+  }
 
   show_new_Form() {
     this.isAddFormVisible = true;

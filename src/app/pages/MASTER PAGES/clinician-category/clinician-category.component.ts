@@ -1,4 +1,10 @@
-import { Component, NgModule, ViewChild } from '@angular/core';
+import {
+  Component,
+  NgModule,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   DxButtonModule,
   DxDataGridComponent,
@@ -16,13 +22,15 @@ import { CommonModule } from '@angular/common';
 import { ClinicianCategoryNewFormComponent } from '../../POP-UP_PAGES/clinician-category-new-form/clinician-category-new-form.component';
 import { FormPopupModule } from 'src/app/components';
 import DataSource from 'devextreme/data/data_source';
+import { Router } from '@angular/router';
+import { DataService } from 'src/app/services';
 @Component({
   selector: 'app-clinician-category',
   templateUrl: './clinician-category.component.html',
   styleUrls: ['./clinician-category.component.scss'],
-  providers: [ReportService],
+  providers: [ReportService,DataService],
 })
-export class ClinicianCategoryComponent {
+export class ClinicianCategoryComponent implements OnInit, OnDestroy {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
   @ViewChild(ClinicianCategoryNewFormComponent, { static: false })
@@ -47,16 +55,39 @@ export class ClinicianCategoryComponent {
         });
       }),
   });
-
+  currentPathName: any;
+  initialized: boolean;
 
   constructor(
     private service: ReportService,
-    private masterService: MasterReportService
+    private masterService: MasterReportService,
+    private router: Router,
+    private dataService: DataService
   ) {}
 
-  // ngOnInit(): void {
-  //   this.get_clinicianCategory_List();
-  // }
+  ngOnInit(): void {
+    const Action = 0;
+    this.currentPathName = this.router.url.replace('/', '');
+    this.dataService
+      .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
+      .subscribe((response: any) => {
+        console.log(response);
+      });
+
+    this.initialized = true;
+  }
+
+  ngOnDestroy(): void {
+    if (this.initialized) {
+      const Action = 10;
+      this.dataService
+        .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
+        .subscribe((response: any) => {
+          console.log(response);
+        });
+    }
+  }
+
   //=============Showing the new Facility Form===================
   show_new_InsuranceClassification_Form() {
     this.isAddFormPopupOpened = true;
@@ -71,8 +102,8 @@ export class ClinicianCategoryComponent {
   // }
   //========================Export data ==========================
   onExporting(event: any) {
-    const fileName='Clinician Category'
-    this.service.exportDataGrid(event,fileName);
+    const fileName = 'Clinician Category';
+    this.service.exportDataGrid(event, fileName);
   }
   //====================Add data ================================
   onClickSaveNewData = () => {

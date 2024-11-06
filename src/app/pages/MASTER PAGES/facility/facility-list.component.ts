@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, NgModule, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  NgModule,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   DxButtonModule,
   DxDataGridComponent,
@@ -14,14 +20,15 @@ import { ReportService } from 'src/app/services/Report-data.service';
 import { MasterReportService } from '../master-report.service';
 import notify from 'devextreme/ui/notify';
 import DataSource from 'devextreme/data/data_source';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-facility-list',
   templateUrl: './facility-list.component.html',
   styleUrls: ['./facility-list.component.scss'],
-  providers: [ReportService],
+  providers: [ReportService,DataService],
 })
-export class FacilityListComponent implements OnInit {
+export class FacilityListComponent implements OnInit, OnDestroy {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
 
@@ -50,13 +57,38 @@ export class FacilityListComponent implements OnInit {
         });
       }),
   });
+  currentPathName: string;
+  initialized: boolean;
 
   constructor(
     private service: ReportService,
-    private masterService: MasterReportService
+    private masterService: MasterReportService,
+    private router: Router,
+    private dataService: DataService
   ) {}
+
   ngOnInit(): void {
     this.get_All_DropDown_Data();
+    const Action = 0;
+    this.currentPathName = this.router.url.replace('/', '');
+    this.dataService
+      .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
+      .subscribe((response: any) => {
+        console.log(response);
+      });
+
+    this.initialized = true;
+  }
+
+  ngOnDestroy(): void {
+    if (this.initialized) {
+      const Action = 10;
+      this.dataService
+        .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
+        .subscribe((response: any) => {
+          console.log(response);
+        });
+    }
   }
 
   get_All_DropDown_Data() {

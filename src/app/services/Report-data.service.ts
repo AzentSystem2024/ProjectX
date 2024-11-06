@@ -113,8 +113,6 @@ export class ReportService {
     return this.http.post(url, reqBody);
   }
 
-
-
   //==============Export function==================
   exportDataGrid(e: any, fileName: any) {
     if (e.format === 'pdf') {

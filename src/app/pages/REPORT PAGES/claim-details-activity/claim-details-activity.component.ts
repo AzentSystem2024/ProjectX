@@ -1,5 +1,5 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, NgModule, OnInit, ViewChild } from '@angular/core';
+import { Component, NgModule, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import {
   DxButtonModule,
@@ -40,13 +40,14 @@ import notify from 'devextreme/ui/notify';
 import { ClaimDetailActivityDrillDownComponent } from '../../REPORT DRILL PAGES/claim-detail-activity-drill-down/claim-detail-activity-drill-down.component';
 import { ClaimDetailActivityDrillDownModule } from '../../REPORT DRILL PAGES/claim-detail-activity-drill-down/claim-detail-activity-drill-down.component';
 import { AdvanceFilterPopupModule } from '../../POP-UP_PAGES/advance-filter-popup/advance-filter-popup.component';
+import { DataService } from 'src/app/services';
 @Component({
   selector: 'app-claim-details-activity',
   templateUrl: './claim-details-activity.component.html',
   styleUrls: ['./claim-details-activity.component.scss'],
-  providers: [ReportService, ReportEngineService, DatePipe],
+  providers: [ReportService, ReportEngineService, DatePipe, DataService],
 })
-export class ClaimDetailsActivityComponent implements OnInit {
+export class ClaimDetailsActivityComponent implements OnInit ,OnDestroy{
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
 
@@ -133,13 +134,14 @@ export class ClaimDetailsActivityComponent implements OnInit {
   clickedRowData: any;
   loadingVisible: boolean = false;
   columnFixed: boolean = true;
- 
+  initialized: boolean;
 
   constructor(
     private service: ReportService,
     private router: Router,
     private reportengine: ReportEngineService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private dataService: DataService
   ) {
     this.loadingVisible = true;
 
@@ -154,11 +156,31 @@ export class ClaimDetailsActivityComponent implements OnInit {
     this.monthDataSource = this.service.getMonths();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.get_searchParameters_Dropdown_Values();
     this.userId = sessionStorage.getItem('UserID');
+    const Action = 0;
     this.currentPathName = this.router.url.replace('/', '');
+    this.dataService
+      .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
+      .subscribe((response: any) => {
+        console.log(response);
+      });
+
+    this.initialized = true;
   }
+
+  ngOnDestroy(): void {
+    if (this.initialized) {
+      const Action = 10;
+      this.dataService
+        .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
+        .subscribe((response: any) => {
+          console.log(response);
+        });
+    }
+  }
+
   //================Show and Hide Search parameters==========
   toggleContent() {
     this.isContentVisible = !this.isContentVisible;

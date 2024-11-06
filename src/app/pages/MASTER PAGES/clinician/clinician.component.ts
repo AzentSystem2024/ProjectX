@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, NgModule, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  NgModule,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   DxButtonModule,
   DxDataGridComponent,
@@ -17,13 +23,14 @@ import { DataService } from 'src/app/services';
 import { ClinicianNewFormModule } from '../../POP-UP_PAGES/clinician-new-form/clinician-new-form.component';
 import { ClinicianNewFormComponent } from '../../POP-UP_PAGES/clinician-new-form/clinician-new-form.component';
 import DataSource from 'devextreme/data/data_source';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-clinician',
   templateUrl: './clinician.component.html',
   styleUrls: ['./clinician.component.scss'],
   providers: [DataService, ReportService],
 })
-export class ClinicianComponent implements OnInit {
+export class ClinicianComponent implements OnInit, OnDestroy {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
 
@@ -57,14 +64,38 @@ export class ClinicianComponent implements OnInit {
         });
       }),
   });
+  initialized: any;
+  currentPathName: string;
 
   constructor(
     private service: ReportService,
-    private masterService: MasterReportService
+    private masterService: MasterReportService,
+    private dataService: DataService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     this.get_DropDown_Data();
+    const Action = 0;
+    this.currentPathName = this.router.url.replace('/', '');
+    this.dataService
+      .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
+      .subscribe((response: any) => {
+        console.log(response);
+      });
+
+    this.initialized = true;
+  }
+
+  ngOnDestroy(): void {
+    if (this.initialized) {
+      const Action = 10;
+      this.dataService
+        .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
+        .subscribe((response: any) => {
+          console.log(response);
+        });
+    }
   }
 
   show_new__Form() {

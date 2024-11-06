@@ -96,11 +96,11 @@ export class ContactPanelComponent implements OnInit, OnChanges, AfterViewChecke
   loadUserById = (id: number) => {
     this.isLoading = true;
 
-    this.service.getContact(id).subscribe((data) => {
-      this.user = data;
-      this.isLoading = false;
-      this.isEditing = false;
-    })
+    // this.service.getContact(id).subscribe((data) => {
+    //   this.user = data;
+    //   this.isLoading = false;
+    //   this.isEditing = false;
+    // })
   };
 
   onClosePanel = () => {

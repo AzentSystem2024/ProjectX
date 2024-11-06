@@ -1,4 +1,10 @@
-import { Component, NgModule, ViewChild } from '@angular/core';
+import {
+  Component,
+  NgModule,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { ClinicianMajorNewFormModule } from '../../POP-UP_PAGES/clinician-major-new-form/clinician-major-new-form.component';
 import notify from 'devextreme/ui/notify';
 import {
@@ -16,13 +22,15 @@ import { MasterReportService } from '../master-report.service';
 import { CommonModule } from '@angular/common';
 import { FormPopupModule } from 'src/app/components';
 import DataSource from 'devextreme/data/data_source';
+import { Router } from '@angular/router';
+import { DataService } from 'src/app/services';
 @Component({
   selector: 'app-clinician-major',
   templateUrl: './clinician-major.component.html',
   styleUrls: ['./clinician-major.component.scss'],
-  providers: [ReportService],
+  providers: [ReportService, DataService],
 })
-export class ClinicianMajorComponent {
+export class ClinicianMajorComponent implements OnInit, OnDestroy {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
   @ViewChild(ClinicianMajorNewFormComponent, { static: false })
@@ -46,11 +54,38 @@ export class ClinicianMajorComponent {
         });
       }),
   });
+  currentPathName: any;
+  initialized: boolean;
 
   constructor(
     private service: ReportService,
-    private masterService: MasterReportService
+    private masterService: MasterReportService,
+    private router: Router,
+    private dataService: DataService
   ) {}
+
+  ngOnInit(): void {
+    const Action = 0;
+    this.currentPathName = this.router.url.replace('/', '');
+    this.dataService
+      .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
+      .subscribe((response: any) => {
+        console.log(response);
+      });
+
+    this.initialized = true;
+  }
+
+  ngOnDestroy(): void {
+    if (this.initialized) {
+      const Action = 10;
+      this.dataService
+        .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
+        .subscribe((response: any) => {
+          console.log(response);
+        });
+    }
+  }
 
   //=============Showing the new Facility Form===================
   show_new_InsuranceClassification_Form() {

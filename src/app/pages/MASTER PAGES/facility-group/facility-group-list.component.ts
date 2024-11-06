@@ -1,6 +1,12 @@
 import { Message } from 'src/app/types/messages';
 import { CommonModule } from '@angular/common';
-import { Component, NgModule, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  NgModule,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   DxButtonModule,
   DxDataGridComponent,
@@ -20,6 +26,7 @@ import {
 } from '../../POP-UP_PAGES/facility-group-new-form/facility-group-new-form.component';
 import { FormPopupModule } from 'src/app/components';
 import DataSource from 'devextreme/data/data_source';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-facility-group-list',
@@ -27,7 +34,7 @@ import DataSource from 'devextreme/data/data_source';
   styleUrls: ['./facility-group-list.component.scss'],
   providers: [DataService, ReportService],
 })
-export class FacilityGroupListComponent {
+export class FacilityGroupListComponent implements OnInit, OnDestroy {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
   @ViewChild(FacilityGroupNewFormComponent, { static: false })
@@ -52,11 +59,38 @@ export class FacilityGroupListComponent {
         });
       }),
   });
+  currentPathName: string;
+  initialized: boolean;
 
   constructor(
     private service: ReportService,
-    private masterService: MasterReportService
+    private masterService: MasterReportService,
+    private router: Router,
+    private dataService: DataService
   ) {}
+
+  ngOnInit(): void {
+    const Action = 0;
+    this.currentPathName = this.router.url.replace('/', '');
+    this.dataService
+      .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
+      .subscribe((response: any) => {
+        console.log(response);
+      });
+
+    this.initialized = true;
+  }
+
+  ngOnDestroy(): void {
+    if (this.initialized) {
+      const Action = 10;
+      this.dataService
+        .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
+        .subscribe((response: any) => {
+          console.log(response);
+        });
+    }
+  }
 
   //=============Showing the new Facility Form===================
   show_new_FacilityGroup_Form() {

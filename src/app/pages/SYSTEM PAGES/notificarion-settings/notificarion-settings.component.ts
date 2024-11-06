@@ -1,6 +1,12 @@
 import { Message } from 'src/app/types/messages';
 import { CommonModule } from '@angular/common';
-import { Component, NgModule, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  NgModule,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { DxTabsModule } from 'devextreme-angular/ui/tabs';
 import {
   DxFormModule,
@@ -24,14 +30,17 @@ import { DxTabPanelModule } from 'devextreme-angular';
 import { SystemServicesService } from '../system-services.service';
 import { DxTextBoxTypes } from 'devextreme-angular/ui/text-box';
 import notify from 'devextreme/ui/notify';
+import { Router } from '@angular/router';
+import { DataService } from 'src/app/services';
 
 type EditorOptions = DxTextBoxTypes.Properties;
 @Component({
   selector: 'app-notificarion-settings',
   templateUrl: './notificarion-settings.component.html',
   styleUrls: ['./notificarion-settings.component.scss'],
+  providers: [DataService],
 })
-export class NotificationSettingsComponent implements OnInit {
+export class NotificationSettingsComponent implements OnInit, OnDestroy {
   @ViewChild(DxFormComponent, { static: false }) form: DxFormComponent;
 
   @ViewChild(DxValidatorComponent, { static: false })
@@ -130,13 +139,39 @@ export class NotificationSettingsComponent implements OnInit {
     Notification: '',
   };
   htmlEditorInstance: any;
+  currentPathName: any;
+  initialized: boolean;
 
-  constructor(private service: SystemServicesService) {}
+  constructor(
+    private service: SystemServicesService,
+    private router: Router,
+    private dataService: DataService
+  ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.getNotificationSettingsData();
     this.getNotificationSettingsTemplateList();
-    this.updateVisibility(); // Set visibility when component is loaded
+    this.updateVisibility();
+    const Action = 0;
+    this.currentPathName = this.router.url.replace('/', '');
+    this.dataService
+      .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
+      .subscribe((response: any) => {
+        console.log(response);
+      });
+
+    this.initialized = true;
+  }
+
+  ngOnDestroy(): void {
+    if (this.initialized) {
+      const Action = 10;
+      this.dataService
+        .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
+        .subscribe((response: any) => {
+          console.log(response);
+        });
+    }
   }
 
   addToEmailMessage(selectedValue: string) {
@@ -212,6 +247,7 @@ export class NotificationSettingsComponent implements OnInit {
   onTabClick(e: any) {
     this.clickedTabName = e.itemData.text;
     this.updateVisibility();
+    console.log('clicked tab is :', this.clickedTabName);
   }
   updateVisibility() {
     this.isEmailVisible = this.clickedTabName === 'E-mail';

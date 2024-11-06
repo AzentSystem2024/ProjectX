@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, NgModule, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  NgModule,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   DxButtonModule,
   DxDataGridComponent,
@@ -16,13 +22,15 @@ import notify from 'devextreme/ui/notify';
 import { ReportService } from 'src/app/services/Report-data.service';
 import { MasterReportService } from '../master-report.service';
 import DataSource from 'devextreme/data/data_source';
+import { Router } from '@angular/router';
+import { DataService } from 'src/app/services';
 @Component({
   selector: 'app-denial-category',
   templateUrl: './denial-category.component.html',
   styleUrls: ['./denial-category.component.scss'],
-  providers: [ReportService],
+  providers: [ReportService, DataService],
 })
-export class DenialCategoryComponent {
+export class DenialCategoryComponent implements OnInit, OnDestroy {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
   @ViewChild(DenialCategoryNewFormComponent, { static: false })
@@ -37,21 +45,47 @@ export class DenialCategoryComponent {
   facilityGroupDatasource: any;
   isAddFormPopupOpened: boolean = false;
 
-  
   dataSource = new DataSource<any>({
     load: () =>
       new Promise((resolve, reject) => {
         this.masterService.get_DenialCategory_List().subscribe({
-          next: (response: any) => resolve(response.data), // Resolve with the data
-          error: (error) => reject(error.message), // Reject with the error message
+          next: (response: any) => resolve(response.data),
+          error: (error) => reject(error.message),
         });
       }),
   });
+  currentPathName: string;
+  initialized: boolean;
 
   constructor(
     private service: ReportService,
-    private masterService: MasterReportService
+    private masterService: MasterReportService,
+    private router: Router,
+    private dataService: DataService
   ) {}
+
+  ngOnInit(): void {
+    const Action = 0;
+    this.currentPathName = this.router.url.replace('/', '');
+    this.dataService
+      .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
+      .subscribe((response: any) => {
+        console.log(response);
+      });
+
+    this.initialized = true;
+  }
+
+  ngOnDestroy(): void {
+    if (this.initialized) {
+      const Action = 10;
+      this.dataService
+        .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
+        .subscribe((response: any) => {
+          console.log(response);
+        });
+    }
+  }
 
   //=========================show new popup=========================
   show_new_Form() {

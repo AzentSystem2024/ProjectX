@@ -67,16 +67,6 @@ export class AnalyticsDashboardComponent implements OnInit {
   loadData = (startDate: string, endDate: string) => {
     this.isLoading = true;
     const tasks: Observable<object>[] = [
-      ['opportunities', this.service.getOpportunitiesByCategory],
-      ['sales', this.service.getSales],
-      ['salesByCategory', this.service.getSalesByCategory],
-      [
-        'salesByState',
-        (startDate: string, endDate: string) =>
-          this.service
-            .getSalesByStateAndCity(startDate, endDate)
-            .pipe(map((data) => this.service.getSalesByState(data))),
-      ],
     ].map(([dataName, loader]: [string, DataLoader]) => {
       const loaderObservable = loader(startDate, endDate).pipe(share());
 
@@ -90,6 +80,7 @@ export class AnalyticsDashboardComponent implements OnInit {
     forkJoin(tasks).subscribe(() => {
       this.isLoading = false;
     });
+    this.isLoading = false;
   };
 
   ngOnInit(): void {

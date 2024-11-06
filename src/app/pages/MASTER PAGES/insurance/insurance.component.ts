@@ -3,6 +3,7 @@ import {
   AfterViewInit,
   Component,
   NgModule,
+  OnDestroy,
   OnInit,
   ViewChild,
 } from '@angular/core';
@@ -22,14 +23,16 @@ import { ReportService } from 'src/app/services/Report-data.service';
 import { MasterReportService } from '../master-report.service';
 import { InsuranceNewFormModule } from '../../POP-UP_PAGES/insurance-new-form/insurance-new-form.component';
 import DataSource from 'devextreme/data/data_source';
+import { Router } from '@angular/router';
+import { DataService } from 'src/app/services';
 
 @Component({
   selector: 'app-insurance',
   templateUrl: './insurance.component.html',
   styleUrls: ['./insurance.component.scss'],
-  providers: [ReportService],
+  providers: [ReportService, DataService],
 })
-export class InsuranceComponent {
+export class InsuranceComponent implements OnInit, OnDestroy {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
   @ViewChild(InsuranceNewFormComponent, { static: false })
@@ -55,23 +58,48 @@ export class InsuranceComponent {
         });
       }),
   });
+  currentPathName: any;
+  initialized: boolean;
 
   constructor(
     private service: ReportService,
-    private masterService: MasterReportService
+    private masterService: MasterReportService,
+    private router: Router,
+    private dataService: DataService
   ) {}
+
+  ngOnInit(): void {
+    const Action = 0;
+    this.currentPathName = this.router.url.replace('/', '');
+    this.dataService
+      .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
+      .subscribe((response: any) => {
+        console.log(response);
+      });
+
+    this.initialized = true;
+  }
+
+  ngOnDestroy(): void {
+    if (this.initialized) {
+      const Action = 10;
+      this.dataService
+        .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
+        .subscribe((response: any) => {
+          console.log(response);
+        });
+    }
+  }
 
   ShowSearch = () => {
     this.showSearchIcon = !this.showSearchIcon;
     this.showSearchBox = !this.showSearchBox;
   };
 
-  //=========================show new popup=========================
+  //=========================show new popup======================
   show_new_Form() {
     this.isAddFormPopupOpened = true;
   }
-
-  //========================Get Datasource =======================
 
   //====================Add data ================================
   onClickSaveNewData = () => {
