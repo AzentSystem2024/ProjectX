@@ -38,6 +38,7 @@ export class SideNavigationMenuComponent
   private _compactMode = false;
   private _items!: Record<string, unknown>[];
   navigation: any;
+  selectedItemKeys: any;
 
   @Input()
   set selectedItem(value: String) {
@@ -91,6 +92,7 @@ export class SideNavigationMenuComponent
 
   onItemClick(event: DxTreeViewTypes.ItemClickEvent) {
     this.selectedItemChanged.emit(event);
+    // this.selectedItemKeys =;
   }
 
   ngAfterViewInit() {

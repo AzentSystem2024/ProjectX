@@ -432,14 +432,41 @@
         ></dxi-button>
       </dxi-column>
 
-      <dxi-column
+      <!-- <dxi-column
         *ngFor="let column of columnsConfig"
         [dataField]="column.dataField"
         [caption]="column.caption"
         [format]="column.format"
         [visible]="column.visible"
         [width]="200"
-      ></dxi-column>
+      ></dxi-column> -->
+
+      <ng-container *ngFor="let column of columnsConfig">
+        <dxi-column
+          *ngIf="column.isBand"
+          [caption]="column.caption"
+          [isBand]="true"
+        >
+          <dxi-column
+            *ngFor="let subColumn of column.columns"
+            [dataField]="subColumn.dataField"
+            [caption]="subColumn.caption"
+            [format]="subColumn.format"
+            [visible]="subColumn.visible"
+            [width]="200"
+          ></dxi-column>
+        </dxi-column>
+
+        <dxi-column
+          *ngIf="!column.isBand"
+          [dataField]="column.dataField"
+          [caption]="column.caption"
+          [format]="column.format"
+          [visible]="column.visible"
+          [width]="200"
+        ></dxi-column>
+      </ng-container>
+
       <dxo-search-panel [visible]="true"></dxo-search-panel>
       <dxo-paging [pageSize]="10"></dxo-paging>
       <dxo-pager
@@ -691,4 +718,3 @@
   >
   </dx-load-panel>
 </div>
-
