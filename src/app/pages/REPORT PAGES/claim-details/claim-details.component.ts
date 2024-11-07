@@ -462,8 +462,10 @@ export class ClaimDetailsComponent implements OnInit, OnDestroy {
     const lookupInstance = this.lookup.instance;
     if (lookupInstance) {
       lookupInstance.close();
+      lookupInstance.option('searchValue', '');
     }
   }
+
   onDropDownBoxValueChanged() {
     this.updateSelection(this.treeView?.instance);
     const allItem = this.Facility_DataSource.find(
@@ -478,7 +480,13 @@ export class ClaimDetailsComponent implements OnInit, OnDestroy {
     } else {
       this.treeView.instance.unselectAll();
     }
+    // Clear search value after selection
+    const lookupInstance = this.lookup?.instance;
+    if (lookupInstance) {
+      lookupInstance.option('searchValue', '');
+    }
   }
+
   updateSelection(treeView: DxTreeViewComponent['instance']) {
     if (!treeView) return;
 

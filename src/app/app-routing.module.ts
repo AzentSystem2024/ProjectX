@@ -218,7 +218,7 @@ const routes: Routes = [
         canActivate: [AuthGuardService],
       },
       {
-        path: 'claim-details',
+        path: 'claim-detail-report',
         component: ClaimDetailsComponent,
         canActivate: [AuthGuardService],
       },

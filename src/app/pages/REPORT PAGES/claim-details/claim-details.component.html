@@ -1,17 +1,4 @@
 <div id="reportPage" class="view-wrapper list-page drilldown mt-0">
-  <div class="button-container mt-2 mb-2">
-    <dx-button
-      class="toggleButton"
-      icon="{{ isContentVisible ? 'spinup' : 'spindown' }}"
-      stylingMode="outlined"
-      type="normal"
-      [hint]="isContentVisible ? 'Hide Filter Contend' : 'Show Filter Contend'"
-      [width]="200"
-      [height]="15"
-      (onClick)="toggleContent()"
-    >
-    </dx-button>
-  </div>
   <!-- <div class="paramsDiv"> -->
   <div
     id="reportPageParams"
@@ -42,7 +29,7 @@
               [dataSource]="Facility_DataSource"
               [showSelectionControls]="true"
               [applyValueMode]="'instantly'"
-              (onValueChanged)="onDropDownBoxValueChanged()"
+              (onValueChanged)="onDropdownValueChanged()"
               [dropDownOptions]="{ width: 'auto' }"
             >
             </dx-tag-box>
@@ -390,7 +377,19 @@
     </dx-form>
   </div>
   <!-- </div> -->
-
+  <div class="button-container mt-1 mb-2">
+    <dx-button
+      class="toggleButton"
+      icon="{{ isContentVisible ? 'chevronup' : 'chevrondown' }}"
+      stylingMode="outlined"
+      type="normal"
+      [hint]="isContentVisible ? 'Hide Filter Contend' : 'Show Filter Contend'"
+      [width]="200"
+      [height]="13  "
+      (onClick)="toggleContent()"
+    >
+    </dx-button>
+  </div>
   <!-- ====================================Data GRid Table started================================ -->
   <ng-container>
     <dx-data-grid

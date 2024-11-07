@@ -80,7 +80,7 @@
   color: white;
   border: none;
   width: 150px;
-  height: 10px;
+  // height: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -89,7 +89,7 @@
 }
 
 .btnDemo i {
-  font-size: 24px;
+  font-size: 15px;
 }
 
 .button-container {
@@ -101,8 +101,8 @@
 
 }
 .toggleButton {
-  border-radius: 7px;
-  background-color: #00a0e007;
+  border-radius: 4px;
+  background-color: #2189b6de;
 }
 
 .SearchParams-container {
