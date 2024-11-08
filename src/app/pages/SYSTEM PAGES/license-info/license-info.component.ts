@@ -82,9 +82,7 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
     this.currentPathName = this.router.url.replace('/', '');
     this.dataService
       .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
-      .subscribe((response: any) => {
-        console.log(response);
-      });
+      .subscribe((response: any) => {});
 
     this.initialized = true;
   }
@@ -94,9 +92,7 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
       const Action = 10;
       this.dataService
         .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
-        .subscribe((response: any) => {
-          console.log(response);
-        });
+        .subscribe((response: any) => {});
     }
   }
 

@@ -29,7 +29,7 @@
               [dataSource]="Facility_DataSource"
               [showSelectionControls]="true"
               [applyValueMode]="'instantly'"
-              (onValueChanged)="onDropDownBoxValueChanged()"
+              (onValueChanged)="onDropdownValueChanged()"
               [dropDownOptions]="{ width: 'auto' }"
             >
             </dx-tag-box>
@@ -398,7 +398,7 @@
       #dataGrid
       class="grid reportGrid reportGridFooter theme-dependent"
       [height]="'84vh'"
-      noDataText="no data"
+      [noDataText]="!loadingVisible ? 'No Data Available' : ' '"
       [dataSource]="dataGrid_DataSource"
       [showBorders]="true"
       [allowColumnResizing]="false"
@@ -578,29 +578,26 @@
           <div class="separator"></div>
         </dxi-item>
         <dxi-item
-          widget="dxSelectBox"
+          widget="dxDropDownButton"
           [options]="{
-            text: '',
-            dataSource:memorise_Dropdown_DataList,
-            displayExpr:'name',
-            valueExpr:'name',
             icon: 'datafield',
+            text: '',
             hint: 'Show Memorise Report',
-            noDataText: 'load data and try again',
-            selectable: true,
+            dataSource: memorise_Dropdown_DataList,
+            displayExpr: 'name',
+            keyExpr: 'name',
             disabled: isEmptyDatagrid,
-            placeholder:'memorise report',
-            onValueChanged:ShowMemoriseTable,
-            showClearButton: true,
-            dropDownOptions:{
-              width: 'auto',
+            noDataText: 'load data and try again',
+            onItemClick: ShowMemoriseTable,
+            dropDownOptions: {
+              width: 'auto'
             }
           }"
         ></dxi-item>
 
         <dxi-item
           class="columnfinderclass"
-          widget="dxSelectBox"
+          widget="dxDropDownButton"
           [options]="{
             dataSource: ColumnNames,
             onItemClick: findColumnLocation,
@@ -609,11 +606,6 @@
             disabled: isEmptyDatagrid,
             hint: 'Column location finder',
             icon:'columnproperties',
-            showArrowIcon: true,
-            useSelectMode: true,
-            searchEnabled:true,
-            deferRendering: false,
-            showClearButton: true,
             dropDownOptions: {
               width: 'auto',
               height: '60vh'

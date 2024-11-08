@@ -40,7 +40,6 @@ import { DataService } from 'src/app/services';
   providers: [MasterReportService, ReportService, DataService],
 })
 export class UserComponent implements OnInit, OnDestroy {
-
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
 
@@ -57,7 +56,6 @@ export class UserComponent implements OnInit, OnDestroy {
   showPageSizeSelector = true;
   showInfo = true;
   showNavButtons = true;
-
 
   datasource = new DataSource<any>({
     load: () =>
@@ -87,9 +85,7 @@ export class UserComponent implements OnInit, OnDestroy {
     this.currentPathName = this.router.url.replace('/', '');
     this.dataService
       .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
-      .subscribe((response: any) => {
-        console.log(response);
-      });
+      .subscribe((response: any) => {});
 
     this.initialized = true;
   }
@@ -99,9 +95,7 @@ export class UserComponent implements OnInit, OnDestroy {
       const Action = 10;
       this.dataService
         .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
-        .subscribe((response: any) => {
-          console.log(response);
-        });
+        .subscribe((response: any) => {});
     }
   }
 

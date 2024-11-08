@@ -28,7 +28,7 @@ import { DataService } from 'src/app/services';
   selector: 'app-clinician-category',
   templateUrl: './clinician-category.component.html',
   styleUrls: ['./clinician-category.component.scss'],
-  providers: [ReportService,DataService],
+  providers: [ReportService, DataService],
 })
 export class ClinicianCategoryComponent implements OnInit, OnDestroy {
   @ViewChild(DxDataGridComponent, { static: true })
@@ -70,9 +70,7 @@ export class ClinicianCategoryComponent implements OnInit, OnDestroy {
     this.currentPathName = this.router.url.replace('/', '');
     this.dataService
       .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
-      .subscribe((response: any) => {
-        console.log(response);
-      });
+      .subscribe((response: any) => {});
 
     this.initialized = true;
   }
@@ -82,9 +80,7 @@ export class ClinicianCategoryComponent implements OnInit, OnDestroy {
       const Action = 10;
       this.dataService
         .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
-        .subscribe((response: any) => {
-          console.log(response);
-        });
+        .subscribe((response: any) => {});
     }
   }
 

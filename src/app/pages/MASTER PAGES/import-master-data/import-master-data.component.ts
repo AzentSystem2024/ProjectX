@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, NgModule, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  NgModule,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   DxButtonModule,
   DxDataGridComponent,
@@ -25,9 +31,9 @@ import { DataService } from 'src/app/services';
   selector: 'app-import-master-data',
   templateUrl: './import-master-data.component.html',
   styleUrls: ['./import-master-data.component.scss'],
-  providers:[DataService]
+  providers: [DataService],
 })
-export class ImportMasterDataComponent implements OnInit,OnDestroy {
+export class ImportMasterDataComponent implements OnInit, OnDestroy {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
   @ViewChild(ImportMasterDataFormComponent, { static: false })
@@ -64,9 +70,7 @@ export class ImportMasterDataComponent implements OnInit,OnDestroy {
     this.currentPathName = this.router.url.replace('/', '');
     this.dataService
       .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
-      .subscribe((response: any) => {
-        console.log(response);
-      });
+      .subscribe((response: any) => {});
 
     this.initialized = true;
   }
@@ -76,13 +80,9 @@ export class ImportMasterDataComponent implements OnInit,OnDestroy {
       const Action = 10;
       this.dataService
         .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
-        .subscribe((response: any) => {
-          console.log(response);
-        });
+        .subscribe((response: any) => {});
     }
   }
-
-
 
   CloseEditForm() {
     this.isNewFormPopupOpened = false;

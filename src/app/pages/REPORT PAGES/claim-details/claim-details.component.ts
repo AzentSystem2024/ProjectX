@@ -170,9 +170,7 @@ export class ClaimDetailsComponent implements OnInit, OnDestroy {
     this.currentPathName = this.router.url.replace('/', '');
     this.dataService
       .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
-      .subscribe((response: any) => {
-        console.log(response);
-      });
+      .subscribe((response: any) => {});
 
     this.initialized = true;
   }
@@ -182,9 +180,7 @@ export class ClaimDetailsComponent implements OnInit, OnDestroy {
       const Action = 10;
       this.dataService
         .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
-        .subscribe((response: any) => {
-          console.log(response);
-        });
+        .subscribe((response: any) => {});
     }
   }
 
@@ -254,67 +250,79 @@ export class ClaimDetailsComponent implements OnInit, OnDestroy {
       const response: any = await this.service
         .fetch_Claim_Details(formData)
         .toPromise();
+      if (response.flag === '1') {
+        this.isEmptyDatagrid = false;
+        this.columndata = response.ReportColumns;
 
-      this.isEmptyDatagrid = false;
-      this.columndata = response.ReportColumns;
+        const userLocale = navigator.language || 'en-US';
+        // console.log('user locale settings:', userLocale);
 
-      const userLocale = navigator.language || 'en-US';
-      console.log('user locale settings:', userLocale);
+        this.summaryColumnsData = this.generateSummaryColumns(
+          response.ReportColumns
+        );
+        // console.log('Summary columns are:', this.summaryColumnsData);
 
-      this.summaryColumnsData = this.generateSummaryColumns(
-        response.ReportColumns
-      );
-      console.log('Summary columns are:', this.summaryColumnsData);
+        this.columnsConfig = this.generateColumnsConfig(
+          response.ReportColumns,
+          userLocale
+        );
+        this.ColumnNames = this.columnsConfig
+          .filter((column) => column.visible)
+          .map((column) => column.dataField);
+        //   .sort((a, b) => a.localeCompare(b));
+        // console.log('columns are :', this.ColumnNames);
 
-      this.columnsConfig = this.generateColumnsConfig(
-        response.ReportColumns,
-        userLocale
-      );
-      this.ColumnNames = this.columnsConfig
-        .filter((column) => column.visible)
-        .map((column) => column.dataField);
+        this.personalReportData = response.PersonalReports;
+        this.memorise_Dropdown_DataList = response.PersonalReports.map(
+          (personalReport) => ({
+            name: personalReport.name,
+          })
+        );
 
-      this.personalReportData = response.PersonalReports;
-      this.memorise_Dropdown_DataList = response.PersonalReports.map(
-        (personalReport) => ({
-          name: personalReport.name,
-        })
-      );
+        // Format dates in ReportData
+        const formattedReportData = response.ReportData.map((data) => ({
+          ...data,
+          TransactionDate: this.datePipe.transform(
+            data.TransactionDate,
+            'dd-MMM-yyyy'
+          ),
+          ActivityStartDate: this.datePipe.transform(
+            data.ActivityStartDate,
+            'dd-MMM-yyyy'
+          ),
+          EncounterStartDate: this.datePipe.transform(
+            data.EncounterStartDate,
+            'dd-MMM-yyyy'
+          ),
+          EncounterEndDate: this.datePipe.transform(
+            data.EncounterEndDate,
+            'dd-MMM-yyyy'
+          ),
+          LastResubmissionDate: this.datePipe.transform(
+            data.LastResubmissionDate,
+            'dd-MMM-yyyy'
+          ),
+          InitialDateSettlement: this.datePipe.transform(
+            data.InitialDateSettlement,
+            'dd-MMM-yyyy'
+          ),
+        }));
 
-      // Format dates in ReportData
-      const formattedReportData = response.ReportData.map((data) => ({
-        ...data,
-        TransactionDate: this.datePipe.transform(
-          data.TransactionDate,
-          'dd-MMM-yyyy'
-        ),
-        ActivityStartDate: this.datePipe.transform(
-          data.ActivityStartDate,
-          'dd-MMM-yyyy'
-        ),
-        EncounterStartDate: this.datePipe.transform(
-          data.EncounterStartDate,
-          'dd-MMM-yyyy'
-        ),
-        EncounterEndDate: this.datePipe.transform(
-          data.EncounterEndDate,
-          'dd-MMM-yyyy'
-        ),
-        LastResubmissionDate: this.datePipe.transform(
-          data.LastResubmissionDate,
-          'dd-MMM-yyyy'
-        ),
-        InitialDateSettlement: this.datePipe.transform(
-          data.InitialDateSettlement,
-          'dd-MMM-yyyy'
-        ),
-      }));
-
-      // Initialize dataGrid_DataSource with the pre-loaded data
-      this.dataGrid_DataSource = new DataSource<any>({
-        load: () => Promise.resolve(formattedReportData),
-      });
-      this.loadingVisible = false;
+        // Initialize dataGrid_DataSource with the pre-loaded data
+        this.dataGrid_DataSource = new DataSource<any>({
+          load: () => Promise.resolve(formattedReportData),
+        });
+        this.loadingVisible = false;
+      } else {
+        this.loadingVisible = false;
+        notify(
+          {
+            message: `${response.message}`,
+            position: { at: 'top right', my: 'top right' },
+          },
+          'error'
+        );
+      }
     } catch (error) {
       console.error('Error fetching claim details:', error);
     }
@@ -435,11 +443,10 @@ export class ClaimDetailsComponent implements OnInit, OnDestroy {
       reportGridElement.classList.toggle('reportGridFooter');
     }
   };
-
   //================Year value change ===================
   onYearChanged(e: any): void {
     this.selectedYear = e.value;
-    if (this.selectedmonth != '') {
+    if (this.selectedmonth != null && this.selectedmonth !== '') {
       this.From_Date_Value = new Date(this.selectedYear, this.selectedmonth, 1);
       this.To_Date_Value = new Date(
         this.selectedYear,
@@ -447,16 +454,28 @@ export class ClaimDetailsComponent implements OnInit, OnDestroy {
         0
       );
     } else {
-      this.From_Date_Value = new Date(this.selectedYear, 0, 1);
-      this.To_Date_Value = new Date(this.selectedYear, 11, 31);
+      this.From_Date_Value = new Date(this.selectedYear, 0, 1); // January 1
+      this.To_Date_Value = new Date(this.selectedYear, 11, 31); // December 31
     }
   }
+
   //================Month value change ===================
   onMonthValueChanged(e: any) {
-    this.selectedmonth = e.value;
-    this.From_Date_Value = new Date(this.selectedYear, this.selectedmonth, 1);
-    this.To_Date_Value = new Date(this.selectedYear, this.selectedmonth + 1, 0);
+    this.selectedmonth = e.value ?? '';
+    console.log('selected month', this.selectedmonth);
+    if (this.selectedmonth === '') {
+      this.From_Date_Value = new Date(this.selectedYear, 0, 1); // January 1 of the selected year
+      this.To_Date_Value = new Date(this.selectedYear, 11, 31); // December 31 of the selected year
+    } else {
+      this.From_Date_Value = new Date(this.selectedYear, this.selectedmonth, 1);
+      this.To_Date_Value = new Date(
+        this.selectedYear,
+        this.selectedmonth + 1,
+        0
+      );
+    }
   }
+
   //============Hide drop down after Value Selected======
   onDropdownValueChanged() {
     const lookupInstance = this.lookup.instance;
@@ -464,39 +483,6 @@ export class ClaimDetailsComponent implements OnInit, OnDestroy {
       lookupInstance.close();
       lookupInstance.option('searchValue', '');
     }
-  }
-
-  onDropDownBoxValueChanged() {
-    this.updateSelection(this.treeView?.instance);
-    const allItem = this.Facility_DataSource.find(
-      (item) => item.Name === 'All'
-    );
-    if (this.Facility_Value.includes(allItem.ID)) {
-      const otherIds = this.Facility_DataSource.filter(
-        (item) => item.Name !== 'All'
-      ).map((item) => item.ID);
-      this.Facility_Value = otherIds;
-      this.treeView.instance.selectAll();
-    } else {
-      this.treeView.instance.unselectAll();
-    }
-    // Clear search value after selection
-    const lookupInstance = this.lookup?.instance;
-    if (lookupInstance) {
-      lookupInstance.option('searchValue', '');
-    }
-  }
-
-  updateSelection(treeView: DxTreeViewComponent['instance']) {
-    if (!treeView) return;
-
-    if (!this.Facility_Value) {
-      treeView.unselectAll();
-    }
-
-    this.Facility_Value?.forEach((value) => {
-      treeView.selectItem(value);
-    });
   }
 
   //=================Show advance filter popup==========
@@ -509,10 +495,7 @@ export class ClaimDetailsComponent implements OnInit, OnDestroy {
     this.GridSource.filter();
   }
 
-  customiseCountText(itemInfo) {
-    return `Count: ${itemInfo.value}`;
-  }
-
+  //======custom text for summary of decimal columns=======
   customiseTotal(itemInfo) {
     return `Total: ${formatNumber(itemInfo.value, {
       type: 'fixedPoint',
@@ -522,32 +505,35 @@ export class ClaimDetailsComponent implements OnInit, OnDestroy {
 
   //==============Show Memorise Report===================
   ShowMemoriseTable = (e: any) => {
-    const SelectedValue = e.value;
-    if (SelectedValue == null) {
+    const SelectedValue = e.itemData.name;
+    if (SelectedValue === null || SelectedValue === '') {
       this.get_Datagrid_DataSource();
-    }
-    this.columnsConfig = this.personalReportData
-      .filter((report: any) => report.name == SelectedValue)
-      .map((report: any) => {
-        return report.Columns.map((column: any) => ({
-          dataField: column.Name,
-          caption: column.Title,
-          visible: column.Visibility,
-          type: column.Type,
-          format:
-            column.Type === 'Decimal'
-              ? {
-                  type: 'fixedPoint',
-                  precision: 2,
-                }
-              : undefined,
-        }));
-      })
-      .flat(); // Flatten the array in case each report has multiple columns
+    } else {
+      this.refresh();
+      this.columnsConfig = this.personalReportData
+        .filter((report: any) => report.name == SelectedValue)
+        .map((report: any) => {
+          return report.Columns.map((column: any) => ({
+            dataField: column.Name,
+            caption: column.Title,
+            visible: column.Visibility,
+            type: column.Type,
+            format:
+              column.Type === 'Decimal'
+                ? {
+                    type: 'fixedPoint',
+                    precision: 2,
+                  }
+                : undefined,
+          }));
+        })
+        .flat(); // Flatten the array in case each report has multiple columns
 
-    this.ColumnNames = this.columnsConfig
-      .filter((column) => column.visible)
-      .map((column) => column.dataField);
+      this.ColumnNames = this.columnsConfig
+        .filter((column) => column.visible)
+        .map((column) => column.dataField)
+        .sort((a, b) => a.localeCompare(b));
+    }
   };
 
   //==========show memorise save pop up==================

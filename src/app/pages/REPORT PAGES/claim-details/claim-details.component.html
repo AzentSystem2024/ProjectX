@@ -578,7 +578,7 @@
           <div class="separator"></div>
         </dxi-item>
         <dxi-item
-          widget="dxSelectBox"
+          widget="dxDropDownButton"
           [options]="{
             text: '',
             dataSource:memorise_Dropdown_DataList,
@@ -590,7 +590,7 @@
             selectable: true,
             disabled: isEmptyDatagrid,
             placeholder:'memorise report',
-            onValueChanged:ShowMemoriseTable,
+            onItemClick:ShowMemoriseTable,
             showClearButton: true,
             dropDownOptions:{
               width: 'auto',
@@ -600,7 +600,7 @@
 
         <dxi-item
           class="columnfinderclass"
-          widget="dxSelectBox"
+          widget="dxDropDownButton"
           [options]="{
             dataSource: ColumnNames,
             onItemClick: findColumnLocation,
