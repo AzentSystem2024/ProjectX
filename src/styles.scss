@@ -1,6 +1,5 @@
 @use "variables.scss" as *;
 
-
 html,
 body {
   margin: 0;
@@ -624,10 +623,7 @@ body {
   align-items: center;
   justify-content: center;
 }
-// .view-wrapper .grid .dx-datagrid-content .dx-row {
-//   cursor: pointer;
-//   height: 35px;
-// }
+
 .grid .dx-checkbox-icon {
   width: 13px;
   height: 13px;
@@ -645,7 +641,7 @@ body {
     }
 
     &:not(.dx-first-col) {
-      padding-inline-start:5px;
+      padding-inline-start: 5px;
     }
 
     &:not(.dx-first-row) {
@@ -661,8 +657,4 @@ body {
       }
     }
   }
-
-  // .dx-tabpanel .dx-multiview-item-content {
-  //   // padding: $fluent-form-layout-manager-tabpanel-content-padding;
-  // }
 }

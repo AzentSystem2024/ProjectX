@@ -321,7 +321,16 @@ export class ClaimSummaryMonthWiseComponent implements OnInit, OnDestroy {
         );
       }
     } catch (error) {
-      console.error('Error fetching claim details:', error);
+      this.loadingVisible = false;
+      this.isContentVisible = true;
+      notify(
+        {
+          message: `An error occurred while fetching the data. Please try again later.`,
+          position: { at: 'top right', my: 'top right' },
+          displayTime: 3000,
+        },
+        'error'
+      );
     }
   }
 
@@ -514,7 +523,6 @@ export class ClaimSummaryMonthWiseComponent implements OnInit, OnDestroy {
   applyFilter() {
     this.GridSource.filter();
   }
-
 
   //==============Show Memorise Report===================
   ShowMemoriseTable = (e: any) => {
