@@ -329,24 +329,44 @@ export class ClaimDetailsActivityComponent implements OnInit, OnDestroy {
     const decimalColumns = reportColumns.filter(
       (col) => col.Type === 'Decimal' && col.Summary
     );
+
+    const intColumns = reportColumns.filter(
+      (col) => col.Type === 'Int32' && col.Summary
+    );
+
     return {
-      totalItems: decimalColumns.map((col) => this.createSummaryItem(col)),
-      groupItems: decimalColumns.map((col) =>
-        this.createSummaryItem(col, true)
-      ),
+      totalItems: [
+        ...decimalColumns.map((col) =>
+          this.createSummaryItem(col, false, 'sum', 'decimal')
+        ),
+        ...intColumns.map((col) =>
+          this.createSummaryItem(col, false, 'sum', 'count')
+        ),
+      ],
+      groupItems: [
+        ...decimalColumns.map((col) =>
+          this.createSummaryItem(col, true, 'sum', 'decimal')
+        ),
+        ...intColumns.map((col) =>
+          this.createSummaryItem(col, true, 'sum', 'count')
+        ),
+      ],
     };
   }
 
-  createSummaryItem(col: any, isGroupItem = false) {
+  createSummaryItem(col, isGroupItem = false, summaryType = 'sum', formatType) {
     return {
       column: col.Name,
-      summaryType: 'sum',
-      displayFormat: '{0}',
-      valueFormat: {
-        style: 'decimal',
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      },
+      summaryType: summaryType,
+      displayFormat: formatType === 'count' ? 'Count: {0} ' : 'Total: {0}',
+      valueFormat:
+        formatType === 'decimal'
+          ? {
+              style: 'decimal',
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            }
+          : null,
       alignByColumn: isGroupItem, // Align by column if it's a group item
       showInGroupFooter: isGroupItem, // Show in group footer for group items
     };
@@ -376,6 +396,18 @@ export class ClaimDetailsActivityComponent implements OnInit, OnDestroy {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
             }).format(value),
+        };
+      }
+      if (column.Type === 'percentage') {
+        columnFormat = {
+          type: 'percent',
+          precision: 2,
+          formatter: (value) =>
+            new Intl.NumberFormat(userLocale, {
+              style: 'percent',
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            }).format(value / 100),
         };
       }
       return {
@@ -444,17 +476,18 @@ export class ClaimDetailsActivityComponent implements OnInit, OnDestroy {
   //================Year value change ===================
   onYearChanged(e: any): void {
     this.selectedYear = e.value;
-    if (this.selectedmonth != null && this.selectedmonth !== '') {
-      this.From_Date_Value = new Date(this.selectedYear, this.selectedmonth, 1);
-      this.To_Date_Value = new Date(
-        this.selectedYear,
-        this.selectedmonth + 1,
-        0
-      );
-    } else {
-      this.From_Date_Value = new Date(this.selectedYear, 0, 1); // January 1
-      this.To_Date_Value = new Date(this.selectedYear, 11, 31); // December 31
-    }
+    this.selectedmonth = '';
+    // if (this.selectedmonth != null && this.selectedmonth !== '') {
+    //   this.From_Date_Value = new Date(this.selectedYear, this.selectedmonth, 1);
+    //   this.To_Date_Value = new Date(
+    //     this.selectedYear,
+    //     this.selectedmonth + 1,
+    //     0
+    //   );
+    // } else {
+    this.From_Date_Value = new Date(this.selectedYear, 0, 1); // January 1
+    this.To_Date_Value = new Date(this.selectedYear, 11, 31); // December 31
+    // }
   }
 
   //================Month value change ===================
@@ -491,16 +524,7 @@ export class ClaimDetailsActivityComponent implements OnInit, OnDestroy {
     this.GridSource.filter();
   }
 
-  customiseCountText(itemInfo) {
-    return `Count: ${itemInfo.value}`;
-  }
 
-  customiseTotal(itemInfo) {
-    return `Total: ${formatNumber(itemInfo.value, {
-      type: 'fixedPoint',
-      precision: 2,
-    })}`;
-  }
 
   //==============Show Memorise Report===================
   ShowMemoriseTable = (e: any) => {

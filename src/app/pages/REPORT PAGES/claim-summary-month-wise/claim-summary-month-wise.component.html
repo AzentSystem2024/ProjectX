@@ -428,7 +428,6 @@
           icon="detailslayout"
           text="Details"
           hint="View Details"
-          [onClick]="handleRowDrillDownClick"
         ></dxi-button>
       </dxi-column>
 
@@ -458,14 +457,6 @@
         ></dxi-column>
       </ng-container>
 
-      <!-- <dxi-column
-        *ngFor="let column of columnsConfig"
-        [dataField]="column.dataField"
-        [caption]="column.caption"
-        [format]="column.format"
-        [visible]="column.visible"
-        [width]="200"
-      ></dxi-column> -->
       <dxo-search-panel [visible]="true"></dxo-search-panel>
       <dxo-paging [pageSize]="10"></dxo-paging>
       <dxo-pager
@@ -507,7 +498,7 @@
       </dxo-export>
       <dxo-toolbar>
         <dxi-item location="before">
-          <div class="grid-header">Claim Detail with Activity</div>
+          <div class="grid-header">Claim Summary Month Wise</div>
         </dxi-item>
         <dxi-item
           location="after"

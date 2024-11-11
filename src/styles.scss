@@ -188,7 +188,7 @@ body {
   .dx-row
   > td:not(.dx-validation-pending) {
   vertical-align: middle;
-  padding: 10px;
+  padding: 7px;
 }
 
 .dx-tabpanel .dx-tabpanel-tabs .dx-tabs {
@@ -623,3 +623,7 @@ body {
   align-items: center;
   justify-content: center;
 }
+// .view-wrapper .grid .dx-datagrid-content .dx-row {
+//   cursor: pointer;
+//   height: 35px;
+// }

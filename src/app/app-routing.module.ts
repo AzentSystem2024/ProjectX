@@ -42,6 +42,7 @@ import { NotificationSettingsComponent } from './pages/SYSTEM PAGES/notificarion
 import { ClaimDetailsActivityComponent } from './pages/REPORT PAGES/claim-details-activity/claim-details-activity.component';
 import { ImportMasterDataComponent } from './pages/MASTER PAGES/import-master-data/import-master-data.component';
 import { ClaimDetailsComponent } from './pages/REPORT PAGES/claim-details/claim-details.component';
+import { ClaimSummaryMonthWiseComponent } from './pages/REPORT PAGES/claim-summary-month-wise/claim-summary-month-wise.component';
 const routes: Routes = [
   {
     path: '',
@@ -225,6 +226,12 @@ const routes: Routes = [
       {
         path: 'claim-detail-activity',
         component: ClaimDetailsActivityComponent,
+        canActivate: [AuthGuardService],
+      },
+
+      {
+        path: 'Claim-Summary-Month-Wise',
+        component: ClaimSummaryMonthWiseComponent,
         canActivate: [AuthGuardService],
       },
       {

@@ -385,7 +385,7 @@
       type="normal"
       [hint]="isContentVisible ? 'Hide Filter Contend' : 'Show Filter Contend'"
       [width]="200"
-      [height]="13  "
+      [height]="13"
       (onClick)="toggleContent()"
     >
     </dx-button>
@@ -530,7 +530,7 @@
           widget="dxButton"
           [options]="{
             text: '',
-            icon: 'find',
+            icon: 'filter',
             onClick: filterClick,
             disabled: isEmptyDatagrid,
             hint: 'Search Column'
@@ -609,11 +609,6 @@
             disabled: isEmptyDatagrid,
             hint: 'Column location finder',
             icon:'columnproperties',
-            showArrowIcon: true,
-            useSelectMode: true,
-            searchEnabled:true,
-            deferRendering: false,
-            showClearButton: true,
             dropDownOptions: {
               width: 'auto',
               height: '60vh'

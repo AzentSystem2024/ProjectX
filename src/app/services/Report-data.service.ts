@@ -135,6 +135,35 @@ export class ReportService {
   }
 
 
+   //========fetch datasource of Claim-Summary-month-wise========
+   fetch_Claim_Summary_Month_Wise(formData: any) {
+    const userid = sessionStorage.getItem('UserID');
+    const currentPathName = this.router.url.replace('/', '');
+    const url = `${BASE_URL}reports/claimsummary/monthwise`;
+    const reqBody = {
+      userid: userid,
+      reportid: currentPathName,
+      SearchOn: formData.SearchOn,
+      DateFrom: formData.From_Date,
+      DateTo: formData.To_Date,
+      Facility: formData.Facility,
+      ReceiverId: formData.ReceiverID,
+      PayerId: formData.PayerID,
+      Payer: formData.Payer,
+      Clinician: formData.Clinician,
+      OrderingClinician: formData.OrderingClinician,
+      ClaimStatus: formData.CliamStatus,
+      ResubmissionType: formData.Resubmission,
+      PaymentStatus: formData.paymentStatus,
+      ClaimNumber: formData.ClaimNumber,
+      PatientID: formData.PatientID,
+      MemberID: formData.memberID,
+      DenialCode: formData.DenialCodes,
+    };
+    return this.http.post(url, reqBody);
+  }
+
+
   //===============Fetch claim details drill down values===========
   get_CliamDetails_DrillDown_Data(ClaimNumber: any, FacilityID: any) {
     const url = `${BASE_URL}/reports/claimdetailswithactivity/claimdetails`;
