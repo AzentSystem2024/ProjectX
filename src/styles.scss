@@ -1,5 +1,6 @@
 @use "variables.scss" as *;
 
+
 html,
 body {
   margin: 0;
@@ -635,4 +636,33 @@ body {
   border-color: #a4afcb;
   border-radius: 2px;
   background-color: rgb(255, 255, 255);
+}
+
+.view-wrapper .dx-layout-manager {
+  .dx-field-item {
+    &:not(.dx-last-col) {
+      padding-inline-end: 5px;
+    }
+
+    &:not(.dx-first-col) {
+      padding-inline-start:5px;
+    }
+
+    &:not(.dx-first-row) {
+      padding-top: 5px;
+    }
+
+    padding-bottom: 0px;
+    font-size: 12;
+
+    .dx-field-item {
+      &.dx-last-row {
+        padding-bottom: 3px;
+      }
+    }
+  }
+
+  // .dx-tabpanel .dx-multiview-item-content {
+  //   // padding: $fluent-form-layout-manager-tabpanel-content-padding;
+  // }
 }
