@@ -1,3 +1,4 @@
+
 import { CommonModule, DatePipe } from '@angular/common';
 import {
   Component,
@@ -43,8 +44,7 @@ import { ReportEngineService } from '../report-engine.service';
 import DataSource from 'devextreme/data/data_source';
 import { Router } from '@angular/router';
 import notify from 'devextreme/ui/notify';
-import { ClaimDetailActivityDrillDownComponent } from '../../REPORT DRILL PAGES/claim-detail-activity-drill-down/claim-detail-activity-drill-down.component';
-import { ClaimDetailActivityDrillDownModule } from '../../REPORT DRILL PAGES/claim-detail-activity-drill-down/claim-detail-activity-drill-down.component';
+import { ClaimSummaryMonthWiseDrillDownComponent, ClaimSummaryMonthWiseDrillDownModule } from '../../REPORT DRILL PAGES/claim-summary-month-wise-drill-down/claim-summary-month-wise-drill-down.component';
 import { AdvanceFilterPopupModule } from '../../POP-UP_PAGES/advance-filter-popup/advance-filter-popup.component';
 import { DataService } from 'src/app/services';
 @Component({
@@ -60,8 +60,8 @@ export class ClaimSummaryMonthWiseComponent implements OnInit, OnDestroy {
   @ViewChild(DxTreeViewComponent, { static: false })
   treeView: DxTreeViewComponent;
 
-  @ViewChild(ClaimDetailActivityDrillDownComponent, { static: false })
-  claimDrill: ClaimDetailActivityDrillDownComponent;
+  @ViewChild(ClaimSummaryMonthWiseDrillDownComponent, { static: false })
+  claimSummaryMonthWiseDrill: ClaimSummaryMonthWiseDrillDownComponent;
 
   @ViewChild('lookup', { static: false }) lookup: DxLookupComponent;
 
@@ -141,6 +141,7 @@ export class ClaimSummaryMonthWiseComponent implements OnInit, OnDestroy {
   loadingVisible: boolean = false;
   columnFixed: boolean = true;
   initialized: boolean;
+  detailData: any;
 
   constructor(
     private service: ReportService,
@@ -253,16 +254,18 @@ export class ClaimSummaryMonthWiseComponent implements OnInit, OnDestroy {
         this.isEmptyDatagrid = false;
         this.columndata = response.ReportColumns;
 
+        this.detailData=response.detail
+
         const userLocale = navigator.language || 'en-US';
         console.log('user locale settings:', userLocale);
 
         this.summaryColumnsData = this.generateSummaryColumns(
-          response.ReportColumns
+          response.summary.ReportColumns
         );
-        console.log('Summary columns are:', this.summaryColumnsData);
+        // console.log('Summary columns are:', this.summaryColumnsData);
 
         this.columnsConfig = this.generateColumnsConfig(
-          response.ReportColumns,
+          response.summary.ReportColumns,
           userLocale
         );
         this.ColumnNames = this.columnsConfig
@@ -276,38 +279,11 @@ export class ClaimSummaryMonthWiseComponent implements OnInit, OnDestroy {
           })
         );
 
-        // Format dates in ReportData
-        const formattedReportData = response.ReportData.map((data) => ({
-          ...data,
-          TransactionDate: this.datePipe.transform(
-            data.TransactionDate,
-            'dd-MMM-yyyy'
-          ),
-          ActivityStartDate: this.datePipe.transform(
-            data.ActivityStartDate,
-            'dd-MMM-yyyy'
-          ),
-          EncounterStartDate: this.datePipe.transform(
-            data.EncounterStartDate,
-            'dd-MMM-yyyy'
-          ),
-          EncounterEndDate: this.datePipe.transform(
-            data.EncounterEndDate,
-            'dd-MMM-yyyy'
-          ),
-          LastResubmissionDate: this.datePipe.transform(
-            data.LastResubmissionDate,
-            'dd-MMM-yyyy'
-          ),
-          InitialDateSettlement: this.datePipe.transform(
-            data.InitialDateSettlement,
-            'dd-MMM-yyyy'
-          ),
-        }));
+        const ReportData = response.summary.ReportData;
 
         // Initialize dataGrid_DataSource with the pre-loaded data
         this.dataGrid_DataSource = new DataSource<any>({
-          load: () => Promise.resolve(formattedReportData),
+          load: () => Promise.resolve(ReportData),
         });
         this.loadingVisible = false;
       } else {
@@ -663,7 +639,7 @@ export class ClaimSummaryMonthWiseComponent implements OnInit, OnDestroy {
     DxValidationSummaryModule,
     DxLoadPanelModule,
     AdvanceFilterPopupModule,
-    ClaimDetailActivityDrillDownModule,
+    ClaimSummaryMonthWiseDrillDownModule
   ],
   providers: [],
   exports: [],

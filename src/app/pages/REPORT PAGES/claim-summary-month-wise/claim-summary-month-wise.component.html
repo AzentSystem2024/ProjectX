@@ -428,6 +428,7 @@
           icon="detailslayout"
           text="Details"
           hint="View Details"
+          [onClick]="handleRowDrillDownClick"
         ></dxi-button>
       </dxi-column>
 
@@ -677,13 +678,14 @@
 
   <dx-popup
     [(visible)]="isDrillDownPopupOpened"
-    title="Claim Details"
+    title="Claim Summary Breakup"
     height="100vh"
     [width]="'90%'"
   >
-    <app-claim-detail-activity-drill-down
+    <app-claim-summary-month-wise-drill-down
       [clickedRowData]="clickedRowData"
-    ></app-claim-detail-activity-drill-down>
+      [DetailData]="detailData"
+    ></app-claim-summary-month-wise-drill-down>
   </dx-popup>
 
   <dx-load-panel

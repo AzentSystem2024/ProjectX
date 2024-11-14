@@ -47,12 +47,14 @@ $theme-mode: null !default;
   --calendar-width: 292px;
   --bg-side-panel: #00a1e0;
   --div-border-color: #000000;
+  --border-color: black;
   // --filter-row-color: #00a1e0;
 
   @if $theme-mode == dark {
     --card-background: var(--base-bg-darken-5);
     --bg-side-panel: rgb(41, 41, 41);
     --div-border-color: #ffffff;
+    --border-color: white;
     // --filter-row-color: #00a1e0;
   }
 

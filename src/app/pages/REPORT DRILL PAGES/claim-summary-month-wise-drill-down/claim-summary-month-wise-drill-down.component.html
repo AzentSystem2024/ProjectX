@@ -1,0 +1,85 @@
+<div class="d-flex MainDiv">
+  <div class="widget-container">
+    <dx-tabs
+      #withText
+      [width]="width"
+      [selectedIndex]="selectedTabIndex"
+      [rtlEnabled]="rtlEnabled"
+      [scrollByContent]="scrollByContent"
+      [showNavButtons]="showNavButtons"
+      [dataSource]="TabViewDataSource"
+      [orientation]="orientation"
+      [stylingMode]="stylingMode"
+      [iconPosition]="iconPosition"
+      (onItemClick)="onTabClick($event)"
+    ></dx-tabs>
+  </div>
+  <div class="table-grid">
+    <dx-data-grid
+      [height]="'100%'"
+      [noDataText]="!loadingVisible ? 'No Data Available' : ' '"
+      [dataSource]="GridDataSource"
+      [showBorders]="true"
+      [allowColumnResizing]="false"
+      [columnAutoWidth]="true"
+      [allowColumnReordering]="true"
+      [filterRow]="{ visible: false }"
+      [headerFilter]="{ visible: false }"
+    >
+      <dxi-column
+        *ngIf="!isEmptyDatagrid"
+        type="buttons"
+        [width]="40"
+        [fixed]="true"
+        fixedPosition="left"
+        [allowFixing]="false"
+        [allowHiding]="false"
+        [allowResizing]="false"
+        [allowReordering]="false"
+      >
+        <dxi-button
+          icon="detailslayout"
+          text="Details"
+          hint="View Details"
+          [onClick]="handleRowDrillDownClick"
+        ></dxi-button>
+      </dxi-column>
+
+      <ng-container *ngFor="let column of columnsConfig">
+        <dxi-column
+          *ngIf="column.isBand"
+          [caption]="column.caption"
+          [isBand]="true"
+        >
+          <dxi-column
+            *ngFor="let subColumn of column.columns"
+            [dataField]="subColumn.dataField"
+            [caption]="subColumn.caption"
+            [format]="subColumn.format"
+            [visible]="subColumn.visible"
+            [width]="200"
+          ></dxi-column>
+        </dxi-column>
+
+        <dxi-column
+          *ngIf="!column.isBand"
+          [dataField]="column.dataField"
+          [caption]="column.caption"
+          [format]="column.format"
+          [visible]="column.visible"
+          [width]="200"
+        ></dxi-column>
+      </ng-container>
+
+      <dxo-paging [pageSize]="pageSize"> </dxo-paging>
+      <dxo-pager
+        [visible]="true"
+        [displayMode]="displayMode"
+        [showPageSizeSelector]="showPageSizeSelector"
+        [showInfo]="showInfo"
+        [showNavigationButtons]="showNavButtons"
+      >
+      </dxo-pager>
+    </dx-data-grid>
+  </div>
+</div>

@@ -33,7 +33,7 @@ import { ViewImportedMasterDataFormModule } from './pages/POP-UP_PAGES/view-impo
 // import { SessionTimeoutDialogComponent } from './components/library/session-timeout-dialog/session-timeout-dialog.component';
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
 
 
   ],
