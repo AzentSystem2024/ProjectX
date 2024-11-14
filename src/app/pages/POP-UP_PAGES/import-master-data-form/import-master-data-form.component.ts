@@ -38,6 +38,9 @@ export class ImportMasterDataFormComponent implements OnInit{
   
   selectedImportOption:boolean = true; // Default selection
   masterList = [];
+
+
+  
   clinicianColumns = [];  // Clinician columns
   denialColumns = [];  // Denial columns
   insuranceColumns = [];  // Insurance columns
