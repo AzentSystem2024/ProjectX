@@ -1,4 +1,10 @@
-import { Component, ViewChild, NgModule } from '@angular/core';
+import {
+  Component,
+  ViewChild,
+  NgModule,
+  OnInit,
+  OnDestroy,
+} from '@angular/core';
 import {
   DxButtonModule,
   DxDataGridModule,
@@ -37,7 +43,7 @@ interface dropdownData {
   styleUrls: ['./denial-list.component.scss'],
   providers: [DataService, ReportService],
 })
-export class DenialListComponent {
+export class DenialListComponent implements OnInit, OnDestroy {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
 
@@ -46,11 +52,10 @@ export class DenialListComponent {
 
   isPanelOpened = false;
 
-  isAddContactPopupOpened = false;
+  isAddDenialPopupOpened = false;
 
-  selectedItemKeys: any[] = [];
-  Denial_Type_DropDownData: dropdownData[];
-  Denial_category_DropDownData: dropdownData[];
+  Denial_Type_DropDownData: any;
+  Denial_category_DropDownData: any;
   ID: any;
   isFilterOpened = true;
   //========Variables for Pagination ====================
@@ -69,15 +74,38 @@ export class DenialListComponent {
         });
       }),
   });
+
   GridSource: any;
+  currentPathName: string;
+  initialized: boolean;
 
   constructor(
     private service: MasterReportService,
     private router: Router,
     private route: ActivatedRoute,
-    private reportservice: ReportService
+    private reportservice: ReportService,
+    private dataService: DataService
   ) {
     this.getDenial_DropDown();
+  }
+
+  ngOnInit(): void {
+    const Action = 0;
+    this.currentPathName = this.router.url.replace('/', '');
+    this.dataService
+      .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
+      .subscribe((response: any) => {});
+
+    this.initialized = true;
+  }
+
+  ngOnDestroy(): void {
+    if (this.initialized) {
+      const Action = 10;
+      this.dataService
+        .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
+        .subscribe((response: any) => {});
+    }
   }
 
   //=====================Search on Each Column===========
@@ -86,7 +114,7 @@ export class DenialListComponent {
   }
 
   addDenial() {
-    this.isAddContactPopupOpened = true;
+    this.isAddDenialPopupOpened = true;
   }
 
   refresh = () => {
@@ -95,8 +123,8 @@ export class DenialListComponent {
 
   //================Exporting Function=====================
   onExporting(event: any) {
-    const fileName='Denial'
-    this.reportservice.exportDataGrid(event,fileName);
+    const fileName = 'Denial';
+    this.reportservice.exportDataGrid(event, fileName);
   }
 
   //=============Get Denial Type Drop dwn Data==============================

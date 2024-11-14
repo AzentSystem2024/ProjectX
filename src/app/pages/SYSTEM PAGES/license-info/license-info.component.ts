@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, NgModule, ViewChild } from '@angular/core';
+import {
+  Component,
+  NgModule,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   DxDataGridModule,
   DxButtonModule,
@@ -12,14 +18,16 @@ import {
 import { ReportService } from 'src/app/services/Report-data.service';
 import { SystemServicesService } from '../system-services.service';
 import DataSource from 'devextreme/data/data_source';
+import { Router } from '@angular/router';
+import { DataService } from 'src/app/services';
 
 @Component({
   selector: 'app-license-info',
   templateUrl: './license-info.component.html',
   styleUrls: ['./license-info.component.scss'],
-  providers: [ReportService],
+  providers: [ReportService, DataService],
 })
-export class LicenseInfoComponent {
+export class LicenseInfoComponent implements OnInit, OnDestroy {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
 
@@ -32,7 +40,6 @@ export class LicenseInfoComponent {
 
   ProductKey: any;
   LicensedTo: any;
-
 
   DataSource = new DataSource<any>({
     load: () =>
@@ -60,39 +67,39 @@ export class LicenseInfoComponent {
         });
       }),
   });
+  currentPathName: any;
+  initialized: boolean;
 
   constructor(
     private service: ReportService,
-    private systemService: SystemServicesService
-  ) {
-    // this.get_list_dataSource();
+    private systemService: SystemServicesService,
+    private router: Router,
+    private dataService: DataService
+  ) {}
+
+  ngOnInit(): void {
+    const Action = 0;
+    this.currentPathName = this.router.url.replace('/', '');
+    this.dataService
+      .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
+      .subscribe((response: any) => {});
+
+    this.initialized = true;
   }
 
-  //====================Get all listing Data======================
-  // get_list_dataSource() {
-  //   this.systemService.list_license_info_data().subscribe((response: any) => {
-  //     this.LicensedTo = response.CustomerName;
-  //     this.ProductKey = response.ProductKey;
-  //     // Modify the response data to add the serial number and format the expiry date
-  //     response.data.forEach((item: any, index: number) => {
-  //       item.serialNumber = index + 1;
-
-  //       const expiryDate = new Date(item.Expiry_Date);
-  //       item.Expiry_Date = expiryDate.toLocaleDateString('en-GB', {
-  //         day: '2-digit',
-  //         month: 'short',
-  //         year: 'numeric',
-  //       });
-  //     });
-
-  //     this.DataSource = response.data;
-  //   });
-  // }
+  ngOnDestroy(): void {
+    if (this.initialized) {
+      const Action = 10;
+      this.dataService
+        .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
+        .subscribe((response: any) => {});
+    }
+  }
 
   //========================Export data ==========================
   onExporting(event: any) {
-    const fileName='licence-info'
-    this.service.exportDataGrid(event,fileName);
+    const fileName = 'licence-info';
+    this.service.exportDataGrid(event, fileName);
   }
   //=================== Page refreshing===========================
   refresh = () => {

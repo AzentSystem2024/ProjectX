@@ -2,15 +2,6 @@
   <div class="titleBar d-flex align-items-center">
     <div class="headingText">Notification Settings</div>
     <div class="ms-auto mt-0 me-4 d-flex align-items-center">
-      <!-- <div class="me-2 cancelbtn">
-        <dx-button
-          stylingMode="outlined"
-          text="cancel"
-          type="normal"
-          (onClick)="onClickCancel()"
-        >
-        </dx-button>
-      </div> -->
       <div>
         <dx-button
           stylingMode="contained"
@@ -54,7 +45,7 @@
             <dxi-item class="m-0 p-0">
               <dx-text-box
                 [(value)]="formData.EmailSenderID"
-                mode="email"
+                mode="text"
                 label="Sender ID"
                 labelMode="floating"
                 labelLocation="left"
@@ -162,8 +153,8 @@
             </dxi-item>
           </dxi-item>
 
-          <!-- SMS Tab -->
 
+          <!-- SMS Tab -->
           <dxi-item
             *ngIf="clickedTabName === 'SMS'"
             [visible]="isSMSVisible"
@@ -244,8 +235,8 @@
             </dxi-item>
           </dxi-item>
 
+          
           <!-- WhatsApp Tab -->
-
           <dxi-item
             *ngIf="clickedTabName === 'WhatsApp'"
             [visible]="iswhatsAppVisible"

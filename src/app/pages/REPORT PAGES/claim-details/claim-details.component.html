@@ -390,7 +390,6 @@
     >
     </dx-button>
   </div>
-
   <!-- ====================================Data GRid Table started================================ -->
   <ng-container>
     <dx-data-grid
@@ -398,7 +397,7 @@
       #dataGrid
       class="grid reportGrid reportGridFooter theme-dependent"
       [height]="'84vh'"
-      [noDataText]="!loadingVisible ? 'No Data Available' : ' '"
+      noDataText="no data"
       [dataSource]="dataGrid_DataSource"
       [showBorders]="true"
       [allowColumnResizing]="false"
@@ -432,6 +431,15 @@
         ></dxi-button>
       </dxi-column>
 
+      <!-- <dxi-column
+        *ngFor="let column of columnsConfig"
+        [dataField]="column.dataField"
+        [caption]="column.caption"
+        [format]="column.format"
+        [visible]="column.visible"
+        [width]="200"
+      ></dxi-column> -->
+
       <ng-container *ngFor="let column of columnsConfig">
         <dxi-column
           *ngIf="column.isBand"
@@ -458,14 +466,6 @@
         ></dxi-column>
       </ng-container>
 
-      <!-- <dxi-column
-        *ngFor="let column of columnsConfig"
-        [dataField]="column.dataField"
-        [caption]="column.caption"
-        [format]="column.format"
-        [visible]="column.visible"
-        [width]="200"
-      ></dxi-column> -->
       <dxo-search-panel [visible]="true"></dxo-search-panel>
       <dxo-paging [pageSize]="10"></dxo-paging>
       <dxo-pager
@@ -507,7 +507,7 @@
       </dxo-export>
       <dxo-toolbar>
         <dxi-item location="before">
-          <div class="grid-header">Claim Detail with Activity</div>
+          <div class="grid-header">Claim Details</div>
         </dxi-item>
         <dxi-item
           location="after"
@@ -580,17 +580,20 @@
         <dxi-item
           widget="dxDropDownButton"
           [options]="{
-            icon: 'datafield',
             text: '',
+            dataSource:memorise_Dropdown_DataList,
+            displayExpr:'name',
+            valueExpr:'name',
+            icon: 'datafield',
             hint: 'Show Memorise Report',
-            dataSource: memorise_Dropdown_DataList,
-            displayExpr: 'name',
-            keyExpr: 'name',
-            disabled: isEmptyDatagrid,
             noDataText: 'load data and try again',
-            onItemClick: ShowMemoriseTable,
-            dropDownOptions: {
-              width: 'auto'
+            selectable: true,
+            disabled: isEmptyDatagrid,
+            placeholder:'memorise report',
+            onItemClick:ShowMemoriseTable,
+            showClearButton: true,
+            dropDownOptions:{
+              width: 'auto',
             }
           }"
         ></dxi-item>

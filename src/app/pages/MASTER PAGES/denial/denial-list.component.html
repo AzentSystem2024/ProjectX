@@ -3,6 +3,7 @@
     class="grid theme-dependent custom-grid"
     noDataText=""
     height="100%"
+    keyExpr="ID"
     [dataSource]="dataSource"
     [showBorders]="true"
     [allowColumnResizing]="true"
@@ -18,9 +19,47 @@
       mode="popup"
       [allowUpdating]="true"
       [allowDeleting]="true"
-      [popup]="{ width: '40%', height: '60vh' }"
+      [allowAdding]="true"
+      [popup]="{ width: '30%', height: 'auto' }"
     >
       <dxo-popup title="Edit Denial" [showTitle]="true"></dxo-popup>
+      <dxo-form [colCount]="1">
+        <dxi-item
+          dataField="DenialCode"
+          editorType="dxTextBox"
+          caption="Code"
+        ></dxi-item>
+
+        <dxi-item
+          dataField="DenialTypeID"
+          editorType="dxSelectBox"
+          caption="Type"
+          [editorOptions]="{
+            displayExpr: 'DESCRIPTION',
+            valueExpr: 'ID',
+            searchEnabled: true
+          }"
+        ></dxi-item>
+
+        <dxi-item
+          dataField="DenialCategoryID"
+          editorType="dxSelectBox"
+          caption="Category"
+          [editorOptions]="{
+            displayExpr: 'DESCRIPTION',
+            valueExpr: 'ID',
+            searchEnabled: true
+          }"
+        ></dxi-item>
+
+        <dxi-item
+          dataField="Description"
+          editorType="dxTextArea"
+          caption="Description"
+          [colSpan]="2"
+          [editorOptions]="{ height: 160, maxHeight: 250 }"
+        ></dxi-item>
+      </dxo-form>
     </dxo-editing>
     <dxo-pager
       [visible]="true"
@@ -113,10 +152,10 @@
 
   <form-popup
     class="formPopupClass"
-    [(visible)]="isAddContactPopupOpened"
+    [(visible)]="isAddDenialPopupOpened"
     (save)="onClickSaveNewDenial()"
     titleText="New Denial"
-    height="70vh"
+    height="auto"
   >
     <denial-new-form></denial-new-form>
   </form-popup>

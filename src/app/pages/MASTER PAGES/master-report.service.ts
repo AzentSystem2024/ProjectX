@@ -1015,7 +1015,7 @@ export class MasterReportService {
         changePasswordOnLogin:data.changePasswordOnLogin,
         LoginExpiryReason:''
       }
-      console.log(reqBody,"reqbody")
+
       return this.http.post(url,reqBody);
     };
 
@@ -1044,7 +1044,7 @@ export class MasterReportService {
           changePasswordOnLogin:data.changePasswordOnLogin,
           LoginExpiryReason:''
         }
-        console.log(reqBody,"reqbody")
+
         return this.http.post(url,reqBody);
       };
 
@@ -1054,14 +1054,14 @@ export class MasterReportService {
 
     reset_Password(data: any): Observable<any> {  // Ensure the function returns an Observable<any>
       const url = `${BASE_URL}changepassword/password`;
-      console.log(data,"dataonpayload")
+
       return this.http.post(url, data)
 
     }
-    
+
     getOtp(data:any):Observable<any>{
       const url = `${BASE_URL}changepassword/forpassword`;
-      console.log(data,"dataonpayload")
+
       return this.http.post(url, data)
     }
 

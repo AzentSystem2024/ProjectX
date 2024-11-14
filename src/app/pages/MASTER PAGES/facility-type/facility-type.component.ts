@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, NgModule, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  NgModule,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   DxButtonModule,
   DxDataGridComponent,
@@ -19,13 +25,14 @@ import {
   FacilityTypeNewFormModule,
 } from '../../POP-UP_PAGES/facility-type-new-form/facility-type-new-form.component';
 import DataSource from 'devextreme/data/data_source';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-facility-type',
   templateUrl: './facility-type.component.html',
   styleUrls: ['./facility-type.component.scss'],
   providers: [DataService, ReportService],
 })
-export class FacilityTypeComponent {
+export class FacilityTypeComponent implements OnInit, OnDestroy {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
   @ViewChild(FacilityTypeNewFormComponent, { static: false })
@@ -49,11 +56,34 @@ export class FacilityTypeComponent {
         });
       }),
   });
+  currentPathName: string;
+  initialized: boolean;
 
   constructor(
     private service: ReportService,
-    private masterService: MasterReportService
+    private masterService: MasterReportService,
+    private router: Router,
+    private dataService: DataService
   ) {}
+
+  ngOnInit(): void {
+    const Action = 0;
+    this.currentPathName = this.router.url.replace('/', '');
+    this.dataService
+      .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
+      .subscribe((response: any) => {});
+
+    this.initialized = true;
+  }
+
+  ngOnDestroy(): void {
+    if (this.initialized) {
+      const Action = 10;
+      this.dataService
+        .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
+        .subscribe((response: any) => {});
+    }
+  }
 
   //=========================show new popup=========================
   show_new_Form() {

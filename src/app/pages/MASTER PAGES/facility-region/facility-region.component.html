@@ -20,9 +20,22 @@
       [allowUpdating]="true"
       [allowDeleting]="true"
       [allowAdding]="true"
-      [popup]="{ width: '40%', height: '60vh' }"
+      [popup]="{ width: '35%', height: '70vh' }"
     >
       <dxo-popup title="Edit Facility Region" [showTitle]="true"></dxo-popup>
+      <dxo-form [colCount]="1">
+        <dxi-item dataField="FacilityRegion" editorType="dxTextBox">
+          <dxo-label text="Region"></dxo-label>
+        </dxi-item>
+
+        <dxi-item
+          dataField="Description"
+          editorType="dxTextArea"
+          [editorOptions]="{ height: 200 }"
+        >
+          <dxo-label text="Description"></dxo-label>
+        </dxi-item>
+      </dxo-form>
     </dxo-editing>
     <dxo-pager
       [visible]="true"
@@ -55,19 +68,6 @@
       <dxi-item location="after" locateInMenu="auto">
         <div class="separator"></div>
       </dxi-item>
-      <!-- <dxi-item
-        location="after"
-        locateInMenu="auto"
-        showText="inMenu"
-        widget="dxButton"
-        [options]="{
-          hint: 'Add New Data',
-          icon: 'plus',
-          onClick: show_new_Form,
-          type: 'default',
-          stylingMode: 'contained'
-        }"
-      ></dxi-item> -->
       <dxi-item location="after" locateInMenu="auto">
         <dx-button
           text=""

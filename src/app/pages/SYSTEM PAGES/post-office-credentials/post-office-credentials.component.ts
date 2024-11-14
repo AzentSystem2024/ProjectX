@@ -1,6 +1,12 @@
 import { MasterReportService } from './../../MASTER PAGES/master-report.service';
 import { CommonModule } from '@angular/common';
-import { Component, NgModule, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  NgModule,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   DxDataGridModule,
   DxButtonModule,
@@ -14,14 +20,16 @@ import { SystemServicesService } from '../system-services.service';
 import { ReportService } from 'src/app/services/Report-data.service';
 import notify from 'devextreme/ui/notify';
 import DataSource from 'devextreme/data/data_source';
+import { Router } from '@angular/router';
+import { DataService } from 'src/app/services';
 
 @Component({
   selector: 'app-post-office-credentials',
   templateUrl: './post-office-credentials.component.html',
   styleUrls: ['./post-office-credentials.component.scss'],
-  providers: [ReportService],
+  providers: [ReportService, DataService],
 })
-export class PostOfficeCredentialsComponent implements OnInit {
+export class PostOfficeCredentialsComponent implements OnInit, OnDestroy {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
 
@@ -50,13 +58,34 @@ export class PostOfficeCredentialsComponent implements OnInit {
         });
       }),
   });
+  currentPathName: any;
+  initialized: boolean;
 
   constructor(
     private systemService: SystemServicesService,
-    private service: ReportService
+    private service: ReportService,
+    private router: Router,
+    private dataService: DataService
   ) {}
+
   ngOnInit(): void {
     this.getDenial_Type_DropDown();
+    const Action = 0;
+    this.currentPathName = this.router.url.replace('/', '');
+    this.dataService
+      .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
+      .subscribe((response: any) => {});
+
+    this.initialized = true;
+  }
+
+  ngOnDestroy(): void {
+    if (this.initialized) {
+      const Action = 10;
+      this.dataService
+        .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
+        .subscribe((response: any) => {});
+    }
   }
 
   //=============Get Denial Type Drop dwn Data==============================

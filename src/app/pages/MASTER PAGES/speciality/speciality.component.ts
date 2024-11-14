@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, NgModule, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  NgModule,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   DxDataGridModule,
   DxButtonModule,
@@ -17,13 +23,15 @@ import { MasterReportService } from '../master-report.service';
 import { SpecialityNewFormComponent } from '../../POP-UP_PAGES/speciality-new-form/speciality-new-form.component';
 import { SpecialityNewFormModule } from '../../POP-UP_PAGES/speciality-new-form/speciality-new-form.component';
 import DataSource from 'devextreme/data/data_source';
+import { Router } from '@angular/router';
+import { DataService } from 'src/app/services';
 @Component({
   selector: 'app-speciality',
   templateUrl: './speciality.component.html',
   styleUrls: ['./speciality.component.scss'],
-  providers: [ReportService],
+  providers: [ReportService, DataService],
 })
-export class SpecialityComponent {
+export class SpecialityComponent implements OnInit, OnDestroy {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
   @ViewChild(SpecialityNewFormComponent, { static: false })
@@ -43,15 +51,38 @@ export class SpecialityComponent {
       new Promise((resolve, reject) => {
         this.masterService.get_Speciality_List().subscribe({
           next: (response: any) => resolve(response.data),
-          error: (error) => reject(error.message), 
+          error: (error) => reject(error.message),
         });
       }),
   });
+  currentPathName: string;
+  initialized: boolean;
 
   constructor(
     private service: ReportService,
-    private masterService: MasterReportService
+    private masterService: MasterReportService,
+    private router: Router,
+    private dataService: DataService
   ) {}
+
+  ngOnInit(): void {
+    const Action = 0;
+    this.currentPathName = this.router.url.replace('/', '');
+    this.dataService
+      .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
+      .subscribe((response: any) => {});
+
+    this.initialized = true;
+  }
+
+  ngOnDestroy(): void {
+    if (this.initialized) {
+      const Action = 10;
+      this.dataService
+        .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
+        .subscribe((response: any) => {});
+    }
+  }
 
   //========================show new popup=========================
   show_new_Form() {

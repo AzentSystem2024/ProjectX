@@ -47,13 +47,14 @@ import { ClaimDetailActivityDrillDownComponent } from '../../REPORT DRILL PAGES/
 import { ClaimDetailActivityDrillDownModule } from '../../REPORT DRILL PAGES/claim-detail-activity-drill-down/claim-detail-activity-drill-down.component';
 import { AdvanceFilterPopupModule } from '../../POP-UP_PAGES/advance-filter-popup/advance-filter-popup.component';
 import { DataService } from 'src/app/services';
+
 @Component({
-  selector: 'app-claim-details-activity',
-  templateUrl: './claim-details-activity.component.html',
-  styleUrls: ['./claim-details-activity.component.scss'],
+  selector: 'app-claim-details',
+  templateUrl: './claim-details.component.html',
+  styleUrls: ['./claim-details.component.scss'],
   providers: [ReportService, ReportEngineService, DatePipe, DataService],
 })
-export class ClaimDetailsActivityComponent implements OnInit, OnDestroy {
+export class ClaimDetailsComponent implements OnInit, OnDestroy {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
 
@@ -247,19 +248,19 @@ export class ClaimDetailsActivityComponent implements OnInit, OnDestroy {
 
     try {
       const response: any = await this.service
-        .fetch_Claim_Details_With_Activity(formData)
+        .fetch_Claim_Details(formData)
         .toPromise();
       if (response.flag === '1') {
         this.isEmptyDatagrid = false;
         this.columndata = response.ReportColumns;
 
         const userLocale = navigator.language || 'en-US';
-        console.log('user locale settings:', userLocale);
+        // console.log('user locale settings:', userLocale);
 
         this.summaryColumnsData = this.generateSummaryColumns(
           response.ReportColumns
         );
-        console.log('Summary columns are:', this.summaryColumnsData);
+        // console.log('Summary columns are:', this.summaryColumnsData);
 
         this.columnsConfig = this.generateColumnsConfig(
           response.ReportColumns,
@@ -268,6 +269,8 @@ export class ClaimDetailsActivityComponent implements OnInit, OnDestroy {
         this.ColumnNames = this.columnsConfig
           .filter((column) => column.visible)
           .map((column) => column.dataField);
+        //   .sort((a, b) => a.localeCompare(b));
+        // console.log('columns are :', this.ColumnNames);
 
         this.personalReportData = response.PersonalReports;
         this.memorise_Dropdown_DataList = response.PersonalReports.map(
@@ -381,7 +384,7 @@ export class ClaimDetailsActivityComponent implements OnInit, OnDestroy {
     };
   }
 
-  generateColumnsConfig(reportColumns: any, userLocale: any) {
+  generateColumnsConfig(reportColumns, userLocale) {
     return reportColumns.map((column) => {
       let columnFormat;
 
@@ -434,9 +437,9 @@ export class ClaimDetailsActivityComponent implements OnInit, OnDestroy {
     // console.log('advance filter imported data', filterData);
     this.ClaimNumber_Value = filterData.ClaimNumber;
 
-    // this.Facility_Value = this.Facility_DataSource.filter((item) =>
-    //   filterData.ReceiverID.split(',').includes(item.Name)
-    // ).map((item) => item.ID);
+    this.Facility_Value = this.Facility_DataSource.filter((item) =>
+      filterData.ReceiverID.split(',').includes(item.Name)
+    ).map((item) => item.ID);
 
     this.ReceiverID_Value = this.RecieverID_DataSource.filter((item) =>
       filterData.ReceiverID.split(',').includes(item.Name)
@@ -481,7 +484,6 @@ export class ClaimDetailsActivityComponent implements OnInit, OnDestroy {
       reportGridElement.classList.toggle('reportGridFooter');
     }
   };
-
   //================Year value change ===================
   onYearChanged(e: any): void {
     this.selectedYear = e.value;
@@ -515,11 +517,13 @@ export class ClaimDetailsActivityComponent implements OnInit, OnDestroy {
       );
     }
   }
+
   //============Hide drop down after Value Selected======
   onDropdownValueChanged() {
     const lookupInstance = this.lookup.instance;
     if (lookupInstance) {
       lookupInstance.close();
+      lookupInstance.option('searchValue', '');
     }
   }
 
@@ -541,7 +545,7 @@ export class ClaimDetailsActivityComponent implements OnInit, OnDestroy {
     } else {
       this.refresh();
       this.columnsConfig = this.personalReportData
-        .filter((report: any) => report.name === SelectedValue)
+        .filter((report: any) => report.name == SelectedValue)
         .map((report: any) => {
           return report.Columns.map((column: any) => ({
             dataField: column.Name,
@@ -561,7 +565,8 @@ export class ClaimDetailsActivityComponent implements OnInit, OnDestroy {
 
       this.ColumnNames = this.columnsConfig
         .filter((column) => column.visible)
-        .map((column) => column.dataField);
+        .map((column) => column.dataField)
+        .sort((a, b) => a.localeCompare(b));
     }
   };
 
@@ -626,7 +631,6 @@ export class ClaimDetailsActivityComponent implements OnInit, OnDestroy {
   findColumnLocation = (e: any) => {
     const columnName = e.itemData;
     if (columnName != '' && columnName != null) {
-      this.refresh();
       this.reportengine.makeColumnVisible(this.dataGrid, columnName);
     }
   };
@@ -677,6 +681,6 @@ export class ClaimDetailsActivityComponent implements OnInit, OnDestroy {
   ],
   providers: [],
   exports: [],
-  declarations: [ClaimDetailsActivityComponent],
+  declarations: [ClaimDetailsComponent],
 })
-export class ClaimDetailsActivityModule {}
+export class ClaimDetailsModule {}

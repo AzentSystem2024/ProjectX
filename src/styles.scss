@@ -188,7 +188,7 @@ body {
   .dx-row
   > td:not(.dx-validation-pending) {
   vertical-align: middle;
-  padding: 10px;
+  padding: 7px;
 }
 
 .dx-tabpanel .dx-tabpanel-tabs .dx-tabs {
@@ -612,4 +612,49 @@ body {
 .DetailsDrillDown .view-wrapper .grid .dx-datagrid-content .dx-row {
   cursor: pointer;
   height: 1rem;
+}
+
+.button-container .toggleButton .dx-icon {
+  font-size: 25px;
+  font-weight: bold;
+  width: 100px;
+  height: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.grid .dx-checkbox-icon {
+  width: 13px;
+  height: 13px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #a4afcb;
+  border-radius: 2px;
+  background-color: rgb(255, 255, 255);
+}
+
+.view-wrapper .dx-layout-manager {
+  .dx-field-item {
+    &:not(.dx-last-col) {
+      padding-inline-end: 5px;
+    }
+
+    &:not(.dx-first-col) {
+      padding-inline-start: 5px;
+    }
+
+    &:not(.dx-first-row) {
+      padding-top: 5px;
+    }
+
+    padding-bottom: 0px;
+    font-size: 12;
+
+    .dx-field-item {
+      &.dx-last-row {
+        padding-bottom: 3px;
+      }
+    }
+  }
 }

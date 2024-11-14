@@ -1,35 +1,44 @@
-<!-- <div style="width: 100%; max-width: 800px; height: auto; overflow: auto;">
-    <img [src]="PhotoFile" alt="User Photo" style="max-width: 100%; height: auto;" />
-  </div> -->
-  <dx-validation-group #validationGroup>
-<div class="tabs-demo view-wrapper">
-  
+<dx-validation-group #validationGroup>
+  <div class="tabs-demo view-wrapper">
     <div class="widget-container">
       <!-- User Details Section with Hide/Show Button -->
-      <div style="display: flex; align-items: center; margin-bottom: 10px;">
-        <label style="font-weight: bold; font-size: 16px; margin-right: 10px;">User Details:</label>
-        <dx-button 
-          icon="{{ showUserDetails ? 'chevronup' : 'chevrondown' }}" 
-          type="default" 
+      <div style="display: flex; align-items: center; margin-bottom: 10px">
+        <label style="font-weight: bold; font-size: 16px; margin-right: 10px"
+          >User Details:</label
+        >
+        <dx-button
+          icon="{{ showUserDetails ? 'chevronup' : 'chevrondown' }}"
+          type="default"
           (onClick)="toggleUserDetails()"
-          [elementAttr]="{ style: 'background-color: transparent; border: none; color: #000;' }"
+          [elementAttr]="{
+            style: 'background-color: transparent; border: none; color: #000;'
+          }"
           stylingMode="text"
         ></dx-button>
       </div>
-    
-  
+
       <div *ngIf="showUserDetails">
         <!-- User Details Form in Two Columns -->
-        <div class="user-details" style="display: flex; flex-wrap: wrap; gap: 20px;">
-          <div class="form-column" style="flex: 2;">
-            <dx-text-box [(value)]="newUserData.UserName" label="User Name" hint="User Name" >
+        <div
+          class="user-details"
+          style="display: flex; flex-wrap: wrap; gap: 20px"
+        >
+          <div class="form-column" style="flex: 2">
+            <dx-text-box
+              [(value)]="newUserData.UserName"
+              label="User Name"
+              hint="User Name"
+            >
               <dx-validator>
-                <dxi-validation-rule type="required" message="User Name is required"></dxi-validation-rule>
+                <dxi-validation-rule
+                  type="required"
+                  message="User Name is required"
+                ></dxi-validation-rule>
               </dx-validator>
             </dx-text-box>
-  
-            <div style="position: relative;display: flex;">
-              <dx-text-box 
+
+            <div style="position: relative; display: flex">
+              <dx-text-box
                 label="Password"
                 [(value)]="newUserData.Password"
                 [readOnly]="true"
@@ -39,37 +48,32 @@
               ></dx-text-box>
 
               <dx-tooltip
-              [target]="undoButton"
-              [position]="{ my: 'top', at: 'bottom', of: undoButton }"
-              [showEvent]="'mouseenter'"
-              [hideEvent]="'mouseleave'"  
-            >
-              <div>Reset</div>
-            </dx-tooltip>
-  
-              <!-- Refresh Button -->
-              <button 
-              #undoButton
-              width="'70px'"
-              type="button" 
-              style="top:15px;margin-left: 10px;cursor: pointer;height: 30px;"
-              hint="Reset"
-              (click)="resetPassword()"
-            >
-            <i class="dx-icon-undo"></i> 
-           </button>
-              <!-- [mode]="isPasswordVisible ? 'text' : 'password'"  -->
-              <!-- Show/Hide Eye Icon -->
-              <!-- <button 
-                type="button"
-                (click)="togglePasswordVisibility()"
-                style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer;"
+                [target]="undoButton"
+                [position]="{ my: 'top', at: 'bottom', of: undoButton }"
+                [showEvent]="'mouseenter'"
+                [hideEvent]="'mouseleave'"
               >
-                <i class="{{ isPasswordVisible ? 'dx-icon-eyeopen' : 'dx-icon-eyeclose' }}"></i>
-              </button> -->
-              
+                <div>Reset</div>
+              </dx-tooltip>
+
+              <!-- Refresh Button -->
+              <button
+                #undoButton
+                width="'70px'"
+                type="button"
+                style="
+                  top: 15px;
+                  margin-left: 10px;
+                  cursor: pointer;
+                  height: 30px;
+                "
+                hint="Reset"
+                (click)="resetPassword()"
+              >
+                <i class="dx-icon-undo"></i>
+              </button>
             </div>
-            
+
             <dx-date-box
               label="Date of Birth"
               [(value)]="newUserData.DateofBirth"
@@ -78,79 +82,90 @@
               stylingMode="outlined"
               hint="Date Of Birth"
             ></dx-date-box>
-  
-            <div style="display: flex;">
-              <dx-select-box
-              label="Code"
-              [searchEnabled]="true"
-              [acceptCustomValue]="false" 
-              [(value)]="newUserData.countryCode"
-              [items]="countryCodes"
-              [displayExpr]="countryCodeDisplay"
-              valueExpr="data.dial_code"
-              [width]="100"
-              placeholder="+1"
-              [dropDownOptions]="{ width: '370px' }" 
-              hint="Country Code"   
-              (valueChange)="updateMobileNumber()"  
-              (onOpened)="onDropdownOpened()"
-              (onClosed)="onDropdownClosed()"    
-      >
-          <!-- Custom template for the dropdown list items -->
-          <div *dxTemplate="let item of 'item'">
-            <span>{{ item.data.flag }} </span>
-            <span>{{ item.data.dial_code }} </span>
-            <span>{{ item.data.name }}</span>
-          </div>
 
-      <dx-validator>
-        <dxi-validation-rule type="required" message="Country code is required"></dxi-validation-rule>
-      </dx-validator>
-    </dx-select-box>
-          
-              <dx-text-box 
-                label="Mobile No" 
+            <div style="display: flex">
+              <dx-select-box
+                label="Code"
+                [searchEnabled]="true"
+                [acceptCustomValue]="false"
+                [(value)]="newUserData.countryCode"
+                [items]="countryCodes"
+                [displayExpr]="countryCodeDisplay"
+                valueExpr="data.dial_code"
+                [width]="100"
+                placeholder="+1"
+                [dropDownOptions]="{ width: '370px' }"
+                hint="Country Code"
+                (valueChange)="updateMobileNumber()"
+                (onOpened)="onDropdownOpened()"
+                (onClosed)="onDropdownClosed()"
+              >
+                <!-- Custom template for the dropdown list items -->
+                <div *dxTemplate="let item of 'item'">
+                  <span>{{ item.data.flag }} </span>
+                  <span>{{ item.data.dial_code }} </span>
+                  <span>{{ item.data.name }}</span>
+                </div>
+
+                <dx-validator>
+                  <dxi-validation-rule
+                    type="required"
+                    message="Country code is required"
+                  ></dxi-validation-rule>
+                </dx-validator>
+              </dx-select-box>
+
+              <dx-text-box
+                label="Mobile No"
                 [(value)]="newUserData.Mobile"
                 [width]="'100%'"
-                style="margin-left: 10px;"
+                style="margin-left: 10px"
                 hint="Mobile No"
                 [valueChangeEvent]="'input'"
                 (onValueChanged)="onMobileInputChange($event)"
                 [maxLength]="17"
               >
-              <dx-validator>
-                <dxi-validation-rule type="required" message="Mobile No is required"></dxi-validation-rule>
-                <dxi-validation-rule
-                type="custom"
-                message="Mobile no. must be at least 10 digits long"
-                [validationCallback]="MobileNumberValidate"
-              ></dxi-validation-rule>
-              </dx-validator>
-            </dx-text-box>
+                <dx-validator>
+                  <dxi-validation-rule
+                    type="required"
+                    message="Mobile No is required"
+                  ></dxi-validation-rule>
+                  <dxi-validation-rule
+                    type="custom"
+                    message="Mobile no. must be at least 10 digits long"
+                    [validationCallback]="MobileNumberValidate"
+                  ></dxi-validation-rule>
+                </dx-validator>
+              </dx-text-box>
             </div>
-            
-            
-           
           </div>
-          <div class="form-column" style="flex: 2;">
-            <dx-text-box label="Login Name" [(value)]="newUserData.LoginName" hint="Login Name" (input)="onLoginNameInput($event)">
+          <div class="form-column" style="flex: 2">
+            <dx-text-box
+              label="Login Name"
+              [(value)]="newUserData.LoginName"
+              hint="Login Name"
+              (input)="onLoginNameInput($event)"
+            >
               <dx-validator>
-                <dxi-validation-rule type="required" message="Login Name is required"></dxi-validation-rule>
+                <dxi-validation-rule
+                  type="required"
+                  message="Login Name is required"
+                ></dxi-validation-rule>
                 <dxi-validation-rule
                   type="stringLength"
                   min="5"
                   message="Login Name must be at least 5 characters long"
                 ></dxi-validation-rule>
                 <dxi-validation-rule
-                type="stringLength"
-                max="10"
-                message="Login Name cannot exceed 10 characters"
-              ></dxi-validation-rule>
-              <dxi-validation-rule
-              type="custom"
-              message="Login Name already exists"
-              [validationCallback]="checkLoginNameExists"
-            ></dxi-validation-rule>
+                  type="stringLength"
+                  max="10"
+                  message="Login Name cannot exceed 10 characters"
+                ></dxi-validation-rule>
+                <dxi-validation-rule
+                  type="custom"
+                  message="Login Name already exists"
+                  [validationCallback]="checkLoginNameExists"
+                ></dxi-validation-rule>
               </dx-validator>
             </dx-text-box>
             <dx-select-box
@@ -162,10 +177,13 @@
               placeholder="Select User Role"
               hint="User Role"
             >
-            <dx-validator>
-              <dxi-validation-rule type="required" message="User Role is required"></dxi-validation-rule>
-            </dx-validator>
-          </dx-select-box>
+              <dx-validator>
+                <dxi-validation-rule
+                  type="required"
+                  message="User Role is required"
+                ></dxi-validation-rule>
+              </dx-validator>
+            </dx-select-box>
             <dx-select-box
               label="Gender"
               [(value)]="newUserData.GenderID"
@@ -175,68 +193,97 @@
               placeholder="Select Gender"
               hint="Gender"
             ></dx-select-box>
-            
-            <dx-text-box label="Email" [(value)]="newUserData.Email" hint="Email" (input)="onEmailInput($event)">
+
+            <dx-text-box
+              label="Email"
+              [(value)]="newUserData.Email"
+              hint="Email"
+              (input)="onEmailInput($event)"
+            >
               <dx-validator>
-                <dxi-validation-rule type="required" message="Email is required"></dxi-validation-rule>
-                <dxi-validation-rule type="email" message="Invalid Email Format"></dxi-validation-rule>
                 <dxi-validation-rule
-                type="custom"
-                message="Email already exists"
-                [validationCallback]="checkEmailExists">
-            </dxi-validation-rule>
+                  type="required"
+                  message="Email is required"
+                ></dxi-validation-rule>
+                <dxi-validation-rule
+                  type="email"
+                  message="Invalid Email Format"
+                ></dxi-validation-rule>
+                <dxi-validation-rule
+                  type="custom"
+                  message="Email already exists"
+                  [validationCallback]="checkEmailExists"
+                >
+                </dxi-validation-rule>
               </dx-validator>
             </dx-text-box>
-           
-            <dx-text-box label="Whatsapp No" 
-            [(value)]="newUserData.Whatsapp" 
-            hint="Whatsapp No" 
-            (onFocusIn)="autoBindWhatsapp()"
-            (input)="validateWhatsapp($event)" 
-            [maxLength]="17"
-            >
-            <dx-validator>
-              <dxi-validation-rule
-                type="required"
-                message="Whatsapp no. is required"
-            ></dxi-validation-rule>
-            <dxi-validation-rule
-                type="custom"
-                message="Whatsapp no. must be at least 10 digits long"
-                [validationCallback]="WhatsappValidate"
-            ></dxi-validation-rule>
-            </dx-validator>
-          </dx-text-box>
           </div>
-          <div class="form-column" style="flex: 1;">
+          <div class="form-column" style="flex: 1">
             <label>Profile Image</label>
-            <div id="drop-area" (dragenter)="preventDefaults($event)" (dragover)="preventDefaults($event)"
-                 (dragleave)="handleDragLeave($event)" (drop)="handleDrop($event)" [class.image-uploaded]="isImageUploaded">
-              
+            <div
+              id="drop-area"
+              (dragenter)="preventDefaults($event)"
+              (dragover)="preventDefaults($event)"
+              (dragleave)="handleDragLeave($event)"
+              (drop)="handleDrop($event)"
+              [class.image-uploaded]="isImageUploaded"
+            >
               <!-- Conditionally show this section only if no images have been uploaded -->
-              <span *ngIf="images.length === 0">Drag and drop an image file here or </span>
-              <input type="file" #fileInput (change)="handleFileInputChange($event)" accept="image/*" hidden>
-          
+              <span *ngIf="images.length === 0"
+                >Drag and drop an image file here or
+              </span>
+              <input
+                type="file"
+                #fileInput
+                (change)="handleFileInputChange($event)"
+                accept="image/*"
+                hidden
+              />
+
               <!-- Conditionally show the button if no images are uploaded -->
-              <button *ngIf="images.length === 0" (click)="fileInput.click()">Select a file</button>
-              
+              <button *ngIf="images.length === 0" (click)="fileInput.click()">
+                Select a file
+              </button>
+
               <!-- Gallery to display uploaded images -->
               <div id="gallery">
                 <div class="image-container" *ngIf="images.length > 0">
-                  <img [src]="images"/>
-                  <span class="close-icon" (click)="removeImage()">&#x2715;</span> <!-- Close icon -->
+                  <img [src]="images" alt="image not support" />
+                  <span class="close-icon" (click)="removeImage()"
+                    >&#x2715;</span
+                  >
+                  <!-- Close icon -->
                 </div>
               </div>
             </div>
+            <dx-text-box
+              label="Whatsapp No"
+              [(value)]="newUserData.Whatsapp"
+              hint="Whatsapp No"
+              (onFocusIn)="autoBindWhatsapp()"
+              (input)="validateWhatsapp($event)"
+              [maxLength]="17"
+            >
+              <dx-validator>
+                <dxi-validation-rule
+                  type="required"
+                  message="Whatsapp no. is required"
+                ></dxi-validation-rule>
+                <dxi-validation-rule
+                  type="custom"
+                  message="Whatsapp no. must be at least 10 digits long"
+                  [validationCallback]="WhatsappValidate"
+                ></dxi-validation-rule>
+              </dx-validator>
+            </dx-text-box>
           </div>
+        </div>
       </div>
-    </div>
-    
-  
+
       <!-- Tabs for Options and Facility -->
       <dx-tabs
         [width]="'auto'"
-        [selectedIndex]="0" 
+        [selectedIndex]="0"
         [rtlEnabled]="false"
         [scrollByContent]="true"
         [showNavButtons]="true"
@@ -244,84 +291,124 @@
         (onItemClick)="onTabClick($event)"
       >
       </dx-tabs>
-  
+
       <!-- Content Area for Tabs -->
       <div class="tab-content">
-  
         <!-- Facility Tab Content -->
         <div *ngIf="selectedIndex === 0">
-  
           <dx-data-grid
-          [dataSource]="facilityList"
-          [showBorders]="true"
-          [selection]="{ mode: 'multiple' }" 
-          height="300"
-          keyExpr="ID"
-          noDataText=" "
-          [(selectedRowKeys)]="selectedRows"
-          (onSelectionChanged)="onSelectionChanged($event)"
-          width="100%"
-        >
-          <dxo-header-filter [visible]="true"></dxo-header-filter>
-          <dxo-sorting mode="multiple"></dxo-sorting>
-         
-  
-          <dxi-column [width]="'200'"  dataField="FacilityLicense" caption="Facility License">
-            <dxo-header-filter [allowSelectAll]="false">
-              <dxo-search [enabled]="true"></dxo-search>
-            </dxo-header-filter>
-          </dxi-column>   
-          <dxi-column [width]="'auto'" dataField="FacilityName" caption="Facility Name">
-            <dxo-header-filter [allowSelectAll]="false">
-              <dxo-search [enabled]="true"></dxo-search>
-            </dxo-header-filter>
-          </dxi-column>  
-          <dxi-column [width]="'auto'" dataField="FacilityRegion" caption="Facility Region">
-            <dxo-header-filter [allowSelectAll]="false">
-              <dxo-search [enabled]="true"></dxo-search>
-            </dxo-header-filter>
-          </dxi-column>  
-          <dxi-column [width]="'auto'" dataField="FacilityGroup" caption="Facility Group"> 
-            <dxo-header-filter [allowSelectAll]="false">
-              <dxo-search [enabled]="true"></dxo-search>
-            </dxo-header-filter>
-          </dxi-column> 
-          <dxi-column [width]="'auto'" dataField="FacilityType" caption="Facility Type"> 
-            <dxo-header-filter [allowSelectAll]="false">
-              <dxo-search [enabled]="true"></dxo-search>
-            </dxo-header-filter>
-          </dxi-column>  
+            [dataSource]="facilityList"
+            [showBorders]="true"
+            [selection]="{ mode: 'multiple' }"
+            height="300"
+            keyExpr="ID"
+            noDataText=" "
+            [(selectedRowKeys)]="selectedRows"
+            (onSelectionChanged)="onSelectionChanged($event)"
+            width="100%"
+          >
+            <dxo-header-filter [visible]="true"></dxo-header-filter>
+            <dxo-sorting mode="multiple"></dxo-sorting>
+
+            <dxi-column
+              [width]="'200'"
+              dataField="FacilityLicense"
+              caption="Facility License"
+            >
+              <dxo-header-filter [allowSelectAll]="false">
+                <dxo-search [enabled]="true"></dxo-search>
+              </dxo-header-filter>
+            </dxi-column>
+            <dxi-column
+              [width]="'auto'"
+              dataField="FacilityName"
+              caption="Facility Name"
+            >
+              <dxo-header-filter [allowSelectAll]="false">
+                <dxo-search [enabled]="true"></dxo-search>
+              </dxo-header-filter>
+            </dxi-column>
+            <dxi-column
+              [width]="'auto'"
+              dataField="FacilityRegion"
+              caption="Facility Region"
+            >
+              <dxo-header-filter [allowSelectAll]="false">
+                <dxo-search [enabled]="true"></dxo-search>
+              </dxo-header-filter>
+            </dxi-column>
+            <dxi-column
+              [width]="'auto'"
+              dataField="FacilityGroup"
+              caption="Facility Group"
+            >
+              <dxo-header-filter [allowSelectAll]="false">
+                <dxo-search [enabled]="true"></dxo-search>
+              </dxo-header-filter>
+            </dxi-column>
+            <dxi-column
+              [width]="'auto'"
+              dataField="FacilityType"
+              caption="Facility Type"
+            >
+              <dxo-header-filter [allowSelectAll]="false">
+                <dxo-search [enabled]="true"></dxo-search>
+              </dxo-header-filter>
+            </dxi-column>
           </dx-data-grid>
-           <!-- Display selected row count -->
-      <div style="margin-top: 10px; ">
-        Selected Rows: {{ selectedRowCount }}
-     </div>
+          <!-- Display selected row count -->
+          <div style="margin-top: 10px">
+            Selected Rows: {{ selectedRowCount }}
+          </div>
         </div>
-  
-         <!-- Options Tab Content -->
-         <div *ngIf="selectedIndex === 1">
+
+        <!-- Options Tab Content -->
+        <div *ngIf="selectedIndex === 1">
           <!-- Options: Inactive -->
-          <div style="display: flex; align-items: center; margin-bottom: 10px;margin-top: 10px;">
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              margin-bottom: 10px;
+              margin-top: 10px;
+            "
+          >
             <dx-check-box
               [(value)]="newUserData.IsInactive"
               text="Inactive"
               stylingMode="outlined"
               hint="Inactive"
             ></dx-check-box>
-            <div *ngIf="newUserData.IsInactive" style="margin-left: 10px; flex: 1;">
-              <dx-text-box placeholder="Reason for Inactive" [(value)]="newUserData.InactiveReason" width="400" hint="Reason for Inactive"></dx-text-box>
+            <div
+              *ngIf="newUserData.IsInactive"
+              style="margin-left: 10px; flex: 1"
+            >
+              <dx-text-box
+                placeholder="Reason for Inactive"
+                [(value)]="newUserData.InactiveReason"
+                width="400"
+                hint="Reason for Inactive"
+              ></dx-text-box>
             </div>
           </div>
-  
+
           <!-- Options: Locked -->
-          <div style="display: flex; align-items: center;">
+          <div style="display: flex; align-items: center">
             <dx-check-box
               [(value)]="newUserData.IsLocked"
               text="Locked "
               stylingMode="outlined"
               hint="Locked"
             ></dx-check-box>
-            <div *ngIf="newUserData.IsLocked" style="display: flex; align-items: center; margin-left: 10px; flex: 3;">
+            <div
+              *ngIf="newUserData.IsLocked"
+              style="
+                display: flex;
+                align-items: center;
+                margin-left: 10px;
+                flex: 3;
+              "
+            >
               <dx-date-box
                 placeholder="From"
                 [(value)]="newUserData.LockDateFrom"
@@ -334,79 +421,89 @@
                 [(value)]="newUserData.LockDateTo"
                 [displayFormat]="'dd/MM/yyyy'"
                 stylingMode="outlined"
-                style="margin-left: 10px;"
+                style="margin-left: 10px"
                 hint="Locked To"
               ></dx-date-box>
               <dx-text-box
                 placeholder="Reason for Locked"
                 [(value)]="newUserData.LockReason"
-                style="margin-left: 10px;"
+                style="margin-left: 10px"
                 width="400"
                 hint="Reason for Locked"
               ></dx-text-box>
             </div>
           </div>
-          <div style="display: flex; flex: 2; align-items: center; margin: 20px 0 10px;">
+          <div
+            style="
+              display: flex;
+              flex: 2;
+              align-items: center;
+              margin: 20px 0 10px;
+            "
+          >
             <dx-date-box
               label="Login Expiry Date"
               [(value)]="newUserData.LoginExpiryDate"
               [displayFormat]="'dd/MM/yyyy'"
               stylingMode="outlined"
               hint="Login Expiry Date"
-            ></dx-date-box> 
+            ></dx-date-box>
           </div>
         </div>
       </div>
-  </div>
+    </div>
   </div>
 
   <dx-popup
-  [(visible)]="resetConfirmationVisible"
-  [width]="400"
-  [height]="200"
-  [dragEnabled]="true"
-  [toolbarItems]="popupToolbarItems"
-  title="Alert"
->
-  <div class="popup-content">
-    <p>Do you want to reset your password?</p>
-    <div class="form-popup-buttons-container">
-      <dx-button text="Cancel" (onClick)="cancelReset()" stylingMode="outlined"
-      type="normal"></dx-button>
-      <dx-button text="Confirm" (onClick)="confirmReset()"  stylingMode="contained"
-      type="default"></dx-button>
+    [(visible)]="resetConfirmationVisible"
+    [width]="400"
+    [height]="200"
+    [dragEnabled]="true"
+    [toolbarItems]="popupToolbarItems"
+    title="Alert"
+  >
+    <div class="popup-content">
+      <p>Do you want to reset your password?</p>
+      <div class="form-popup-buttons-container">
+        <dx-button
+          text="Cancel"
+          (onClick)="cancelReset()"
+          stylingMode="outlined"
+          type="normal"
+        ></dx-button>
+        <dx-button
+          text="Confirm"
+          (onClick)="confirmReset()"
+          stylingMode="contained"
+          type="default"
+        ></dx-button>
+      </div>
     </div>
+  </dx-popup>
+  <dx-popup
+    [(visible)]="resetFormVisible"
+    [width]="400"
+    [height]="200"
+    [dragEnabled]="true"
+    title="Reset Password"
+    ><app-reset-password
+      (closeForm)="CloseResetPasswordForm()"
+      [formdata]="UserID"
+    ></app-reset-password>
+  </dx-popup>
+
+  <div class="form-popup-buttons-container">
+    <dx-button
+      text="Cancel"
+      stylingMode="outlined"
+      type="normal"
+      (onClick)="close()"
+    ></dx-button>
+    <dx-button
+      text="Save"
+      stylingMode="contained"
+      type="default"
+      (onClick)="onSaveClick()"
+    ></dx-button>
   </div>
-</dx-popup> 
-<dx-popup
-  [(visible)]="resetFormVisible"
-  [width]="400"
-  [height]="200"
-  [dragEnabled]="true"
-  title="Reset Password"
-><app-reset-password (closeForm)="CloseResetPasswordForm()" [formdata]="UserID"></app-reset-password>
-</dx-popup>
-
-<div
-      class="form-popup-buttons-container"
-      
-    >
-      <dx-button
-        text="Cancel"
-        stylingMode="outlined"
-        type="normal"
-        (onClick)="close()"
-        
-      ></dx-button>
-      <dx-button
-        text="Save"
-        stylingMode="contained"
-        type="default"
-        (onClick)="onSaveClick()"
-        
-      ></dx-button>
-
-    </div>
-  </dx-validation-group>
-  
-  
+</dx-validation-group>

@@ -20,7 +20,6 @@ import { ThemeService } from './services';
 import { DxFormModule } from 'devextreme-angular';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TaskListModule } from 'src/app/components/library/task-list-grid/task-list-grid.component';
-import { ClaimSummaryModule } from './pages/REPORT PAGES/claim-summary/claim-summary.component';
 import { UserModule } from './pages/MASTER PAGES/user/user.component';
 import { UserNewFormModule } from './pages/POP-UP_PAGES/user-new-form/user-new-form.component';
 import { UserEditFormModule } from './pages/POP-UP_PAGES/user-edit-form/user-edit-form.component';
@@ -29,6 +28,8 @@ import { ChangePasswordModule } from './pages/PROFILE PAGES/change-password/chan
 import { ImportMasterDataModule } from './pages/MASTER PAGES/import-master-data/import-master-data.component';
 import { ImportMasterDataFormModule } from './pages/POP-UP_PAGES/import-master-data-form/import-master-data-form.component';
 import { ViewImportedMasterDataFormModule } from './pages/POP-UP_PAGES/view-imported-master-data-form/view-imported-master-data-form.component';
+// import { ClaimSummaryMonthWiseComponent } from './pages/REPORT PAGES/claim-summary-month-wise/claim-summary-month-wise.component';
+// import { ClaimDetailsComponent } from './pages/REPORT PAGES/claim-details/claim-details.component';
 // import { SessionTimeoutDialogComponent } from './components/library/session-timeout-dialog/session-timeout-dialog.component';
 @NgModule({
   declarations: [
@@ -49,7 +50,6 @@ import { ViewImportedMasterDataFormModule } from './pages/POP-UP_PAGES/view-impo
     UnauthenticatedContentModule,
     DxSelectBoxModule,
     DenialListModule,
-    ClaimSummaryModule,
     AnalyticsDashboardModule,
     DxFormModule,
     ReactiveFormsModule,

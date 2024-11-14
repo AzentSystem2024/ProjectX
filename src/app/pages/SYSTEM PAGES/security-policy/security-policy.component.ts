@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, NgModule, OnInit } from '@angular/core';
+import { Component, NgModule, OnDestroy, OnInit } from '@angular/core';
 import { DxCheckBoxModule } from 'devextreme-angular';
 import { DxTextBoxModule } from 'devextreme-angular/ui/text-box';
 import { DxNumberBoxModule } from 'devextreme-angular';
@@ -11,12 +11,15 @@ import {
 import notify from 'devextreme/ui/notify';
 import { DxFormModule } from 'devextreme-angular';
 import { SystemServicesService } from '../system-services.service';
+import { Router } from '@angular/router';
+import { DataService } from 'src/app/services';
 @Component({
   selector: 'app-security-policy',
   templateUrl: './security-policy.component.html',
   styleUrls: ['./security-policy.component.scss'],
+  providers: [DataService],
 })
-export class SecurityPolicyComponent implements OnInit {
+export class SecurityPolicyComponent implements OnInit, OnDestroy {
   validationRequired: boolean = false;
   readOnlyValue: boolean = true;
 
@@ -53,11 +56,34 @@ export class SecurityPolicyComponent implements OnInit {
 
   minAllowedLength: number = 6;
   userId: any;
+  currentPathName: any;
+  initialized: boolean;
 
-  constructor(private systemService: SystemServicesService) {}
-  ngOnInit() {
-    this.userId=sessionStorage.getItem('UserID')
+  constructor(
+    private systemService: SystemServicesService,
+    private router: Router,
+    private dataService: DataService
+  ) {}
+
+  ngOnInit(): void {
+    this.userId = sessionStorage.getItem('UserID');
     this.get_Present_Security_Policy();
+    const Action = 0;
+    this.currentPathName = this.router.url.replace('/', '');
+    this.dataService
+      .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
+      .subscribe((response: any) => {});
+
+    this.initialized = true;
+  }
+
+  ngOnDestroy(): void {
+    if (this.initialized) {
+      const Action = 10;
+      this.dataService
+        .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
+        .subscribe((response: any) => {});
+    }
   }
 
   onPasswordLengthChange(e: any) {
@@ -68,50 +94,50 @@ export class SecurityPolicyComponent implements OnInit {
     }
   }
 
-
-
   get_Present_Security_Policy() {
-    this.systemService.get_securityPolicy_List(this.userId).subscribe((response: any) => {
-      if (response) {
-        this.presentSecurityData = response.data[0];
-        this.tooltipData = response.Tooltip;
-
-        // console.log('data received', this.presentSecurityData);
-        this.validationRequired =
-          this.presentSecurityData.PasswordValidationRequired;
-        this.minPasswordLength = this.presentSecurityData.MinimumLength;
-        // this.conditionRequiredValue =
-        //   this.presentSecurityData.MinimumCategoriesRequired;
-        this.isNumberChecked = this.presentSecurityData.Numbers;
-        this.isUppercaseChecked = this.presentSecurityData.UppercaseCharacters;
-        this.isLowercaseChecked = this.presentSecurityData.LowercaseCharacters;
-        this.isSpecialCharactersChecked =
-          this.presentSecurityData.SpecialCharacters;
-        this.emailOtp = this.presentSecurityData.OTPEmailOnPasswordChange;
-        this.smsOtp = this.presentSecurityData.OTPSMSOnPasswordChange;
-        this.whatsAppOtp = this.presentSecurityData.OTPWhatsappOnPasswordChange;
-        this.emailAlert = this.presentSecurityData.AlertEmailOnPasswordChange;
-        this.smsAlert = this.presentSecurityData.AlertSMSOnPasswordChange;
-        this.whatsAppAlert =
-          this.presentSecurityData.AlertWhatsappOnPasswordChange;
-        this.sessionTimeOut = this.presentSecurityData.SessionTimeoutMinutes;
-        this.LoginAttempts = this.presentSecurityData.AccountLockAttempt;
-        this.resetDuration = this.presentSecurityData.AccountLockDuration;
-        this.failedLoginDuration =
-          this.presentSecurityData.AccountLockFailedLogin;
-        this.changePasswordOnLogin =
-          this.presentSecurityData.UserMustChangePasswordOnLogin;
-        this.passwordExpiryDaysCount = this.presentSecurityData.PasswordAge;
-        this.passwordRepeatCycle = this.presentSecurityData.PasswordRepeatCycle;
-        this.unautherizedMessage =
-          this.presentSecurityData.UnauthorizedBannerMessage;
-        this.disableUserOn = this.presentSecurityData.DisableUserOnInactiveDays;
-      }
-    });
+    this.systemService
+      .get_securityPolicy_List(this.userId)
+      .subscribe((response: any) => {
+        if (response) {
+          this.presentSecurityData = response.data[0];
+          this.tooltipData = response.Tooltip;
+          this.validationRequired =
+            this.presentSecurityData.PasswordValidationRequired;
+          this.minPasswordLength = this.presentSecurityData.MinimumLength;
+          this.isNumberChecked = this.presentSecurityData.Numbers;
+          this.isUppercaseChecked =
+            this.presentSecurityData.UppercaseCharacters;
+          this.isLowercaseChecked =
+            this.presentSecurityData.LowercaseCharacters;
+          this.isSpecialCharactersChecked =
+            this.presentSecurityData.SpecialCharacters;
+          this.emailOtp = this.presentSecurityData.OTPEmailOnPasswordChange;
+          this.smsOtp = this.presentSecurityData.OTPSMSOnPasswordChange;
+          this.whatsAppOtp =
+            this.presentSecurityData.OTPWhatsappOnPasswordChange;
+          this.emailAlert = this.presentSecurityData.AlertEmailOnPasswordChange;
+          this.smsAlert = this.presentSecurityData.AlertSMSOnPasswordChange;
+          this.whatsAppAlert =
+            this.presentSecurityData.AlertWhatsappOnPasswordChange;
+          this.sessionTimeOut = this.presentSecurityData.SessionTimeoutMinutes;
+          this.LoginAttempts = this.presentSecurityData.AccountLockAttempt;
+          this.resetDuration = this.presentSecurityData.AccountLockDuration;
+          this.failedLoginDuration =
+            this.presentSecurityData.AccountLockFailedLogin;
+          this.changePasswordOnLogin =
+            this.presentSecurityData.UserMustChangePasswordOnLogin;
+          this.passwordExpiryDaysCount = this.presentSecurityData.PasswordAge;
+          this.passwordRepeatCycle =
+            this.presentSecurityData.PasswordRepeatCycle;
+          this.unautherizedMessage =
+            this.presentSecurityData.UnauthorizedBannerMessage;
+          this.disableUserOn =
+            this.presentSecurityData.DisableUserOnInactiveDays;
+        }
+      });
   }
 
   onClickSave() {
-
     const formData = {
       validationRequired: this.validationRequired,
       minPasswordLength: this.minPasswordLength,
@@ -134,7 +160,7 @@ export class SecurityPolicyComponent implements OnInit {
       passwordRepeatCycle: this.passwordRepeatCycle,
       unautherizedMessage: this.unautherizedMessage,
       disableUserOn: this.disableUserOn,
-      UserID:this.userId
+      UserID: this.userId,
     };
 
     this.systemService

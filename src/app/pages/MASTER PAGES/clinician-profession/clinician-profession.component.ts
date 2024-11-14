@@ -1,4 +1,10 @@
-import { Component, NgModule, ViewChild } from '@angular/core';
+import {
+  Component,
+  NgModule,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   DxButtonModule,
   DxDataGridComponent,
@@ -16,14 +22,16 @@ import { MasterReportService } from '../master-report.service';
 import { ClinicianProfessionNewFormComponent } from '../../POP-UP_PAGES/clinician-profession-new-form/clinician-profession-new-form.component';
 import notify from 'devextreme/ui/notify';
 import DataSource from 'devextreme/data/data_source';
+import { Router } from '@angular/router';
+import { DataService } from 'src/app/services';
 
 @Component({
   selector: 'app-clinician-profession',
   templateUrl: './clinician-profession.component.html',
   styleUrls: ['./clinician-profession.component.scss'],
-  providers: [ReportService],
+  providers: [ReportService, DataService],
 })
-export class ClinicianProfessionComponent {
+export class ClinicianProfessionComponent implements OnInit, OnDestroy {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
   @ViewChild(ClinicianProfessionNewFormComponent, { static: false })
@@ -47,11 +55,34 @@ export class ClinicianProfessionComponent {
         });
       }),
   });
+  currentPathName: string;
+  initialized: boolean;
 
   constructor(
     private service: ReportService,
-    private masterService: MasterReportService
+    private masterService: MasterReportService,
+    private router: Router,
+    private dataService: DataService
   ) {}
+
+  ngOnInit(): void {
+    const Action = 0;
+    this.currentPathName = this.router.url.replace('/', '');
+    this.dataService
+      .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
+      .subscribe((response: any) => {});
+
+    this.initialized = true;
+  }
+
+  ngOnDestroy(): void {
+    if (this.initialized) {
+      const Action = 10;
+      this.dataService
+        .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
+        .subscribe((response: any) => {});
+    }
+  }
 
   //=============Showing the new Facility Form===================
   show_new_InsuranceClassification_Form() {

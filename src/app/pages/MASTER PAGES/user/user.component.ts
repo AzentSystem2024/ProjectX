@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   NgModule,
+  OnDestroy,
   OnInit,
   ViewChild,
 } from '@angular/core';
@@ -29,18 +30,22 @@ import {
   UserEditFormModule,
 } from '../../POP-UP_PAGES/user-edit-form/user-edit-form.component';
 import DataSource from 'devextreme/data/data_source';
+import { Router } from '@angular/router';
+import { DataService } from 'src/app/services';
 
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.scss'],
-  providers: [MasterReportService, ReportService],
+  providers: [MasterReportService, ReportService, DataService],
 })
-export class UserComponent {
+export class UserComponent implements OnInit, OnDestroy {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
+
   @ViewChild(UserNewFormComponent, { static: false })
   userNewForm: UserNewFormComponent;
+
   popupwidth: any = '65%';
 
   isAddFormPopupOpened: boolean = false;
@@ -64,11 +69,35 @@ export class UserComponent {
       }),
   });
 
+  currentPathName: string;
+  initialized: boolean;
+
   constructor(
     private service: MasterReportService,
     private reportService: ReportService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private router: Router,
+    private dataService: DataService
   ) {}
+
+  ngOnInit(): void {
+    const Action = 0;
+    this.currentPathName = this.router.url.replace('/', '');
+    this.dataService
+      .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
+      .subscribe((response: any) => {});
+
+    this.initialized = true;
+  }
+
+  ngOnDestroy(): void {
+    if (this.initialized) {
+      const Action = 10;
+      this.dataService
+        .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
+        .subscribe((response: any) => {});
+    }
+  }
 
   onEditingRow(event): void {
     console.log(event, 'event');
@@ -83,7 +112,6 @@ export class UserComponent {
   }
 
   isDeleteIconVisible({ row }: { row: any }): boolean {
-    // Allow delete only if the UserRoleName is not 'Administrator'
     return row.data.UserRoleName !== 'Administrator';
   }
 
@@ -105,7 +133,6 @@ export class UserComponent {
             },
             'success'
           );
-          // this.getUSerData();
           this.dataGrid.instance.refresh();
         }
       } catch (error) {
@@ -124,8 +151,7 @@ export class UserComponent {
   onClearData() {
     this.userNewForm.removeImage();
     this.userNewForm.clearData();
-    console.log("hai...");
-    
+    console.log('hai...');
   }
 
   onRowRemoving(event: any) {
@@ -170,10 +196,6 @@ export class UserComponent {
     // this.getUSerData();
     this.dataGrid.instance.refresh();
   }
-
-  // ngOnInit(): void {
-  //   this.getUSerData();
-  // }
 }
 @NgModule({
   imports: [

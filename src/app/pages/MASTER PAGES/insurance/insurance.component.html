@@ -20,9 +20,10 @@
       [allowUpdating]="true"
       [allowDeleting]="true"
       [allowAdding]="true"
-      [popup]="{ width: '40%', height: '60vh' }"
+      [popup]="{ width: '30%', height: '50vh' }"
     >
       <dxo-popup title="Edit Insurance" [showTitle]="true"></dxo-popup>
+      <dxo-form [colCount]="1"></dxo-form>
     </dxo-editing>
     <dxo-pager
       [visible]="true"
@@ -40,11 +41,11 @@
     <dxo-filter-row [visible]="true"></dxo-filter-row>
     <dxo-search-panel [visible]="true" placeholder=" Search"></dxo-search-panel>
     <dxo-export
-    [enabled]="true"
-    [allowExportSelectedData]="false"
-    [formats]="['xlsx']"
-  >
-  </dxo-export>
+      [enabled]="true"
+      [allowExportSelectedData]="false"
+      [formats]="['xlsx']"
+    >
+    </dxo-export>
     <dxo-toolbar>
       <dxi-item location="before">
         <div class="grid-header">Insurance</div>
@@ -103,7 +104,7 @@
     [(visible)]="isAddFormPopupOpened"
     (save)="onClickSaveNewData()"
     titleText="New Insurance"
-    height="70vh"
+    height="50vh"
   >
     <app-insurance-new-form></app-insurance-new-form>
   </form-popup>

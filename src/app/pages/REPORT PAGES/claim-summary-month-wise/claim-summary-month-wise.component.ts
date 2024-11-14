@@ -1,3 +1,4 @@
+
 import { CommonModule, DatePipe } from '@angular/common';
 import {
   Component,
@@ -43,25 +44,24 @@ import { ReportEngineService } from '../report-engine.service';
 import DataSource from 'devextreme/data/data_source';
 import { Router } from '@angular/router';
 import notify from 'devextreme/ui/notify';
-import { ClaimDetailActivityDrillDownComponent } from '../../REPORT DRILL PAGES/claim-detail-activity-drill-down/claim-detail-activity-drill-down.component';
-import { ClaimDetailActivityDrillDownModule } from '../../REPORT DRILL PAGES/claim-detail-activity-drill-down/claim-detail-activity-drill-down.component';
+import { ClaimSummaryMonthWiseDrillDownComponent, ClaimSummaryMonthWiseDrillDownModule } from '../../REPORT DRILL PAGES/claim-summary-month-wise-drill-down/claim-summary-month-wise-drill-down.component';
 import { AdvanceFilterPopupModule } from '../../POP-UP_PAGES/advance-filter-popup/advance-filter-popup.component';
 import { DataService } from 'src/app/services';
 @Component({
-  selector: 'app-claim-details-activity',
-  templateUrl: './claim-details-activity.component.html',
-  styleUrls: ['./claim-details-activity.component.scss'],
+  selector: 'app-claim-summary-month-wise',
+  templateUrl: './claim-summary-month-wise.component.html',
+  styleUrls: ['./claim-summary-month-wise.component.scss'],
   providers: [ReportService, ReportEngineService, DatePipe, DataService],
 })
-export class ClaimDetailsActivityComponent implements OnInit, OnDestroy {
+export class ClaimSummaryMonthWiseComponent implements OnInit, OnDestroy {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
 
   @ViewChild(DxTreeViewComponent, { static: false })
   treeView: DxTreeViewComponent;
 
-  @ViewChild(ClaimDetailActivityDrillDownComponent, { static: false })
-  claimDrill: ClaimDetailActivityDrillDownComponent;
+  @ViewChild(ClaimSummaryMonthWiseDrillDownComponent, { static: false })
+  claimSummaryMonthWiseDrill: ClaimSummaryMonthWiseDrillDownComponent;
 
   @ViewChild('lookup', { static: false }) lookup: DxLookupComponent;
 
@@ -141,6 +141,7 @@ export class ClaimDetailsActivityComponent implements OnInit, OnDestroy {
   loadingVisible: boolean = false;
   columnFixed: boolean = true;
   initialized: boolean;
+  detailData: any;
 
   constructor(
     private service: ReportService,
@@ -247,22 +248,24 @@ export class ClaimDetailsActivityComponent implements OnInit, OnDestroy {
 
     try {
       const response: any = await this.service
-        .fetch_Claim_Details_With_Activity(formData)
+        .fetch_Claim_Summary_Month_Wise(formData)
         .toPromise();
       if (response.flag === '1') {
         this.isEmptyDatagrid = false;
         this.columndata = response.ReportColumns;
 
+        this.detailData=response.detail
+
         const userLocale = navigator.language || 'en-US';
         console.log('user locale settings:', userLocale);
 
         this.summaryColumnsData = this.generateSummaryColumns(
-          response.ReportColumns
+          response.summary.ReportColumns
         );
-        console.log('Summary columns are:', this.summaryColumnsData);
+        // console.log('Summary columns are:', this.summaryColumnsData);
 
         this.columnsConfig = this.generateColumnsConfig(
-          response.ReportColumns,
+          response.summary.ReportColumns,
           userLocale
         );
         this.ColumnNames = this.columnsConfig
@@ -276,38 +279,11 @@ export class ClaimDetailsActivityComponent implements OnInit, OnDestroy {
           })
         );
 
-        // Format dates in ReportData
-        const formattedReportData = response.ReportData.map((data) => ({
-          ...data,
-          TransactionDate: this.datePipe.transform(
-            data.TransactionDate,
-            'dd-MMM-yyyy'
-          ),
-          ActivityStartDate: this.datePipe.transform(
-            data.ActivityStartDate,
-            'dd-MMM-yyyy'
-          ),
-          EncounterStartDate: this.datePipe.transform(
-            data.EncounterStartDate,
-            'dd-MMM-yyyy'
-          ),
-          EncounterEndDate: this.datePipe.transform(
-            data.EncounterEndDate,
-            'dd-MMM-yyyy'
-          ),
-          LastResubmissionDate: this.datePipe.transform(
-            data.LastResubmissionDate,
-            'dd-MMM-yyyy'
-          ),
-          InitialDateSettlement: this.datePipe.transform(
-            data.InitialDateSettlement,
-            'dd-MMM-yyyy'
-          ),
-        }));
+        const ReportData = response.summary.ReportData;
 
         // Initialize dataGrid_DataSource with the pre-loaded data
         this.dataGrid_DataSource = new DataSource<any>({
-          load: () => Promise.resolve(formattedReportData),
+          load: () => Promise.resolve(ReportData),
         });
         this.loadingVisible = false;
       } else {
@@ -407,17 +383,8 @@ export class ClaimDetailsActivityComponent implements OnInit, OnDestroy {
             }).format(value),
         };
       }
-      if (column.Type === 'percentage') {
-        columnFormat = {
-          type: 'percent',
-          precision: 2,
-          formatter: (value) =>
-            new Intl.NumberFormat(userLocale, {
-              style: 'percent',
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            }).format(value / 100),
-        };
+      if (column.Type === 'Percentage') {
+        columnFormat = 'percent';
       }
       return {
         dataField: column.Name,
@@ -642,7 +609,6 @@ export class ClaimDetailsActivityComponent implements OnInit, OnDestroy {
     this.service.exportDataGrid(event, fileName);
   }
 }
-
 @NgModule({
   imports: [
     DxButtonModule,
@@ -673,10 +639,10 @@ export class ClaimDetailsActivityComponent implements OnInit, OnDestroy {
     DxValidationSummaryModule,
     DxLoadPanelModule,
     AdvanceFilterPopupModule,
-    ClaimDetailActivityDrillDownModule,
+    ClaimSummaryMonthWiseDrillDownModule
   ],
   providers: [],
   exports: [],
-  declarations: [ClaimDetailsActivityComponent],
+  declarations: [ClaimSummaryMonthWiseComponent],
 })
-export class ClaimDetailsActivityModule {}
+export class ClaimSummaryMonthWiseModule {}

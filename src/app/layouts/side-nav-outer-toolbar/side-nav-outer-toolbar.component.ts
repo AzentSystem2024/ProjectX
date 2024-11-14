@@ -132,7 +132,7 @@ export class SideNavOuterToolbarComponent implements OnInit, OnDestroy {
       } else {
         this.selectedIndex = this.tabs.findIndex((tab) => tab.path === path);
         this.router.navigate([path]);
-        
+
       }
       if (this.menuOpened) {
         pointerEvent?.preventDefault();
@@ -184,7 +184,7 @@ export class SideNavOuterToolbarComponent implements OnInit, OnDestroy {
         this.selectedIndex = this.tabs.length - 1;
       }
     }
-    // console.log('closed', this.tabs);
+  
     if (this.selectedIndex >= 0) {
       const selectedTab = this.tabs[this.selectedIndex];
       let path = selectedTab.path;
