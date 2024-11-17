@@ -76,7 +76,9 @@ export class ClaimDetailActivityDrillDownComponent implements OnChanges {
   constructor(
     private service: ReportService,
     private reportEngine: ReportEngineService
-  ) {}
+  ) {
+    console.log('drill popup opened');
+  }
   //=====================value change event of the component===============
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['clickedRowData'] && this.clickedRowData) {
@@ -109,6 +111,7 @@ export class ClaimDetailActivityDrillDownComponent implements OnChanges {
     this.service
       .get_CliamDetails_DrillDown_Data(this.ClaimNumber, this.FacilityID)
       .subscribe((response: any) => {
+        console.log('drill down api response', response);
         this.ClaimNumberValue = response.Summary[0].ClaimNumber;
         this.EmiratesIDvalue = response.Summary[0].EmiratesIDNumber;
         this.ReceiverIDValue = response.Summary[0].ReceiverID;

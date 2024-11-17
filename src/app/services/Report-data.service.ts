@@ -106,8 +106,8 @@ export class ReportService {
     return this.http.post(url, reqBody);
   }
 
-   //========fetch datasource of Claim-Details========
-   fetch_Claim_Details(formData: any) {
+  //========fetch datasource of Claim-Details========
+  fetch_Claim_Details(formData: any) {
     const userid = sessionStorage.getItem('UserID');
     const currentPathName = this.router.url.replace('/', '');
     const url = `${BASE_URL}reports/claimdetails/main`;
@@ -134,9 +134,8 @@ export class ReportService {
     return this.http.post(url, reqBody);
   }
 
-
-   //========fetch datasource of Claim-Summary-month-wise========
-   fetch_Claim_Summary_Month_Wise(formData: any) {
+  //========fetch datasource of Claim-Summary-month-wise========
+  fetch_Claim_Summary_Month_Wise(formData: any) {
     const userid = sessionStorage.getItem('UserID');
     const currentPathName = this.router.url.replace('/', '');
     const url = `${BASE_URL}reports/claimsummary/monthwise`;
@@ -163,15 +162,12 @@ export class ReportService {
     return this.http.post(url, reqBody);
   }
 
-
   //===============Fetch claim details drill down values===========
   get_CliamDetails_DrillDown_Data(ClaimNumber: any, FacilityID: any) {
     const url = `${BASE_URL}/reports/claimdetailswithactivity/claimdetails`;
     const reqBody = { ClaimNumber: ClaimNumber, FacilityID: FacilityID };
     return this.http.post(url, reqBody);
   }
-
-
 
   //==============Export function==================
   exportDataGrid(e: any, fileName: any) {

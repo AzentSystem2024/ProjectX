@@ -5,6 +5,7 @@ import {
   NgModule,
   OnChanges,
   SimpleChanges,
+  ViewChild,
 } from '@angular/core';
 import {
   DxDataGridModule,
@@ -16,6 +17,8 @@ import {
   DxNumberBoxModule,
   DxLoadPanelModule,
   DxTabsModule,
+  DxDataGridComponent,
+  DxPopupModule,
 } from 'devextreme-angular';
 import { FormPopupModule } from 'src/app/components';
 import { ReportService } from 'src/app/services/Report-data.service';
@@ -23,13 +26,17 @@ import { ReportEngineService } from '../../REPORT PAGES/report-engine.service';
 import { DxTabPanelModule } from 'devextreme-angular';
 import notify from 'devextreme/ui/notify';
 import DataSource from 'devextreme/data/data_source';
-
+import { ClaimDetailActivityDrillDownComponent } from '../claim-detail-activity-drill-down/claim-detail-activity-drill-down.component';
+import { ClaimDetailActivityDrillDownModule } from '../claim-detail-activity-drill-down/claim-detail-activity-drill-down.component';
 @Component({
   selector: 'app-claim-summary-month-wise-drill-down',
   templateUrl: './claim-summary-month-wise-drill-down.component.html',
   styleUrls: ['./claim-summary-month-wise-drill-down.component.scss'],
 })
 export class ClaimSummaryMonthWiseDrillDownComponent implements OnChanges {
+  @ViewChild(DxDataGridComponent, { static: true })
+  dataGrid: DxDataGridComponent;
+
   @Input() clickedRowData: any | '';
   @Input() DetailData: any | '';
 
@@ -40,7 +47,7 @@ export class ClaimSummaryMonthWiseDrillDownComponent implements OnChanges {
   stylingMode: any = 'secondary';
   iconPosition: any = 'left';
 
-  selectedTabIndex = 0;
+  selectedTabIndex: any = 0;
   //========Variables for Pagination ====================
   readonly allowedPageSizes: any = ['all'];
   pageSize: any = 'all';
@@ -62,6 +69,14 @@ export class ClaimSummaryMonthWiseDrillDownComponent implements OnChanges {
   columndata: any;
   columnsConfig: any;
   ColumnNames: any;
+  InnerClickedRowData: any;
+  Year: any;
+  Month: any;
+  FacilityID: any;
+  ReportData: any;
+  filteredData: any;
+  // isDrillDownPopupOpened: boolean = false;
+  isSecondDrillOpened: boolean =false;
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['clickedRowData'] && this.clickedRowData) {
@@ -69,14 +84,11 @@ export class ClaimSummaryMonthWiseDrillDownComponent implements OnChanges {
       this.isContentVisible = true;
       console.log('clicked row data :', this.clickedRowData);
 
-      this.TabViewDataSource = this.DetailData.Groups.split(',').map(
-        (group) => ({
-          text: group.trim(),
-        })
-      );
+      this.Year = this.clickedRowData.ClaimYear;
+      this.Month = this.clickedRowData.ClaimMonth;
+      this.FacilityID = this.clickedRowData.FacilityID;
 
-      if (this.DetailData) {
-        // console.log('clicked row data :', this.clickedRowData);
+      if (this.Year && this.Month && this.FacilityID) {
         this.get_Datagrid_DataSource();
       }
     }
@@ -89,25 +101,79 @@ export class ClaimSummaryMonthWiseDrillDownComponent implements OnChanges {
 
     try {
       const response: any = this.DetailData;
+
       if (response.ReportID != '') {
         this.isEmptyDatagrid = false;
         this.columndata = response.ReportColumns;
 
         const userLocale = navigator.language || 'en-US';
-        // console.log('user locale settings:', userLocale);
 
         this.columnsConfig = this.generateColumnsConfig(
           response.ReportColumns,
           userLocale
         );
-        // console.log('column details=>', this.columnsConfig);
-        const ReportData = response.ReportData;
+
+        this.ReportData = response.ReportData.filter((item: any) => {
+          return (
+            item.ClaimMonth == this.Month &&
+            item.ClaimYear == this.Year &&
+            item.FacilityID == this.FacilityID
+          );
+        });
+
+        const isClaimedCount = this.ReportData.filter(
+          (item: any) => item.IsClaimed === 1
+        ).length;
+        const isRemmitedCount = this.ReportData.filter(
+          (item: any) => item.IsRemmited === 1
+        ).length;
+        const isRejectedCount = this.ReportData.filter(
+          (item: any) => item.IsRejected === 1
+        ).length;
+        const isPendingRemittanceCount = this.ReportData.filter(
+          (item: any) => item.IsPendingRemittance === 1
+        ).length;
+        const isPartiallyPaidCount = this.ReportData.filter(
+          (item: any) => item.IsPartiallyPaid === 1
+        ).length;
+        const isFullyPaidCount = this.ReportData.filter(
+          (item: any) => item.IsFullyPaid === 1
+        ).length;
+        const isFullyRejectedCount = this.ReportData.filter(
+          (item: any) => item.IsFullyRejected === 1
+        ).length;
+        const isSelfPaidCount = this.ReportData.filter(
+          (item: any) => item.IsSelfPaid === 1
+        ).length;
+
+        // Mapping of tab labels to counts
+        const tabCounts: { [key: string]: number } = {
+          Claimed: isClaimedCount,
+          Remitted: isRemmitedCount,
+          Rejected: isRejectedCount,
+          PendingRemittance: isPendingRemittanceCount,
+          'Partially Paid': isPartiallyPaidCount,
+          'Fully Paid': isFullyPaidCount,
+          'Fully Rejected': isFullyRejectedCount,
+          'Self Pay': isSelfPaidCount,
+        };
+
+        // Update TabViewDataSource with concatenated count
+        this.TabViewDataSource = this.DetailData.Groups.split(',').map(
+          (group) => {
+            const groupName = group.trim();
+            const count = tabCounts[groupName] || 0; // Get count or 0 if not found
+            return {
+              text: `${groupName} (${count})`,
+            };
+          }
+        );
 
         // Initialize dataGrid_DataSource with the pre-loaded data
         this.GridDataSource = new DataSource<any>({
-          load: () => Promise.resolve(ReportData),
+          load: () => Promise.resolve(this.ReportData),
         });
-        // console.log('grid datasource=', this.GridDataSource);
+
         this.loadingVisible = false;
       } else {
         this.loadingVisible = false;
@@ -173,12 +239,64 @@ export class ClaimSummaryMonthWiseDrillDownComponent implements OnChanges {
   }
   //===============Datagrid row click event=======================
   handleRowDrillDownClick = (e: any) => {
-    console.log('row clicked');
+    this.InnerClickedRowData = e.row.data;
+    console.log('inner drill down data =>', this.InnerClickedRowData);
+    this.isSecondDrillOpened = true;
   };
+
   //====================side tabs click event====================
   onTabClick(e: any) {
-    console.log('selected tab data', e);
-    this.selectedTabIndex = e.itemIndex; // Update selected index on tab click
+    // console.log(e);
+    let selectedTab = e.itemData.text.replace(/\s\(\d+\)$/, '');
+    console.log('selected tab', selectedTab);
+    switch (selectedTab) {
+      case 'Claimed':
+        this.filteredData = this.ReportData.filter(
+          (item: any) => item.IsClaimed === 1
+        );
+        break;
+      case 'Remitted':
+        this.filteredData = this.ReportData.filter(
+          (item: any) => item.IsRemmited === 1
+        );
+        break;
+      case 'Rejected':
+        this.filteredData = this.ReportData.filter(
+          (item: any) => item.IsRejected === 1
+        );
+        break;
+      case 'PendingRemittance':
+        this.filteredData = this.ReportData.filter(
+          (item: any) => item.IsPendingRemittance === 1
+        );
+        break;
+      case 'Partially Paid':
+        this.filteredData = this.ReportData.filter(
+          (item: any) => item.IsPartiallyPaid === 1
+        );
+        break;
+      case 'Fully Paid':
+        this.filteredData = this.ReportData.filter(
+          (item: any) => item.IsFullyPaid === 1
+        );
+        break;
+      case 'Fully Rejected':
+        this.filteredData = this.ReportData.filter(
+          (item: any) => item.IsFullyRejected === 1
+        );
+        break;
+      case 'Self Pay':
+        this.filteredData = this.ReportData.filter(
+          (item: any) => item.IsSelfPaid === 1
+        );
+        break;
+      default:
+        break;
+    }
+    // Update data grid or display data
+    console.log('filtered data source', this.filteredData);
+    this.dataGrid.instance.refresh();
+    this.GridDataSource = this.filteredData; // Assuming dataGridSource is bound to the data grid
   }
 }
 @NgModule({
@@ -196,6 +314,8 @@ export class ClaimSummaryMonthWiseDrillDownComponent implements OnChanges {
     DxTabsModule,
     DxLoadPanelModule,
     DxTabPanelModule,
+    DxPopupModule,
+    ClaimDetailActivityDrillDownModule,
   ],
   providers: [],
   exports: [ClaimSummaryMonthWiseDrillDownComponent],

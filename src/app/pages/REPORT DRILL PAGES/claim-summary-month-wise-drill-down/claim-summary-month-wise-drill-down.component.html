@@ -14,6 +14,7 @@
       (onItemClick)="onTabClick($event)"
     ></dx-tabs>
   </div>
+
   <div class="table-grid">
     <dx-data-grid
       [height]="'100%'"
@@ -70,7 +71,7 @@
           [width]="200"
         ></dxi-column>
       </ng-container>
-
+      <dxo-scrolling mode="virtual"></dxo-scrolling>
       <dxo-paging [pageSize]="pageSize"> </dxo-paging>
       <dxo-pager
         [visible]="true"
@@ -82,4 +83,15 @@
       </dxo-pager>
     </dx-data-grid>
   </div>
+
+  <dx-popup
+    [(visible)]="isSecondDrillOpened"
+    title="Claim Details"
+    height="100vh"
+    [width]="'90%'"
+  >
+    <app-claim-detail-activity-drill-down
+      [clickedRowData]="InnerClickedRowData"
+    ></app-claim-detail-activity-drill-down>
+  </dx-popup>
 </div>
