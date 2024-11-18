@@ -4,6 +4,7 @@ import {
   Input,
   NgModule,
   OnChanges,
+  OnInit,
   SimpleChanges,
 } from '@angular/core';
 import {
@@ -16,17 +17,23 @@ import {
   DxNumberBoxModule,
   DxLoadPanelModule,
   DxTabsModule,
+  DxPopupModule,
 } from 'devextreme-angular';
 import { FormPopupModule } from 'src/app/components';
 import { ReportService } from 'src/app/services/Report-data.service';
 import { ReportEngineService } from '../../REPORT PAGES/report-engine.service';
+import { InnerDrillDownSubmissionComponent } from '../inner-drill-down-submission/inner-drill-down-submission.component';
+import { InnerDrillDownSubmissionModule } from '../inner-drill-down-submission/inner-drill-down-submission.component';
+import { InnerDrillDownRemittanceComponent } from '../inner-drill-down-remittance/inner-drill-down-remittance.component';
+import { InnerDrillDownRemittanceModule } from '../inner-drill-down-remittance/inner-drill-down-remittance.component';
+import { InnerDrillDownResubmissionModule } from '../inner-drill-down-resubmission/inner-drill-down-resubmission.component';
 
 @Component({
   selector: 'app-claim-detail-activity-drill-down',
   templateUrl: './claim-detail-activity-drill-down.component.html',
   styleUrls: ['./claim-detail-activity-drill-down.component.scss'],
 })
-export class ClaimDetailActivityDrillDownComponent implements OnChanges {
+export class ClaimDetailActivityDrillDownComponent implements OnInit {
   @Input() clickedRowData: any | '';
 
   width: any = '100%';
@@ -73,30 +80,33 @@ export class ClaimDetailActivityDrillDownComponent implements OnChanges {
   loadingVisible: boolean;
   isContentVisible: boolean = true;
 
+  isEmptyDatagrid: boolean = true;
+  RowData: any;
+  InnerClickedRowData: any;
+  isSubmissionDrillOpened: boolean = false;
+  isResubmissionDrillOpened: boolean = false;
+  isRemittanceDrillOpened: boolean = false;
+
   constructor(
     private service: ReportService,
     private reportEngine: ReportEngineService
-  ) {
-    console.log('drill popup opened');
-  }
-  //=====================value change event of the component===============
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['clickedRowData'] && this.clickedRowData) {
-      this.loadingVisible = true;
-      this.isContentVisible = true;
-      this.focusedRow = null;
-      this.activityFocusRow = null;
-      this.isActivityGridVisible = false;
-      this.isDiagnosisGridVisible = false;
+  ) {}
 
-      // Extract ClaimNumber and FacilityID from clickedRowData
-      this.ClaimNumber = this.clickedRowData.ClaimNumber;
-      this.FacilityID = this.clickedRowData.FacilityID;
+  ngOnInit(): void {
+    this.loadingVisible = true;
+    this.isContentVisible = true;
+    this.focusedRow = null;
+    this.activityFocusRow = null;
+    this.isActivityGridVisible = false;
+    this.isDiagnosisGridVisible = false;
 
-      // Call get_DataSource() if ClaimNumber and FacilityID are available
-      if (this.ClaimNumber && this.FacilityID) {
-        this.get_All_DataSource();
-      }
+    // Extract ClaimNumber and FacilityID from clickedRowData
+    this.ClaimNumber = this.clickedRowData.ClaimNumber;
+    this.FacilityID = this.clickedRowData.FacilityID;
+    this.RowData = this.clickedRowData;
+    // Call get_DataSource() if ClaimNumber and FacilityID are available
+    if (this.ClaimNumber && this.FacilityID) {
+      this.get_All_DataSource();
     }
   }
 
@@ -111,7 +121,6 @@ export class ClaimDetailActivityDrillDownComponent implements OnChanges {
     this.service
       .get_CliamDetails_DrillDown_Data(this.ClaimNumber, this.FacilityID)
       .subscribe((response: any) => {
-        console.log('drill down api response', response);
         this.ClaimNumberValue = response.Summary[0].ClaimNumber;
         this.EmiratesIDvalue = response.Summary[0].EmiratesIDNumber;
         this.ReceiverIDValue = response.Summary[0].ReceiverID;
@@ -139,6 +148,7 @@ export class ClaimDetailActivityDrillDownComponent implements OnChanges {
         this.SubmisstionActivityColumns = response.ActivityColumns;
         this.DiagnosisColumns = response.DiagnosisColumns;
         this.loadingVisible = false;
+        this.isEmptyDatagrid = false;
       });
   }
   //=================row selection event of transaction table=============
@@ -153,30 +163,46 @@ export class ClaimDetailActivityDrillDownComponent implements OnChanges {
       (item) =>
         item.ClaimRemittanceHeaderUID === selectedRowClaimRemittanceHeaderUID
     );
-    console.log('filtered datasource :', this.filteredActivityDataSource);
+
     this.isActivityGridVisible = true;
+    this.isEmptyDatagrid = false;
   }
   //==========row selection event of submission activity table============
   onActivityGridFocusedRowChanged(e: any) {
     this.filteredDiagnosisDataSource = '';
-    console.log('selected row data :', e.row.data);
 
     let selectedRowClaimRemittanceHeaderUID =
       e.row.data.ClaimRemittanceHeaderUID;
-
     let selectedRowClaimRemittanceUID = e.row.data.ClaimRemittanceUID;
-
     let selectedRowSerialNumber = e.row.data.SerialNumber;
-
     this.filteredDiagnosisDataSource = this.DiagnosisDataSource.filter(
       (item) =>
         item.ClaimRemittanceHeaderUID === selectedRowClaimRemittanceHeaderUID &&
         item.ClaimRemittanceUID === selectedRowClaimRemittanceUID &&
         item.SerialNumber === selectedRowSerialNumber
     );
-    console.log('filtered datasource :', this.filteredDiagnosisDataSource);
     this.isDiagnosisGridVisible = true;
+    this.isEmptyDatagrid = false;
   }
+
+  //================Row data drill down click event======================
+  TransactionRowDrillDownClick = (e: any) => {
+    this.InnerClickedRowData = e.row.data;
+    const transactionType = this.InnerClickedRowData.TransactionType;
+    // Map transaction types to the corresponding drill-down properties
+    const drillDownMap: Record<string, string> = {
+      '1st Submission': 'isSubmissionDrillOpened',
+      'Resubmission - Internal Complaint': 'isResubmissionDrillOpened',
+      'Remittance': 'isResubmissionDrillOpened',
+    };
+
+    const drillDownProperty = drillDownMap[transactionType];
+    if (drillDownProperty) {
+      this[drillDownProperty] = true;
+    }
+
+    // console.log(transactionType);
+  };
 }
 @NgModule({
   imports: [
@@ -192,6 +218,10 @@ export class ClaimDetailActivityDrillDownComponent implements OnChanges {
     FormPopupModule,
     DxTabsModule,
     DxLoadPanelModule,
+    DxPopupModule,
+    InnerDrillDownSubmissionModule,
+    InnerDrillDownRemittanceModule,
+    InnerDrillDownResubmissionModule,
   ],
   providers: [],
   exports: [ClaimDetailActivityDrillDownComponent],

@@ -3,7 +3,7 @@
     <dx-tabs
       #withText
       [width]="width"
-      [selectedIndex]="selectedTabIndex"
+      [selectedIndex]="0"
       [rtlEnabled]="rtlEnabled"
       [scrollByContent]="scrollByContent"
       [showNavButtons]="showNavButtons"
@@ -15,7 +15,7 @@
     ></dx-tabs>
   </div>
 
-  <div class="table-grid">
+  <div class="table-grid claimSummaryGrid">
     <dx-data-grid
       [height]="'100%'"
       [noDataText]="!loadingVisible ? 'No Data Available' : ' '"
@@ -25,7 +25,12 @@
       [columnAutoWidth]="true"
       [allowColumnReordering]="true"
       [filterRow]="{ visible: false }"
-      [headerFilter]="{ visible: false }"
+      [headerFilter]="{ visible: true }"
+      [columnFixing]="{
+        enabled: true,
+        texts: { fix: 'Freeze', unfix: 'Unfreeze' }
+      }"
+      (onExporting)="onExporting($event)"
     >
       <dxi-column
         *ngIf="!isEmptyDatagrid"
@@ -71,6 +76,11 @@
           [width]="200"
         ></dxi-column>
       </ng-container>
+
+      <dxo-export
+        [enabled]="true"
+        [allowExportSelectedData]="false"
+      ></dxo-export>
       <dxo-scrolling mode="virtual"></dxo-scrolling>
       <dxo-paging [pageSize]="pageSize"> </dxo-paging>
       <dxo-pager
@@ -85,6 +95,7 @@
   </div>
 
   <dx-popup
+    *ngIf="isSecondDrillOpened"
     [(visible)]="isSecondDrillOpened"
     title="Claim Details"
     height="100vh"

@@ -1,0 +1,44 @@
+<div class="Main">
+  <div class="formcontainer">
+    <dx-form id="form">
+      <dxi-item itemType="group" cssClass="form-group" [colCount]="2" [height]="'40%'">
+        <dxi-item itemType="group">
+          <dxi-item dataField="Member ID"></dxi-item>
+          <dxi-item dataField="Receiver ID"></dxi-item>
+          <dxi-item dataField="Payer ID"></dxi-item>
+          <dxi-item dataField="Emirates ID"></dxi-item>
+          <dxi-item dataField="Ordering Clinician"></dxi-item>
+        </dxi-item>
+
+        <dxi-item itemType="group">
+          <dxi-item dataField="ID Payer"></dxi-item>
+          <dxi-item dataField="Emirates ID"></dxi-item>
+          <dxi-item dataField="Receiver Name"></dxi-item>
+          <dxi-item dataField="Clinician"></dxi-item>
+          <dxi-item dataField="Diagnosis"></dxi-item>
+        </dxi-item>
+
+        <!-- <dxi-item
+          dataField="Diagnosis"
+          [colSpan]="2"
+          editorType="dxTextBox"
+        ></dxi-item> -->
+      </dxi-item>
+    </dx-form>
+  </div>
+  <div>
+      <dx-tabs
+        #withText
+        [width]="'full'"
+        [selectedIndex]="0"
+        [rtlEnabled]="false"
+        [scrollByContent]="scrollByContent"
+        [showNavButtons]="showNavButtons"
+        [dataSource]="tabsWithText"
+        [orientation]="orientation"
+        [stylingMode]="stylingMode"
+      ></dx-tabs>
+
+
+    </div>
+</div>

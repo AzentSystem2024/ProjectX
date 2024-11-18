@@ -268,10 +268,8 @@ export class ClaimDetailsComponent implements OnInit, OnDestroy {
         );
         this.ColumnNames = this.columnsConfig
           .filter((column) => column.visible)
-          .map((column) => column.dataField);
-        //   .sort((a, b) => a.localeCompare(b));
-        // console.log('columns are :', this.ColumnNames);
-
+          .map((column) => column.caption);
+          
         this.personalReportData = response.PersonalReports;
         this.memorise_Dropdown_DataList = response.PersonalReports.map(
           (personalReport) => ({

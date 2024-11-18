@@ -1,4 +1,3 @@
-
 import { CommonModule, DatePipe } from '@angular/common';
 import {
   Component,
@@ -44,7 +43,10 @@ import { ReportEngineService } from '../report-engine.service';
 import DataSource from 'devextreme/data/data_source';
 import { Router } from '@angular/router';
 import notify from 'devextreme/ui/notify';
-import { ClaimSummaryMonthWiseDrillDownComponent, ClaimSummaryMonthWiseDrillDownModule } from '../../REPORT DRILL PAGES/claim-summary-month-wise-drill-down/claim-summary-month-wise-drill-down.component';
+import {
+  ClaimSummaryMonthWiseDrillDownComponent,
+  ClaimSummaryMonthWiseDrillDownModule,
+} from '../../REPORT DRILL PAGES/claim-summary-month-wise-drill-down/claim-summary-month-wise-drill-down.component';
 import { AdvanceFilterPopupModule } from '../../POP-UP_PAGES/advance-filter-popup/advance-filter-popup.component';
 import { DataService } from 'src/app/services';
 @Component({
@@ -254,7 +256,7 @@ export class ClaimSummaryMonthWiseComponent implements OnInit, OnDestroy {
         this.isEmptyDatagrid = false;
         this.columndata = response.ReportColumns;
 
-        this.detailData=response.detail
+        this.detailData = response.detail;
 
         const userLocale = navigator.language || 'en-US';
         console.log('user locale settings:', userLocale);
@@ -270,7 +272,7 @@ export class ClaimSummaryMonthWiseComponent implements OnInit, OnDestroy {
         );
         this.ColumnNames = this.columnsConfig
           .filter((column) => column.visible)
-          .map((column) => column.dataField);
+          .map((column) => column.caption);
 
         this.personalReportData = response.PersonalReports;
         this.memorise_Dropdown_DataList = response.PersonalReports.map(
@@ -639,7 +641,7 @@ export class ClaimSummaryMonthWiseComponent implements OnInit, OnDestroy {
     DxValidationSummaryModule,
     DxLoadPanelModule,
     AdvanceFilterPopupModule,
-    ClaimSummaryMonthWiseDrillDownModule
+    ClaimSummaryMonthWiseDrillDownModule,
   ],
   providers: [],
   exports: [],

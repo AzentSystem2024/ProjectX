@@ -164,8 +164,53 @@ export class ReportService {
 
   //===============Fetch claim details drill down values===========
   get_CliamDetails_DrillDown_Data(ClaimNumber: any, FacilityID: any) {
-    const url = `${BASE_URL}/reports/claimdetailswithactivity/claimdetails`;
+    const url = `${BASE_URL}reports/claimdetailswithactivity/claimdetails`;
     const reqBody = { ClaimNumber: ClaimNumber, FacilityID: FacilityID };
+    return this.http.post(url, reqBody);
+  }
+
+  //===========Fetch claim details Inner drill down values of Submission=======
+  get_CliamDetails_InnerDrillDown_Submission_Data(
+    FacilityID: any,
+    SubmissionUID: any,
+    ClaimUID: any
+  ) {
+    const url = `${BASE_URL}reports/claimdetails/submission`;
+    const reqBody = {
+      FacilityID: FacilityID,
+      SubmissionUID: SubmissionUID,
+      ClaimUID: ClaimUID,
+    };
+    return this.http.post(url, reqBody);
+  }
+
+  //===========Fetch claim details Inner drill down values of Resubmission=======
+  get_CliamDetails_InnerDrillDown_Resubmission_Data(
+    FacilityID: any,
+    SubmissionUID: any,
+    ClaimUID: any
+  ) {
+    const url = `${BASE_URL}reports/claimdetails/resubmission`;
+    const reqBody = {
+      FacilityID: FacilityID,
+      SubmissionUID: SubmissionUID,
+      ClaimUID: ClaimUID,
+    };
+    return this.http.post(url, reqBody);
+  }
+
+  //===========Fetch claim details Inner drill down values of Remittance=======
+  get_CliamDetails_InnerDrillDown_Remittance_Data(
+    FacilityID: any,
+    SubmissionUID: any,
+    ClaimUID: any
+  ) {
+    const url = `${BASE_URL}reports/claimdetails/remittance`;
+    const reqBody = {
+      FacilityID: FacilityID,
+      SubmissionUID: SubmissionUID,
+      ClaimUID: ClaimUID,
+    };
     return this.http.post(url, reqBody);
   }
 

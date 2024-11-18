@@ -687,7 +687,7 @@
     ></app-advance-filter-popup>
   </form-popup>
 
-  <dx-popup
+  <dx-popup *ngIf="isDrillDownPopupOpened"
     [(visible)]="isDrillDownPopupOpened"
     title="Claim Details"
     height="100vh"

@@ -49,8 +49,8 @@ export class ClaimSummaryMonthWiseDrillDownComponent implements OnChanges {
 
   selectedTabIndex: any = 0;
   //========Variables for Pagination ====================
-  readonly allowedPageSizes: any = ['all'];
-  pageSize: any = 'all';
+  readonly allowedPageSizes: any = [10, 20, 'all'];
+  pageSize: any = '10';
   displayMode: any = 'full';
   showPageSizeSelector = true;
   showInfo = true;
@@ -76,18 +76,18 @@ export class ClaimSummaryMonthWiseDrillDownComponent implements OnChanges {
   ReportData: any;
   filteredData: any;
   // isDrillDownPopupOpened: boolean = false;
-  isSecondDrillOpened: boolean =false;
+  isSecondDrillOpened: boolean = false;
+  selectedTab: any;
+
+  constructor(private service: ReportService) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['clickedRowData'] && this.clickedRowData) {
       this.loadingVisible = true;
       this.isContentVisible = true;
-      console.log('clicked row data :', this.clickedRowData);
-
       this.Year = this.clickedRowData.ClaimYear;
       this.Month = this.clickedRowData.ClaimMonth;
       this.FacilityID = this.clickedRowData.FacilityID;
-
       if (this.Year && this.Month && this.FacilityID) {
         this.get_Datagrid_DataSource();
       }
@@ -168,6 +168,10 @@ export class ClaimSummaryMonthWiseDrillDownComponent implements OnChanges {
             };
           }
         );
+        this.selectedTab = this.TabViewDataSource[0].text.replace(
+          /\s\(\d+\)$/,
+          ''
+        );
 
         // Initialize dataGrid_DataSource with the pre-loaded data
         this.GridDataSource = new DataSource<any>({
@@ -240,16 +244,15 @@ export class ClaimSummaryMonthWiseDrillDownComponent implements OnChanges {
   //===============Datagrid row click event=======================
   handleRowDrillDownClick = (e: any) => {
     this.InnerClickedRowData = e.row.data;
-    console.log('inner drill down data =>', this.InnerClickedRowData);
+    // console.log('inner drill down data =>', this.InnerClickedRowData);
     this.isSecondDrillOpened = true;
   };
 
   //====================side tabs click event====================
   onTabClick(e: any) {
-    // console.log(e);
-    let selectedTab = e.itemData.text.replace(/\s\(\d+\)$/, '');
-    console.log('selected tab', selectedTab);
-    switch (selectedTab) {
+    this.selectedTab = e.itemData.text.replace(/\s\(\d+\)$/, '');
+
+    switch (this.selectedTab) {
       case 'Claimed':
         this.filteredData = this.ReportData.filter(
           (item: any) => item.IsClaimed === 1
@@ -294,9 +297,16 @@ export class ClaimSummaryMonthWiseDrillDownComponent implements OnChanges {
         break;
     }
     // Update data grid or display data
-    console.log('filtered data source', this.filteredData);
     this.dataGrid.instance.refresh();
     this.GridDataSource = this.filteredData; // Assuming dataGridSource is bound to the data grid
+  }
+
+  //================Exporting Function===================
+  onExporting(event: any) {
+    const fileName = `${this.selectedTab}`;
+    if (fileName) {
+      this.service.exportDataGrid(event, fileName);
+    }
   }
 }
 @NgModule({

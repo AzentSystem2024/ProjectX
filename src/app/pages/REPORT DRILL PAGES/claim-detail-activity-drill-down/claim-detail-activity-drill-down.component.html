@@ -155,8 +155,31 @@
             [autoNavigateToFocusedRow]="false"
             [keyExpr]="'TransactionDate'"
             [(focusedRowKey)]="focusedRow"
+            [headerFilter]="{ visible: true }"
+            [columnFixing]="{
+              enabled: true,
+              texts: { fix: 'Freeze', unfix: 'Unfreeze' }
+            }"
             (onFocusedRowChanged)="onTransactionGridFocusedRowChanged($event)"
           >
+            <dxi-column
+              *ngIf="!isEmptyDatagrid"
+              type="buttons"
+              [width]="40"
+              [fixed]="true"
+              fixedPosition="left"
+              [allowFixing]="false"
+              [allowHiding]="false"
+              [allowResizing]="false"
+              [allowReordering]="false"
+            >
+              <dxi-button
+                icon="detailslayout"
+                text="Details"
+                hint="View Details"
+                [onClick]="TransactionRowDrillDownClick"
+              ></dxi-button>
+            </dxi-column>
             <dxi-column
               *ngFor="let column of transactionColumns"
               [dataField]="column.Title"
@@ -181,6 +204,11 @@
             [focusedRowEnabled]="true"
             [autoNavigateToFocusedRow]="false"
             [keyExpr]="'ClaimActivityNumber'"
+            [headerFilter]="{ visible: true }"
+            [columnFixing]="{
+              enabled: true,
+              texts: { fix: 'Freeze', unfix: 'Unfreeze' }
+            }"
             [(focusedRowKey)]="activityFocusRow"
             (onFocusedRowChanged)="onActivityGridFocusedRowChanged($event)"
           >
@@ -205,6 +233,11 @@
             [allowColumnReordering]="true"
             [hoverStateEnabled]="true"
             [columnAutoWidth]="true"
+            [headerFilter]="{ visible: true }"
+            [columnFixing]="{
+              enabled: true,
+              texts: { fix: 'Freeze', unfix: 'Unfreeze' }
+            }"
           >
             <dxi-column
               *ngFor="let column of DiagnosisColumns"
@@ -217,6 +250,45 @@
       </div>
     </div>
   </div>
+
+  <dx-popup
+    *ngIf="isSubmissionDrillOpened"
+    [(visible)]="isSubmissionDrillOpened"
+    title="Claim Details: 1st Submission"
+    height="90vh"
+    [width]="'80%'"
+  >
+    <app-inner-drill-down-submission
+      [clickedRowData]="InnerClickedRowData"
+      [FacilityID]="FacilityID"
+    ></app-inner-drill-down-submission>
+  </dx-popup>
+
+  <dx-popup
+    *ngIf="isResubmissionDrillOpened"
+    [(visible)]="isResubmissionDrillOpened"
+    title="Claim Details: Resubmission"
+    height="90vh"
+    [width]="'80%'"
+  >
+    <app-inner-drill-down-resubmission
+      [clickedRowData]="InnerClickedRowData"
+      [FacilityID]="FacilityID"
+    ></app-inner-drill-down-resubmission>
+  </dx-popup>
+
+  <dx-popup
+    *ngIf="isRemittanceDrillOpened"
+    [(visible)]="isRemittanceDrillOpened"
+    title="Claim Details: Remittance"
+    height="90vh"
+    [width]="'80%'"
+  >
+    <app-inner-drill-down-remittance
+      [clickedRowData]="InnerClickedRowData"
+      [FacilityID]="FacilityID"
+    ></app-inner-drill-down-remittance>
+  </dx-popup>
 </div>
 <dx-load-panel
   #loadPanel

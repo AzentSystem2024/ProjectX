@@ -40,7 +40,7 @@ export class ReportEngineService {
   makeColumnVisible(dataGrid: DxDataGridComponent, columnName: string) {
     const columns = dataGrid.instance.getVisibleColumns();
     const columnIndex = columns.findIndex(
-      (column) => column.dataField === columnName
+      (column) => column.caption === columnName
     );
     if (columnIndex !== -1) {
       const columnWidth = 200;
