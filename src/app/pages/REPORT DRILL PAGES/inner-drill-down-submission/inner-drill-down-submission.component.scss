@@ -1,10 +1,62 @@
-.Main {
-  height: 80vh;
-  width: 100%;
+.headingText {
+  margin-bottom: 1px;
+  font-size: medium;
+  font-weight: bold;
 }
-.formcontainer {
-  height: 40%;
+.label-container {
   width: 100%;
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.custom-label {
+  width: 35%;
+  margin-left: 15px;
+  font-size: medium;
+}
+.flex-custom-label {
+  width: 55%;
+  margin-left: 15px;
+  font-size: medium;
+}
+.parentDiv {
+  height: 100%;
+  width: 100%;
+  margin: 0px;
+  // padding: 5px;
+}
+.RowgroupDiv {
   padding: 5px;
-  border: 1px solid var(--border-color);
+  width: 100%;
+  min-height: 30vh;
+  max-height: auto;
+  border: 1px solid var(--div-border-color);
+  border-radius: 8px;
+  box-shadow: -2px 2px 2px rgba(0, 0, 0, 0.1), 2px 2px 2px rgba(0, 0, 0, 0.1),
+    0 2px 2px rgba(0, 0, 0, 0.1);
+}
+.RowgroupDiv2 {
+  padding: 5px;
+  width: 100%;
+  min-height: 45vh;
+  max-height: auto;
+  border: 1px solid var(--div-border-color);
+  border-radius: 8px;
+  box-shadow: -2px 2px 2px rgba(0, 0, 0, 0.1), 2px 2px 2px rgba(0, 0, 0, 0.1),
+    0 2px 2px rgba(0, 0, 0, 0.1);
+}
+.BorderBox {
+  align-items: center;
+  justify-content: center;
+  padding: auto;
+  width: 45%;
+  height: auto;
+  margin-left: 10px;
+}
+
+.data-container {
+  transition: transform 0.5s ease, opacity 0.5s ease, max-height 0.5s ease;
+  transform: translateY(0);
+  opacity: 1;
+  max-height: 500px; /* Set this to the maximum height of your content */
 }

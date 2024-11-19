@@ -662,3 +662,16 @@ body {
   padding-inline-start: 12px;
   padding-inline-end: 30px;
 }
+.formcontainer .dx-layout-manager .dx-field-item {
+  padding-bottom: 0px;
+  font-size: 14px;
+  height: 55px;
+}
+
+.dx-tab .dx-tab-text .dx-tab-text-span {
+  position: relative;
+  display: block;
+  font-weight: 800;
+  visibility: hidden;
+  // background-color: #6fbaca;
+}

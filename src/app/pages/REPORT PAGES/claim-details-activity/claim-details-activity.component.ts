@@ -303,6 +303,14 @@ export class ClaimDetailsActivityComponent implements OnInit, OnDestroy {
             data.InitialDateSettlement,
             'dd-MMM-yyyy'
           ),
+          FirstRemittanceDate: this.datePipe.transform(
+            data.FirstRemittanceDate,
+            'dd-MMM-yyyy'
+          ),
+          LastRemittanceDate: this.datePipe.transform(
+            data.LastRemittanceDate,
+            'dd-MMM-yyyy'
+          ),
         }));
 
         // Initialize dataGrid_DataSource with the pre-loaded data

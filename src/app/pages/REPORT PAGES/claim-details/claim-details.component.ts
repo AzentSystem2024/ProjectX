@@ -269,7 +269,7 @@ export class ClaimDetailsComponent implements OnInit, OnDestroy {
         this.ColumnNames = this.columnsConfig
           .filter((column) => column.visible)
           .map((column) => column.caption);
-          
+
         this.personalReportData = response.PersonalReports;
         this.memorise_Dropdown_DataList = response.PersonalReports.map(
           (personalReport) => ({
@@ -304,6 +304,19 @@ export class ClaimDetailsComponent implements OnInit, OnDestroy {
             data.InitialDateSettlement,
             'dd-MMM-yyyy'
           ),
+          SubmissionDate:this.datePipe.transform(
+            data.SubmissionDate,
+            'dd-MMM-yyyy'
+          ),
+          LastRemittanceDate:this.datePipe.transform(
+            data.LastRemittanceDate,
+            'dd-MMM-yyyy'
+          ),
+          LastSubmissionDate:this.datePipe.transform(
+            data.LastSubmissionDate,
+            'dd-MMM-yyyy'
+          ),
+
         }));
 
         // Initialize dataGrid_DataSource with the pre-loaded data

@@ -202,14 +202,14 @@ export class ReportService {
   //===========Fetch claim details Inner drill down values of Remittance=======
   get_CliamDetails_InnerDrillDown_Remittance_Data(
     FacilityID: any,
-    SubmissionUID: any,
-    ClaimUID: any
+    RemittanceDownloadUID: any,
+    RemittanceUID: any
   ) {
     const url = `${BASE_URL}reports/claimdetails/remittance`;
     const reqBody = {
       FacilityID: FacilityID,
-      SubmissionUID: SubmissionUID,
-      ClaimUID: ClaimUID,
+      RemittanceDownloadUID: RemittanceDownloadUID,
+      RemittanceUID: RemittanceUID,
     };
     return this.http.post(url, reqBody);
   }
@@ -247,7 +247,21 @@ export class ReportService {
   formatDate(dateString: any) {
     const date = new Date(dateString);
     const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const monthNames = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    const month = monthNames[date.getMonth()];
     const day = date.getDate().toString().padStart(2, '0');
     return `${day}-${month}-${year}`;
   }

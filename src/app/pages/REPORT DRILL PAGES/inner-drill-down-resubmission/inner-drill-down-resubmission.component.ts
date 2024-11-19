@@ -15,6 +15,38 @@ import {
 import { FormPopupModule } from 'src/app/components';
 import { ReportService } from 'src/app/services/Report-data.service';
 
+interface SubmissionDetails {
+  MemberID: any;
+  IDPayer: any;
+  ReceiverID: any;
+  Receiver: any;
+  PayerID: any;
+  Payer: any;
+  EmiratesID: any;
+  Clinician: any;
+  OrderingClinician: any;
+  Diagnosis: any;
+  EncouneterType: any;
+  PatientID: any;
+  EligibilityIDPayer: any;
+  StartDate: any;
+  StartType: any;
+  EndDate: any;
+  EndType: any;
+  TransferSource: any;
+  TransferDescription: any;
+  EndDateActual: any;
+  PackageName: any;
+  XMLFileName: any;
+  FileID: any;
+  IsCancelled: any;
+  Remarks: any;
+  FileSyncDate: any;
+  DataSyncDate: any;
+  ProcessedDate: any;
+  // ResubmissionType: any;
+  // Comment: any;
+}
 @Component({
   selector: 'app-inner-drill-down-resubmission',
   templateUrl: './inner-drill-down-resubmission.component.html',
@@ -24,32 +56,97 @@ export class InnerDrillDownResubmissionComponent implements OnInit {
   @Input() clickedRowData: any | '';
   @Input() FacilityID: any | '';
 
+  tabsWithText: any = [
+    {
+      id: 0,
+      text: 'Resubmission Details',
+    },
+    {
+      id: 1,
+      text: 'Encounter Details',
+    },
+    {
+      id: 2,
+      text: 'Others',
+    },
+  ];
+
   showNavButtons = false;
   scrollByContent = false;
   rtlEnabled = false;
-  tabsWithText: any;
   orientation: any = 'horizontal';
   stylingMode: any = 'primary';
   datasource: any;
+  loadingVisible: boolean = true;
+  submissionDetails: SubmissionDetails
+  selectedTabIndex = 0; // Default to the first tab
+  resubmissionType: any;
+  ResubmissionComment: any;
 
   constructor(private service: ReportService) {}
 
   ngOnInit() {
-    if (this.clickedRowData.transactionType.includes('Submission')) {
-      let facilityID = this.FacilityID;
-      let submissionUID = this.clickedRowData.ClaimRemittanceHeaderUID;
-      let claimUID = this.clickedRowData.ClaimRemittanceUID;
-      this.service
-        .get_CliamDetails_InnerDrillDown_Submission_Data(
-          facilityID,
-          submissionUID,
-          claimUID
-        )
-        .subscribe((response: any) => {
-          this.datasource = response;
-          console.log(response);
-        });
-    }
+    this.fetch_dataSource();
+  }
+  fetch_dataSource() {
+    let facilityID = this.FacilityID;
+    let submissionUID = this.clickedRowData.ClaimRemittanceHeaderUID;
+    let claimUID = this.clickedRowData.ClaimRemittanceUID;
+    this.service
+      .get_CliamDetails_InnerDrillDown_Resubmission_Data(
+        facilityID,
+        submissionUID,
+        claimUID
+      )
+      .subscribe((response: any) => {
+        if (response.flag === '1') {
+          this.loadingVisible = false;
+          if (response?.resubmission) {
+            this.resubmissionType=response.resubmission.ResubmissionType
+            this.ResubmissionComment=response.resubmission.Comment
+
+          }
+          if (response?.submission) {
+            this.submissionDetails = {
+              MemberID: response.submission.MemberID,
+              IDPayer: response.submission.IDPayer,
+              ReceiverID: response.submission.ReceiverID,
+              Receiver: response.submission.Receiver,
+              PayerID: response.submission.PayerID,
+              Payer: response.submission.Payer,
+              EmiratesID: response.submission.EmiratesID,
+              Clinician: response.submission.Clinician,
+              OrderingClinician: response.submission.OrderingClinician,
+              Diagnosis: response.submission.Diagnosis,
+              EncouneterType: response.submission.EncouneterType,
+              PatientID: response.submission.PatientID,
+              EligibilityIDPayer: response.submission.IDPayer,
+              StartDate: this.service.formatDate(response.submission.StartDate),
+              StartType: response.submission.StartType,
+              EndDate: this.service.formatDate(response.submission.EndDate),
+              EndType: response.submission.EndType,
+              TransferSource: response.submission.TransferSource,
+              TransferDescription: response.submission.TransferDescription,
+              EndDateActual: response.submission.EndDateActual,
+              PackageName: response.submission.PackageName,
+              XMLFileName: response.submission.XMLFileName,
+              FileID: response.submission.FileID,
+              IsCancelled: response.submission.IsCancelled,
+              Remarks: response.submission.Remarks,
+              FileSyncDate: this.service.formatDate(
+                response.submission.FileSyncDate
+              ),
+              DataSyncDate: this.service.formatDate(
+                response.submission.DataSyncDate
+              ),
+              ProcessedDate: this.service.formatDate(
+                response.submission.ProcessedDate
+              ),
+            };
+
+          }
+        }
+      });
   }
 }
 @NgModule({

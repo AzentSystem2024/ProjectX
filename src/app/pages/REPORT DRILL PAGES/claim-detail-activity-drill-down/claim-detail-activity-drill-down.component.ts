@@ -90,7 +90,9 @@ export class ClaimDetailActivityDrillDownComponent implements OnInit {
   constructor(
     private service: ReportService,
     private reportEngine: ReportEngineService
-  ) {}
+  ) {
+    this.loadingVisible = true;
+  }
 
   ngOnInit(): void {
     this.loadingVisible = true;
@@ -135,13 +137,13 @@ export class ClaimDetailActivityDrillDownComponent implements OnInit {
         this.ActivityDataSource = response.Activity.map((item) => {
           return {
             ...item,
-            StartDate: this.reportEngine.formatDate(item.StartDate),
+            StartDate: this.service.formatDate(item.StartDate),
           };
         });
         this.TransactionDataSource = response.Transaction.map((item) => {
           return {
             ...item,
-            TransactionDate: this.reportEngine.formatDate(item.TransactionDate),
+            TransactionDate: this.service.formatDate(item.TransactionDate),
           };
         });
         this.transactionColumns = response.TransactionColumns;
@@ -189,19 +191,28 @@ export class ClaimDetailActivityDrillDownComponent implements OnInit {
   TransactionRowDrillDownClick = (e: any) => {
     this.InnerClickedRowData = e.row.data;
     const transactionType = this.InnerClickedRowData.TransactionType;
-    // Map transaction types to the corresponding drill-down properties
+
     const drillDownMap: Record<string, string> = {
-      '1st Submission': 'isSubmissionDrillOpened',
-      'Resubmission - Internal Complaint': 'isResubmissionDrillOpened',
-      'Remittance': 'isResubmissionDrillOpened',
+      'Submission': 'isSubmissionDrillOpened',
+      'Resubmission': 'isResubmissionDrillOpened',
+      'Remittance': 'isRemittanceDrillOpened',
     };
 
-    const drillDownProperty = drillDownMap[transactionType];
+    // Show loading indicator
+    this.loadingVisible = true;
+    // Find a matching drillDownProperty based on keywords in TransactionType
+    const drillDownProperty = Object.keys(drillDownMap).find((key) =>
+      transactionType.includes(key)
+    );
     if (drillDownProperty) {
-      this[drillDownProperty] = true;
+      this[drillDownMap[drillDownProperty]] = true;
+      // Simulate a delay or perform actual async operation
+      setTimeout(() => {
+        this.loadingVisible = false; // Hide loading indicator
+      }, 1500); // Adjust delay as needed
+    } else {
+      this.loadingVisible = false;
     }
-
-    // console.log(transactionType);
   };
 }
 @NgModule({
