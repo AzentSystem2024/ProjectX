@@ -590,19 +590,17 @@ body {
   }
 }
 
-.reportGridFooter {
-  .dx-gridbase-container {
-    > .dx-bordered-bottom-view {
-      border-radius: 0 0 8px 8px;
-      display: none;
-    }
-  }
+.reportGridFooter .dx-datagrid > .dx-datagrid-total-footer {
+  display: none;
+  border: 2px solid var(--border-color);
 }
+
 .drilldown .dx-tab.dx-tab-selected .dx-tab-text .dx-tab-text-span {
   visibility: visible;
   font-size: larger;
   font-weight: bold;
 }
+
 .drilldown .dx-tab .dx-tab-text .dx-tab-text-span {
   position: relative;
   display: block;

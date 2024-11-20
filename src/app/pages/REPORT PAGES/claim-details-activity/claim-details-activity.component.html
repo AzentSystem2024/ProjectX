@@ -458,14 +458,6 @@
         ></dxi-column>
       </ng-container>
 
-      <!-- <dxi-column
-        *ngFor="let column of columnsConfig"
-        [dataField]="column.dataField"
-        [caption]="column.caption"
-        [format]="column.format"
-        [visible]="column.visible"
-        [width]="200"
-      ></dxi-column> -->
       <dxo-search-panel [visible]="true"></dxo-search-panel>
       <dxo-paging [pageSize]="10"></dxo-paging>
       <dxo-pager
@@ -482,6 +474,10 @@
       <dxo-sorting mode="multiple"></dxo-sorting>
       <dxo-header-filter [visible]="true" highlight="true"></dxo-header-filter>
 
+      <dxo-filter-panel [visible]="true"></dxo-filter-panel>
+      <dxo-filter-builder [allowHierarchicalFields]="true">
+      </dxo-filter-builder>
+      
       <dxo-column-chooser
         [height]="500"
         hideOnOutsideClick="true"
@@ -684,7 +680,8 @@
     ></app-advance-filter-popup>
   </form-popup>
 
-  <dx-popup *ngIf="isDrillDownPopupOpened"
+  <dx-popup
+    *ngIf="isDrillDownPopupOpened"
     [(visible)]="isDrillDownPopupOpened"
     title="Claim Details"
     height="100vh"

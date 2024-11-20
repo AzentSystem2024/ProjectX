@@ -48,7 +48,7 @@ export class PostOfficeCredentialsComponent implements OnInit, OnDestroy {
         this.systemService.get_PostOfficeCredencial_List().subscribe({
           next: (response: any) => {
             if (response) {
-              const transformedData = this.transformData(response); // Transform the data
+              const transformedData = this.transformData(response.data); // Transform the data
               resolve(transformedData); // Resolve with the transformed data
             } else {
               resolve([]); // Resolve with an empty array if response is falsy
@@ -97,10 +97,12 @@ export class PostOfficeCredentialsComponent implements OnInit, OnDestroy {
   }
 
   //===============Change the last modified data format =============
-  formatDateTime(dateTimeString) {
+  formatDateTime(dateTimeString: string): string {
     const date = new Date(dateTimeString);
+    // Adjust for 5 hours and 30 minutes
     date.setHours(date.getHours() + 5);
     date.setMinutes(date.getMinutes() + 30);
+    // Return formatted date and time
     return date
       .toLocaleString('en-GB', {
         day: '2-digit',
@@ -108,6 +110,7 @@ export class PostOfficeCredentialsComponent implements OnInit, OnDestroy {
         year: 'numeric',
         hour: '2-digit',
         minute: '2-digit',
+        second: '2-digit',
         hour12: true,
       })
       .replace(',', '');
@@ -116,7 +119,7 @@ export class PostOfficeCredentialsComponent implements OnInit, OnDestroy {
   transformData(data: any) {
     return data.map((item: any) => ({
       ...item,
-      LastModified_Time: this.formatDateTime(item.LastModified_Time),
+      LastModifiedTime: this.formatDateTime(item.LastModifiedTime),
     }));
   }
 
