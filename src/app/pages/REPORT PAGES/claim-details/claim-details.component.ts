@@ -202,6 +202,14 @@ export class ClaimDetailsComponent implements OnInit, OnDestroy {
         if (response) {
           this.loadingVisible = false;
           this.SearchOn_DataSource = response.SearchOn;
+          this.SearchOn_Value = this.SearchOn_DataSource.find(
+            (item) => item.ID === 'EncounterStartDate'
+          )?.ID;
+          console.log(
+            'search on data source and search on value =>',
+            this.SearchOn_DataSource,
+            this.SearchOn_Value
+          );
           this.Facility_DataSource = response.facility;
           this.EncounterType_DataSource = response.EncounterType;
           this.RecieverID_DataSource = response.ReceiverID;
@@ -304,19 +312,18 @@ export class ClaimDetailsComponent implements OnInit, OnDestroy {
             data.InitialDateSettlement,
             'dd-MMM-yyyy'
           ),
-          SubmissionDate:this.datePipe.transform(
+          SubmissionDate: this.datePipe.transform(
             data.SubmissionDate,
             'dd-MMM-yyyy'
           ),
-          LastRemittanceDate:this.datePipe.transform(
+          LastRemittanceDate: this.datePipe.transform(
             data.LastRemittanceDate,
             'dd-MMM-yyyy'
           ),
-          LastSubmissionDate:this.datePipe.transform(
+          LastSubmissionDate: this.datePipe.transform(
             data.LastSubmissionDate,
             'dd-MMM-yyyy'
           ),
-
         }));
 
         // Initialize dataGrid_DataSource with the pre-loaded data
@@ -460,9 +467,9 @@ export class ClaimDetailsComponent implements OnInit, OnDestroy {
       filterData.PayerID.split(',').includes(item.Name)
     ).map((item) => item.ID);
 
-    // this.Payer_Value = this.Payer_DataSource.filter((item) =>
-    //   filterData.ReceiverID.split(',').includes(item.Name)
-    // ).map((item) => item.ID);
+    this.Payer_Value = this.Payer_DataSource.filter((item) =>
+      filterData.ReceiverID.split(',').includes(item.Name)
+    ).map((item) => item.ID);
 
     this.Clinician_Value = this.Clinician_DataSource.filter((item) =>
       filterData.Clinician.split(',').includes(item.Name)
@@ -495,21 +502,20 @@ export class ClaimDetailsComponent implements OnInit, OnDestroy {
       reportGridElement.classList.toggle('reportGridFooter');
     }
   };
-  //================Year value change ===================
+  //================ Year value change ===================
   onYearChanged(e: any): void {
     this.selectedYear = e.value;
     this.selectedmonth = '';
-    // if (this.selectedmonth != null && this.selectedmonth !== '') {
-    //   this.From_Date_Value = new Date(this.selectedYear, this.selectedmonth, 1);
-    //   this.To_Date_Value = new Date(
-    //     this.selectedYear,
-    //     this.selectedmonth + 1,
-    //     0
-    //   );
-    // } else {
-    this.From_Date_Value = new Date(this.selectedYear, 0, 1); // January 1
-    this.To_Date_Value = new Date(this.selectedYear, 11, 31); // December 31
-    // }
+    const currentYear = new Date().getFullYear();
+    const today = new Date();
+    if (this.selectedYear === currentYear) {
+      // Set from date to the start of the year and to date to today
+      this.From_Date_Value = new Date(this.selectedYear, 0, 1); // January 1 of the current year
+      this.To_Date_Value = today; // Today's date
+    } else {
+      this.From_Date_Value = new Date(this.selectedYear, 0, 1); // January 1
+      this.To_Date_Value = new Date(this.selectedYear, 11, 31); // December 31
+    }
   }
 
   //================Month value change ===================

@@ -201,6 +201,9 @@ export class ClaimDetailsActivityComponent implements OnInit, OnDestroy {
         if (response) {
           this.loadingVisible = false;
           this.SearchOn_DataSource = response.SearchOn;
+          this.SearchOn_Value = this.SearchOn_DataSource.find(
+            (item) => item.ID === 'EncounterStartDate'
+          )?.ID;
           this.Facility_DataSource = response.facility;
           this.EncounterType_DataSource = response.EncounterType;
           this.RecieverID_DataSource = response.ReceiverID;
@@ -494,19 +497,17 @@ export class ClaimDetailsActivityComponent implements OnInit, OnDestroy {
   onYearChanged(e: any): void {
     this.selectedYear = e.value;
     this.selectedmonth = '';
-    // if (this.selectedmonth != null && this.selectedmonth !== '') {
-    //   this.From_Date_Value = new Date(this.selectedYear, this.selectedmonth, 1);
-    //   this.To_Date_Value = new Date(
-    //     this.selectedYear,
-    //     this.selectedmonth + 1,
-    //     0
-    //   );
-    // } else {
-    this.From_Date_Value = new Date(this.selectedYear, 0, 1); // January 1
-    this.To_Date_Value = new Date(this.selectedYear, 11, 31); // December 31
-    // }
+    const currentYear = new Date().getFullYear();
+    const today = new Date();
+    if (this.selectedYear === currentYear) {
+      // Set from date to the start of the year and to date to today
+      this.From_Date_Value = new Date(this.selectedYear, 0, 1); // January 1 of the current year
+      this.To_Date_Value = today; // Today's date
+    } else {
+      this.From_Date_Value = new Date(this.selectedYear, 0, 1); // January 1
+      this.To_Date_Value = new Date(this.selectedYear, 11, 31); // December 31
+    }
   }
-
   //================Month value change ===================
   onMonthValueChanged(e: any) {
     this.selectedmonth = e.value ?? '';

@@ -41,7 +41,7 @@
         itemTitleTemplate="title"
         itemTemplate="item"
         [animationEnabled]="true"
-        [deferRendering]="false"
+        [deferRendering]="true"
         [showNavButtons]="true"
         [repaintChangesOnly]="true"
         [selectedIndex]="selectedIndex"
@@ -60,8 +60,10 @@
           ></i>
         </div>
         <div *dxTemplate="let tab of 'item'">
-          <ng-container *ngIf="selectedIndex === tabs.indexOf(tab)">
-            <router-outlet></router-outlet>
+          <ng-container>
+            <div *ngIf="selectedIndex === tabs.indexOf(tab)">
+              <router-outlet></router-outlet>
+            </div>
           </ng-container>
         </div>
       </dx-tab-panel>

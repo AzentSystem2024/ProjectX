@@ -96,17 +96,6 @@ export class PostOfficeCredentialsComponent implements OnInit, OnDestroy {
     });
   }
 
-  //====================Get post office credentials List==============
-  // get_PostOfficeCredencial_List() {
-  //   this.systemService
-  //     .get_PostOfficeCredencial_List()
-  //     .subscribe((response: any) => {
-  //       if (response) {
-  //         this.dataSource = this.transformData(response);
-  //       }
-  //     });
-  // }
-
   //===============Change the last modified data format =============
   formatDateTime(dateTimeString) {
     const date = new Date(dateTimeString);
