@@ -146,9 +146,9 @@ export class PostOfficeCredentialsComponent implements OnInit, OnDestroy {
 
           notify(
             {
-              message: ` updated Successfully`,
+              message: `${data.message}`,
               position: { at: 'top right', my: 'top right' },
-              displayTime: 500,
+              displayTime: 1000,
             },
             'success'
           );
@@ -157,7 +157,7 @@ export class PostOfficeCredentialsComponent implements OnInit, OnDestroy {
             {
               message: `Your Data Not Saved`,
               position: { at: 'top right', my: 'top right' },
-              displayTime: 500,
+              displayTime: 1000,
             },
             'error'
           );
