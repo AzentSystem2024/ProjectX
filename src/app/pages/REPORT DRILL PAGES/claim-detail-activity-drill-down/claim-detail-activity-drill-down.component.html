@@ -145,7 +145,7 @@
           <dx-data-grid
             class="grid theme-dependent"
             noDataText="No Data Available"
-            [height]="'25vh'"
+            [height]="'auto'"
             [dataSource]="TransactionDataSource"
             [allowColumnResizing]="true"
             [allowColumnReordering]="true"
@@ -161,8 +161,9 @@
               texts: { fix: 'Freeze', unfix: 'Unfreeze' }
             }"
             (onFocusedRowChanged)="onTransactionGridFocusedRowChanged($event)"
+            (onRowExpanding)="TransactionRowDrillDownClick($event)"
           >
-            <dxi-column
+            <!-- <dxi-column
               *ngIf="!isEmptyDatagrid"
               type="buttons"
               [width]="40"
@@ -179,13 +180,132 @@
                 hint="View Details"
                 [onClick]="TransactionRowDrillDownClick"
               ></dxi-button>
-            </dxi-column>
+            </dxi-column> -->
             <dxi-column
               *ngFor="let column of transactionColumns"
               [dataField]="column.Title"
               [caption]="column.ToolTip"
               [visible]="column.Visibility"
             ></dxi-column>
+
+            <dxo-master-detail
+              [enabled]="true"
+              [autoExpandAll]="false"
+              template="masterDetail"
+            ></dxo-master-detail>
+
+            <div *dxTemplate="let detailData of 'masterDetail'">
+              <div
+                *ngIf="ResubmissionDrillDownLoaded"
+                class="data-grid-container mt-1 mb-2"
+              >
+                <span class="po-title">Resubmission Details</span>
+                <dx-data-grid
+                  [columnAutoWidth]="true"
+                  [showBorders]="true"
+                  [dataSource]="ResubmissionDatasource"
+                  [width]="'100%'"
+                  [height]="'10vh'"
+                >
+                </dx-data-grid>
+              </div>
+
+
+              <div
+                *ngIf="cliamDetailsDrillDownLoaded"
+                class="data-grid-container mt-1"
+              >
+                <span class="po-title">Claim Details</span>
+                <dx-data-grid
+                  [columnAutoWidth]="true"
+                  [showBorders]="true"
+                  [dataSource]="claimDetailsDataSource"
+                  [width]="'100%'"
+                  [height]="'10vh'"
+                >
+                  <!-- <dxi-column
+                    caption="Claim Number"
+                    dataField="ClaimNumber"
+                    width="120"
+                  ></dxi-column>
+                  <dxi-column
+                    caption="Payer ID"
+                    dataField="PayerID"
+                    width="120"
+                  ></dxi-column>
+                  <dxi-column
+                    caption="Payer"
+                    dataField="Payer"
+                    width="120"
+                  ></dxi-column>
+                  <dxi-column
+                    caption="Member ID"
+                    dataField="MemberID"
+                    width="120"
+                  ></dxi-column>
+                  <dxi-column
+                    caption="ID Payer"
+                    dataField="IDPayer"
+                    width="120"
+                  ></dxi-column>
+                  <dxi-column
+                    caption="Emirates ID"
+                    dataField="Emirates ID"
+                    width="120"
+                  ></dxi-column>
+                  <dxi-column
+                    caption="Diagnosis"
+                    dataField="Diagnosis"
+                    width="120"
+                  ></dxi-column> -->
+                </dx-data-grid>
+              </div>
+
+              <div
+                *ngIf="encounterDrillDownLoaded"
+                class="data-grid-container mt-1"
+              >
+                <span class="po-title">Encounter Details</span>
+                <dx-data-grid
+                  [columnAutoWidth]="true"
+                  [showBorders]="true"
+                  [dataSource]="encounterDataSource"
+                  [width]="'100%'"
+                  [height]="'10vh'"
+                >
+                </dx-data-grid>
+              </div>
+
+              <div
+                *ngIf="RemittanceDrillDownLoaded"
+                class="data-grid-container mt-1 mb-2"
+              >
+                <span class="po-title">Remittance Details</span>
+                <dx-data-grid
+                  [columnAutoWidth]="true"
+                  [showBorders]="true"
+                  [dataSource]="remittanceDataSource"
+                  [width]="'100%'"
+                  [height]="'10vh'"
+                >
+                </dx-data-grid>
+              </div>
+
+              <div
+                *ngIf="OthersDrillDownLoaded"
+                class="data-grid-container mt-1 mb-2"
+              >
+                <span class="po-title">Other Details</span>
+                <dx-data-grid
+                  [columnAutoWidth]="true"
+                  [showBorders]="true"
+                  [dataSource]="othersDataSource"
+                  [width]="'100%'"
+                  [height]="'10vh'"
+                >
+                </dx-data-grid>
+              </div>
+            </div>
           </dx-data-grid>
         </div>
 
@@ -250,46 +370,8 @@
       </div>
     </div>
   </div>
-
-  <dx-popup
-    *ngIf="isSubmissionDrillOpened"
-    [(visible)]="isSubmissionDrillOpened"
-    title="Claim Details: 1st Submission"
-    height="90vh"
-    [width]="'80%'"
-  >
-    <app-inner-drill-down-submission
-      [clickedRowData]="InnerClickedRowData"
-      [FacilityID]="FacilityID"
-    ></app-inner-drill-down-submission>
-  </dx-popup>
-
-  <dx-popup
-    *ngIf="isResubmissionDrillOpened"
-    [(visible)]="isResubmissionDrillOpened"
-    title="Claim Details: Resubmission"
-    height="90vh"
-    [width]="'80%'"
-  >
-    <app-inner-drill-down-resubmission
-      [clickedRowData]="InnerClickedRowData"
-      [FacilityID]="FacilityID"
-    ></app-inner-drill-down-resubmission>
-  </dx-popup>
-
-  <dx-popup
-    *ngIf="isRemittanceDrillOpened"
-    [(visible)]="isRemittanceDrillOpened"
-    title="Claim Details: Remittance"
-    height="90vh"
-    [width]="'80%'"
-  >
-    <app-inner-drill-down-remittance
-      [clickedRowData]="InnerClickedRowData"
-      [FacilityID]="FacilityID"
-    ></app-inner-drill-down-remittance>
-  </dx-popup>
 </div>
+
 <dx-load-panel
   #loadPanel
   shadingColor="rgba(0,0,0,0.0)"

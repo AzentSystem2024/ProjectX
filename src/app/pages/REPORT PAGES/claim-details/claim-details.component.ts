@@ -521,7 +521,6 @@ export class ClaimDetailsComponent implements OnInit, OnDestroy {
   //================Month value change ===================
   onMonthValueChanged(e: any) {
     this.selectedmonth = e.value ?? '';
-    console.log('selected month', this.selectedmonth);
     if (this.selectedmonth === '') {
       this.From_Date_Value = new Date(this.selectedYear, 0, 1); // January 1 of the selected year
       this.To_Date_Value = new Date(this.selectedYear, 11, 31); // December 31 of the selected year

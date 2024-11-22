@@ -489,6 +489,8 @@ body {
     font-weight: bolder;
   }
 
+
+
   .theme-dependent {
     .dx-gridbase-container {
       > .dx-bordered-bottom-view {
@@ -671,5 +673,12 @@ body {
   display: block;
   font-weight: 800;
   visibility: hidden;
-  // background-color: #6fbaca;
 }
+
+.data-grid-container
+  .dx-datagrid-headers.dx-datagrid-nowrap.dx-bordered-top-view {
+    border-radius: 8px 8px 0 0;
+    background-color: #949630af;
+    font-size: larger;
+    font-weight: bolder;
+  }

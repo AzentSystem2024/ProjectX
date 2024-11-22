@@ -82,10 +82,25 @@ export class ClaimDetailActivityDrillDownComponent implements OnInit {
 
   isEmptyDatagrid: boolean = true;
   RowData: any;
-  InnerClickedRowData: any;
   isSubmissionDrillOpened: boolean = false;
   isResubmissionDrillOpened: boolean = false;
   isRemittanceDrillOpened: boolean = false;
+
+  cliamDetailsDrillDownLoaded: boolean = false;
+  ResubmissionDrillDownLoaded: boolean = false;
+  RemittanceDrillDownLoaded: boolean = false;
+  OthersDrillDownLoaded: boolean = false;
+  encounterDrillDownLoaded: boolean = false;
+
+  detailColumns: any;
+  claimDetailsDataSource: any;
+  encounterDataSource: any;
+  othersDataSource: any;
+  ResubmissionDatasource: any[];
+
+  remittanceDataSource: any[];
+
+  expandedRowKey: any = null;
 
   constructor(
     private service: ReportService,
@@ -188,32 +203,90 @@ export class ClaimDetailActivityDrillDownComponent implements OnInit {
   }
 
   //================Row data drill down click event======================
-  TransactionRowDrillDownClick = (e: any) => {
-    this.InnerClickedRowData = e.row.data;
-    const transactionType = this.InnerClickedRowData.TransactionType;
-
-    const drillDownMap: Record<string, string> = {
-      'Submission': 'isSubmissionDrillOpened',
-      'Resubmission': 'isResubmissionDrillOpened',
-      'Remittance': 'isRemittanceDrillOpened',
-    };
-
-    // Show loading indicator
-    this.loadingVisible = true;
-    // Find a matching drillDownProperty based on keywords in TransactionType
-    const drillDownProperty = Object.keys(drillDownMap).find((key) =>
-      transactionType.includes(key)
-    );
-    if (drillDownProperty) {
-      this[drillDownMap[drillDownProperty]] = true;
-      // Simulate a delay or perform actual async operation
-      setTimeout(() => {
-        this.loadingVisible = false; // Hide loading indicator
-      }, 1500); // Adjust delay as needed
-    } else {
-      this.loadingVisible = false;
+  TransactionRowDrillDownClick(e: any) {
+    if (this.expandedRowKey !== null && this.expandedRowKey !== e.key) {
+      e.component.collapseRow(this.expandedRowKey); 
     }
-  };
+    this.expandedRowKey = e.key;
+
+    const rowKey = e.key;
+    const expandedRowData = e.component
+      .getDataSource()
+      .items()
+      .find((item) => item.TransactionDate === rowKey);
+
+    const transactionType: any = expandedRowData.TransactionType;
+    let facilityID = this.FacilityID;
+    let submissionUID = expandedRowData.ClaimRemittanceHeaderUID;
+    let claimUID = expandedRowData.ClaimRemittanceUID;
+
+    this.ResubmissionDrillDownLoaded = false;
+    this.encounterDrillDownLoaded = false;
+    this.cliamDetailsDrillDownLoaded = false;
+    this.RemittanceDrillDownLoaded = false;
+    this.OthersDrillDownLoaded = false;
+
+    if (transactionType.includes('Submission')) {
+      this.service
+        .get_CliamDetails_InnerDrillDown_Submission_Data(
+          facilityID,
+          submissionUID,
+          claimUID
+        )
+        .subscribe((response: any) => {
+          if (response.flag === '1') {
+            this.claimDetailsDataSource = [response.submission];
+            this.encounterDataSource = [response.encounter];
+            this.othersDataSource = [response.others];
+
+            this.cliamDetailsDrillDownLoaded = true;
+            this.encounterDrillDownLoaded = true;
+            this.OthersDrillDownLoaded = true;
+          }
+        });
+    }
+
+    if (transactionType.includes('Resubmission')) {
+      this.service
+        .get_CliamDetails_InnerDrillDown_Resubmission_Data(
+          facilityID,
+          submissionUID,
+          claimUID
+        )
+        .subscribe((response: any) => {
+          if (response.flag === '1') {
+            this.claimDetailsDataSource = [response.submission];
+            this.encounterDataSource = [response.encounter];
+            this.othersDataSource = [response.others];
+            this.ResubmissionDatasource = [response.resubmission];
+            this.ResubmissionDrillDownLoaded = true;
+            this.encounterDrillDownLoaded = true;
+            this.cliamDetailsDrillDownLoaded = true;
+            this.OthersDrillDownLoaded = true;
+          }
+        });
+    }
+
+    if (transactionType.includes('Remittance')) {
+      this.service
+        .get_CliamDetails_InnerDrillDown_Remittance_Data(
+          facilityID,
+          submissionUID,
+          claimUID
+        )
+        .subscribe((response: any) => {
+          if (response.flag === '1') {
+            this.remittanceDataSource = [response.remittance];
+            this.othersDataSource = [response.others];
+            this.ResubmissionDrillDownLoaded = false;
+            this.encounterDrillDownLoaded = false;
+            this.cliamDetailsDrillDownLoaded = false;
+            this.RemittanceDrillDownLoaded = true;
+            this.OthersDrillDownLoaded = true;
+          }
+        });
+    }
+  }
 }
 @NgModule({
   imports: [

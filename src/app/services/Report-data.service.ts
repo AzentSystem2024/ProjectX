@@ -115,6 +115,7 @@ export class ReportService {
       userid: userid,
       reportid: currentPathName,
       SearchOn: formData.SearchOn,
+      encounterType: formData.EncounterType,
       DateFrom: formData.From_Date,
       DateTo: formData.To_Date,
       Facility: formData.Facility,
@@ -211,6 +212,7 @@ export class ReportService {
       RemittanceDownloadUID: RemittanceDownloadUID,
       RemittanceUID: RemittanceUID,
     };
+    console.log('service req body ==>>', reqBody);
     return this.http.post(url, reqBody);
   }
 
