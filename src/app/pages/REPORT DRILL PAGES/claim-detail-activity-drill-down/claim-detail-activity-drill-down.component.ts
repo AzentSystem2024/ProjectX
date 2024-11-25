@@ -101,6 +101,9 @@ export class ClaimDetailActivityDrillDownComponent implements OnInit {
   remittanceDataSource: any[];
 
   expandedRowKey: any = null;
+  submissionColor: any = '#6e8550';
+  remittanceColor: any = '#3a5869';
+  resubmissionColor: any = '#508576';
 
   constructor(
     private service: ReportService,
@@ -168,6 +171,19 @@ export class ClaimDetailActivityDrillDownComponent implements OnInit {
         this.isEmptyDatagrid = false;
       });
   }
+  //===============change color of each row depend transaction type==========
+  onRowPrepared(e: any) {
+    console.log('row prepared consoling', e);
+    if (e.rowType === 'data') {
+      if (e.data.TransactionType.includes('Submission')) {
+        e.rowElement.style.backgroundColor = `${this.submissionColor}`;
+      } else if (e.data.TransactionType.includes('Resubmission')) {
+        e.rowElement.style.backgroundColor = `${this.resubmissionColor}`;
+      } else if (e.data.TransactionType.includes('Remittance')) {
+        e.rowElement.style.backgroundColor = `${this.remittanceColor}`;
+      }
+    }
+  }
   //=================row selection event of transaction table=============
   onTransactionGridFocusedRowChanged(e: any) {
     this.activityFocusRow = null;
@@ -205,7 +221,7 @@ export class ClaimDetailActivityDrillDownComponent implements OnInit {
   //================Row data drill down click event======================
   TransactionRowDrillDownClick(e: any) {
     if (this.expandedRowKey !== null && this.expandedRowKey !== e.key) {
-      e.component.collapseRow(this.expandedRowKey); 
+      e.component.collapseRow(this.expandedRowKey);
     }
     this.expandedRowKey = e.key;
 

@@ -162,6 +162,7 @@
             }"
             (onFocusedRowChanged)="onTransactionGridFocusedRowChanged($event)"
             (onRowExpanding)="TransactionRowDrillDownClick($event)"
+            (onRowPrepared)="onRowPrepared($event)"
           >
             <!-- <dxi-column
               *ngIf="!isEmptyDatagrid"
@@ -209,7 +210,6 @@
                 >
                 </dx-data-grid>
               </div>
-
 
               <div
                 *ngIf="cliamDetailsDrillDownLoaded"
@@ -315,7 +315,7 @@
           <dx-data-grid
             class="grid theme-dependent"
             noDataText="No Data Available"
-            [height]="'38vh'"
+            [height]="'auto'"
             [dataSource]="filteredActivityDataSource"
             [allowColumnResizing]="true"
             [allowColumnReordering]="true"
@@ -347,7 +347,7 @@
           <dx-data-grid
             class="grid theme-dependent"
             noDataText="No Data Available"
-            [height]="'30vh'"
+            [height]="'auto'"
             [dataSource]="filteredDiagnosisDataSource"
             [allowColumnResizing]="true"
             [allowColumnReordering]="true"

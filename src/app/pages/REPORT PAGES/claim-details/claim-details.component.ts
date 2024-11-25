@@ -143,6 +143,15 @@ export class ClaimDetailsComponent implements OnInit, OnDestroy {
   columnFixed: boolean = true;
   initialized: boolean;
 
+  popupWidth: any = '90%';
+  popupHeight: any = '100%';
+  popups: Array<{
+    visible: boolean;
+    height: number;
+    width: number;
+    rowData: any;
+  }> = [];
+
   constructor(
     private service: ReportService,
     private router: Router,
@@ -183,6 +192,15 @@ export class ClaimDetailsComponent implements OnInit, OnDestroy {
         .subscribe((response: any) => {});
     }
   }
+  //=============Resize the popup drill down============
+  onResizeEnd(event: any) {
+    this.popupWidth = event.width;
+    this.popupHeight = event.height;
+  }
+  //==========Remove closing popup from the popup array=======
+  closePopup(index: number) {
+    this.popups.splice(index, 1); // Remove the popup from the array
+  }
 
   //================Show and Hide Search parameters==========
   toggleContent() {
@@ -191,8 +209,20 @@ export class ClaimDetailsComponent implements OnInit, OnDestroy {
 
   //=================Row click drill Down====================
   handleRowDrillDownClick = (e: any) => {
-    this.clickedRowData = e.row.data;
-    this.isDrillDownPopupOpened = true;
+    const rowData = e.row;
+    const existingPopup = this.popups.find(
+      (popup) => popup.rowData.rowIndex === rowData.rowIndex
+    );
+    if (!existingPopup) {
+      this.popups.push({
+        visible: true,
+        height: this.popupHeight,
+        width: this.popupWidth,
+        rowData: rowData,
+      });
+    } else {
+      existingPopup.visible = true;
+    }
   };
 
   //============Get search parameters dropdown values=======

@@ -477,7 +477,7 @@
       <dxo-filter-panel [visible]="true"></dxo-filter-panel>
       <dxo-filter-builder [allowHierarchicalFields]="true">
       </dxo-filter-builder>
-      
+
       <dxo-column-chooser
         [height]="500"
         hideOnOutsideClick="true"
@@ -680,17 +680,24 @@
     ></app-advance-filter-popup>
   </form-popup>
 
-  <dx-popup
-    *ngIf="isDrillDownPopupOpened"
-    [(visible)]="isDrillDownPopupOpened"
-    title="Claim Details"
-    height="100vh"
-    [width]="'90%'"
-  >
-    <app-claim-detail-activity-drill-down
-      [clickedRowData]="clickedRowData"
-    ></app-claim-detail-activity-drill-down>
-  </dx-popup>
+  <div *ngFor="let popup of popups; let i = index">
+    <dx-popup
+      [(visible)]="popup.visible"
+      title="Claim Details"
+      [height]="popup.height"
+      [width]="popup.width"
+      [resizeEnabled]="true"
+      [dragEnabled]="true"
+      [shading]="false"
+      [closeOnOutsideClick]="false"
+      (onResizeEnd)="onResizeEnd($event)"
+      (onHidden)="closePopup(i)"
+    >
+      <app-claim-detail-activity-drill-down
+        [clickedRowData]="popup.rowData.data"
+      ></app-claim-detail-activity-drill-down>
+    </dx-popup>
+  </div>
 
   <dx-load-panel
     #loadPanel
