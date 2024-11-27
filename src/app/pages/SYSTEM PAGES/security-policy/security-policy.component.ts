@@ -19,7 +19,7 @@ import { DataService } from 'src/app/services';
   styleUrls: ['./security-policy.component.scss'],
   providers: [DataService],
 })
-export class SecurityPolicyComponent implements OnInit, OnDestroy {
+export class SecurityPolicyComponent implements OnInit {
   validationRequired: boolean = false;
   readOnlyValue: boolean = true;
 
@@ -68,22 +68,6 @@ export class SecurityPolicyComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.userId = sessionStorage.getItem('UserID');
     this.get_Present_Security_Policy();
-    const Action = 0;
-    this.currentPathName = this.router.url.replace('/', '');
-    this.dataService
-      .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
-      .subscribe((response: any) => {});
-
-    this.initialized = true;
-  }
-
-  ngOnDestroy(): void {
-    if (this.initialized) {
-      const Action = 10;
-      this.dataService
-        .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
-        .subscribe((response: any) => {});
-    }
   }
 
   onPasswordLengthChange(e: any) {

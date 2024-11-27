@@ -55,7 +55,7 @@ import { DataService } from 'src/app/services';
   styleUrls: ['./claim-summary-month-wise.component.scss'],
   providers: [ReportService, ReportEngineService, DatePipe, DataService],
 })
-export class ClaimSummaryMonthWiseComponent implements OnInit, OnDestroy {
+export class ClaimSummaryMonthWiseComponent {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
 
@@ -163,27 +163,7 @@ export class ClaimSummaryMonthWiseComponent implements OnInit, OnDestroy {
     }
     //=============month field datasource============
     this.monthDataSource = this.service.getMonths();
-  }
-
-  ngOnInit(): void {
     this.get_searchParameters_Dropdown_Values();
-    this.userId = sessionStorage.getItem('UserID');
-    const Action = 0;
-    this.currentPathName = this.router.url.replace('/', '');
-    this.dataService
-      .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
-      .subscribe((response: any) => {});
-
-    this.initialized = true;
-  }
-
-  ngOnDestroy(): void {
-    if (this.initialized) {
-      const Action = 10;
-      this.dataService
-        .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
-        .subscribe((response: any) => {});
-    }
   }
 
   //================Show and Hide Search parameters==========

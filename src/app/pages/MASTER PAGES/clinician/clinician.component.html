@@ -19,7 +19,6 @@
       mode="popup"
       [allowUpdating]="true"
       [allowDeleting]="true"
-      
       [popup]="{ width: '40%', height: 'auto' }"
     >
       <dxo-popup title="Edit Clinician" [showTitle]="true">
@@ -177,7 +176,7 @@
       <dxo-lookup
         [dataSource]="genderDatasource"
         displayExpr="DESCRIPTION"
-        valueExpr="DESCRIPTION"
+        valueExpr="ID"
       ></dxo-lookup>
     </dxi-column>
   </dx-data-grid>
@@ -187,7 +186,7 @@
     [(visible)]="isAddClinicianPopupOpened"
     (save)="onClickSaveNewClinician()"
     titleText="New Clinician"
-    height="'auto'"
+    height="'70vh'"
   >
     <app-clinician-new-form></app-clinician-new-form>
   </form-popup>

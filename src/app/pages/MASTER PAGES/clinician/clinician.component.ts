@@ -30,7 +30,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./clinician.component.scss'],
   providers: [DataService, ReportService],
 })
-export class ClinicianComponent implements OnInit, OnDestroy {
+export class ClinicianComponent implements OnInit{
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
 
@@ -64,8 +64,7 @@ export class ClinicianComponent implements OnInit, OnDestroy {
         });
       }),
   });
-  initialized: any;
-  currentPathName: string;
+
 
   constructor(
     private service: ReportService,
@@ -76,23 +75,10 @@ export class ClinicianComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.get_DropDown_Data();
-    const Action = 0;
-    this.currentPathName = this.router.url.replace('/', '');
-    this.dataService
-      .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
-      .subscribe((response: any) => {});
 
-    this.initialized = true;
   }
 
-  ngOnDestroy(): void {
-    if (this.initialized) {
-      const Action = 10;
-      this.dataService
-        .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
-        .subscribe((response: any) => {});
-    }
-  }
+
 
   show_new__Form() {
     this.isAddClinicianPopupOpened = true;

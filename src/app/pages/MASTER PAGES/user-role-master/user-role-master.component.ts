@@ -37,7 +37,7 @@ import { DataService } from 'src/app/services';
   styleUrls: ['./user-role-master.component.scss'],
   providers: [MasterReportService, ReportService, DataService],
 })
-export class UserLevelMasterComponent implements OnInit, OnDestroy {
+export class UserLevelMasterComponent {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
   @ViewChild(UserLevelNewFormComponent, { static: false })
@@ -70,8 +70,7 @@ export class UserLevelMasterComponent implements OnInit, OnDestroy {
         });
       }),
   });
-  currentPathName: string;
-  initialized: boolean;
+
 
   constructor(
     private service: ReportService,
@@ -80,24 +79,7 @@ export class UserLevelMasterComponent implements OnInit, OnDestroy {
     private dataService: DataService
   ) {}
 
-  ngOnInit(): void {
-    const Action = 0;
-    this.currentPathName = this.router.url.replace('/', '');
-    this.dataService
-      .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
-      .subscribe((response: any) => {});
 
-    this.initialized = true;
-  }
-
-  ngOnDestroy(): void {
-    if (this.initialized) {
-      const Action = 10;
-      this.dataService
-        .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
-        .subscribe((response: any) => {});
-    }
-  }
 
   show_new_Form() {
     this.isAddFormVisible = true;

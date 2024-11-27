@@ -39,7 +39,7 @@ import { DataService } from 'src/app/services';
   styleUrls: ['./user.component.scss'],
   providers: [MasterReportService, ReportService, DataService],
 })
-export class UserComponent implements OnInit, OnDestroy {
+export class UserComponent  {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
 
@@ -80,24 +80,7 @@ export class UserComponent implements OnInit, OnDestroy {
     private dataService: DataService
   ) {}
 
-  ngOnInit(): void {
-    const Action = 0;
-    this.currentPathName = this.router.url.replace('/', '');
-    this.dataService
-      .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
-      .subscribe((response: any) => {});
 
-    this.initialized = true;
-  }
-
-  ngOnDestroy(): void {
-    if (this.initialized) {
-      const Action = 10;
-      this.dataService
-        .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
-        .subscribe((response: any) => {});
-    }
-  }
 
   onEditingRow(event): void {
     console.log(event, 'event');

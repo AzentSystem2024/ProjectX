@@ -30,7 +30,7 @@ import { DataService } from 'src/app/services';
   styleUrls: ['./clinician-category.component.scss'],
   providers: [ReportService, DataService],
 })
-export class ClinicianCategoryComponent implements OnInit, OnDestroy {
+export class ClinicianCategoryComponent {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
   @ViewChild(ClinicianCategoryNewFormComponent, { static: false })
@@ -65,37 +65,11 @@ export class ClinicianCategoryComponent implements OnInit, OnDestroy {
     private dataService: DataService
   ) {}
 
-  ngOnInit(): void {
-    const Action = 0;
-    this.currentPathName = this.router.url.replace('/', '');
-    this.dataService
-      .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
-      .subscribe((response: any) => {});
-
-    this.initialized = true;
-  }
-
-  ngOnDestroy(): void {
-    if (this.initialized) {
-      const Action = 10;
-      this.dataService
-        .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
-        .subscribe((response: any) => {});
-    }
-  }
-
   //=============Showing the new Facility Form===================
   show_new_InsuranceClassification_Form() {
     this.isAddFormPopupOpened = true;
   }
-  // //========================Get Datasource =======================
-  // get_clinicianCategory_List() {
-  //   this.masterService
-  //     .Get_ClinicianCategory_Data()
-  //     .subscribe((response: any) => {
-  //       this.dataSource = response.data;
-  //     });
-  // }
+
   //========================Export data ==========================
   onExporting(event: any) {
     const fileName = 'Clinician Category';

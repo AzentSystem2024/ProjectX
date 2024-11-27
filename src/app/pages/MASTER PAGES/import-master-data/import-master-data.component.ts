@@ -33,7 +33,7 @@ import { DataService } from 'src/app/services';
   styleUrls: ['./import-master-data.component.scss'],
   providers: [DataService],
 })
-export class ImportMasterDataComponent implements OnInit, OnDestroy {
+export class ImportMasterDataComponent implements OnInit {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
   @ViewChild(ImportMasterDataFormComponent, { static: false })
@@ -66,23 +66,9 @@ export class ImportMasterDataComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.getImportMasterLog();
-    const Action = 0;
-    this.currentPathName = this.router.url.replace('/', '');
-    this.dataService
-      .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
-      .subscribe((response: any) => {});
 
-    this.initialized = true;
   }
 
-  ngOnDestroy(): void {
-    if (this.initialized) {
-      const Action = 10;
-      this.dataService
-        .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
-        .subscribe((response: any) => {});
-    }
-  }
 
   CloseEditForm() {
     this.isNewFormPopupOpened = false;

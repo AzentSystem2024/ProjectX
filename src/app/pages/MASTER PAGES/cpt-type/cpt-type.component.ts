@@ -30,7 +30,7 @@ import { DataService } from 'src/app/services';
   styleUrls: ['./cpt-type.component.scss'],
   providers: [ReportService, DataService],
 })
-export class CPTTypeComponent implements OnInit, OnDestroy {
+export class CPTTypeComponent  {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
   @ViewChild(CptTypeNewFormComponent, { static: false })
@@ -64,24 +64,8 @@ export class CPTTypeComponent implements OnInit, OnDestroy {
     private dataService: DataService
   ) {}
 
-  ngOnInit(): void {
-    const Action = 0;
-    this.currentPathName = this.router.url.replace('/', '');
-    this.dataService
-      .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
-      .subscribe((response: any) => {});
 
-    this.initialized = true;
-  }
 
-  ngOnDestroy(): void {
-    if (this.initialized) {
-      const Action = 10;
-      this.dataService
-        .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
-        .subscribe((response: any) => {});
-    }
-  }
   //=========================show new popup=========================
   show_new_Form() {
     this.isAddFormPopupOpened = true;

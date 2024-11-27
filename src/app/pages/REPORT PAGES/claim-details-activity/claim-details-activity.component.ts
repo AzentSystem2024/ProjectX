@@ -53,7 +53,7 @@ import { DataService } from 'src/app/services';
   styleUrls: ['./claim-details-activity.component.scss'],
   providers: [ReportService, ReportEngineService, DatePipe, DataService],
 })
-export class ClaimDetailsActivityComponent implements OnInit, OnDestroy {
+export class ClaimDetailsActivityComponent {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
 
@@ -155,11 +155,9 @@ export class ClaimDetailsActivityComponent implements OnInit, OnDestroy {
     private service: ReportService,
     private router: Router,
     private reportengine: ReportEngineService,
-    private datePipe: DatePipe,
-    private dataService: DataService
+    private datePipe: DatePipe
   ) {
     this.loadingVisible = true;
-
     this.minDate = new Date(2000, 1, 1); // Set the minimum date
     this.maxDate = new Date(); // Set the maximum date
     //============Year field dataSource===============
@@ -169,37 +167,18 @@ export class ClaimDetailsActivityComponent implements OnInit, OnDestroy {
     }
     //=============month field datasource============
     this.monthDataSource = this.service.getMonths();
-  }
-
-  ngOnInit(): void {
     this.get_searchParameters_Dropdown_Values();
-    this.userId = sessionStorage.getItem('UserID');
-    const Action = 0;
-    this.currentPathName = this.router.url.replace('/', '');
-    this.dataService
-      .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
-      .subscribe((response: any) => {});
-
-    this.initialized = true;
   }
 
-  ngOnDestroy(): void {
-    if (this.initialized) {
-      const Action = 10;
-      this.dataService
-        .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
-        .subscribe((response: any) => {});
-    }
+  //=============Resize the popup drill down============
+  onResizeEnd(event: any) {
+    this.popupWidth = event.width;
+    this.popupHeight = event.height;
   }
- //=============Resize the popup drill down============
- onResizeEnd(event: any) {
-  this.popupWidth = event.width;
-  this.popupHeight = event.height;
-}
- //==========Remove closing popup from the popup array=======
- closePopup(index: number) {
-  this.popups.splice(index, 1); // Remove the popup from the array
-}
+  //==========Remove closing popup from the popup array=======
+  closePopup(index: number) {
+    this.popups.splice(index, 1); // Remove the popup from the array
+  }
 
   //================Show and Hide Search parameters==========
   toggleContent() {

@@ -28,7 +28,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./facility-list.component.scss'],
   providers: [ReportService, DataService],
 })
-export class FacilityListComponent implements OnInit, OnDestroy {
+export class FacilityListComponent implements OnInit{
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
 
@@ -69,23 +69,10 @@ export class FacilityListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.get_All_DropDown_Data();
-    const Action = 0;
-    this.currentPathName = this.router.url.replace('/', '');
-    this.dataService
-      .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
-      .subscribe((response: any) => {});
 
-    this.initialized = true;
   }
 
-  ngOnDestroy(): void {
-    if (this.initialized) {
-      const Action = 10;
-      this.dataService
-        .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
-        .subscribe((response: any) => {});
-    }
-  }
+
 
   get_All_DropDown_Data() {
     this.masterService

@@ -27,7 +27,7 @@ import { DataService } from 'src/app/services';
   styleUrls: ['./license-info.component.scss'],
   providers: [ReportService, DataService],
 })
-export class LicenseInfoComponent implements OnInit, OnDestroy {
+export class LicenseInfoComponent {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
 
@@ -76,25 +76,6 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
     private router: Router,
     private dataService: DataService
   ) {}
-
-  ngOnInit(): void {
-    const Action = 0;
-    this.currentPathName = this.router.url.replace('/', '');
-    this.dataService
-      .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
-      .subscribe((response: any) => {});
-
-    this.initialized = true;
-  }
-
-  ngOnDestroy(): void {
-    if (this.initialized) {
-      const Action = 10;
-      this.dataService
-        .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
-        .subscribe((response: any) => {});
-    }
-  }
 
   //========================Export data ==========================
   onExporting(event: any) {

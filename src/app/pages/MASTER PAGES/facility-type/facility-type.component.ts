@@ -32,7 +32,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./facility-type.component.scss'],
   providers: [DataService, ReportService],
 })
-export class FacilityTypeComponent implements OnInit, OnDestroy {
+export class FacilityTypeComponent {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
   @ViewChild(FacilityTypeNewFormComponent, { static: false })
@@ -66,24 +66,7 @@ export class FacilityTypeComponent implements OnInit, OnDestroy {
     private dataService: DataService
   ) {}
 
-  ngOnInit(): void {
-    const Action = 0;
-    this.currentPathName = this.router.url.replace('/', '');
-    this.dataService
-      .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
-      .subscribe((response: any) => {});
 
-    this.initialized = true;
-  }
-
-  ngOnDestroy(): void {
-    if (this.initialized) {
-      const Action = 10;
-      this.dataService
-        .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
-        .subscribe((response: any) => {});
-    }
-  }
 
   //=========================show new popup=========================
   show_new_Form() {

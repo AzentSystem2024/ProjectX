@@ -54,7 +54,7 @@ import { DataService } from 'src/app/services';
   styleUrls: ['./claim-details.component.scss'],
   providers: [ReportService, ReportEngineService, DatePipe, DataService],
 })
-export class ClaimDetailsComponent implements OnInit, OnDestroy {
+export class ClaimDetailsComponent  {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
 
@@ -121,7 +121,7 @@ export class ClaimDetailsComponent implements OnInit, OnDestroy {
   isContentVisible: boolean = true;
   hint_for_Parametr_div: any = 'Hide Parameters';
   currentPathName: any;
-  userId: string;
+
   minDate: Date;
   maxDate: Date;
   ColumnNames: any;
@@ -170,28 +170,13 @@ export class ClaimDetailsComponent implements OnInit, OnDestroy {
     }
     //=============month field datasource============
     this.monthDataSource = this.service.getMonths();
-  }
-
-  ngOnInit(): void {
     this.get_searchParameters_Dropdown_Values();
-    this.userId = sessionStorage.getItem('UserID');
-    const Action = 0;
-    this.currentPathName = this.router.url.replace('/', '');
-    this.dataService
-      .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
-      .subscribe((response: any) => {});
-
-    this.initialized = true;
   }
 
-  ngOnDestroy(): void {
-    if (this.initialized) {
-      const Action = 10;
-      this.dataService
-        .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
-        .subscribe((response: any) => {});
-    }
-  }
+  // ngOnInit(): void {
+  //   this.get_searchParameters_Dropdown_Values();
+  // }
+
   //=============Resize the popup drill down============
   onResizeEnd(event: any) {
     this.popupWidth = event.width;
@@ -235,11 +220,6 @@ export class ClaimDetailsComponent implements OnInit, OnDestroy {
           this.SearchOn_Value = this.SearchOn_DataSource.find(
             (item) => item.ID === 'EncounterStartDate'
           )?.ID;
-          console.log(
-            'search on data source and search on value =>',
-            this.SearchOn_DataSource,
-            this.SearchOn_Value
-          );
           this.Facility_DataSource = response.facility;
           this.EncounterType_DataSource = response.EncounterType;
           this.RecieverID_DataSource = response.ReceiverID;

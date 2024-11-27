@@ -12,7 +12,7 @@ import { DxScrollViewComponent } from 'devextreme-angular/ui/scroll-view';
 import { CommonModule } from '@angular/common';
 
 import { Router, RouterModule, NavigationEnd, Event } from '@angular/router';
-import { ScreenService, AppInfoService } from '../../services';
+import { ScreenService, AppInfoService, DataService } from '../../services';
 import {
   SideNavigationMenuModule,
   AppHeaderModule,
@@ -33,6 +33,7 @@ import { InactivityService } from 'src/app/services/inactivity.service';
   selector: 'app-side-nav-outer-toolbar',
   templateUrl: './side-nav-outer-toolbar.component.html',
   styleUrls: ['./side-nav-outer-toolbar.component.scss'],
+  providers: [DataService],
 })
 export class SideNavOuterToolbarComponent implements OnInit, OnDestroy {
   @ViewChild(DxScrollViewComponent, { static: true })
@@ -64,7 +65,8 @@ export class SideNavOuterToolbarComponent implements OnInit, OnDestroy {
     private screen: ScreenService,
     private router: Router,
     public appInfo: AppInfoService,
-    private inactiveservice: InactivityService
+    private inactiveservice: InactivityService,
+    private dataService: DataService
   ) {
     this.routerSubscription = this.router.events.subscribe((event: Event) => {
       if (event instanceof NavigationEnd) {
@@ -121,6 +123,9 @@ export class SideNavOuterToolbarComponent implements OnInit, OnDestroy {
     const pointerEvent = event.event;
 
     if (path && this.menuOpened) {
+      this.dataService
+        .set_pageLoading_And_Closing_Log(0, path)
+        .subscribe((response: any) => {});
       const tabExists = this.tabs.some((tab) => tab.path === path);
       if (!tabExists) {
         this.tabs.push({
@@ -167,12 +172,9 @@ export class SideNavOuterToolbarComponent implements OnInit, OnDestroy {
     e.itemData = e.fromData[e.fromIndex];
   }
 
-  onTabDrop(event) {
-    // Logic for tab drop
-  }
+  onTabDrop(event) {}
 
   showCloseButton() {
-    // Logic to show/hide close button
     return true;
   }
 
@@ -180,11 +182,13 @@ export class SideNavOuterToolbarComponent implements OnInit, OnDestroy {
     const index = this.tabs.indexOf(tab);
     if (index > -1) {
       this.tabs.splice(index, 1);
+      this.dataService
+        .set_pageLoading_And_Closing_Log(10, tab.path)
+        .subscribe((response: any) => {});
       if (this.selectedIndex >= this.tabs.length) {
         this.selectedIndex = this.tabs.length - 1;
       }
     }
-  
     if (this.selectedIndex >= 0) {
       const selectedTab = this.tabs[this.selectedIndex];
       let path = selectedTab.path;

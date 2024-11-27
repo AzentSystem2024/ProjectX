@@ -40,7 +40,7 @@ type EditorOptions = DxTextBoxTypes.Properties;
   styleUrls: ['./notificarion-settings.component.scss'],
   providers: [DataService],
 })
-export class NotificationSettingsComponent implements OnInit, OnDestroy {
+export class NotificationSettingsComponent implements OnInit {
   @ViewChild(DxFormComponent, { static: false }) form: DxFormComponent;
 
   @ViewChild(DxValidatorComponent, { static: false })
@@ -152,22 +152,6 @@ export class NotificationSettingsComponent implements OnInit, OnDestroy {
     this.getNotificationSettingsData();
     this.getNotificationSettingsTemplateList();
     this.updateVisibility();
-    const Action = 0;
-    this.currentPathName = this.router.url.replace('/', '');
-    this.dataService
-      .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
-      .subscribe((response: any) => {});
-
-    this.initialized = true;
-  }
-
-  ngOnDestroy(): void {
-    if (this.initialized) {
-      const Action = 10;
-      this.dataService
-        .set_pageLoading_And_Closing_Log(Action, this.currentPathName)
-        .subscribe((response: any) => {});
-    }
   }
 
   addToEmailMessage(selectedValue: string) {
