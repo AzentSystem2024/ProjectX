@@ -163,8 +163,8 @@ export class SideNavOuterToolbarComponent implements OnInit, OnDestroy {
     this.selectedIndex = this.tabs.findIndex((tab) => tab.path === path);
     this.router.navigate([path]);
   }
+
   disableButton() {
-    // Disable Add Tab button if needed
     return false;
   }
 

@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import { Observable} from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
-const BASE_URL=environment.PROJECTX_API_BASE_URL
+const BASE_URL = environment.PROJECTX_API_BASE_URL;
 
 const Token = JSON.parse(localStorage.getItem('Token'));
 
@@ -27,14 +27,14 @@ export class MasterReportService {
 
   //======Facility Drop down data=====================
   Get_GropDown(dropDownField: any) {
-    const Url = `${BASE_URL}/dropdown`;
+    const Url = `${BASE_URL}dropdown`;
     const reqBody = { name: dropDownField };
     return this.http.post(Url, reqBody);
   }
   //==========================================USER LEVEL MASTER======================================================
   //============List of User Level==============
   get_userLevel_List() {
-    const Url = `${BASE_URL}/userroles/list`;
+    const Url = `${BASE_URL}userroles/list`;
     const reqBody = {
       list: [],
     };
@@ -58,7 +58,7 @@ export class MasterReportService {
   }
   //=============insert user level data=========
   insert_userLevel_Data(ObjData: any) {
-    const Url = `${BASE_URL}/userroles/insert`;
+    const Url = `${BASE_URL}userroles/insert`;
     const reqBody = {
       UserRoles: ObjData[0].userLevelname,
       UserMenuList: ObjData[0].Menus,
@@ -67,7 +67,7 @@ export class MasterReportService {
   }
   //=============update user level data=========
   update_userLevel_Data(ObjData: any) {
-    const Url = `${BASE_URL}/userroles/update`;
+    const Url = `${BASE_URL}userroles/update`;
     const reqBody = {
       ID: ObjData[0].userLevelID,
       UserRoles: ObjData[0].userLevelname,
@@ -88,7 +88,7 @@ export class MasterReportService {
   //==========================================INSURANCE MASTER==========================================================
   //====Insurance List===========
   get_Speciality_List() {
-    const Url = `${BASE_URL}/speciality/list`;
+    const Url = `${BASE_URL}speciality/list`;
     const reqBody = {
       list: [],
     };
@@ -105,7 +105,7 @@ export class MasterReportService {
     SpecialityShortName: any,
     Description: any
   ) {
-    const url = `${BASE_URL}/speciality/insert`;
+    const url = `${BASE_URL}speciality/insert`;
     const reqBody = {
       SpecialityCode: SpecialityCode,
       SpecialityName: SpecialityName,
@@ -154,7 +154,7 @@ export class MasterReportService {
   //==========================================INSURANCE MASTER==========================================================
   //====Insurance List===========
   get_Insurance_List() {
-    const Url = `${BASE_URL}/insurancecompany/list`;
+    const Url = `${BASE_URL}insurancecompany/list`;
     const reqBody = {
       list: [],
     };
@@ -170,7 +170,7 @@ export class MasterReportService {
     InsuranceName: any,
     InsuranceShortName: any
   ) {
-    const url = `${BASE_URL}/insurancecompany/insert`;
+    const url = `${BASE_URL}insurancecompany/insert`;
     const reqBody = {
       InsuranceID: InsuranceID,
       InsuranceName: InsuranceName,
@@ -216,14 +216,10 @@ export class MasterReportService {
   //===================================================FACILITY====================================================
   //=======Fetch All facility data========
   Get_Facility_List_Data() {
-    const Url = `${BASE_URL}/facility/list`;
+    const Url = `${BASE_URL}facility/list`;
     const reqBody = {
       list: [],
     };
-    // const headers = new HttpHeaders({
-    //   'Content-Type': 'application/json',
-    //   'x-api-key': Token,
-    // });
     return this.http.post(Url, reqBody);
   }
 
@@ -234,41 +230,41 @@ export class MasterReportService {
     FacilityName: any,
     Region: any,
     FacilityTypeID: any,
-    FacilityGroupID: any,
     FacilityAddress: any,
-    PostOfficeID: any
+    PostOfficeID: any,
+    FacilityGroupID: any,
+    FacilityGroupID1: any,
+    FacilityGroupID2: any,
+    FacilityGroupID3: any,
+    FacilityGroupID4: any
   ) {
-    const url = `${BASE_URL}/facility/update`;
+    const url = `${BASE_URL}facility/update`;
     const reqBody = {
       ID: id,
       FacilityLicense: FacilityLicense,
       FacilityName: FacilityName,
       Region: Region,
       FacilityTypeID: FacilityTypeID,
-      FacilityGroupID: FacilityGroupID,
       FacilityAddress: FacilityAddress,
       PostOfficeID: PostOfficeID,
+      FacilityGroupID: FacilityGroupID,
+      FacilityGroupID1: FacilityGroupID1,
+      FacilityGroupID2: FacilityGroupID2,
+      FacilityGroupID3: FacilityGroupID3,
+      FacilityGroupID4: FacilityGroupID4,
     };
-    // const headers = new HttpHeaders({
-    //   'Content-Type': 'application/json',
-    //   'x-api-key': Token,
-    // });
     return this.http.post(url, reqBody);
   }
 
   //=====Remove Facility Data=====
   Remove_Facility_Row_Data(id: any) {
-    // const headers = new HttpHeaders({
-    //   'Content-Type': 'application/json',
-    //   'x-api-key': Token,
-    // });
-    return this.http.post(`${BASE_URL}speciality/delete/${id}`, {});
+    return this.http.post(`${BASE_URL}facility/delete/${id}`, {});
   }
 
   //================================================FACILITY TYPE=================================================
   //=====Fetch all Facility Type data======
   Get_Facility_Type_Data() {
-    const Url = `${BASE_URL}/facilitytype/list`;
+    const Url = `${BASE_URL}facilitytype/list`;
     const reqBody = {
       list: [],
     };
@@ -280,7 +276,7 @@ export class MasterReportService {
   }
   //====Add facility Type data=======
   Insert_FacilityType_Data(FacilityType: any, description: any) {
-    const url = `${BASE_URL}/facilitytype/insert`;
+    const url = `${BASE_URL}facilitytype/insert`;
     const reqBody = {
       FacilityType: FacilityType,
       Description: description,
@@ -293,7 +289,7 @@ export class MasterReportService {
   }
   //====Update Facility Type data====
   update_facilityTYPE_data(id: any, FacilityType: any, description: any) {
-    const url = `${BASE_URL}/facilitytype/update`;
+    const url = `${BASE_URL}facilitytype/update`;
     const reqBody = {
       ID: id,
       FacilityType: FacilityType,
@@ -316,7 +312,7 @@ export class MasterReportService {
 
   //===================================================FACILITY GROUP============================================
   Get_Facility_Group_Data() {
-    const Url = `${BASE_URL}/facilitygROUP/list`;
+    const Url = `${BASE_URL}facilitygROUP/list`;
     const reqBody = {
       list: [],
     };
@@ -327,24 +323,32 @@ export class MasterReportService {
     return this.http.post(Url, reqBody);
   }
   //=====Add facility group data=====
-  Insert_FacilityGroup_Data(facilitygroup: any, description: any) {
-    const url = `${BASE_URL}/facilitygroup/insert`;
+  Insert_FacilityGroup_Data(
+    facilitygroup: any,
+    FacilityCategoryValue: any,
+    description: any
+  ) {
+    const url = `${BASE_URL}facilitygroup/insert`;
     const reqBody = {
       FacilityGroup: facilitygroup,
+      GroupCategory: FacilityCategoryValue,
       Description: description,
     };
-    // const headers = new HttpHeaders({
-    //   'Content-Type': 'application/json',
-    //   'x-api-key': Token,
-    // });
+
     return this.http.post(url, reqBody);
   }
   //=====Update Facility Group data====
-  update_facilityGroup_data(id: any, facilitygroup: any, description: any) {
-    const url = `${BASE_URL}/facilitygROUP/update`;
+  update_facilityGroup_data(
+    id: any,
+    facilitygroup: any,
+    FacilityCategoryValue: any,
+    description: any
+  ) {
+    const url = `${BASE_URL}facilitygROUP/update`;
     const reqBody = {
       ID: id,
       FacilityGroup: facilitygroup,
+      GroupLevel: FacilityCategoryValue,
       Description: description,
     };
     // const headers = new HttpHeaders({
@@ -359,17 +363,13 @@ export class MasterReportService {
     //   'Content-Type': 'application/json',
     //   'x-api-key': Token,
     // });
-    return this.http.post(`${BASE_URL}facilitygroup/delete/${id}`, {})
+    return this.http.post(`${BASE_URL}facilitygroup/delete/${id}`, {});
   }
-
-
-
-
 
   //================================================FACILITY REGION=================================================
   //=====Fetch all Facility Type data======
   Get_Facility_Region_Data() {
-    const Url = `${BASE_URL}/facilityregion/list`;
+    const Url = `${BASE_URL}facilityregion/list`;
     const reqBody = {
       list: [],
     };
@@ -381,7 +381,7 @@ export class MasterReportService {
   }
   //====Add facility Type data=======
   Insert_FacilityRegion_Data(FacilityRegion: any, description: any) {
-    const url = `${BASE_URL}/facilityregion/insert`;
+    const url = `${BASE_URL}facilityregion/insert`;
     const reqBody = {
       FacilityRegion: FacilityRegion,
       Description: description,
@@ -394,7 +394,7 @@ export class MasterReportService {
   }
   //====Update Facility Type data====
   update_facilityRegion_data(id: any, FacilityRegion: any, description: any) {
-    const url = `${BASE_URL}/facilityregion/update`;
+    const url = `${BASE_URL}facilityregion/update`;
     const reqBody = {
       ID: id,
       FacilityRegion: FacilityRegion,
@@ -415,11 +415,10 @@ export class MasterReportService {
     return this.http.post(`${BASE_URL}facilityregion/delete/${id}`, {});
   }
 
-
   //==========================================CPT MASTER==========================================================
   //======Cpt Master List===========
   get_CptMaster_List() {
-    const Url = `${BASE_URL}/cptmaster/list`;
+    const Url = `${BASE_URL}cptmaster/list`;
     const reqBody = {
       list: [],
     };
@@ -437,7 +436,7 @@ export class MasterReportService {
     CPTName: any,
     description: any
   ) {
-    const url = `${BASE_URL}/cptmaster/insert`;
+    const url = `${BASE_URL}cptmaster/insert`;
     const reqBody = {
       CPTTypeID: CPTTypeID,
       CPTCode: CPTCode,
@@ -461,7 +460,7 @@ export class MasterReportService {
     CPTName: any,
     description: any
   ) {
-    const url = `${BASE_URL}/cptmaster/update`;
+    const url = `${BASE_URL}cptmaster/update`;
     const reqBody = {
       ID: id,
       CPTTypeID: CPTTypeID,
@@ -489,7 +488,7 @@ export class MasterReportService {
   //==========================================CPY TYPE MASTER==========================================================
   //======Cpt type List===========
   get_CptType_List() {
-    const Url = `${BASE_URL}/CPTtype/list`;
+    const Url = `${BASE_URL}CPTtype/list`;
     const reqBody = {
       list: [],
     };
@@ -501,7 +500,7 @@ export class MasterReportService {
   }
   //======Add Cpt type data========
   Insert_CptType_Data(CptType: any, description: any) {
-    const url = `${BASE_URL}/CPTtype/insert`;
+    const url = `${BASE_URL}CPTtype/insert`;
     const reqBody = {
       CptType: CptType,
       Description: description,
@@ -515,7 +514,7 @@ export class MasterReportService {
 
   //=====Update Cpt type data======
   update_CptType_data(id: any, CptType: any, Description: any) {
-    const url = `${BASE_URL}/CPTtype/update`;
+    const url = `${BASE_URL}CPTtype/update`;
     const reqBody = {
       ID: id,
       CptType: CptType,
@@ -600,7 +599,7 @@ export class MasterReportService {
   //==========================================Denial TYPE MASTER==========================================================
   //======Denial type List===========
   get_DenialType_List() {
-    const Url = `${BASE_URL}/denialtype/list`;
+    const Url = `${BASE_URL}denialtype/list`;
     const reqBody = {
       list: [],
     };
@@ -612,7 +611,7 @@ export class MasterReportService {
   }
   //======Add Denial type data========
   Insert_DenialType_Data(DenialType: any, description: any) {
-    const url = `${BASE_URL}/denialtype/insert`;
+    const url = `${BASE_URL}denialtype/insert`;
     const reqBody = {
       DenialType: DenialType,
       Description: description,
@@ -626,7 +625,7 @@ export class MasterReportService {
 
   //=====Update Denial type data======
   update_DenialType_data(id: any, DenialType: any, Description: any) {
-    const url = `${BASE_URL}/denialtype/update`;
+    const url = `${BASE_URL}denialtype/update`;
     const reqBody = {
       ID: id,
       DenialType: DenialType,
@@ -651,7 +650,7 @@ export class MasterReportService {
   //==========================================Denial TYPE MASTER==========================================================
   //======Denial category List===========
   get_DenialCategory_List() {
-    const Url = `${BASE_URL}/denialcategory/list`;
+    const Url = `${BASE_URL}denialcategory/list`;
     const reqBody = {
       list: [],
     };
@@ -663,7 +662,7 @@ export class MasterReportService {
   }
   //======Add Denial category data========
   Insert_DenialCategory_Data(DenialCategory: any, description: any) {
-    const url = `${BASE_URL}/denialcategory/insert`;
+    const url = `${BASE_URL}denialcategory/insert`;
     const reqBody = {
       DenialCategorys: DenialCategory,
       Description: description,
@@ -677,7 +676,7 @@ export class MasterReportService {
 
   //=====Update Denial category data======
   update_DenialCategory_data(id: any, DenialCategory: any, Description: any) {
-    const url = `${BASE_URL}/denialcategory/update`;
+    const url = `${BASE_URL}denialcategory/update`;
     const reqBody = {
       ID: id,
       DenialCategorys: DenialCategory,
@@ -701,7 +700,7 @@ export class MasterReportService {
   //========================================================CLINICIAN=========================================================
   //===========Get all data list========
   get_Clinian_Table_Data() {
-    const Url = `${BASE_URL}/clinician/list`;
+    const Url = `${BASE_URL}clinician/list`;
     const reqBody = {
       list: [],
     };
@@ -719,7 +718,7 @@ export class MasterReportService {
     CategoryID: any,
     Gender: any
   ) {
-    const url = `${BASE_URL}/clinician/insert`;
+    const url = `${BASE_URL}clinician/insert`;
     const reqBody = {
       ClinicianLicense: ClinicianLicense,
       ClinicianName: ClinicianName,
@@ -749,7 +748,7 @@ export class MasterReportService {
     CategoryID: any,
     Gender: any
   ) {
-    const url = `${BASE_URL}/clinician/update`;
+    const url = `${BASE_URL}clinician/update`;
     const reqBody = {
       ID: id,
       ClinicianLicense: ClinicianLicense,
@@ -779,7 +778,7 @@ export class MasterReportService {
 
   //===================================================INSURANCE CLASSIFICATION============================================
   Get_InsuranceClassification_Data() {
-    const Url = `${BASE_URL}/insuranceclassification/list`;
+    const Url = `${BASE_URL}insuranceclassification/list`;
     const reqBody = {
       list: [],
     };
@@ -791,7 +790,7 @@ export class MasterReportService {
   }
   //=====Add CLASSIFICATION data=====
   Insert_InsuranceClassification_Data(Classification: any, description: any) {
-    const url = `${BASE_URL}/insuranceclassification/insert`;
+    const url = `${BASE_URL}insuranceclassification/insert`;
     const reqBody = {
       Classification: Classification,
       Description: description,
@@ -808,7 +807,7 @@ export class MasterReportService {
     Classification: any,
     description: any
   ) {
-    const url = `${BASE_URL}/insuranceclassification/update`;
+    const url = `${BASE_URL}insuranceclassification/update`;
     const reqBody = {
       ID: id,
       Classification: Classification,
@@ -834,7 +833,7 @@ export class MasterReportService {
 
   //===================================================clinician profession============================================
   Get_ClinicianProfession_Data() {
-    const Url = `${BASE_URL}/clinicianprofession/list`;
+    const Url = `${BASE_URL}clinicianprofession/list`;
     const reqBody = {
       list: [],
     };
@@ -846,7 +845,7 @@ export class MasterReportService {
   }
   //=====Add clinicianprofession data=====
   Insert_ClinicianProfession_Data(Profession: any, description: any) {
-    const url = `${BASE_URL}/clinicianprofession/insert`;
+    const url = `${BASE_URL}clinicianprofession/insert`;
     const reqBody = {
       Profession: Profession,
       Description: description,
@@ -859,7 +858,7 @@ export class MasterReportService {
   }
   //=====Update clinicianprofession data====
   update_ClinicianProfession_data(id: any, Profession: any, description: any) {
-    const url = `${BASE_URL}/clinicianprofession/update`;
+    const url = `${BASE_URL}clinicianprofession/update`;
     const reqBody = {
       ID: id,
       Profession: Profession,
@@ -882,7 +881,7 @@ export class MasterReportService {
 
   //===================================================clinician Major============================================
   Get_ClinicianMajor_Data() {
-    const Url = `${BASE_URL}/clinicianmajor/list`;
+    const Url = `${BASE_URL}clinicianmajor/list`;
     const reqBody = {
       list: [],
     };
@@ -894,7 +893,7 @@ export class MasterReportService {
   }
   //=====Add clinician Major data=====
   Insert_ClinicianMajor_Data(Major: any, description: any) {
-    const url = `${BASE_URL}/clinicianmajor/insert`;
+    const url = `${BASE_URL}clinicianmajor/insert`;
     const reqBody = {
       Major: Major,
       Description: description,
@@ -907,7 +906,7 @@ export class MasterReportService {
   }
   //=====Update clinician Major data====
   update_ClinicianMajor_data(id: any, Major: any, description: any) {
-    const url = `${BASE_URL}/clinicianmajor/update`;
+    const url = `${BASE_URL}clinicianmajor/update`;
     const reqBody = {
       ID: id,
       Major: Major,
@@ -930,7 +929,7 @@ export class MasterReportService {
 
   //===================================================clinician Category============================================
   Get_ClinicianCategory_Data() {
-    const Url = `${BASE_URL}/cliniciancategory/list`;
+    const Url = `${BASE_URL}cliniciancategory/list`;
     const reqBody = {
       list: [],
     };
@@ -942,7 +941,7 @@ export class MasterReportService {
   }
   //=====Add clinician Category data=====
   Insert_ClinicianCategory_Data(Category: any, description: any) {
-    const url = `${BASE_URL}/cliniciancategory/insert`;
+    const url = `${BASE_URL}cliniciancategory/insert`;
     const reqBody = {
       Category: Category,
       Description: description,
@@ -955,7 +954,7 @@ export class MasterReportService {
   }
   //=====Update clinician category data====
   update_ClinicianCategory_data(id: any, Category: any, description: any) {
-    const url = `${BASE_URL}/cliniciancategory/update`;
+    const url = `${BASE_URL}cliniciancategory/update`;
     const reqBody = {
       ID: id,
       Category: Category,
@@ -976,126 +975,127 @@ export class MasterReportService {
     return this.http.post(`${BASE_URL}cliniciancategory/delete/${id}`, {});
   }
 
-
-  getUserSecurityPolicityData(){
-    return this.http.post(`${BASE_URL}usersecurity/usersecuritylist`,{})
+  getUserSecurityPolicityData() {
+    return this.http.post(`${BASE_URL}usersecurity/usersecuritylist`, {});
   }
-  getCountryList(){
-    return this.http.post(`http://103.180.120.134/veztaretail/api/country/list`,{});
-  }
-
-  get_User_data(){
-    return this.http.post(`${BASE_URL}user/list`,{})
-  }
-  get_User_Data_By_Id(id:number){
-    return this.http.post(`${BASE_URL}user/select/`+id,{});
+  getCountryList() {
+    return this.http.post(
+      `http://103.180.120.134/veztaretail/api/country/list`,
+      {}
+    );
   }
 
-  insert_User_Data(data:any) {
+  get_User_data() {
+    return this.http.post(`${BASE_URL}user/list`, {});
+  }
+  get_User_Data_By_Id(id: number) {
+    return this.http.post(`${BASE_URL}user/select/` + id, {});
+  }
+
+  insert_User_Data(data: any) {
     const url = `${BASE_URL}user/insert`;
     const reqBody = {
-        UserName: data.UserName,
-        LoginName: data.LoginName,
-        Password: data.Password,
-        UserRoleID: data.UserRoleID,
-        DateofBirth: data.DateofBirth,
-        GenderID: data.GenderID,
-        Email: data.Email,
-        Mobile: data.Mobile,
-        Whatsapp: data.Whatsapp,
-        LoginExpiryDate: data.LoginExpiryDate,
-        IsInactive: data.IsInactive,
-        InactiveReason: data.InactiveReason,
-        IsLocked: data.IsLocked,
-        LockDateFrom: data.LockDateFrom,
-        LockDateTo: data.LockDateTo,
-        LockReason: data.LockReason,
-        PhotoFile: data.PhotoFile,
-        user_facility:data.user_facility,
-        changePasswordOnLogin:data.changePasswordOnLogin,
-        LoginExpiryReason:''
-      }
-
-      return this.http.post(url,reqBody);
+      UserName: data.UserName,
+      LoginName: data.LoginName,
+      Password: data.Password,
+      UserRoleID: data.UserRoleID,
+      DateofBirth: data.DateofBirth,
+      GenderID: data.GenderID,
+      Email: data.Email,
+      Mobile: data.Mobile,
+      Whatsapp: data.Whatsapp,
+      LoginExpiryDate: data.LoginExpiryDate,
+      IsInactive: data.IsInactive,
+      InactiveReason: data.InactiveReason,
+      IsLocked: data.IsLocked,
+      LockDateFrom: data.LockDateFrom,
+      LockDateTo: data.LockDateTo,
+      LockReason: data.LockReason,
+      PhotoFile: data.PhotoFile,
+      user_facility: data.user_facility,
+      changePasswordOnLogin: data.changePasswordOnLogin,
+      LoginExpiryReason: '',
     };
 
-    update_User_Data(data:any) {
-      const url = `${BASE_URL}/user/update`;
-      const reqBody = {
-          UserID : data.UserID,
-          UserName: data.UserName,
-          LoginName: data.LoginName,
-          Password: data.Password,
-          UserRoleID: data.UserRoleID,
-          DateofBirth: data.DateofBirth,
-          GenderID: data.GenderID,
-          Email: data.Email,
-          Mobile: data.Mobile,
-          Whatsapp: data.Whatsapp,
-          LoginExpiryDate: data.LoginExpiryDate,
-          IsInactive: data.IsInactive,
-          InactiveReason: data.InactiveReason,
-          IsLocked: data.IsLocked,
-          LockDateFrom: data.LockDateFrom,
-          LockDateTo: data.LockDateTo,
-          LockReason: data.LockReason,
-          PhotoFile: data.PhotoFile,
-          user_facility:data.user_facility,
-          changePasswordOnLogin:data.changePasswordOnLogin,
-          LoginExpiryReason:''
-        }
+    return this.http.post(url, reqBody);
+  }
 
-        return this.http.post(url,reqBody);
-      };
+  update_User_Data(data: any) {
+    const url = `${BASE_URL}user/update`;
+    const reqBody = {
+      UserID: data.UserID,
+      UserName: data.UserName,
+      LoginName: data.LoginName,
+      Password: data.Password,
+      UserRoleID: data.UserRoleID,
+      DateofBirth: data.DateofBirth,
+      GenderID: data.GenderID,
+      Email: data.Email,
+      Mobile: data.Mobile,
+      Whatsapp: data.Whatsapp,
+      LoginExpiryDate: data.LoginExpiryDate,
+      IsInactive: data.IsInactive,
+      InactiveReason: data.InactiveReason,
+      IsLocked: data.IsLocked,
+      LockDateFrom: data.LockDateFrom,
+      LockDateTo: data.LockDateTo,
+      LockReason: data.LockReason,
+      PhotoFile: data.PhotoFile,
+      user_facility: data.user_facility,
+      changePasswordOnLogin: data.changePasswordOnLogin,
+      LoginExpiryReason: '',
+    };
 
-      remove_User_Data(id: any) {
-        return this.http.post(`${BASE_URL}user/delete/`+id, {});
-      }
+    return this.http.post(url, reqBody);
+  }
 
-    reset_Password(data: any): Observable<any> {  // Ensure the function returns an Observable<any>
-      const url = `${BASE_URL}changepassword/password`;
+  remove_User_Data(id: any) {
+    return this.http.post(`${BASE_URL}user/delete/` + id, {});
+  }
 
-      return this.http.post(url, data)
+  reset_Password(data: any): Observable<any> {
+    // Ensure the function returns an Observable<any>
+    const url = `${BASE_URL}changepassword/password`;
 
-    }
+    return this.http.post(url, data);
+  }
 
-    getOtp(data:any):Observable<any>{
-      const url = `${BASE_URL}changepassword/forpassword`;
+  getOtp(data: any): Observable<any> {
+    const url = `${BASE_URL}changepassword/forpassword`;
 
-      return this.http.post(url, data)
-    }
+    return this.http.post(url, data);
+  }
 
-    get_Importing_Master_Log_List() {
-      const Url = `${BASE_URL}/importmaster/listimport`;
-      const reqBody = {
-        list: [],
-      };
-      // const headers = new HttpHeaders({
-      //   'Content-Type': 'application/json',
-      //   'x-api-key': Token,
-      // });
-      return this.http.post(Url, reqBody);
-    }
+  get_Importing_Master_Log_List() {
+    const Url = `${BASE_URL}importmaster/listimport`;
+    const reqBody = {
+      list: [],
+    };
+    // const headers = new HttpHeaders({
+    //   'Content-Type': 'application/json',
+    //   'x-api-key': Token,
+    // });
+    return this.http.post(Url, reqBody);
+  }
 
-    get_Importing_Master_List() {
-      const Url = `${BASE_URL}/importmaster/importmasterlist`;
-      const reqBody = {
-        list: [],
-      };
-      // const headers = new HttpHeaders({
-      //   'Content-Type': 'application/json',
-      //   'x-api-key': Token,
-      // });
-      return this.http.post(Url, reqBody);
-    }
+  get_Importing_Master_List() {
+    const Url = `${BASE_URL}importmaster/importmasterlist`;
+    const reqBody = {
+      list: [],
+    };
+    // const headers = new HttpHeaders({
+    //   'Content-Type': 'application/json',
+    //   'x-api-key': Token,
+    // });
+    return this.http.post(Url, reqBody);
+  }
 
-    Insert_Imported_Data(data: any) {
-      const url = `${BASE_URL}importmaster/insert`;
-      return this.http.post(url, data);
-    }
+  Insert_Imported_Data(data: any) {
+    const url = `${BASE_URL}importmaster/insert`;
+    return this.http.post(url, data);
+  }
 
-    get_Imported_Data_By_Id(id:number){
-      return this.http.post(`${BASE_URL}importmaster/select/`+id,{});
-    }
-
+  get_Imported_Data_By_Id(id: number) {
+    return this.http.post(`${BASE_URL}importmaster/select/` + id, {});
+  }
 }

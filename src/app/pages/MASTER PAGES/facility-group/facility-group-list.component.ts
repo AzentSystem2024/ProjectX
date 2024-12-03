@@ -34,13 +34,15 @@ import { Router } from '@angular/router';
   styleUrls: ['./facility-group-list.component.scss'],
   providers: [DataService, ReportService],
 })
-export class FacilityGroupListComponent  {
+export class FacilityGroupListComponent {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
   @ViewChild(FacilityGroupNewFormComponent, { static: false })
   facilityGroupComponent: FacilityGroupNewFormComponent;
 
   isAddFormPopupOpened: any = false;
+
+  FacilityLevelDatasource: any;
 
   //========Variables for Pagination ====================
   readonly allowedPageSizes: any = [5, 10, 'all'];
@@ -61,15 +63,14 @@ export class FacilityGroupListComponent  {
   });
   currentPathName: string;
   initialized: boolean;
+  GroupNameCaption: string;
 
   constructor(
     private service: ReportService,
-    private masterService: MasterReportService,
-    private router: Router,
-    private dataService: DataService
-  ) {}
-
-
+    private masterService: MasterReportService
+  ) {
+    this.get_FacilityGroup_DropDown();
+  }
 
   //=============Showing the new Facility Form===================
   show_new_FacilityGroup_Form() {
@@ -78,11 +79,12 @@ export class FacilityGroupListComponent  {
   //====================get Facility group dropdown ==============
   get_FacilityGroup_DropDown() {
     this.masterService
-      .Get_GropDown('FACILITYGROUP')
+      .Get_GropDown('FACILITY_GROUP_CATEGORY')
       .subscribe((response: any) => {
-        this.facilityGroupDatasource = response;
+        this.FacilityLevelDatasource = response;
       });
   }
+
   //========================Get Datasource =======================
 
   //========================Export data ==========================
@@ -92,10 +94,14 @@ export class FacilityGroupListComponent  {
   }
   //====================Add data ================================
   onClickSaveNewFacilityGroup = () => {
-    const { FacilityGroupValue, DescriptionValue } =
+    const { FacilityGroupValue, FacilityCategoryValue, DescriptionValue } =
       this.facilityGroupComponent.getNewFacilityGroupData();
     this.masterService
-      .Insert_FacilityGroup_Data(FacilityGroupValue, DescriptionValue)
+      .Insert_FacilityGroup_Data(
+        FacilityGroupValue,
+        FacilityCategoryValue,
+        DescriptionValue
+      )
       .subscribe((response: any) => {
         if (response) {
           this.dataGrid.instance.refresh();
@@ -154,13 +160,18 @@ export class FacilityGroupListComponent  {
     const updataDate = event.newData;
     const oldData = event.oldData;
     const combinedData = { ...oldData, ...updataDate };
-    // console.log('onrowUpdated Data getting ', combinedData);
     let id = combinedData.ID;
     let facilityGroup = combinedData.FacilityGroup;
+    let FacilityCategoryValue = combinedData.FacilityCategoryValue;
     let Description = combinedData.Description;
 
     this.masterService
-      .update_facilityGroup_data(id, facilityGroup, Description)
+      .update_facilityGroup_data(
+        id,
+        facilityGroup,
+        FacilityCategoryValue,
+        Description
+      )
       .subscribe((data: any) => {
         if (data) {
           this.dataGrid.instance.refresh();

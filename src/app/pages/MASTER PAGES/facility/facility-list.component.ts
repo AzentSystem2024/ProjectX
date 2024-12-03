@@ -28,7 +28,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./facility-list.component.scss'],
   providers: [ReportService, DataService],
 })
-export class FacilityListComponent implements OnInit{
+export class FacilityListComponent implements OnInit {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
 
@@ -62,17 +62,12 @@ export class FacilityListComponent implements OnInit{
 
   constructor(
     private service: ReportService,
-    private masterService: MasterReportService,
-    private router: Router,
-    private dataService: DataService
+    private masterService: MasterReportService
   ) {}
 
   ngOnInit(): void {
     this.get_All_DropDown_Data();
-
   }
-
-
 
   get_All_DropDown_Data() {
     this.masterService
@@ -109,15 +104,20 @@ export class FacilityListComponent implements OnInit{
     const updataDate = event.newData;
     const oldData = event.oldData;
     const combinedData = { ...oldData, ...updataDate };
+
     let id = combinedData.ID;
     let FacilityLicense = combinedData.FacilityLicense;
     let FacilityName = combinedData.FacilityName;
     let Region = combinedData.Region;
     let FacilityTypeID = combinedData.FacilityTypeID;
-    let FacilityGroupID = combinedData.FacilityGroupID;
     let FacilityAddress = combinedData.FacilityAddress;
     let PostOfficeID = combinedData.PostOfficeID;
-
+    let FacilityGroupID = combinedData.FacilityGroupID;
+    let FacilityGroupID1 = combinedData.FacilityGroupID1;
+    let FacilityGroupID2 = combinedData.FacilityGroupID2;
+    let FacilityGroupID3 = combinedData.FacilityGroupID3;
+    let FacilityGroupID4 = combinedData.FacilityGroupID4;
+    
     this.masterService
       .update_facility_data(
         id,
@@ -125,9 +125,13 @@ export class FacilityListComponent implements OnInit{
         FacilityName,
         Region,
         FacilityTypeID,
-        FacilityGroupID,
         FacilityAddress,
-        PostOfficeID
+        PostOfficeID,
+        FacilityGroupID,
+        FacilityGroupID1,
+        FacilityGroupID2,
+        FacilityGroupID3,
+        FacilityGroupID4
       )
       .subscribe((data: any) => {
         if (data) {
@@ -151,11 +155,9 @@ export class FacilityListComponent implements OnInit{
             'error'
           );
         }
-        // event.component.refresh();
         event.component.cancelEditData(); // Close the popup
         this.dataGrid.instance.refresh();
       });
-
     event.cancel = true; // Prevent the default update operation
   }
 

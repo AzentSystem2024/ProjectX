@@ -18,9 +18,99 @@
       mode="popup"
       [allowUpdating]="true"
       [allowDeleting]="true"
-      [popup]="{ width: '40%', height: 'auto' }"
+      [popup]="{ width: '50%', height: '75vh' }"
     >
-      <dxo-popup title="Edit facility" [showTitle]="true"> </dxo-popup>
+      <dxo-popup title="Edit facility" [showTitle]="true"></dxo-popup>
+      <dxo-form [colCount]="2">
+        <dxi-item dataField="FacilityLicense" editorType="dxTextBox">
+          <dxo-label text="License"></dxo-label>
+        </dxi-item>
+
+        <dxi-item dataField="FacilityName" editorType="dxTextBox">
+          <dxo-label text="Name"></dxo-label>
+        </dxi-item>
+
+        <dxi-item
+          dataField="FacilityTypeID"
+          editorType="dxSelectBox"
+          [editorOptions]="{
+            displayExpr: 'DESCRIPTION',
+            valueExpr: 'ID'
+          }"
+        >
+          <dxo-label text="Type"></dxo-label>
+        </dxi-item>
+
+        <dxi-item dataField="Postoffice" editorType="dxTextBox">
+          <dxo-label text="Post office"></dxo-label>
+        </dxi-item>
+
+        <dxi-item
+          dataField="FacilityGroupID"
+          editorType="dxSelectBox"
+          [editorOptions]="{
+            displayExpr: 'DESCRIPTION',
+            valueExpr: 'ID'
+          }"
+        >
+          <dxo-label text="Region"></dxo-label>
+        </dxi-item>
+
+        <dxi-item
+          dataField="FacilityGroupID1"
+          editorType="dxSelectBox"
+          [editorOptions]="{
+            displayExpr: 'DESCRIPTION',
+            valueExpr: 'ID'
+          }"
+        >
+          <dxo-label text="Emirates"></dxo-label>
+        </dxi-item>
+
+        <dxi-item
+          dataField="FacilityGroupID2"
+          editorType="dxSelectBox"
+          [editorOptions]="{
+            displayExpr: 'DESCRIPTION',
+            valueExpr: 'ID'
+          }"
+        >
+          <dxo-label text="Zone"></dxo-label>
+        </dxi-item>
+
+        <dxi-item
+          dataField="FacilityGroupID3"
+          editorType="dxSelectBox"
+          [editorOptions]="{
+            displayExpr: 'DESCRIPTION',
+            valueExpr: 'ID'
+          }"
+        >
+          <dxo-label text="Type"></dxo-label>
+        </dxi-item>
+
+        <dxi-item
+          dataField="FacilityGroupID4"
+          editorType="dxSelectBox"
+          [editorOptions]="{
+            displayExpr: 'DESCRIPTION',
+            valueExpr: 'ID'
+          }"
+        >
+          <dxo-label text="Category"></dxo-label>
+        </dxi-item>
+
+        <dxi-item dataField="Postoffice" editorType="dxTextBox">
+          <dxo-label text="Post office"></dxo-label>
+        </dxi-item>
+        <dxi-item
+          dataField="FacilityAddress"
+          editorType="dxTextArea"
+          [colSpan]="2"
+        >
+          <dxo-label text="Address"></dxo-label>
+        </dxi-item>
+      </dxo-form>
     </dxo-editing>
     <dxo-pager
       [visible]="true"
@@ -68,11 +158,7 @@
         <div class="separator"></div>
       </dxi-item>
       <dxi-item name="exportButton"></dxi-item>
-
-      <!-- <dxi-item name="columnChooserButton" locateInMenu="auto"></dxi-item> -->
     </dxo-toolbar>
-
-    <!-- <dxo-selection mode="multiple"></dxo-selection> -->
     <dxo-header-filter [visible]="true">
       <dxo-search [enabled]="true"></dxo-search>
     </dxo-header-filter>
@@ -83,7 +169,6 @@
       readOnly="true"
     ></dxi-column>
     <dxi-column dataField="FacilityName" caption="Name"></dxi-column>
-    <dxi-column dataField="Region" caption="Region"></dxi-column>
     <dxi-column dataField="FacilityTypeID" caption="Type">
       <dxo-lookup
         [dataSource]="FacilityType_DataSource"
@@ -92,7 +177,7 @@
       >
       </dxo-lookup>
     </dxi-column>
-    <dxi-column dataField="FacilityGroupID" caption="Group Name">
+    <dxi-column dataField="FacilityGroupID" caption="Region">
       <dxo-lookup
         [dataSource]="Facilitygroup_DataSource"
         displayExpr="DESCRIPTION"
@@ -100,7 +185,39 @@
       >
       </dxo-lookup>
     </dxi-column>
-    <dxi-column dataField="FacilityAddress" caption="Address"></dxi-column>
+    <dxi-column dataField="FacilityGroupID1" caption="Emirates">
+      <dxo-lookup
+        [dataSource]="Facilitygroup_DataSource"
+        displayExpr="DESCRIPTION"
+        valueExpr="ID"
+      >
+      </dxo-lookup>
+    </dxi-column>
+    <dxi-column dataField="FacilityGroupID2" caption="Zone">
+      <dxo-lookup
+        [dataSource]="Facilitygroup_DataSource"
+        displayExpr="DESCRIPTION"
+        valueExpr="ID"
+      >
+      </dxo-lookup>
+    </dxi-column>
+    <dxi-column dataField="FacilityGroupID3" caption="Type">
+      <dxo-lookup
+        [dataSource]="Facilitygroup_DataSource"
+        displayExpr="DESCRIPTION"
+        valueExpr="ID"
+      >
+      </dxo-lookup>
+    </dxi-column>
+    <dxi-column dataField="FacilityGroupID4" caption="Category">
+      <dxo-lookup
+        [dataSource]="Facilitygroup_DataSource"
+        displayExpr="DESCRIPTION"
+        valueExpr="ID"
+      >
+      </dxo-lookup>
+    </dxi-column>
+
     <dxi-column
       dataField="Postoffice"
       caption="Post office"

@@ -28,14 +28,11 @@ import { ChangePasswordModule } from './pages/PROFILE PAGES/change-password/chan
 import { ImportMasterDataModule } from './pages/MASTER PAGES/import-master-data/import-master-data.component';
 import { ImportMasterDataFormModule } from './pages/POP-UP_PAGES/import-master-data-form/import-master-data-form.component';
 import { ViewImportedMasterDataFormModule } from './pages/POP-UP_PAGES/view-imported-master-data-form/view-imported-master-data-form.component';
+import { RouteReuseStrategy } from '@angular/router';
+import { CustomReuseStrategy } from './custom-reuse-strategy';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-
-
-
-  ],
+  declarations: [AppComponent],
   imports: [
     TaskListModule,
     BrowserModule,
@@ -61,9 +58,15 @@ import { ViewImportedMasterDataFormModule } from './pages/POP-UP_PAGES/view-impo
     ChangePasswordModule,
     ImportMasterDataModule,
     ImportMasterDataFormModule,
-    ViewImportedMasterDataFormModule
+    ViewImportedMasterDataFormModule,
   ],
-  providers: [AuthService, ScreenService, AppInfoService, ThemeService],
+  providers: [
+    AuthService,
+    ScreenService,
+    AppInfoService,
+    ThemeService,
+    // { provide: RouteReuseStrategy, useClass: CustomReuseStrategy },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

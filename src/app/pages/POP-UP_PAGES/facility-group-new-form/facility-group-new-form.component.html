@@ -9,8 +9,22 @@
 
     <dxi-item>
       <div *dxTemplate>
+        <dx-select-box
+          label="Group Category"
+          [(value)]="newFacilityGroupData.FacilityCategoryValue"
+          [dataSource]="FacilityLevelDatasource"
+          displayExpr="DESCRIPTION"
+          valueExpr="ID"
+          (valueChange)="onGroupCategoryChange($event)"
+        >
+        </dx-select-box>
+      </div>
+    </dxi-item>
+
+    <dxi-item [visible]="isFacilityGroupVisible">
+      <div *dxTemplate>
         <dx-text-box
-          label="Facility Group"
+          [label]="GroupNameCaption"
           [(value)]="newFacilityGroupData.FacilityGroupValue"
         >
         </dx-text-box>
@@ -23,7 +37,7 @@
           label="Description"
           [(value)]="newFacilityGroupData.DescriptionValue"
           [height]="200"
-          placeholder="Enter a desciption..."
+          placeholder="Enter a Desciption..."
           [width]="'100%'"
           [maxHeight]="200"
           [minHeight]="50"

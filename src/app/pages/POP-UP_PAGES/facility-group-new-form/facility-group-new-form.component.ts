@@ -19,8 +19,14 @@ import { MasterReportService } from '../../MASTER PAGES/master-report.service';
 export class FacilityGroupNewFormComponent {
   FacilityGroupData = {
     FacilityGroupValue: '',
+    FacilityCategoryValue: '',
     DescriptionValue: '',
   };
+
+  FacilityLevelDatasource: any
+
+  GroupNameCaption: any;
+  isFacilityGroupVisible: boolean = false;
 
   newFacilityGroupData = this.FacilityGroupData;
   facilityGroupDatasource: any;
@@ -30,12 +36,20 @@ export class FacilityGroupNewFormComponent {
 
   getNewFacilityGroupData = () => ({ ...this.newFacilityGroupData });
 
+  onGroupCategoryChange(selectedValue: any) {
+    const captionValue = this.FacilityLevelDatasource.find(
+      (data) => data.ID === selectedValue
+    );
+    this.GroupNameCaption = `Enter Your ${captionValue.DESCRIPTION}`;
+    this.isFacilityGroupVisible = true;
+  }
+
   //==================== Facility group dropdown data loading ========================
   get_FacilityGroup_DropDown() {
     this.masterService
-      .Get_GropDown('FACILITYGROUP')
+      .Get_GropDown('FACILIRY_GROUP_CATEGORY')
       .subscribe((response: any) => {
-        this.facilityGroupDatasource = response;
+        this.FacilityLevelDatasource = response;
       });
   }
 }

@@ -24,8 +24,18 @@
     >
       <dxo-popup title="Edit Facility Group" [showTitle]="true"></dxo-popup>
       <dxo-form [colCount]="1">
+        <dxi-item
+          dataField="GroupCategory"
+          editorType="dxSelectBox"
+          caption="Group Name"
+          [editorOptions]="{
+            displayExpr: 'DESCRIPTION',
+            valueExpr: 'ID',
+          }"
+        ></dxi-item>
+
         <dxi-item dataField="FacilityGroup" editorType="dxTextBox">
-          <dxo-label text="Group"></dxo-label>
+          <dxo-label text="Desciption"></dxo-label>
         </dxi-item>
 
         <dxi-item
@@ -33,7 +43,7 @@
           editorType="dxTextArea"
           [editorOptions]="{ height: 200 }"
         >
-          <dxo-label text="Description"></dxo-label>
+          <dxo-label text="Long Description"></dxo-label>
         </dxi-item>
       </dxo-form>
     </dxo-editing>
@@ -51,7 +61,6 @@
     <dxo-sorting mode="multiple"></dxo-sorting>
     <dxo-header-filter [visible]="true"></dxo-header-filter>
     <dxo-filter-row [visible]="true"></dxo-filter-row>
-    <!-- <dxo-column-chooser [enabled]="true" [height]="400"></dxo-column-chooser> -->
     <dxo-search-panel [visible]="true" placeholder=" Search"></dxo-search-panel>
     <dxo-export
       [enabled]="true"
@@ -101,13 +110,20 @@
       <dxi-item name="exportButton"></dxi-item>
     </dxo-toolbar>
 
-    <!-- <dxo-selection mode="multiple"></dxo-selection> -->
     <dxo-header-filter [visible]="true">
       <dxo-search [enabled]="true"></dxo-search>
     </dxo-header-filter>
 
-    <dxi-column dataField="FacilityGroup" caption="Group"> </dxi-column>
-    <dxi-column dataField="Description" caption="Description"></dxi-column>
+    <dxi-column dataField="GroupCategory" caption="Category">
+      <dxo-lookup
+        [dataSource]="FacilityLevelDatasource"
+        displayExpr="DESCRIPTION"
+        valueExpr="ID"
+      >
+      </dxo-lookup>
+    </dxi-column>
+    <dxi-column dataField="FacilityGroup" caption="Description"> </dxi-column>
+    <dxi-column dataField="Description" caption="Long Description"></dxi-column>
   </dx-data-grid>
   <form-popup
     class="formPopupClass"
