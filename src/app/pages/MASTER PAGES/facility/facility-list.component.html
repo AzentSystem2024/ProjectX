@@ -46,7 +46,7 @@
         </dxi-item>
 
         <dxi-item
-          dataField="FacilityGroupID"
+          dataField="RegionID"
           editorType="dxSelectBox"
           [editorOptions]="{
             displayExpr: 'DESCRIPTION',
@@ -57,7 +57,7 @@
         </dxi-item>
 
         <dxi-item
-          dataField="FacilityGroupID1"
+          dataField="EmirateID"
           editorType="dxSelectBox"
           [editorOptions]="{
             displayExpr: 'DESCRIPTION',
@@ -68,7 +68,7 @@
         </dxi-item>
 
         <dxi-item
-          dataField="FacilityGroupID2"
+          dataField="ZoneID"
           editorType="dxSelectBox"
           [editorOptions]="{
             displayExpr: 'DESCRIPTION',
@@ -79,7 +79,7 @@
         </dxi-item>
 
         <dxi-item
-          dataField="FacilityGroupID3"
+          dataField="TypeID"
           editorType="dxSelectBox"
           [editorOptions]="{
             displayExpr: 'DESCRIPTION',
@@ -90,7 +90,7 @@
         </dxi-item>
 
         <dxi-item
-          dataField="FacilityGroupID4"
+          dataField="CategoryID"
           editorType="dxSelectBox"
           [editorOptions]="{
             displayExpr: 'DESCRIPTION',
@@ -177,7 +177,7 @@
       >
       </dxo-lookup>
     </dxi-column>
-    <dxi-column dataField="FacilityGroupID" caption="Region">
+    <dxi-column dataField="RegionID" caption="Region">
       <dxo-lookup
         [dataSource]="Facilitygroup_DataSource"
         displayExpr="DESCRIPTION"
@@ -185,7 +185,7 @@
       >
       </dxo-lookup>
     </dxi-column>
-    <dxi-column dataField="FacilityGroupID1" caption="Emirates">
+    <dxi-column dataField="EmirateID" caption="Emirates">
       <dxo-lookup
         [dataSource]="Facilitygroup_DataSource"
         displayExpr="DESCRIPTION"
@@ -193,7 +193,7 @@
       >
       </dxo-lookup>
     </dxi-column>
-    <dxi-column dataField="FacilityGroupID2" caption="Zone">
+    <dxi-column dataField="ZoneID" caption="Zone">
       <dxo-lookup
         [dataSource]="Facilitygroup_DataSource"
         displayExpr="DESCRIPTION"
@@ -201,7 +201,7 @@
       >
       </dxo-lookup>
     </dxi-column>
-    <dxi-column dataField="FacilityGroupID3" caption="Type">
+    <dxi-column dataField="TypeID" caption="Type">
       <dxo-lookup
         [dataSource]="Facilitygroup_DataSource"
         displayExpr="DESCRIPTION"
@@ -209,7 +209,7 @@
       >
       </dxo-lookup>
     </dxi-column>
-    <dxi-column dataField="FacilityGroupID4" caption="Category">
+    <dxi-column dataField="CategoryID" caption="Category">
       <dxo-lookup
         [dataSource]="Facilitygroup_DataSource"
         displayExpr="DESCRIPTION"

@@ -77,8 +77,7 @@ export class SideNavOuterToolbarComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    const initalpage = this.router.url;
-    let path = '/analytics-dashboard';
+    let path = 'analytics-dashboard';
     let title = 'Home';
     this.tabs.push({
       title: title,

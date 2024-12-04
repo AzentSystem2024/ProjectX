@@ -112,12 +112,12 @@ export class FacilityListComponent implements OnInit {
     let FacilityTypeID = combinedData.FacilityTypeID;
     let FacilityAddress = combinedData.FacilityAddress;
     let PostOfficeID = combinedData.PostOfficeID;
-    let FacilityGroupID = combinedData.FacilityGroupID;
-    let FacilityGroupID1 = combinedData.FacilityGroupID1;
-    let FacilityGroupID2 = combinedData.FacilityGroupID2;
-    let FacilityGroupID3 = combinedData.FacilityGroupID3;
-    let FacilityGroupID4 = combinedData.FacilityGroupID4;
-    
+    let RegionID = combinedData.RegionID;
+    let EmirateID = combinedData.EmirateID;
+    let ZoneID = combinedData.ZoneID;
+    let TypeID = combinedData.TypeID;
+    let CategoryID = combinedData.CategoryID;
+
     this.masterService
       .update_facility_data(
         id,
@@ -127,11 +127,11 @@ export class FacilityListComponent implements OnInit {
         FacilityTypeID,
         FacilityAddress,
         PostOfficeID,
-        FacilityGroupID,
-        FacilityGroupID1,
-        FacilityGroupID2,
-        FacilityGroupID3,
-        FacilityGroupID4
+        RegionID,
+        EmirateID,
+        ZoneID,
+        TypeID,
+        CategoryID
       )
       .subscribe((data: any) => {
         if (data) {

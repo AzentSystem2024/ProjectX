@@ -232,11 +232,11 @@ export class MasterReportService {
     FacilityTypeID: any,
     FacilityAddress: any,
     PostOfficeID: any,
-    FacilityGroupID: any,
-    FacilityGroupID1: any,
-    FacilityGroupID2: any,
-    FacilityGroupID3: any,
-    FacilityGroupID4: any
+    RegionID: any,
+    EmirateID: any,
+    ZoneID: any,
+    TypeID: any,
+    CategoryID: any
   ) {
     const url = `${BASE_URL}facility/update`;
     const reqBody = {
@@ -247,11 +247,11 @@ export class MasterReportService {
       FacilityTypeID: FacilityTypeID,
       FacilityAddress: FacilityAddress,
       PostOfficeID: PostOfficeID,
-      FacilityGroupID: FacilityGroupID,
-      FacilityGroupID1: FacilityGroupID1,
-      FacilityGroupID2: FacilityGroupID2,
-      FacilityGroupID3: FacilityGroupID3,
-      FacilityGroupID4: FacilityGroupID4,
+      RegionID: RegionID,
+      EmirateID: EmirateID,
+      ZoneID: ZoneID,
+      TypeID: TypeID,
+      CategoryID: CategoryID,
     };
     return this.http.post(url, reqBody);
   }
