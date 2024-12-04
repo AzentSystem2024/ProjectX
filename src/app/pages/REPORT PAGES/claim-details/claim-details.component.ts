@@ -1,3 +1,4 @@
+import { MasterReportService } from 'src/app/pages/MASTER PAGES/master-report.service';
 import { CommonModule, DatePipe } from '@angular/common';
 import {
   Component,
@@ -47,6 +48,7 @@ import { ClaimDetailActivityDrillDownComponent } from '../../REPORT DRILL PAGES/
 import { ClaimDetailActivityDrillDownModule } from '../../REPORT DRILL PAGES/claim-detail-activity-drill-down/claim-detail-activity-drill-down.component';
 import { AdvanceFilterPopupModule } from '../../POP-UP_PAGES/advance-filter-popup/advance-filter-popup.component';
 import { DataService } from 'src/app/services';
+import CustomStore from 'devextreme/data/custom_store';
 
 @Component({
   selector: 'app-claim-details',
@@ -54,7 +56,7 @@ import { DataService } from 'src/app/services';
   styleUrls: ['./claim-details.component.scss'],
   providers: [ReportService, ReportEngineService, DatePipe, DataService],
 })
-export class ClaimDetailsComponent  {
+export class ClaimDetailsComponent {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
 
@@ -157,7 +159,7 @@ export class ClaimDetailsComponent  {
     private router: Router,
     private reportengine: ReportEngineService,
     private datePipe: DatePipe,
-    private dataService: DataService
+    private masterService: MasterReportService
   ) {
     this.loadingVisible = true;
 
@@ -172,11 +174,22 @@ export class ClaimDetailsComponent  {
     this.monthDataSource = this.service.getMonths();
     this.get_searchParameters_Dropdown_Values();
   }
-
-  // ngOnInit(): void {
-  //   this.get_searchParameters_Dropdown_Values();
-  // }
-
+//==================MAking cutom datasource for facility datagrid and dropdown loADING=======
+  makeAsyncDataSourceFromJson(jsonData: any) {
+    return new CustomStore({
+      loadMode: 'raw',
+      key: 'ID',
+      load: () => {
+        return new Promise((resolve, reject) => {
+          try {
+            resolve(jsonData);
+          } catch (error) {
+            reject(error);
+          }
+        });
+      },
+    });
+  }
   //=============Resize the popup drill down============
   onResizeEnd(event: any) {
     this.popupWidth = event.width;
@@ -212,15 +225,20 @@ export class ClaimDetailsComponent  {
 
   //============Get search parameters dropdown values=======
   get_searchParameters_Dropdown_Values() {
+    this.masterService.Get_Facility_List_Data().subscribe((response: any) => {
+      if (response.flag == '1') {
+        this.Facility_DataSource = this.makeAsyncDataSourceFromJson(
+          response.data
+        );
+      }
+    });
     this.service.get_SearchParametrs_Data().subscribe(
       (response: any) => {
-        if (response) {
-          this.loadingVisible = false;
+        if (response.flag == '1') {
           this.SearchOn_DataSource = response.SearchOn;
           this.SearchOn_Value = this.SearchOn_DataSource.find(
             (item) => item.ID === 'EncounterStartDate'
           )?.ID;
-          this.Facility_DataSource = response.facility;
           this.EncounterType_DataSource = response.EncounterType;
           this.RecieverID_DataSource = response.ReceiverID;
           this.PayerID_DataSource = response.PayerID;
@@ -231,6 +249,7 @@ export class ClaimDetailsComponent  {
           this.CliamStatus_DataSource = response.ClaimStatus;
           this.paymentStatus_DataSource = response.PaymentStatus;
           this.advanceFilterGridColumns = response.AdvanceFilter;
+          this.loadingVisible = false;
         }
       },
       (error) => {
@@ -462,12 +481,12 @@ export class ClaimDetailsComponent  {
 
   import_Advance_Filter() {
     const filterData = this.reportengine.getData();
-    // console.log('advance filter imported data', filterData);
+    console.log('advance filter imported data', filterData);
     this.ClaimNumber_Value = filterData.ClaimNumber;
 
-    this.Facility_Value = this.Facility_DataSource.filter((item) =>
-      filterData.ReceiverID.split(',').includes(item.Name)
-    ).map((item) => item.ID);
+    // this.Facility_Value = this.Facility_DataSource.filter((item) =>
+    //   filterData.ReceiverID.split(',').includes(item.Name)
+    // ).map((item) => item.ID);
 
     this.ReceiverID_Value = this.RecieverID_DataSource.filter((item) =>
       filterData.ReceiverID.split(',').includes(item.Name)
@@ -477,9 +496,9 @@ export class ClaimDetailsComponent  {
       filterData.PayerID.split(',').includes(item.Name)
     ).map((item) => item.ID);
 
-    this.Payer_Value = this.Payer_DataSource.filter((item) =>
-      filterData.ReceiverID.split(',').includes(item.Name)
-    ).map((item) => item.ID);
+    // this.Payer_Value = this.Payer_DataSource.filter((item) =>
+    //   filterData.ReceiverID.split(',').includes(item.Name)
+    // ).map((item) => item.ID);
 
     this.Clinician_Value = this.Clinician_DataSource.filter((item) =>
       filterData.Clinician.split(',').includes(item.Name)

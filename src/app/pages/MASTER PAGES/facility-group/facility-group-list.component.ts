@@ -76,7 +76,7 @@ export class FacilityGroupListComponent {
   show_new_FacilityGroup_Form() {
     this.isAddFormPopupOpened = true;
   }
-  //====================get Facility group dropdown ==============
+  //====================get Facility group category dropdown ==============
   get_FacilityGroup_DropDown() {
     this.masterService
       .Get_GropDown('FACILITY_GROUP_CATEGORY')
@@ -84,8 +84,6 @@ export class FacilityGroupListComponent {
         this.FacilityLevelDatasource = response;
       });
   }
-
-  //========================Get Datasource =======================
 
   //========================Export data ==========================
   onExporting(event: any) {

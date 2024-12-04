@@ -14,26 +14,78 @@
         [colCountByScreen]="{ xs: 8, sm: 8, md: 8, lg: 8 }"
       >
         <dxi-item [colSpan]="8">
-          <div class="">
-            <dx-tag-box
-              labelMode="floating"
-              labelLocation="left"
-              label="Select Facility value"
-              [(value)]="Facility_Value"
-              valueExpr="ID"
-              displayExpr="Name"
-              [showClearButton]="false"
-              [multiline]="false"
-              [searchEnabled]="true"
-              [searchExpr]="['Name', 'Code']"
-              [dataSource]="Facility_DataSource"
-              [showSelectionControls]="true"
-              [applyValueMode]="'instantly'"
-              (onValueChanged)="onDropdownValueChanged()"
-              [dropDownOptions]="{ width: 'auto' }"
-            >
-            </dx-tag-box>
-          </div>
+          <dx-drop-down-box
+            labelMode="floating"
+            labelLocation="left"
+            label="Select Facility value"
+            [(value)]="Facility_Value"
+            valueExpr="ID"
+            displayExpr="FacilityName"
+            [showClearButton]="true"
+            [dataSource]="Facility_DataSource"
+          >
+            <div *dxTemplate="let data of 'content'">
+              <dx-data-grid
+                [dataSource]="Facility_DataSource"
+                [columns]="[
+                  {
+                    dataField: 'FacilityLicense',
+                    caption: 'FacilityLicense',
+                    width: 'auto'
+                  },
+                  {
+                    dataField: 'FacilityName',
+                    caption: 'Facility Name',
+                    width: 'auto'
+                  },
+                  {
+                    dataField: 'FacilityType',
+                    caption: 'Facility Type',
+                    width: 'auto'
+                  },
+                  {
+                    dataField: 'Postoffice',
+                    caption: 'Post office',
+                    width: 'auto'
+                  },
+                  {
+                    dataField: 'FacilityGroup',
+                    caption: 'Region',
+                    width: 'auto'
+                  },
+                  {
+                    dataField: 'FacilityGroup1',
+                    caption: 'Emirates',
+                    width: 'auto'
+                  },
+                  {
+                    dataField: 'FacilityGroup2',
+                    caption: 'Zone',
+                    width: 'auto'
+                  },
+                  {
+                    dataField: 'FacilityGroup3',
+                    caption: 'Type',
+                    width: 'auto'
+                  },
+                  {
+                    dataField: 'FacilityGroup4',
+                    caption: 'Category',
+                    width: 'auto'
+                  }
+                ]"
+                [selection]="{ mode: 'multiple' }"
+                [hoverStateEnabled]="true"
+                [paging]="{ enabled: true, pageSize: 10 }"
+                [filterRow]="{ visible: true }"
+                [headerFilter]="{ visible: true }"
+                [scrolling]="{ mode: 'virtual' }"
+                [height]="250"
+                [(selectedRowKeys)]="Facility_Value"
+              >
+              </dx-data-grid>
+            </div>
+          </dx-drop-down-box>
         </dxi-item>
       </dxi-item>
 

@@ -47,6 +47,8 @@ import { ClaimDetailActivityDrillDownComponent } from '../../REPORT DRILL PAGES/
 import { ClaimDetailActivityDrillDownModule } from '../../REPORT DRILL PAGES/claim-detail-activity-drill-down/claim-detail-activity-drill-down.component';
 import { AdvanceFilterPopupModule } from '../../POP-UP_PAGES/advance-filter-popup/advance-filter-popup.component';
 import { DataService } from 'src/app/services';
+import CustomStore from 'devextreme/data/custom_store';
+import { MasterReportService } from '../../MASTER PAGES/master-report.service';
 @Component({
   selector: 'app-claim-details-activity',
   templateUrl: './claim-details-activity.component.html',
@@ -153,9 +155,9 @@ export class ClaimDetailsActivityComponent {
 
   constructor(
     private service: ReportService,
-    private router: Router,
     private reportengine: ReportEngineService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private masterService: MasterReportService
   ) {
     this.loadingVisible = true;
     this.minDate = new Date(2000, 1, 1); // Set the minimum date
@@ -168,6 +170,23 @@ export class ClaimDetailsActivityComponent {
     //=============month field datasource============
     this.monthDataSource = this.service.getMonths();
     this.get_searchParameters_Dropdown_Values();
+  }
+
+  //==================MAking cutom datasource for facility datagrid and dropdown loADING=======
+  makeAsyncDataSourceFromJson(jsonData: any) {
+    return new CustomStore({
+      loadMode: 'raw',
+      key: 'ID',
+      load: () => {
+        return new Promise((resolve, reject) => {
+          try {
+            resolve(jsonData);
+          } catch (error) {
+            reject(error);
+          }
+        });
+      },
+    });
   }
 
   //=============Resize the popup drill down============
@@ -205,15 +224,22 @@ export class ClaimDetailsActivityComponent {
 
   //============Get search parameters dropdown values=======
   get_searchParameters_Dropdown_Values() {
+    this.masterService.Get_Facility_List_Data().subscribe((response: any) => {
+      if (response.flag == '1') {
+        this.Facility_DataSource = this.makeAsyncDataSourceFromJson(
+          response.data
+        );
+      }
+    });
+
     this.service.get_SearchParametrs_Data().subscribe(
       (response: any) => {
-        if (response) {
+        if (response.flag == '1') {
           this.loadingVisible = false;
           this.SearchOn_DataSource = response.SearchOn;
           this.SearchOn_Value = this.SearchOn_DataSource.find(
             (item) => item.ID === 'EncounterStartDate'
           )?.ID;
-          this.Facility_DataSource = response.facility;
           this.EncounterType_DataSource = response.EncounterType;
           this.RecieverID_DataSource = response.ReceiverID;
           this.PayerID_DataSource = response.PayerID;

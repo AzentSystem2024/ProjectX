@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, NgModule } from '@angular/core';
+import { Component, NgModule, OnInit } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import {
   DxFormModule,
@@ -15,15 +15,16 @@ import { MasterReportService } from '../../MASTER PAGES/master-report.service';
   selector: 'app-facility-group-new-form',
   templateUrl: './facility-group-new-form.component.html',
   styleUrls: ['./facility-group-new-form.component.scss'],
+  providers: [MasterReportService],
 })
-export class FacilityGroupNewFormComponent {
+export class FacilityGroupNewFormComponent implements OnInit {
   FacilityGroupData = {
     FacilityGroupValue: '',
     FacilityCategoryValue: '',
     DescriptionValue: '',
   };
 
-  FacilityLevelDatasource: any
+  FacilityLevelDatasource: any;
 
   GroupNameCaption: any;
   isFacilityGroupVisible: boolean = false;
@@ -31,6 +32,10 @@ export class FacilityGroupNewFormComponent {
   newFacilityGroupData = this.FacilityGroupData;
   facilityGroupDatasource: any;
   constructor(private masterService: MasterReportService) {
+    this.get_FacilityGroup_DropDown();
+  }
+
+  ngOnInit(): void {
     this.get_FacilityGroup_DropDown();
   }
 
@@ -45,9 +50,10 @@ export class FacilityGroupNewFormComponent {
   }
 
   //==================== Facility group dropdown data loading ========================
+  //====================get Facility group category dropdown ==============
   get_FacilityGroup_DropDown() {
     this.masterService
-      .Get_GropDown('FACILIRY_GROUP_CATEGORY')
+      .Get_GropDown('FACILITY_GROUP_CATEGORY')
       .subscribe((response: any) => {
         this.FacilityLevelDatasource = response;
       });
