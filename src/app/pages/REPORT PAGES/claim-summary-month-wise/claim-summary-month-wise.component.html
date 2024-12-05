@@ -28,51 +28,14 @@
               <dx-data-grid
                 [dataSource]="Facility_DataSource"
                 [columns]="[
-                  {
-                    dataField: 'FacilityLicense',
-                    caption: 'FacilityLicense',
-                    width: 'auto'
-                  },
-                  {
-                    dataField: 'FacilityName',
-                    caption: 'Facility Name',
-                    width: 'auto'
-                  },
-                  {
-                    dataField: 'FacilityType',
-                    caption: 'Facility Type',
-                    width: 'auto'
-                  },
-                  {
-                    dataField: 'Postoffice',
-                    caption: 'Post office',
-                    width: 'auto'
-                  },
-                  {
-                    dataField: 'FacilityGroup',
-                    caption: 'Region',
-                    width: 'auto'
-                  },
-                  {
-                    dataField: 'FacilityGroup1',
-                    caption: 'Emirates',
-                    width: 'auto'
-                  },
-                  {
-                    dataField: 'FacilityGroup2',
-                    caption: 'Zone',
-                    width: 'auto'
-                  },
-                  {
-                    dataField: 'FacilityGroup3',
-                    caption: 'Type',
-                    width: 'auto'
-                  },
-                  {
-                    dataField: 'FacilityGroup4',
-                    caption: 'Category',
-                    width: 'auto'
-                  }
+                  { dataField: 'FacilityLicense', caption: 'License' },
+                  { dataField: 'FacilityName', caption: 'Name' },
+                  { dataField: 'Region', caption: 'Region' },
+                  { dataField: 'Emirate', caption: 'Emirates' },
+                  { dataField: 'Zone', caption: 'Zone' },
+                  { dataField: 'Type', caption: 'Type' },
+                  { dataField: 'Category', caption: 'Category' },
+                  { dataField: 'Postoffice', caption: 'Post office' }
                 ]"
                 [selection]="{ mode: 'multiple' }"
                 [hoverStateEnabled]="true"

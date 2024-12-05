@@ -253,7 +253,6 @@ export class ClaimSummaryMonthWiseComponent {
       paymentStatus: this.paymentStatus_Value,
     };
 
-    this.isContentVisible = false;
     this.loadingVisible = true;
 
     try {
@@ -296,8 +295,10 @@ export class ClaimSummaryMonthWiseComponent {
           load: () => Promise.resolve(ReportData),
         });
         this.loadingVisible = false;
+        this.isContentVisible = false;
       } else {
         this.loadingVisible = false;
+        this.isContentVisible = false;
         notify(
           {
             message: `${response.message}`,

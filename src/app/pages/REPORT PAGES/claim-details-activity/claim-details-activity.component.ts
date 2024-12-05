@@ -280,7 +280,7 @@ export class ClaimDetailsActivityComponent {
       paymentStatus: this.paymentStatus_Value,
     };
 
-    this.isContentVisible = false;
+
     this.loadingVisible = true;
 
     try {
@@ -356,8 +356,10 @@ export class ClaimDetailsActivityComponent {
           load: () => Promise.resolve(formattedReportData),
         });
         this.loadingVisible = false;
+        this.isContentVisible = false;
       } else {
         this.loadingVisible = false;
+        this.isContentVisible = false;
         notify(
           {
             message: `${response.message}`,

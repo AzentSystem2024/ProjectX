@@ -59,14 +59,15 @@
             (click)="closeButtonHandler(tab)"
           ></i>
         </div>
-        <div *dxTemplate="let tab of 'item'">
+        <!-- <div *dxTemplate="let tab of 'item'">
           <ng-container>
-            <div *ngIf="selectedIndex === tabs.indexOf(tab)">
-              <router-outlet></router-outlet>
-            </div>
+
           </ng-container>
-        </div>
+        </div> -->
       </dx-tab-panel>
+      <div>
+        <router-outlet></router-outlet>
+      </div>
     </dx-sortable>
   </div>
 </dx-drawer>
