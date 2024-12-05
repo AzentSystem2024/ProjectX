@@ -174,7 +174,7 @@ export class ClaimDetailsComponent {
     this.monthDataSource = this.service.getMonths();
     this.get_searchParameters_Dropdown_Values();
   }
-//==================MAking cutom datasource for facility datagrid and dropdown loADING=======
+  //==================MAking cutom datasource for facility datagrid and dropdown loADING=======
   makeAsyncDataSourceFromJson(jsonData: any) {
     return new CustomStore({
       loadMode: 'raw',
@@ -243,8 +243,12 @@ export class ClaimDetailsComponent {
           this.RecieverID_DataSource = response.ReceiverID;
           this.PayerID_DataSource = response.PayerID;
           this.Payer_DataSource = response.Payer;
-          this.Clinician_DataSource = response.Clinician;
-          this.OrderingClinician_DataSource = response.OrderingClinician;
+          this.Clinician_DataSource = this.makeAsyncDataSourceFromJson(
+            response.Clinician
+          );
+          this.OrderingClinician_DataSource = this.makeAsyncDataSourceFromJson(
+            response.OrderingClinician
+          );
           this.ResubmissionType_DataSource = response.ResubmissionType;
           this.CliamStatus_DataSource = response.ClaimStatus;
           this.paymentStatus_DataSource = response.PaymentStatus;
@@ -279,7 +283,6 @@ export class ClaimDetailsComponent {
       memberID: this.memberID_Value,
       paymentStatus: this.paymentStatus_Value,
     };
-
 
     this.loadingVisible = true;
 

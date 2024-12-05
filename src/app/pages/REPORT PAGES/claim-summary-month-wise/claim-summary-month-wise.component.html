@@ -43,7 +43,7 @@
                 [filterRow]="{ visible: true }"
                 [headerFilter]="{ visible: true }"
                 [scrolling]="{ mode: 'virtual' }"
-                [height]="250"
+                [height]="'auto'"
                 [(selectedRowKeys)]="Facility_Value"
               >
               </dx-data-grid>
@@ -196,44 +196,63 @@
         </dxi-item>
 
         <dxi-item [colSpan]="2">
-          <dx-tag-box
+          <dx-drop-down-box
             labelMode="floating"
             labelLocation="left"
-            label="select clinician"
-            [dataSource]="Clinician_DataSource"
-            displayExpr="Name"
-            valueExpr="ID"
+            label="Select Clinician"
             [(value)]="Clinician_Value"
-            [searchEnabled]="true"
-            [searchExpr]="['Name', 'ID']"
-            [multiline]="false"
-            [applyValueMode]="'instantly'"
-            [showSelectionControls]="true"
-            (valueChanged)="onDropdownValueChanged()"
-            [dropDownOptions]="{ width: 'auto' }"
+            valueExpr="ID"
+            displayExpr="Name"
+            [showClearButton]="true"
+            [dataSource]="Clinician_DataSource"
           >
-          </dx-tag-box>
+            <div *dxTemplate="let data of 'content'">
+              <dx-data-grid
+                [dataSource]="Clinician_DataSource"
+                [columns]="[{ dataField: 'Name', caption: 'ID - Name' }]"
+                [selection]="{ mode: 'multiple' }"
+                [hoverStateEnabled]="true"
+                [paging]="{ enabled: true, pageSize: 10 }"
+                [filterRow]="{ visible: true }"
+                [headerFilter]="{ visible: true }"
+                [scrolling]="{ mode: 'virtual' }"
+                [height]="'60vh'"
+                [(selectedRowKeys)]="Clinician_Value"
+              >
+              </dx-data-grid>
+            </div>
+          </dx-drop-down-box>
         </dxi-item>
 
         <dxi-item [colSpan]="2">
-          <dx-tag-box
+          <dx-drop-down-box
             labelMode="floating"
             labelLocation="left"
-            label="select ordering clinician"
-            [dataSource]="OrderingClinician_DataSource"
-            displayExpr="Name"
-            valueExpr="ID"
+            label="Select Clinician"
             [(value)]="OrderingClinician_Value"
-            [searchEnabled]="true"
-            [searchExpr]="['Name', 'ID']"
-            [multiline]="false"
-            [applyValueMode]="'instantly'"
-            [showSelectionControls]="true"
-            [dropDownOptions]="{ width: 'auto' }"
-            (valueChanged)="onDropdownValueChanged()"
+            valueExpr="ID"
+            displayExpr="Name"
+            [showClearButton]="true"
+            [dataSource]="OrderingClinician_DataSource"
           >
-          </dx-tag-box>
+            <div *dxTemplate="let data of 'content'">
+              <dx-data-grid
+                [dataSource]="OrderingClinician_DataSource"
+                [columns]="[{ dataField: 'Name', caption: 'ID - Name' }]"
+                [selection]="{ mode: 'multiple' }"
+                [hoverStateEnabled]="true"
+                [paging]="{ enabled: true, pageSize: 10 }"
+                [filterRow]="{ visible: true }"
+                [headerFilter]="{ visible: true }"
+                [scrolling]="{ mode: 'virtual' }"
+                [height]="'60vh'"
+                [(selectedRowKeys)]="OrderingClinician_Value"
+              >
+              </dx-data-grid>
+            </div>
+          </dx-drop-down-box>
         </dxi-item>
+        
       </dxi-item>
 
       <dxi-item

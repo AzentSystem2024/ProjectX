@@ -244,8 +244,12 @@ export class ClaimDetailsActivityComponent {
           this.RecieverID_DataSource = response.ReceiverID;
           this.PayerID_DataSource = response.PayerID;
           this.Payer_DataSource = response.Payer;
-          this.Clinician_DataSource = response.Clinician;
-          this.OrderingClinician_DataSource = response.OrderingClinician;
+          this.Clinician_DataSource = this.makeAsyncDataSourceFromJson(
+            response.Clinician
+          );
+          this.OrderingClinician_DataSource = this.makeAsyncDataSourceFromJson(
+            response.OrderingClinician
+          );
           this.ResubmissionType_DataSource = response.ResubmissionType;
           this.CliamStatus_DataSource = response.ClaimStatus;
           this.paymentStatus_DataSource = response.PaymentStatus;
@@ -279,7 +283,6 @@ export class ClaimDetailsActivityComponent {
       memberID: this.memberID_Value,
       paymentStatus: this.paymentStatus_Value,
     };
-
 
     this.loadingVisible = true;
 

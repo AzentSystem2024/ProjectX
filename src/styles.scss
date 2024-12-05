@@ -110,7 +110,6 @@ body {
   overflow: hidden;
   padding: 0 var(--page-padding);
   margin-bottom: 25px;
-  
 }
 
 .paramsDiv {
@@ -490,8 +489,6 @@ body {
     font-weight: bolder;
   }
 
-
-
   .theme-dependent {
     .dx-gridbase-container {
       > .dx-bordered-bottom-view {
@@ -678,8 +675,16 @@ body {
 
 .data-grid-container
   .dx-datagrid-headers.dx-datagrid-nowrap.dx-bordered-top-view {
-    border-radius: 8px 8px 0 0;
-    background-color: #949630af;
-    font-size: larger;
-    font-weight: bolder;
-  }
+  border-radius: 8px 8px 0 0;
+  background-color: #949630af;
+  font-size: larger;
+  font-weight: bolder;
+}
+
+
+
+.dx-dropdowneditor-overlay.dx-popup-wrapper .dx-overlay-content {
+  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.24), 0 8px 16px 0 rgba(0, 0, 0, 0.28);
+  border: 2px solid var(--border-color);
+  overflow: hidden;
+}
