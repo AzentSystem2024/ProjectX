@@ -22,4 +22,9 @@ export class CustomReuseStrategy implements RouteReuseStrategy {
   shouldReuseRoute(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot): boolean {
     return future.routeConfig === curr.routeConfig;
   }
+
+   // Method to clear stored data on logout
+   clearStoredData(): void {
+    this.handlers = {}; // Clear all stored route handles
+  }
 }

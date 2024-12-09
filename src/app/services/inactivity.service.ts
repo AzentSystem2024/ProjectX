@@ -54,21 +54,27 @@ export class InactivityService {
     );
     result.then((dialogResult: boolean) => {
       if (dialogResult) {
+        // window.location.reload();
         this.authservice.logOut().subscribe((response: any) => {
           if (response) {
             localStorage.removeItem('sidemenuItems');
             sessionStorage.clear();
             this.setUserlogginValue();
+
             this.router.navigate(['/auth/login']);
+            // window.location.reload();
           }
         });
       } else {
         this.authservice.logOut().subscribe((response: any) => {
           if (response) {
+            // window.location.reload();
             localStorage.removeItem('sidemenuItems');
             sessionStorage.clear();
             this.setUserlogginValue();
+
             this.router.navigate(['/auth/login']);
+            // window.location.reload();
           }
         });
         notify(

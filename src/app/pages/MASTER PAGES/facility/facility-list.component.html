@@ -22,7 +22,11 @@
     >
       <dxo-popup title="Edit facility" [showTitle]="true"></dxo-popup>
       <dxo-form [colCount]="2">
-        <dxi-item dataField="FacilityLicense" editorType="dxTextBox">
+        <dxi-item
+          dataField="FacilityLicense"
+          editorType="dxTextBox"
+          [disabled]="true"
+        >
           <dxo-label text="License"></dxo-label>
         </dxi-item>
 
@@ -31,17 +35,10 @@
         </dxi-item>
 
         <dxi-item
-          dataField="FacilityTypeID"
-          editorType="dxSelectBox"
-          [editorOptions]="{
-            displayExpr: 'DESCRIPTION',
-            valueExpr: 'ID'
-          }"
+          dataField="Postoffice"
+          editorType="dxTextBox"
+          [disabled]="true"
         >
-          <dxo-label text="Type"></dxo-label>
-        </dxi-item>
-
-        <dxi-item dataField="Postoffice" editorType="dxTextBox">
           <dxo-label text="Post office"></dxo-label>
         </dxi-item>
 
@@ -100,10 +97,8 @@
           <dxo-label text="Category"></dxo-label>
         </dxi-item>
 
-        <dxi-item dataField="Postoffice" editorType="dxTextBox">
-          <dxo-label text="Post office"></dxo-label>
-        </dxi-item>
         <dxi-item
+          colCount="1"
           dataField="FacilityAddress"
           editorType="dxTextArea"
           [colSpan]="2"

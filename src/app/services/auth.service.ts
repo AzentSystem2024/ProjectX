@@ -20,7 +20,7 @@ const defaultPath = '/';
 
 //=============================Base url==============================
 import { environment } from 'src/environments/environment';
-import { InactivityService } from './inactivity.service';
+
 const BaseURL = environment.PROJECTX_API_BASE_URL;
 
 //==================================Default USer Name and details=======================
@@ -44,6 +44,13 @@ export class AuthService {
   private _user: IUser | null = defaultUser;
   UserData: any;
   // private User:any
+  private _lastAuthenticatedPath: string = defaultPath;
+  constructor(
+    private router: Router,
+    private http: HttpClient,
+
+
+  ) {}
 
   // Getter for loginName that retrieves it from session storage
   get loginName(): string {
@@ -59,17 +66,13 @@ export class AuthService {
     return !!this._user;
   }
 
-  private _lastAuthenticatedPath: string = defaultPath;
+
 
   set lastAuthenticatedPath(value: string) {
     this._lastAuthenticatedPath = value;
   }
 
-  constructor(
-    private router: Router,
-    private http: HttpClient,
 
-  ) {}
 
   setUserData(data: any) {
     this.UserData = data;
@@ -101,7 +104,7 @@ export class AuthService {
       SystemTimeUTC: currentUTCDateTime,
       ForceLogin: forcelogin,
     };
-   
+
     return this.http.post<any>(API_URL, ReqBody);
   }
 
@@ -173,7 +176,6 @@ export class AuthService {
     const API_URL = ` ${BaseURL}user/logout`;
     const token = JSON.parse(localStorage.getItem('logData')).Token;
     const ReqBody = { Token: token };
-    // console.log('token :', token, 'reqbody:', ReqBody);
     return this.http.post(API_URL, ReqBody);
   }
 }

@@ -1,5 +1,10 @@
 import {
-  Component, NgModule, Input, Output, EventEmitter, OnInit,
+  Component,
+  NgModule,
+  Input,
+  Output,
+  EventEmitter,
+  OnInit,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -11,11 +16,13 @@ import { AuthService, IUser } from 'src/app/services';
 import { ThemeSwitcherModule } from 'src/app/components/library/theme-switcher/theme-switcher.component';
 import { DxTooltipModule } from 'devextreme-angular';
 import { Router } from '@angular/router';
+import { CustomReuseStrategy } from 'src/app/custom-reuse-strategy';
 
 @Component({
   selector: 'app-header',
   templateUrl: 'app-header.component.html',
   styleUrls: ['./app-header.component.scss'],
+  providers: [CustomReuseStrategy],
 })
 
 export class AppHeaderComponent implements OnInit {
@@ -38,21 +45,39 @@ export class AppHeaderComponent implements OnInit {
         this.changePassword();
       },
     },
-  {
-    text: 'Logout',
-    icon: 'runner',
-    onClick: () => {
-      this.authService.logOut().subscribe((response:any)=>{
-        if(response){
-          localStorage.removeItem('sidemenuItems');
-          sessionStorage.clear();
-          this.router.navigate(['/auth/login']);
-        }
-      })
+    {
+      text: 'Logout',
+      icon: 'runner',
+      onClick: () => {
+        this.reuseStrategy.clearStoredData();
+        // Call the logout service
+        this.authService.logOut().subscribe((response: any) => {
+          if (response) {
+            // Clear storage
+            localStorage.removeItem('sidemenuItems');
+            sessionStorage.clear();
+            // Clear stored routes again to ensure no leftovers
+            this.reuseStrategy.clearStoredData();
+            // Navigate to the login page
+            this.router.navigate(['/auth/login']).then(() => {
+              // window.location.reload();
+              // this.router.navigate(['/auth/login'])
+              setTimeout(() => {
+                window.location.reload();
+                console.log('Page reloaded after 3 seconds');
+              }, 500);
+            });
+          }
+        });
+      },
     },
-  }];
+  ];
 
-  constructor(private authService: AuthService,private router:Router) { }
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private reuseStrategy: CustomReuseStrategy
+  ) {}
 
   ngOnInit() {
     // Fetch the user and set the loginName
@@ -67,10 +92,10 @@ export class AppHeaderComponent implements OnInit {
         this.user.avatarUrl = storedUserPhoto
           ? storedUserPhoto
           : 'https://js.devexpress.com/Demos/WidgetsGallery/JSDemos/images/employees/01.png';
-        }
+      }
     });
   }
-  changePassword(){
+  changePassword() {
     this.router.navigateByUrl('/change-password');
   }
 
@@ -91,4 +116,4 @@ export class AppHeaderComponent implements OnInit {
   declarations: [AppHeaderComponent],
   exports: [AppHeaderComponent],
 })
-export class AppHeaderModule { }
+export class AppHeaderModule {}
