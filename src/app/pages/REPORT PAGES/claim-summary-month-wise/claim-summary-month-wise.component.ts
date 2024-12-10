@@ -261,8 +261,7 @@ export class ClaimSummaryMonthWiseComponent {
       paymentStatus: this.paymentStatus_Value,
     };
     this.isContentVisible = false;
-    this.loadingVisible = true;
-
+    this.dataGrid.instance.beginCustomLoading('Loading...');
 
     try {
       const response: any = await this.service
@@ -303,10 +302,10 @@ export class ClaimSummaryMonthWiseComponent {
         this.dataGrid_DataSource = new DataSource<any>({
           load: () => Promise.resolve(ReportData),
         });
-        this.loadingVisible = false;
+        this.dataGrid.instance.endCustomLoading();
         this.isContentVisible = false;
       } else {
-        this.loadingVisible = false;
+        this.dataGrid.instance.endCustomLoading();
         this.isContentVisible = false;
         notify(
           {
@@ -317,7 +316,7 @@ export class ClaimSummaryMonthWiseComponent {
         );
       }
     } catch (error) {
-      this.loadingVisible = false;
+      this.dataGrid.instance.endCustomLoading();
       this.isContentVisible = true;
       notify(
         {

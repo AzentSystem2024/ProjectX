@@ -200,7 +200,6 @@
                 [scrolling]="{ mode: 'virtual' }"
                 [height]="'50vh'"
                 [(selectedRowKeys)]="PayerID_Value"
-
               >
               </dx-data-grid>
             </div>
@@ -230,7 +229,6 @@
                 [scrolling]="{ mode: 'virtual' }"
                 [height]="'50vh'"
                 [(selectedRowKeys)]="Clinician_Value"
-
               >
               </dx-data-grid>
             </div>
@@ -260,7 +258,6 @@
                 [scrolling]="{ mode: 'virtual' }"
                 [height]="'50vh'"
                 [(selectedRowKeys)]="OrderingClinician_Value"
-
               >
               </dx-data-grid>
             </div>
@@ -297,7 +294,6 @@
                 [scrolling]="{ mode: 'virtual' }"
                 [height]="'50vh'"
                 [(selectedRowKeys)]="ReceiverID_Value"
-                
               >
               </dx-data-grid>
             </div>
@@ -455,7 +451,7 @@
       #dataGrid
       class="grid reportGrid reportGridFooter theme-dependent"
       [height]="'84vh'"
-      noDataText="no data"
+      [noDataText]="!isContentVisible ? 'No Data Available' : ' '"
       [dataSource]="dataGrid_DataSource"
       [showBorders]="true"
       [allowColumnResizing]="false"
@@ -739,6 +735,7 @@
       [columnData]="advanceFilterGridColumns"
     ></app-advance-filter-popup>
   </form-popup>
+
   <div *ngFor="let popup of popups; let i = index">
     <dx-popup
       [(visible)]="popup.visible"
@@ -762,11 +759,11 @@
     #loadPanel
     class="loadPanel"
     shadingColor="rgba(0,0,0,0)"
-    [position]="{ of: '.view-wrapper' }"
+    [position]="{ of: '.grid' }"
     [(visible)]="loadingVisible"
     [showIndicator]="true"
-    [showPane]="false"
-    [shading]="true"
+    [showPane]="true"
+    [shading]="false"
     [hideOnOutsideClick]="false"
     [message]="'Loading...'"
   >

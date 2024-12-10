@@ -293,7 +293,7 @@
                 [scrolling]="{ mode: 'virtual' }"
                 [height]="'50vh'"
                 [(selectedRowKeys)]="ReceiverID_Value"
-                
+
               >
               </dx-data-grid>
             </div>
@@ -451,7 +451,7 @@
       #dataGrid
       class="grid reportGrid reportGridFooter theme-dependent"
       [height]="'84vh'"
-      [noDataText]="!loadingVisible ? 'No Data Available' : ' '"
+      [noDataText]="!isContentVisible ? 'No Data Available' : ' '"
       [dataSource]="dataGrid_DataSource"
       [showBorders]="true"
       [allowColumnResizing]="false"
@@ -756,7 +756,7 @@
     #loadPanel
     class="loadPanel"
     shadingColor="rgba(0,0,0,0)"
-    [position]="{ of: '.view-wrapper' }"
+    [position]="{ of: '.grid' }"
     [(visible)]="loadingVisible"
     [showIndicator]="true"
     [showPane]="false"

@@ -288,7 +288,7 @@ export class ClaimDetailsActivityComponent {
       paymentStatus: this.paymentStatus_Value,
     };
     this.isContentVisible = false;
-    this.loadingVisible = true;
+    this.dataGrid.instance.beginCustomLoading('Loading...');
 
     try {
       const response: any = await this.service
@@ -304,7 +304,7 @@ export class ClaimDetailsActivityComponent {
         this.summaryColumnsData = this.generateSummaryColumns(
           response.ReportColumns
         );
-        console.log('Summary columns are:', this.summaryColumnsData);
+        // console.log('Summary columns are:', this.summaryColumnsData);
 
         this.columnsConfig = this.generateColumnsConfig(
           response.ReportColumns,
@@ -362,10 +362,10 @@ export class ClaimDetailsActivityComponent {
         this.dataGrid_DataSource = new DataSource<any>({
           load: () => Promise.resolve(formattedReportData),
         });
-        this.loadingVisible = false;
+        this.dataGrid.instance.endCustomLoading();
         this.isContentVisible = false;
       } else {
-        this.loadingVisible = false;
+        this.dataGrid.instance.endCustomLoading();
         this.isContentVisible = false;
         notify(
           {
@@ -376,7 +376,7 @@ export class ClaimDetailsActivityComponent {
         );
       }
     } catch (error) {
-      this.loadingVisible = false;
+      this.dataGrid.instance.endCustomLoading();
       this.isContentVisible = true;
       notify(
         {

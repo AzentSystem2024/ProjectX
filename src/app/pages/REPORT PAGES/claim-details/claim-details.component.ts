@@ -289,23 +289,21 @@ export class ClaimDetailsComponent {
     };
 
     this.isContentVisible = false;
-    this.loadingVisible = true;
-
+    this.dataGrid.instance.beginCustomLoading('Loading...');
     try {
       const response: any = await this.service
         .fetch_Claim_Details(formData)
         .toPromise();
       if (response.flag === '1') {
         this.isEmptyDatagrid = false;
+
         this.columndata = response.ReportColumns;
 
         const userLocale = navigator.language || 'en-US';
-        // console.log('user locale settings:', userLocale);
 
         this.summaryColumnsData = this.generateSummaryColumns(
           response.ReportColumns
         );
-        // console.log('Summary columns are:', this.summaryColumnsData);
 
         this.columnsConfig = this.generateColumnsConfig(
           response.ReportColumns,
@@ -367,10 +365,10 @@ export class ClaimDetailsComponent {
         this.dataGrid_DataSource = new DataSource<any>({
           load: () => Promise.resolve(formattedReportData),
         });
-        this.loadingVisible = false;
+        this.dataGrid.instance.endCustomLoading();
         this.isContentVisible = false;
       } else {
-        this.loadingVisible = false;
+        this.dataGrid.instance.endCustomLoading();
         this.isContentVisible = false;
         notify(
           {
@@ -381,7 +379,7 @@ export class ClaimDetailsComponent {
         );
       }
     } catch (error) {
-      this.loadingVisible = false;
+      this.dataGrid.instance.endCustomLoading();
       this.isContentVisible = true;
       notify(
         {
