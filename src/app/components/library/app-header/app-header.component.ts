@@ -24,7 +24,6 @@ import { CustomReuseStrategy } from 'src/app/custom-reuse-strategy';
   styleUrls: ['./app-header.component.scss'],
   providers: [CustomReuseStrategy],
 })
-
 export class AppHeaderComponent implements OnInit {
   @Output()
   menuToggle = new EventEmitter<boolean>();
@@ -61,11 +60,10 @@ export class AppHeaderComponent implements OnInit {
             // Navigate to the login page
             this.router.navigate(['/auth/login']).then(() => {
               // window.location.reload();
-              // this.router.navigate(['/auth/login'])
+              // this.router.navigate(['/auth/login']);
               setTimeout(() => {
                 window.location.reload();
-                console.log('Page reloaded after 3 seconds');
-              }, 500);
+              }, 250);
             });
           }
         });

@@ -53,6 +53,15 @@ export class SystemServicesService {
   }
 
   //===============================Post office credentials===============================
+  //========Facility credentials verify ========
+  verify_PostOfficeCredencial() {
+    const UserId = sessionStorage.getItem('UserID');
+    const Url = `${BASE_URL}/facilitycredentials/verifyfacility`;
+    const reqBody = {
+      UserId: UserId,
+    };
+    return this.http.post(Url, reqBody);
+  }
   //===========List===========
   get_PostOfficeCredencial_List() {
     const Url = `${BASE_URL}/facilitycredentials/list`;
@@ -70,6 +79,25 @@ export class SystemServicesService {
   ) {
     const url = `${BASE_URL}/facilitycredentials/update`;
     const reqBody = {
+      FacilityID: FacilityID,
+      PostOfficeID: PostOfficeID,
+      LoginName: LoginName,
+      Password: Password,
+    };
+    return this.http.post(url, reqBody);
+  }
+
+  //=====Add or update data========
+  verify_update_PostOfficeCredencial_Data(
+    FacilityID: any,
+    PostOfficeID: any,
+    LoginName: any,
+    Password: any
+  ) {
+    const UserId = sessionStorage.getItem('UserID');
+    const url = `${BASE_URL}/facilitycredentials/verifyfacilityLicense`;
+    const reqBody = {
+      UserId: UserId,
       FacilityID: FacilityID,
       PostOfficeID: PostOfficeID,
       LoginName: LoginName,

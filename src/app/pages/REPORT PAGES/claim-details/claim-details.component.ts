@@ -240,8 +240,12 @@ export class ClaimDetailsComponent {
             (item) => item.ID === 'EncounterStartDate'
           )?.ID;
           this.EncounterType_DataSource = response.EncounterType;
-          this.RecieverID_DataSource = response.ReceiverID;
-          this.PayerID_DataSource = response.PayerID;
+          this.RecieverID_DataSource = this.makeAsyncDataSourceFromJson(
+            response.ReceiverID
+          );
+          this.PayerID_DataSource = this.makeAsyncDataSourceFromJson(
+            response.PayerID
+          );
           this.Payer_DataSource = response.Payer;
           this.Clinician_DataSource = this.makeAsyncDataSourceFromJson(
             response.Clinician
@@ -284,6 +288,7 @@ export class ClaimDetailsComponent {
       paymentStatus: this.paymentStatus_Value,
     };
 
+    this.isContentVisible = false;
     this.loadingVisible = true;
 
     try {

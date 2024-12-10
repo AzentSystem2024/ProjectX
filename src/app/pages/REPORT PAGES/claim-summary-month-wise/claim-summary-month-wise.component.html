@@ -176,23 +176,32 @@
         </dxi-item>
 
         <dxi-item [colSpan]="2">
-          <dx-tag-box
+          <dx-drop-down-box
             labelMode="floating"
             labelLocation="left"
-            label="select payer ID"
-            [dataSource]="PayerID_DataSource"
-            displayExpr="Name"
-            valueExpr="ID"
+            label="Select Payer ID"
             [(value)]="PayerID_Value"
-            [searchEnabled]="true"
-            [searchExpr]="['Name', 'ID']"
-            [multiline]="false"
-            [applyValueMode]="'instantly'"
-            [showSelectionControls]="true"
-            (valueChanged)="onDropdownValueChanged()"
-            [dropDownOptions]="{ width: 'auto' }"
+            valueExpr="ID"
+            displayExpr="Name"
+            [showClearButton]="true"
+            [dataSource]="PayerID_DataSource"
           >
-          </dx-tag-box>
+            <div *dxTemplate="let data of 'content'">
+              <dx-data-grid
+                [dataSource]="PayerID_DataSource"
+                [columns]="[{ dataField: 'Name', caption: 'ID - Name' }]"
+                [selection]="{ mode: 'multiple' }"
+                [hoverStateEnabled]="true"
+                [paging]="{ enabled: true, pageSize: 10 }"
+                [filterRow]="{ visible: true }"
+                [headerFilter]="{ visible: true }"
+                [scrolling]="{ mode: 'virtual' }"
+                [height]="'50vh'"
+                [(selectedRowKeys)]="PayerID_Value"
+              >
+              </dx-data-grid>
+            </div>
+          </dx-drop-down-box>
         </dxi-item>
 
         <dxi-item [colSpan]="2">
@@ -228,7 +237,7 @@
           <dx-drop-down-box
             labelMode="floating"
             labelLocation="left"
-            label="Select Clinician"
+            label="Select Ordering Clinician"
             [(value)]="OrderingClinician_Value"
             valueExpr="ID"
             displayExpr="Name"
@@ -252,7 +261,6 @@
             </div>
           </dx-drop-down-box>
         </dxi-item>
-        
       </dxi-item>
 
       <dxi-item
@@ -262,23 +270,32 @@
         [colCountByScreen]="{ xs: 8, sm: 8, md: 8, lg: 8 }"
       >
         <dxi-item [colSpan]="2">
-          <dx-tag-box
+          <dx-drop-down-box
             labelMode="floating"
             labelLocation="left"
             label="Select Reciever ID"
-            [dataSource]="RecieverID_DataSource"
-            displayExpr="Name"
-            valueExpr="ID"
             [(value)]="ReceiverID_Value"
-            [searchEnabled]="true"
-            [searchExpr]="['Name', 'ID']"
-            [multiline]="false"
-            [applyValueMode]="'instantly'"
-            [showSelectionControls]="true"
-            [dropDownOptions]="{ width: 'auto' }"
-            (valueChanged)="onDropdownValueChanged()"
+            valueExpr="ID"
+            displayExpr="Name"
+            [showClearButton]="true"
+            [dataSource]="RecieverID_DataSource"
           >
-          </dx-tag-box>
+            <div *dxTemplate="let data of 'content'">
+              <dx-data-grid
+                [dataSource]="RecieverID_DataSource"
+                [columns]="[{ dataField: 'Name', caption: 'ID - Name' }]"
+                [selection]="{ mode: 'multiple' }"
+                [hoverStateEnabled]="true"
+                [paging]="{ enabled: true, pageSize: 10 }"
+                [filterRow]="{ visible: true }"
+                [headerFilter]="{ visible: true }"
+                [scrolling]="{ mode: 'virtual' }"
+                [height]="'50vh'"
+                [(selectedRowKeys)]="ReceiverID_Value"
+              >
+              </dx-data-grid>
+            </div>
+          </dx-drop-down-box>
         </dxi-item>
 
         <dxi-item [colSpan]="2">

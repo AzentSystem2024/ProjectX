@@ -1,3 +1,4 @@
+import { SystemServicesService } from './../../../pages/SYSTEM PAGES/system-services.service';
 import { CommonModule } from '@angular/common';
 import { Component, NgModule, Input, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
@@ -37,8 +38,10 @@ export class LoginFormComponent implements OnInit {
     private router: Router,
     private themeService: ThemeService,
     private sharedService: SharedServiceService,
-    private inactive: InactivityService
+    private inactive: InactivityService,
+    private SystemService: SystemServicesService
   ) {
+    this.formData = {};
     this.themeService.isDark.subscribe((value: boolean) => {
       this.btnStylingMode = value ? 'outlined' : 'contained';
     });
@@ -65,14 +68,11 @@ export class LoginFormComponent implements OnInit {
         this.authService
           .logIn(username, password, forcelogin)
           .subscribe((response: any) => {
-            // if(response.data.ChangePasswordOnLogin=='true'){
-            //   this.router.navigateByUrl('/change-password');
-            // }
             if (response.flag == 1) {
               sessionStorage.setItem('loginName', response.data.LoginName);
               sessionStorage.setItem('UserID', response.data.UserID);
               sessionStorage.setItem('UserPhoto', response.data.PhotoFile);
-              // console.log('loginname', this.authService.loginName);
+
               this.authService.setUserData(response.data);
               localStorage.setItem('logData', JSON.stringify(response.data));
               localStorage.setItem(
@@ -83,8 +83,37 @@ export class LoginFormComponent implements OnInit {
                 'sidemenuItems',
                 JSON.stringify(response.menus)
               );
-              this.inactive.setUserlogginValue();
-              this.router.navigateByUrl('/analytics-dashboard');
+
+              this.SystemService.verify_PostOfficeCredencial().subscribe(
+                (response: any) => {
+                  if (response.flag === 1) {
+                    this.inactive.setUserlogginValue();
+                    this.router.navigateByUrl('/analytics-dashboard');
+                    notify(
+                      {
+                        message: response.message,
+                        position: { at: 'top right', my: 'top right' },
+                      },
+                      'success'
+                    );
+                  }else{
+                    this.inactive.setUserlogginValue();
+                    this.router.navigateByUrl('/analytics-dashboard');
+                    notify(
+                      {
+                        message: response.message,
+                        position: {
+                          at: 'top right',
+                          my: 'top right',
+                        },
+                      },
+                      'error'
+                    );
+                  }
+                }
+              );
+
+
             } else if (response.flag == 2) {
               const result = confirm(
                 'You are already logged in on another device. Do you want to force the login process?',
@@ -119,8 +148,38 @@ export class LoginFormComponent implements OnInit {
                           'sidemenuItems',
                           JSON.stringify(response.menus)
                         );
-                        this.inactive.setUserlogginValue();
-                        this.router.navigateByUrl('/analytics-dashboard');
+
+                        this.SystemService.verify_PostOfficeCredencial().subscribe(
+                          (response: any) => {
+                            if (response.flag === 1) {
+                              this.inactive.setUserlogginValue();
+                              this.router.navigateByUrl('/analytics-dashboard');
+                              notify(
+                                {
+                                  message: response.message,
+                                  position: {
+                                    at: 'top right',
+                                    my: 'top right',
+                                  },
+                                },
+                                'success'
+                              );
+                            }else{
+                              this.inactive.setUserlogginValue();
+                              this.router.navigateByUrl('/analytics-dashboard');
+                              notify(
+                                {
+                                  message: response.message,
+                                  position: {
+                                    at: 'top right',
+                                    my: 'top right',
+                                  },
+                                },
+                                'error'
+                              );
+                            }
+                          }
+                        );
                       }
                     });
                 } else {

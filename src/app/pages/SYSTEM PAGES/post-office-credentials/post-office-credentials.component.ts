@@ -111,43 +111,96 @@ export class PostOfficeCredentialsComponent implements OnInit {
     const oldData = event.oldData;
     const newData = event.newData;
     const updatedData = { ...oldData, ...newData };
-    let id = updatedData.ID;
-    let FacilityID = updatedData.ID;
-    let PostOfficeID = updatedData.PostOfficeID;
-    let LoginName = updatedData.LoginName;
-    let Password = updatedData.Password;
+    const { FacilityID, PostOfficeID, LoginName, Password } = updatedData;
+
     this.systemService
-      .update_PostOfficeCredencial_Data(
+      .verify_update_PostOfficeCredencial_Data(
         FacilityID,
         PostOfficeID,
         LoginName,
         Password
       )
-      .subscribe((data: any) => {
-        if (data) {
-          this.dataGrid.instance.refresh();
-
+      .subscribe(
+        (verifyResponse: any) => {
+          if (verifyResponse.flag === 1) {
+            notify(
+              {
+                message: `Verification successful! Proceeding to update.`,
+                position: { at: 'top right', my: 'top right' },
+                displayTime: 5000,
+              },
+              'success'
+            );
+            // If verification is successful, proceed to update the data
+            this.systemService
+              .update_PostOfficeCredencial_Data(
+                FacilityID,
+                PostOfficeID,
+                LoginName,
+                Password
+              )
+              .subscribe(
+                (updateResponse: any) => {
+                  if (updateResponse) {
+                    notify(
+                      {
+                        message: `${updateResponse.message}`,
+                        position: { at: 'top right', my: 'top right' },
+                        displayTime: 1000,
+                      },
+                      'success'
+                    );
+                    this.dataGrid.instance.refresh(); // Refresh the grid after update
+                  } else {
+                    notify(
+                      {
+                        message: `Failed to update data.`,
+                        position: { at: 'top right', my: 'top right' },
+                        displayTime: 1000,
+                      },
+                      'error'
+                    );
+                  }
+                  event.component.cancelEditData(); // Close the edit popup
+                },
+                (error: any) => {
+                  console.error('Update error:', error);
+                  notify(
+                    {
+                      message: `Error updating data: ${error.message}`,
+                      position: { at: 'top right', my: 'top right' },
+                      displayTime: 1000,
+                    },
+                    'error'
+                  );
+                  event.component.cancelEditData();
+                }
+              );
+          } else {
+            notify(
+              {
+                message: `Verification failed. Update not performed.`,
+                position: { at: 'top right', my: 'top right' },
+                displayTime: 1000,
+              },
+              'error'
+            );
+            event.component.cancelEditData(); // Close the edit popup
+          }
+        },
+        (error: any) => {
+          console.error('Verification error:', error);
           notify(
             {
-              message: `${data.message}`,
-              position: { at: 'top right', my: 'top right' },
-              displayTime: 1000,
-            },
-            'success'
-          );
-        } else {
-          notify(
-            {
-              message: `Your Data Not Saved`,
+              message: `Error verifying data: ${error.message}`,
               position: { at: 'top right', my: 'top right' },
               displayTime: 1000,
             },
             'error'
           );
+          event.component.cancelEditData();
         }
-        event.component.cancelEditData(); // Close the popup
-        this.dataGrid.instance.refresh();
-      });
+      );
 
     event.cancel = true; // Prevent the default update operation
   }

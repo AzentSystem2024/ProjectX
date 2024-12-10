@@ -17,10 +17,6 @@
         type="required"
         message="Username is required"
       ></dxi-validation-rule>
-      <!-- <dxi-validation-rule
-        type="email"
-        message="Email is invalid"
-      ></dxi-validation-rule> -->
       <dxo-label [visible]="false"></dxo-label>
     </dxi-item>
 
@@ -30,12 +26,12 @@
       [editorOptions]="{
         placeholder: 'Password',
         stylingMode: 'filled',
-        mode: isPasswordVisible ? 'text' : 'password', 
+        mode: isPasswordVisible ? 'text' : 'password',
         buttons: [{
           name: 'passwordToggle',
           location: 'after',
           options: {
-            icon: isPasswordVisible ? 'fas fa-eye' : 'fas fa-eye-slash', 
+            icon: isPasswordVisible ? 'fas fa-eye' : 'fas fa-eye-slash',
             onClick: togglePasswordVisibility,
             stylingMode: 'text',
           }

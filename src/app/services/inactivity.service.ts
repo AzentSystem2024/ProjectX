@@ -25,17 +25,19 @@ export class InactivityService {
   }
   //===============fetch the security policy data for session time out duration==========
   get_securityPolicy_List() {
-    const userid=sessionStorage.getItem('UserID')
-    this.systemservice.get_securityPolicy_List(userid).subscribe((response: any) => {
-      if (response) {
-        const presentSecurityData = response.data[0];
-        this.inactivityTimeout =
-          presentSecurityData.SessionTimeoutMinutes * 60000;
-        this.isUserLoggedIn = true;
-        this.startWatching();
-        this.setupEvents();
-      }
-    });
+    const userid = sessionStorage.getItem('UserID');
+    this.systemservice
+      .get_securityPolicy_List(userid)
+      .subscribe((response: any) => {
+        if (response) {
+          const presentSecurityData = response.data[0];
+          this.inactivityTimeout =
+            presentSecurityData.SessionTimeoutMinutes * 60000;
+          this.isUserLoggedIn = true;
+          this.startWatching();
+          this.setupEvents();
+        }
+      });
   }
   //==================Change the value of userLogin=========
   setUserlogginValue() {
@@ -61,8 +63,11 @@ export class InactivityService {
             sessionStorage.clear();
             this.setUserlogginValue();
 
-            this.router.navigate(['/auth/login']);
-            // window.location.reload();
+            this.router.navigate(['/auth/login']).then(() => {
+              setTimeout(() => {
+                window.location.reload();
+              }, 250);
+            });
           }
         });
       } else {
@@ -73,8 +78,11 @@ export class InactivityService {
             sessionStorage.clear();
             this.setUserlogginValue();
 
-            this.router.navigate(['/auth/login']);
-            // window.location.reload();
+            this.router.navigate(['/auth/login']).then(() => {
+              setTimeout(() => {
+                window.location.reload();
+              }, 250);
+            });
           }
         });
         notify(
