@@ -179,7 +179,7 @@
           <dx-drop-down-box
             labelMode="floating"
             labelLocation="left"
-            label="Select Payer ID"
+            label="Select payer ID"
             [(value)]="PayerID_Value"
             valueExpr="ID"
             displayExpr="Name"
@@ -198,7 +198,13 @@
                 [scrolling]="{ mode: 'virtual' }"
                 [height]="'50vh'"
                 [(selectedRowKeys)]="PayerID_Value"
-
+                (onSelectionChanged)="
+                  onSelectionChanged(
+                    $event,
+                    this.PayerIDjsonData,
+                    'PayerID_DataSource'
+                  )
+                "
               >
               </dx-data-grid>
             </div>
@@ -228,6 +234,13 @@
                 [scrolling]="{ mode: 'virtual' }"
                 [height]="'50vh'"
                 [(selectedRowKeys)]="Clinician_Value"
+                (onSelectionChanged)="
+                  onSelectionChanged(
+                    $event,
+                    this.ClinicianJsonData,
+                    'Clinician_DataSource'
+                  )
+                "
               >
               </dx-data-grid>
             </div>
@@ -257,6 +270,13 @@
                 [scrolling]="{ mode: 'virtual' }"
                 [height]="'50vh'"
                 [(selectedRowKeys)]="OrderingClinician_Value"
+                (onSelectionChanged)="
+                  onSelectionChanged(
+                    $event,
+                    this.orderingClinicianJsonData,
+                    'OrderingClinician_DataSource'
+                  )
+                "
               >
               </dx-data-grid>
             </div>
@@ -293,7 +313,13 @@
                 [scrolling]="{ mode: 'virtual' }"
                 [height]="'50vh'"
                 [(selectedRowKeys)]="ReceiverID_Value"
-
+                (onSelectionChanged)="
+                  onSelectionChanged(
+                    $event,
+                    this.RecieverIDjsonData,
+                    'RecieverID_DataSource'
+                  )
+                "
               >
               </dx-data-grid>
             </div>

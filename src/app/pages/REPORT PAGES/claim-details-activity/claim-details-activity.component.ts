@@ -152,6 +152,10 @@ export class ClaimDetailsActivityComponent {
     width: number;
     rowData: any;
   }> = [];
+  RecieverIDjsonData: any;
+  PayerIDjsonData: any;
+  ClinicianJsonData: any;
+  orderingClinicianJsonData: any;
 
   constructor(
     private service: ReportService,
@@ -222,6 +226,20 @@ export class ClaimDetailsActivityComponent {
     }
   };
 
+
+    //===================Function to handle selection change and sort the data==========
+    onSelectionChanged(event: any, jsonData: any[], dataSourceKey: string): void {
+      console.log('Original JSON Data:', jsonData);
+      const selectedRows = event.selectedRowsData;
+      const selectedRowIds = selectedRows.map((row) => row.ID);
+      const unselectedRows = jsonData.filter(
+        (row) => !selectedRowIds.includes(row.ID)
+      );
+      const reorderedData = [...selectedRows, ...unselectedRows];
+      this[dataSourceKey] = this.makeAsyncDataSourceFromJson(reorderedData);
+      console.log('Updated DataSource:', this[dataSourceKey]);
+      this.dataGrid.instance.refresh();
+    }
   //============Get search parameters dropdown values=======
   get_searchParameters_Dropdown_Values() {
     this.masterService.Get_Facility_List_Data().subscribe((response: any) => {
@@ -244,16 +262,20 @@ export class ClaimDetailsActivityComponent {
           this.RecieverID_DataSource = this.makeAsyncDataSourceFromJson(
             response.ReceiverID
           );
+          this.RecieverIDjsonData = response.ReceiverID;
           this.PayerID_DataSource = this.makeAsyncDataSourceFromJson(
             response.PayerID
           );
+          this.PayerIDjsonData = response.PayerID;
           this.Payer_DataSource = response.Payer;
           this.Clinician_DataSource = this.makeAsyncDataSourceFromJson(
             response.Clinician
           );
+          this.ClinicianJsonData = response.Clinician;
           this.OrderingClinician_DataSource = this.makeAsyncDataSourceFromJson(
             response.OrderingClinician
           );
+          this.orderingClinicianJsonData = response.OrderingClinician;
           this.ResubmissionType_DataSource = response.ResubmissionType;
           this.CliamStatus_DataSource = response.ClaimStatus;
           this.paymentStatus_DataSource = response.PaymentStatus;

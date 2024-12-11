@@ -89,14 +89,7 @@ export class LoginFormComponent implements OnInit {
                   if (response.flag === 1) {
                     this.inactive.setUserlogginValue();
                     this.router.navigateByUrl('/analytics-dashboard');
-                    notify(
-                      {
-                        message: response.message,
-                        position: { at: 'top right', my: 'top right' },
-                      },
-                      'success'
-                    );
-                  }else{
+                  } else {
                     this.inactive.setUserlogginValue();
                     this.router.navigateByUrl('/analytics-dashboard');
                     notify(
@@ -112,8 +105,6 @@ export class LoginFormComponent implements OnInit {
                   }
                 }
               );
-
-
             } else if (response.flag == 2) {
               const result = confirm(
                 'You are already logged in on another device. Do you want to force the login process?',
@@ -154,17 +145,7 @@ export class LoginFormComponent implements OnInit {
                             if (response.flag === 1) {
                               this.inactive.setUserlogginValue();
                               this.router.navigateByUrl('/analytics-dashboard');
-                              notify(
-                                {
-                                  message: response.message,
-                                  position: {
-                                    at: 'top right',
-                                    my: 'top right',
-                                  },
-                                },
-                                'success'
-                              );
-                            }else{
+                            } else {
                               this.inactive.setUserlogginValue();
                               this.router.navigateByUrl('/analytics-dashboard');
                               notify(

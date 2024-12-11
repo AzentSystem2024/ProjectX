@@ -1,14 +1,19 @@
-import { RouteReuseStrategy, ActivatedRouteSnapshot, DetachedRouteHandle } from '@angular/router';
+import {
+  RouteReuseStrategy,
+  ActivatedRouteSnapshot,
+  DetachedRouteHandle,
+} from '@angular/router';
 
 export class CustomReuseStrategy implements RouteReuseStrategy {
-  private handlers: { [key: string]: DetachedRouteHandle } = {};
+   handlers: { [key: string]: DetachedRouteHandle } = {};
 
   shouldDetach(route: ActivatedRouteSnapshot): boolean {
-    return true; // Enable route detachment
+    return true;
   }
 
   store(route: ActivatedRouteSnapshot, handle: DetachedRouteHandle): void {
     this.handlers[route.routeConfig?.path || ''] = handle;
+    console.log('stored Components ', this.handlers);
   }
 
   shouldAttach(route: ActivatedRouteSnapshot): boolean {
@@ -19,12 +24,30 @@ export class CustomReuseStrategy implements RouteReuseStrategy {
     return this.handlers[route.routeConfig?.path || ''] || null;
   }
 
-  shouldReuseRoute(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot): boolean {
+  shouldReuseRoute(
+    future: ActivatedRouteSnapshot,
+    curr: ActivatedRouteSnapshot
+  ): boolean {
     return future.routeConfig === curr.routeConfig;
   }
 
-   // Method to clear stored data on logout
-   clearStoredData(): void {
-    this.handlers = {}; // Clear all stored route handles
+  removeStoredComponent(routePath: string): void {
+    console.log('Available components before removal:', this.handlers);
+    // Resolve the exact key matching the routePath
+    const handlerKey = Object.keys(this.handlers).find(
+      (key) => key === routePath
+    );
+    if (handlerKey) {
+      delete this.handlers[handlerKey];
+      console.log(`Component with route path "${handlerKey}" removed.`);
+    } else {
+      console.log(`No component found with route path "${routePath}".`);
+    }
+    console.log('Available components after removal:', this.handlers);
+  }
+
+  // Method to clear stored data on logout
+  clearStoredData(): void {
+    this.handlers = {};
   }
 }

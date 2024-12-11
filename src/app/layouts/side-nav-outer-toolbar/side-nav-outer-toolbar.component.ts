@@ -28,12 +28,13 @@ import {
 import { Subscription } from 'rxjs';
 import { DxSortableTypes } from 'devextreme-angular/ui/sortable';
 import { InactivityService } from 'src/app/services/inactivity.service';
+import { CustomReuseStrategy } from 'src/app/custom-reuse-strategy';
 
 @Component({
   selector: 'app-side-nav-outer-toolbar',
   templateUrl: './side-nav-outer-toolbar.component.html',
   styleUrls: ['./side-nav-outer-toolbar.component.scss'],
-  providers: [DataService],
+  providers: [DataService, CustomReuseStrategy],
 })
 export class SideNavOuterToolbarComponent implements OnInit, OnDestroy {
   @ViewChild(DxScrollViewComponent, { static: true })
@@ -66,7 +67,8 @@ export class SideNavOuterToolbarComponent implements OnInit, OnDestroy {
     private router: Router,
     public appInfo: AppInfoService,
     private inactiveservice: InactivityService,
-    private dataService: DataService
+    private dataService: DataService,
+    private customReuseStrategy: CustomReuseStrategy
   ) {
     this.routerSubscription = this.router.events.subscribe((event: Event) => {
       if (event instanceof NavigationEnd) {
@@ -184,6 +186,7 @@ export class SideNavOuterToolbarComponent implements OnInit, OnDestroy {
       this.dataService
         .set_pageLoading_And_Closing_Log(10, tab.path)
         .subscribe((response: any) => {});
+      this.customReuseStrategy.removeStoredComponent(tab.path);
       if (this.selectedIndex >= this.tabs.length) {
         this.selectedIndex = this.tabs.length - 1;
       }
