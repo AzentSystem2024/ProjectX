@@ -119,12 +119,12 @@ export class ClinicianComponent implements OnInit {
 
   show_new__Form() {
     this.isAddClinicianPopupOpened = true;
-    this.popupStateService.setPopupState(true); // Update the state in the service
+    this.popupStateService.setPopupState(true);
   }
 
   closePopup() {
     this.isAddClinicianPopupOpened = false;
-    this.popupStateService.setPopupState(false); // Update the state in the service
+    this.popupStateService.setPopupState(false);
   }
 
   get_DropDown_Data() {
