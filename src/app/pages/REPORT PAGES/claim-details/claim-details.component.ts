@@ -146,7 +146,7 @@ export class ClaimDetailsComponent {
   initialized: boolean;
 
   popupWidth: any = '90%';
-  popupHeight: any = '100%';
+  popupHeight: any = '90%';
   popups: Array<{
     visible: boolean;
     height: number;

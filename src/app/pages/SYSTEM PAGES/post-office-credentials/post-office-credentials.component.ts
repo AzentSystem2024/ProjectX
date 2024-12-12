@@ -61,6 +61,7 @@ export class PostOfficeCredentialsComponent implements OnInit {
   currentPathName: any;
   initialized: boolean;
 
+  columns: any;
   constructor(
     private systemService: SystemServicesService,
     private service: ReportService,
@@ -70,6 +71,8 @@ export class PostOfficeCredentialsComponent implements OnInit {
 
   ngOnInit(): void {
     this.getDenial_Type_DropDown();
+
+    this.dataGrid.instance.refresh();
   }
 
   //=============Get Denial Type Drop dwn Data==============================
@@ -77,6 +80,68 @@ export class PostOfficeCredentialsComponent implements OnInit {
     let dropdownType = 'POSTOFFICE';
     this.systemService.Get_GropDown(dropdownType).subscribe((data: any) => {
       this.postOffice_DropDownData = data;
+      this.columns = [
+        {
+          dataField: 'FacilityLicense',
+          caption: 'Facility License',
+          allowEditing: false,
+          allowReordering: false,
+          allowHiding: false,
+        },
+        {
+          dataField: 'FacilityName',
+          caption: 'Facility Name',
+          allowEditing: false,
+          allowReordering: false,
+          allowHiding: false,
+          width: '150',
+        },
+        {
+          dataField: 'PostOfficeID',
+          caption: 'Post Office',
+
+          lookup: {
+            dataSource: this.postOffice_DropDownData,
+            displayExpr: 'DESCRIPTION',
+            valueExpr: 'ID',
+          },
+        },
+        {
+          dataField: 'LoginName',
+          caption: 'Login Name',
+        },
+        {
+          dataField: 'Password',
+          caption: 'Password',
+          editorOptions: {
+            mode: 'password',
+          },
+          cellTemplate: (container: any, options: any) => {
+            const maskedPassword = '*'.repeat(options.value?.length || 0);
+            container.textContent = maskedPassword;
+          },
+        },
+        {
+          caption: 'Status',
+          dataField: 'IsVerified',
+          allowEditing: false,
+          cellTemplate: (container: any, options: any) => {
+            const button = document.createElement('button');
+            button.textContent = options.value ? 'Verified' : 'Not Verified';
+            button.style.backgroundColor = options.value ? '#00a1e0' : 'red';
+            button.style.color = 'white';
+            button.style.border = 'none';
+            button.style.borderRadius = '5px';
+            button.style.cursor = 'pointer';
+            container.appendChild(button);
+          },
+        },
+        {
+          dataField: 'LastModifiedTime',
+          caption: 'Last Modified Time',
+          width: 'auto',
+        },
+      ];
     });
   }
 

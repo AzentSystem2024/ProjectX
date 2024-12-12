@@ -9,7 +9,7 @@
 }
 
 .view-wrapper {
-  position: absolute;
+  position: relative;
   top: 0;
   bottom: 0;
   left: 0;
@@ -17,6 +17,7 @@
   flex-direction: row;
 
   .grid {
+    height: 45%;
     .name-template {
       .position {
         font-size: 12px;
@@ -36,7 +37,6 @@
 
       .dx-datagrid-content .dx-row {
         cursor: pointer;
-
       }
     }
 
@@ -49,31 +49,21 @@
     display: inherit;
   }
 }
-.formPopupClass {
-  width: 500px;
-  height: 600px;
+
+.dx-datagrid {
+  height: 85vh;
 }
 ::ng-deep .add-button {
   background-color: #007bff !important;
   color: white;
   font-weight: bold;
-  
+
   border-radius: 6px;
 
   box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.1) !important;
 
   &:hover {
     background-color: #0056b3 !important;
-    box-shadow: 0px 6px 8px rgba(0, 0, 0, .2) !important;
-  }}
-
-
-// .custom-grid .dx-header-row .dx-datagrid-filter-row {
-//   height: 30px; /* Set your desired height here */
-// }
-
-// .custom-grid .dx-header-row .dx-datagrid-filter-row td {
-//   height: 30px; /* Ensures the cells within the row also match the height */
-// }
-
-
+    box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2) !important;
+  }
+}
