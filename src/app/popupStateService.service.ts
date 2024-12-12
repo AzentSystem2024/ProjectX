@@ -4,13 +4,14 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class PopupStateService {
-  private popupOpenState = false;
+  private popupStates: { [key: string]: boolean } = {};
 
-  setPopupState(isOpen: boolean) {
-    this.popupOpenState = isOpen;
+  setPopupState(popupId: string, isOpen: boolean) {
+    this.popupStates[popupId] = isOpen;
   }
 
-  getPopupState(): boolean {
-    return this.popupOpenState;
+  getPopupState(popupId: string): boolean {
+    return this.popupStates[popupId] || false;
   }
 }
+

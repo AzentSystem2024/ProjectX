@@ -77,7 +77,7 @@ export class ClinicianComponent implements OnInit {
         onClick: () => {
           this.clinicianComponent.reset_newClinicianFormData();
           this.isAddClinicianPopupOpened = false;
-          this.popupStateService.setPopupState(false);
+          this.popupStateService.setPopupState('clinicianPopup', false);
         },
       },
       toolbar: 'bottom',
@@ -95,7 +95,6 @@ export class ClinicianComponent implements OnInit {
       location: 'after',
     },
   ];
-  isAddPopupTriggered: boolean = false;
 
   constructor(
     private service: ReportService,
@@ -106,25 +105,24 @@ export class ClinicianComponent implements OnInit {
   ) {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        this.isAddClinicianPopupOpened = this.popupStateService.getPopupState();
+        this.isAddClinicianPopupOpened = this.popupStateService.getPopupState('clinicianPopup');
       }
     });
   }
 
   ngOnInit(): void {
-    console.log('add form visibled value==>>', this.isAddPopupTriggered);
     this.get_DropDown_Data();
-    this.isAddClinicianPopupOpened = this.popupStateService.getPopupState();
+    this.isAddClinicianPopupOpened = this.popupStateService.getPopupState('clinicianPopup');
   }
 
   show_new__Form() {
     this.isAddClinicianPopupOpened = true;
-    this.popupStateService.setPopupState(true);
+    this.popupStateService.setPopupState('clinicianPopup', true);
   }
 
   closePopup() {
     this.isAddClinicianPopupOpened = false;
-    this.popupStateService.setPopupState(false);
+    this.popupStateService.setPopupState('clinicianPopup', true);
   }
 
   get_DropDown_Data() {
