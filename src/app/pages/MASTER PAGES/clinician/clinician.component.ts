@@ -14,6 +14,7 @@ import {
   DxLookupModule,
   DxSelectBoxModule,
   DxTextBoxModule,
+  DxPopupModule,
 } from 'devextreme-angular';
 import { FormPopupModule } from 'src/app/components';
 import { ReportService } from 'src/app/services/Report-data.service';
@@ -23,14 +24,15 @@ import { DataService } from 'src/app/services';
 import { ClinicianNewFormModule } from '../../POP-UP_PAGES/clinician-new-form/clinician-new-form.component';
 import { ClinicianNewFormComponent } from '../../POP-UP_PAGES/clinician-new-form/clinician-new-form.component';
 import DataSource from 'devextreme/data/data_source';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
+import { PopupStateService } from 'src/app/popupStateService.service';
 @Component({
   selector: 'app-clinician',
   templateUrl: './clinician.component.html',
   styleUrls: ['./clinician.component.scss'],
   providers: [DataService, ReportService],
 })
-export class ClinicianComponent implements OnInit{
+export class ClinicianComponent implements OnInit {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
 
@@ -65,23 +67,64 @@ export class ClinicianComponent implements OnInit{
       }),
   });
 
+  toolbarItems = [
+    {
+      widget: 'dxButton',
+      options: {
+        text: 'Cancel',
+        stylingMode: 'outlined',
+        type: 'normal',
+        onClick: () => {
+          this.clinicianComponent.reset_newClinicianFormData();
+          this.isAddClinicianPopupOpened = false;
+          this.popupStateService.setPopupState(false);
+        },
+      },
+      toolbar: 'bottom',
+      location: 'after',
+    },
+    {
+      widget: 'dxButton',
+      options: {
+        text: 'Save',
+        type: 'default',
+        stylingMode: 'contained',
+        onClick: () => this.onClickSaveNewClinician(),
+      },
+      toolbar: 'bottom',
+      location: 'after',
+    },
+  ];
+  isAddPopupTriggered: boolean = false;
 
   constructor(
     private service: ReportService,
     private masterService: MasterReportService,
     private dataService: DataService,
-    private router: Router
-  ) {}
-
-  ngOnInit(): void {
-    this.get_DropDown_Data();
-
+    private router: Router,
+    private popupStateService: PopupStateService
+  ) {
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.isAddClinicianPopupOpened = this.popupStateService.getPopupState();
+      }
+    });
   }
 
-
+  ngOnInit(): void {
+    console.log('add form visibled value==>>', this.isAddPopupTriggered);
+    this.get_DropDown_Data();
+    this.isAddClinicianPopupOpened = this.popupStateService.getPopupState();
+  }
 
   show_new__Form() {
     this.isAddClinicianPopupOpened = true;
+    this.popupStateService.setPopupState(true); // Update the state in the service
+  }
+
+  closePopup() {
+    this.isAddClinicianPopupOpened = false;
+    this.popupStateService.setPopupState(false); // Update the state in the service
   }
 
   get_DropDown_Data() {
@@ -275,6 +318,7 @@ export class ClinicianComponent implements OnInit{
     DxSelectBoxModule,
     DxTextBoxModule,
     DxLookupModule,
+    DxPopupModule,
     FormPopupModule,
     ClinicianNewFormModule,
   ],

@@ -21,9 +21,7 @@
       [allowDeleting]="true"
       [popup]="{ width: '40%', height: 'auto' }"
     >
-      <dxo-popup title="Edit Clinician" [showTitle]="true">
-      </dxo-popup>
-
+      <dxo-popup title="Edit Clinician" [showTitle]="true"> </dxo-popup>
     </dxo-editing>
 
     <dxo-pager
@@ -181,13 +179,21 @@
     </dxi-column>
   </dx-data-grid>
 
-  <form-popup
-    class="formPopupClass"
+  <dx-popup
     [(visible)]="isAddClinicianPopupOpened"
-    (save)="onClickSaveNewClinician()"
-    titleText="New Clinician"
-    height="'70vh'"
+    [width]="'40%'"
+    [height]="'auto'"
+    [showTitle]="true"
+    title="New Clinician"
+    [dragEnabled]="true"
+    [closeOnOutsideClick]="true"
+    [shading]="false"
+    [toolbarItems]="toolbarItems"
+    [resizeEnabled]="false"
+
   >
-    <app-clinician-new-form></app-clinician-new-form>
-  </form-popup>
+    <div>
+      <app-clinician-new-form></app-clinician-new-form>
+    </div>
+  </dx-popup>
 </div>
