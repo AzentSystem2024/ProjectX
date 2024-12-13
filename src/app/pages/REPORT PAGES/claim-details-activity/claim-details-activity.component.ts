@@ -41,7 +41,7 @@ import { formatNumber } from 'devextreme/localization';
 import { ReportService } from 'src/app/services/Report-data.service';
 import { ReportEngineService } from '../report-engine.service';
 import DataSource from 'devextreme/data/data_source';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import notify from 'devextreme/ui/notify';
 import { ClaimDetailActivityDrillDownComponent } from '../../REPORT DRILL PAGES/claim-detail-activity-drill-down/claim-detail-activity-drill-down.component';
 import { ClaimDetailActivityDrillDownModule } from '../../REPORT DRILL PAGES/claim-detail-activity-drill-down/claim-detail-activity-drill-down.component';
@@ -49,13 +49,14 @@ import { AdvanceFilterPopupModule } from '../../POP-UP_PAGES/advance-filter-popu
 import { DataService } from 'src/app/services';
 import CustomStore from 'devextreme/data/custom_store';
 import { MasterReportService } from '../../MASTER PAGES/master-report.service';
+import { PopupStateService } from 'src/app/popupStateService.service';
 @Component({
   selector: 'app-claim-details-activity',
   templateUrl: './claim-details-activity.component.html',
   styleUrls: ['./claim-details-activity.component.scss'],
   providers: [ReportService, ReportEngineService, DatePipe, DataService],
 })
-export class ClaimDetailsActivityComponent {
+export class ClaimDetailsActivityComponent implements OnInit {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
 
@@ -157,11 +158,29 @@ export class ClaimDetailsActivityComponent {
   ClinicianJsonData: any;
   orderingClinicianJsonData: any;
 
+  //============Custom close button for drilldown popup============
+  toolbarItems = [
+    {
+      widget: 'dxButton',
+      options: {
+        text: '',
+        icon: 'close',
+        type: 'normal',
+        stylingMode: 'contained',
+        onClick: () => this.closePopup(),
+      },
+      toolbar: 'top',
+      location: 'after',
+    },
+  ];
+
   constructor(
     private service: ReportService,
     private reportengine: ReportEngineService,
     private datePipe: DatePipe,
-    private masterService: MasterReportService
+    private router: Router,
+    private masterService: MasterReportService,
+    private popupStateService: PopupStateService
   ) {
     this.loadingVisible = true;
     this.minDate = new Date(2000, 1, 1); // Set the minimum date
@@ -174,8 +193,18 @@ export class ClaimDetailsActivityComponent {
     //=============month field datasource============
     this.monthDataSource = this.service.getMonths();
     this.get_searchParameters_Dropdown_Values();
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.isDrillDownPopupOpened = this.popupStateService.getPopupState(
+          'claimDetaisActivityDrillDownPopup'
+        );
+      }
+    });
   }
 
+  ngOnInit(): void {
+    this.popupStateService.getPopupState('claimDetaisActivityDrillDownPopup');
+  }
   //==================MAking cutom datasource for facility datagrid and dropdown loADING=======
   makeAsyncDataSourceFromJson(jsonData: any) {
     return new CustomStore({
@@ -198,9 +227,14 @@ export class ClaimDetailsActivityComponent {
     this.popupWidth = event.width;
     this.popupHeight = event.height;
   }
-  //==========Remove closing popup from the popup array=======
-  closePopup(index: number) {
-    this.popups.splice(index, 1); // Remove the popup from the array
+  //========Remove closing popup from the popup array=====
+  hidePopup(index: number) {
+    this.isDrillDownPopupOpened = false;
+  }
+  //========Remove closing popup from the popup array=====
+  closePopup() {
+    this.popupStateService.setPopupState('claimDetaisActivityDrillDownPopup', false);
+    this.isDrillDownPopupOpened = false;
   }
 
   //================Show and Hide Search parameters==========
@@ -209,37 +243,27 @@ export class ClaimDetailsActivityComponent {
   }
 
   //=================Row click drill Down====================
+
   handleRowDrillDownClick = (e: any) => {
-    const rowData = e.row;
-    const existingPopup = this.popups.find(
-      (popup) => popup.rowData.rowIndex === rowData.rowIndex
-    );
-    if (!existingPopup) {
-      this.popups.push({
-        visible: true,
-        height: this.popupHeight,
-        width: this.popupWidth,
-        rowData: rowData,
-      });
-    } else {
-      existingPopup.visible = true;
-    }
+    const rowData = e.row.data;
+    this.clickedRowData = rowData;
+    this.isDrillDownPopupOpened = true;
+    this.popupStateService.setPopupState('claimDetaisActivityDrillDownPopup', true);
   };
 
-
-    //===================Function to handle selection change and sort the data==========
-    onSelectionChanged(event: any, jsonData: any[], dataSourceKey: string): void {
-      console.log('Original JSON Data:', jsonData);
-      const selectedRows = event.selectedRowsData;
-      const selectedRowIds = selectedRows.map((row) => row.ID);
-      const unselectedRows = jsonData.filter(
-        (row) => !selectedRowIds.includes(row.ID)
-      );
-      const reorderedData = [...selectedRows, ...unselectedRows];
-      this[dataSourceKey] = this.makeAsyncDataSourceFromJson(reorderedData);
-      console.log('Updated DataSource:', this[dataSourceKey]);
-      this.dataGrid.instance.refresh();
-    }
+  //===================Function to handle selection change and sort the data==========
+  onSelectionChanged(event: any, jsonData: any[], dataSourceKey: string): void {
+    console.log('Original JSON Data:', jsonData);
+    const selectedRows = event.selectedRowsData;
+    const selectedRowIds = selectedRows.map((row) => row.ID);
+    const unselectedRows = jsonData.filter(
+      (row) => !selectedRowIds.includes(row.ID)
+    );
+    const reorderedData = [...selectedRows, ...unselectedRows];
+    this[dataSourceKey] = this.makeAsyncDataSourceFromJson(reorderedData);
+    console.log('Updated DataSource:', this[dataSourceKey]);
+    this.dataGrid.instance.refresh();
+  }
   //============Get search parameters dropdown values=======
   get_searchParameters_Dropdown_Values() {
     this.masterService.Get_Facility_List_Data().subscribe((response: any) => {

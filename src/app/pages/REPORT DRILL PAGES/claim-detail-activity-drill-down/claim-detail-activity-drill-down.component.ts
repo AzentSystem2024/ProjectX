@@ -105,6 +105,7 @@ export class ClaimDetailActivityDrillDownComponent implements OnInit {
   remittanceColor: any = '#3a5869';
   resubmissionColor: any = '#508576';
 
+ 
   constructor(
     private service: ReportService,
     private reportEngine: ReportEngineService
@@ -120,11 +121,12 @@ export class ClaimDetailActivityDrillDownComponent implements OnInit {
     this.isActivityGridVisible = false;
     this.isDiagnosisGridVisible = false;
 
-    // Extract ClaimNumber and FacilityID from clickedRowData
+    console.log('clicked row data available ==>>', this.clickedRowData);
+
     this.ClaimNumber = this.clickedRowData.ClaimNumber;
     this.FacilityID = this.clickedRowData.FacilityID;
     this.RowData = this.clickedRowData;
-    // Call get_DataSource() if ClaimNumber and FacilityID are available
+
     if (this.ClaimNumber && this.FacilityID) {
       this.get_All_DataSource();
     }

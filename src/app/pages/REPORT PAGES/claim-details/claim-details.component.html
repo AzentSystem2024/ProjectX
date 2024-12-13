@@ -764,22 +764,23 @@
     ></app-advance-filter-popup>
   </form-popup>
 
-  <div *ngFor="let popup of popups; let i = index">
+  <div *ngIf="isDrillDownPopupOpened">
     <dx-popup
-      [(visible)]="popup.visible"
+      [(visible)]="isDrillDownPopupOpened"
       title="Claim Details"
-      [height]="popup.height"
-      [width]="popup.width"
+      [height]="popupHeight"
+      [width]="popupWidth"
       [resizeEnabled]="true"
       [dragEnabled]="true"
       [shading]="false"
       [showCloseButton]="false"
       [closeOnOutsideClick]="true"
+      [showCloseButton]="false"
       (onResizeEnd)="onResizeEnd($event)"
-      [toolbarItems]="getToolbarItems(i)"
+      [toolbarItems]="toolbarItems"
     >
       <app-claim-detail-activity-drill-down
-        [clickedRowData]="popup.rowData.data"
+        [clickedRowData]="clickedRowData"
       ></app-claim-detail-activity-drill-down>
     </dx-popup>
   </div>

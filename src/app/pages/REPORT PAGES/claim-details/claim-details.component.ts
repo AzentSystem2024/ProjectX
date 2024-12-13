@@ -141,7 +141,7 @@ export class ClaimDetailsComponent implements OnInit {
   MemoriseReportName: any;
   isSaveMemorisedOpened: boolean = false;
   personalReportData: any;
-  // isDrillDownPopupOpened: boolean = false;
+  isDrillDownPopupOpened: boolean = false;
   clickedRowData: any;
   loadingVisible: boolean = false;
   columnFixed: boolean = true;
@@ -149,17 +149,26 @@ export class ClaimDetailsComponent implements OnInit {
 
   popupWidth: any = '70%';
   popupHeight: any = '90%';
-  popups: Array<{
-    visible: boolean;
-    height: number;
-    width: number;
-    rowData: any;
-  }> = [];
   jsonData: any;
   PayerIDjsonData: any;
   RecieverIDjsonData: any;
   ClinicianJsonData: any;
   orderingClinicianJsonData: any;
+  //============Custom close button for drilldown popup============
+  toolbarItems = [
+    {
+      widget: 'dxButton',
+      options: {
+        text: '',
+        icon: 'close',
+        type: 'normal',
+        stylingMode: 'contained',
+        onClick: () => this.closePopup(),
+      },
+      toolbar: 'top',
+      location: 'after',
+    },
+  ];
 
   constructor(
     private service: ReportService,
@@ -183,11 +192,9 @@ export class ClaimDetailsComponent implements OnInit {
     this.get_searchParameters_Dropdown_Values();
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        this.popups.map((popup) => {
-          popup.visible = this.popupStateService.getPopupState(
-            'claimDetaisDrillDownPopup'
-          );
-        });
+        this.isDrillDownPopupOpened = this.popupStateService.getPopupState(
+          'claimDetaisDrillDownPopup'
+        );
       }
     });
   }
@@ -216,32 +223,15 @@ export class ClaimDetailsComponent implements OnInit {
     this.popupWidth = event.width;
     this.popupHeight = event.height;
   }
-  //============Custom close button for drilldown popup============
-  getToolbarItems(index: number) {
-    return [
-      {
-        widget: 'dxButton',
-        location: 'after',
-        toolbar: 'bottom',
-        options: {
-
-          hint: 'Close',
-          text:'Close',
-          onClick: () => this.closePopup(index),
-          stylingMode: 'text',
-        },
-      },
-    ];
-  }
 
   //========Remove closing popup from the popup array=====
   hidePopup(index: number) {
-    this.popups.splice(index, 1); // Remove the popup from the array
+    this.isDrillDownPopupOpened = false;
   }
   //========Remove closing popup from the popup array=====
-  closePopup(index: number) {
-    this.popups.splice(index, 1);
+  closePopup() {
     this.popupStateService.setPopupState('claimDetaisDrillDownPopup', false);
+    this.isDrillDownPopupOpened = false;
   }
   //================Show and Hide Search parameters========
   toggleContent() {
@@ -250,21 +240,10 @@ export class ClaimDetailsComponent implements OnInit {
 
   //=================Row click drill Down===================
   handleRowDrillDownClick = (e: any) => {
-    const rowData = e.row;
-    const existingPopup = this.popups.find(
-      (popup) => popup.rowData.rowIndex === rowData.rowIndex
-    );
-    if (!existingPopup) {
-      this.popups.push({
-        visible: true,
-        height: this.popupHeight,
-        width: this.popupWidth,
-        rowData: rowData,
-      });
-      this.popupStateService.setPopupState('claimDetaisDrillDownPopup', true);
-    } else {
-      existingPopup.visible = true;
-    }
+    const rowData = e.row.data;
+    this.clickedRowData = rowData;
+    this.isDrillDownPopupOpened = true;
+    this.popupStateService.setPopupState('claimDetaisDrillDownPopup', true);
   };
 
   //===========Function to handle selection change and sort the data==========
