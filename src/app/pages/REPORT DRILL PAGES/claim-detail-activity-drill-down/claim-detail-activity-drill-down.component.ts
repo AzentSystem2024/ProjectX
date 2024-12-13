@@ -173,7 +173,6 @@ export class ClaimDetailActivityDrillDownComponent implements OnInit {
   }
   //===============change color of each row depend transaction type==========
   onRowPrepared(e: any) {
-    console.log('row prepared consoling', e);
     if (e.rowType === 'data') {
       if (e.data.TransactionType.includes('Submission')) {
         e.rowElement.style.backgroundColor = `${this.submissionColor}`;

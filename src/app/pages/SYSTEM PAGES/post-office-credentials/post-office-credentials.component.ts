@@ -138,7 +138,7 @@ export class PostOfficeCredentialsComponent implements OnInit {
         },
         {
           dataField: 'LastModifiedTime',
-          caption: 'Last Modified Time',
+          caption: 'Last Verified Time',
           width: 'auto',
         },
       ];

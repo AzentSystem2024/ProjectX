@@ -42,13 +42,15 @@ import { formatNumber } from 'devextreme/localization';
 import { ReportService } from 'src/app/services/Report-data.service';
 import { ReportEngineService } from '../report-engine.service';
 import DataSource from 'devextreme/data/data_source';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import notify from 'devextreme/ui/notify';
 import { ClaimDetailActivityDrillDownComponent } from '../../REPORT DRILL PAGES/claim-detail-activity-drill-down/claim-detail-activity-drill-down.component';
 import { ClaimDetailActivityDrillDownModule } from '../../REPORT DRILL PAGES/claim-detail-activity-drill-down/claim-detail-activity-drill-down.component';
 import { AdvanceFilterPopupModule } from '../../POP-UP_PAGES/advance-filter-popup/advance-filter-popup.component';
 import { DataService } from 'src/app/services';
 import CustomStore from 'devextreme/data/custom_store';
+import { PopupStateService } from 'src/app/popupStateService.service';
+import { text } from 'stream/consumers';
 
 @Component({
   selector: 'app-claim-details',
@@ -56,7 +58,7 @@ import CustomStore from 'devextreme/data/custom_store';
   styleUrls: ['./claim-details.component.scss'],
   providers: [ReportService, ReportEngineService, DatePipe, DataService],
 })
-export class ClaimDetailsComponent {
+export class ClaimDetailsComponent implements OnInit {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
 
@@ -139,13 +141,13 @@ export class ClaimDetailsComponent {
   MemoriseReportName: any;
   isSaveMemorisedOpened: boolean = false;
   personalReportData: any;
-  isDrillDownPopupOpened: boolean = false;
+  // isDrillDownPopupOpened: boolean = false;
   clickedRowData: any;
   loadingVisible: boolean = false;
   columnFixed: boolean = true;
   initialized: boolean;
 
-  popupWidth: any = '90%';
+  popupWidth: any = '70%';
   popupHeight: any = '90%';
   popups: Array<{
     visible: boolean;
@@ -164,7 +166,8 @@ export class ClaimDetailsComponent {
     private router: Router,
     private reportengine: ReportEngineService,
     private datePipe: DatePipe,
-    private masterService: MasterReportService
+    private masterService: MasterReportService,
+    private popupStateService: PopupStateService
   ) {
     this.loadingVisible = true;
 
@@ -178,6 +181,19 @@ export class ClaimDetailsComponent {
     //=============month field datasource============
     this.monthDataSource = this.service.getMonths();
     this.get_searchParameters_Dropdown_Values();
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.popups.map((popup) => {
+          popup.visible = this.popupStateService.getPopupState(
+            'claimDetaisDrillDownPopup'
+          );
+        });
+      }
+    });
+  }
+
+  ngOnInit(): void {
+    this.popupStateService.getPopupState('claimDetaisDrillDownPopup');
   }
   //==================MAking cutom datasource for facility datagrid and dropdown loADING=======
   makeAsyncDataSourceFromJson(jsonData: any) {
@@ -200,17 +216,39 @@ export class ClaimDetailsComponent {
     this.popupWidth = event.width;
     this.popupHeight = event.height;
   }
-  //==========Remove closing popup from the popup array=======
-  closePopup(index: number) {
-    this.popups.splice(index, 1); // Remove the popup from the array
+  //============Custom close button for drilldown popup============
+  getToolbarItems(index: number) {
+    return [
+      {
+        widget: 'dxButton',
+        location: 'after',
+        toolbar: 'bottom',
+        options: {
+
+          hint: 'Close',
+          text:'Close',
+          onClick: () => this.closePopup(index),
+          stylingMode: 'text',
+        },
+      },
+    ];
   }
 
-  //================Show and Hide Search parameters==========
+  //========Remove closing popup from the popup array=====
+  hidePopup(index: number) {
+    this.popups.splice(index, 1); // Remove the popup from the array
+  }
+  //========Remove closing popup from the popup array=====
+  closePopup(index: number) {
+    this.popups.splice(index, 1);
+    this.popupStateService.setPopupState('claimDetaisDrillDownPopup', false);
+  }
+  //================Show and Hide Search parameters========
   toggleContent() {
     this.isContentVisible = !this.isContentVisible;
   }
 
-  //=================Row click drill Down====================
+  //=================Row click drill Down===================
   handleRowDrillDownClick = (e: any) => {
     const rowData = e.row;
     const existingPopup = this.popups.find(
@@ -223,12 +261,13 @@ export class ClaimDetailsComponent {
         width: this.popupWidth,
         rowData: rowData,
       });
+      this.popupStateService.setPopupState('claimDetaisDrillDownPopup', true);
     } else {
       existingPopup.visible = true;
     }
   };
 
-  //===================Function to handle selection change and sort the data==========
+  //===========Function to handle selection change and sort the data==========
   onSelectionChanged(event: any, jsonData: any[], dataSourceKey: string): void {
     console.log('Original JSON Data:', jsonData);
     const selectedRows = event.selectedRowsData;
@@ -289,7 +328,7 @@ export class ClaimDetailsComponent {
     );
   }
 
-  //===========Fetch DataSource For The Datagrid Table=============
+  //=========Fetch DataSource For The Datagrid Table==========
   async get_Datagrid_DataSource() {
     const formData = {
       SearchOn: this.SearchOn_Value,
@@ -310,7 +349,6 @@ export class ClaimDetailsComponent {
       memberID: this.memberID_Value,
       paymentStatus: this.paymentStatus_Value,
     };
-
     this.isContentVisible = false;
     this.dataGrid.instance.beginCustomLoading('Loading...');
     try {

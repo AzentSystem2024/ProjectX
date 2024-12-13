@@ -773,9 +773,10 @@
       [resizeEnabled]="true"
       [dragEnabled]="true"
       [shading]="false"
-      [closeOnOutsideClick]="false"
+      [showCloseButton]="false"
+      [closeOnOutsideClick]="true"
       (onResizeEnd)="onResizeEnd($event)"
-      (onHidden)="closePopup(i)"
+      [toolbarItems]="getToolbarItems(i)"
     >
       <app-claim-detail-activity-drill-down
         [clickedRowData]="popup.rowData.data"
