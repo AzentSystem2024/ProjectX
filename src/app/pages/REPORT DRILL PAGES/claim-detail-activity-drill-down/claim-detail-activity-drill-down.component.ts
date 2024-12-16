@@ -22,11 +22,6 @@ import {
 import { FormPopupModule } from 'src/app/components';
 import { ReportService } from 'src/app/services/Report-data.service';
 import { ReportEngineService } from '../../REPORT PAGES/report-engine.service';
-import { InnerDrillDownSubmissionComponent } from '../inner-drill-down-submission/inner-drill-down-submission.component';
-import { InnerDrillDownSubmissionModule } from '../inner-drill-down-submission/inner-drill-down-submission.component';
-import { InnerDrillDownRemittanceComponent } from '../inner-drill-down-remittance/inner-drill-down-remittance.component';
-import { InnerDrillDownRemittanceModule } from '../inner-drill-down-remittance/inner-drill-down-remittance.component';
-import { InnerDrillDownResubmissionModule } from '../inner-drill-down-resubmission/inner-drill-down-resubmission.component';
 
 @Component({
   selector: 'app-claim-detail-activity-drill-down',
@@ -105,7 +100,6 @@ export class ClaimDetailActivityDrillDownComponent implements OnInit {
   remittanceColor: any = '#3a5869';
   resubmissionColor: any = '#508576';
 
- 
   constructor(
     private service: ReportService,
     private reportEngine: ReportEngineService
@@ -320,9 +314,6 @@ export class ClaimDetailActivityDrillDownComponent implements OnInit {
     DxTabsModule,
     DxLoadPanelModule,
     DxPopupModule,
-    InnerDrillDownSubmissionModule,
-    InnerDrillDownRemittanceModule,
-    InnerDrillDownResubmissionModule,
   ],
   providers: [],
   exports: [ClaimDetailActivityDrillDownComponent],

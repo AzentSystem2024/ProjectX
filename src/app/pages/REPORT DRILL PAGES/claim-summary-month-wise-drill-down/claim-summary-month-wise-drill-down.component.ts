@@ -78,7 +78,7 @@ export class ClaimSummaryMonthWiseDrillDownComponent implements OnChanges {
   FacilityID: any;
   ReportData: any;
   filteredData: any;
-  // isDrillDownPopupOpened: boolean = false;
+  
   isSecondDrillOpened: boolean = false;
   selectedTab: any;
 
