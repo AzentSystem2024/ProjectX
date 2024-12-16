@@ -41,7 +41,7 @@ import { formatNumber } from 'devextreme/localization';
 import { ReportService } from 'src/app/services/Report-data.service';
 import { ReportEngineService } from '../report-engine.service';
 import DataSource from 'devextreme/data/data_source';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import notify from 'devextreme/ui/notify';
 import {
   ClaimSummaryMonthWiseDrillDownComponent,
@@ -51,6 +51,7 @@ import { AdvanceFilterPopupModule } from '../../POP-UP_PAGES/advance-filter-popu
 import { DataService } from 'src/app/services';
 import CustomStore from 'devextreme/data/custom_store';
 import { MasterReportService } from '../../MASTER PAGES/master-report.service';
+import { PopupStateService } from 'src/app/popupStateService.service';
 @Component({
   selector: 'app-claim-summary-month-wise',
   templateUrl: './claim-summary-month-wise.component.html',
@@ -151,10 +152,32 @@ export class ClaimSummaryMonthWiseComponent {
   ClinicianJsonData: any;
   orderingClinicianJsonData: any;
 
+
+  popupWidth: any = '70%';
+  popupHeight: any = '90%';
+
+    //============Custom close button for drilldown popup============
+    toolbarItems = [
+      {
+        widget: 'dxButton',
+        options: {
+          text: '',
+          icon: 'close',
+          type: 'normal',
+          stylingMode: 'contained',
+          onClick: () => this.closePopup(),
+        },
+        toolbar: 'top',
+        location: 'after',
+      },
+    ];
+
   constructor(
     private service: ReportService,
     private reportengine: ReportEngineService,
-    private masterService: MasterReportService
+    private masterService: MasterReportService,
+    private router: Router,
+    private popupStateService: PopupStateService
   ) {
     this.loadingVisible = true;
 
@@ -168,7 +191,29 @@ export class ClaimSummaryMonthWiseComponent {
     //=============month field datasource============
     this.monthDataSource = this.service.getMonths();
     this.get_searchParameters_Dropdown_Values();
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.isDrillDownPopupOpened = this.popupStateService.getPopupState(
+          'ClaimSummaryBreakUpPopup'
+        );
+      }
+    });
   }
+
+    //=============Resize the popup drill down============
+    onResizeEnd(event: any) {
+      this.popupWidth = event.width;
+      this.popupHeight = event.height;
+    }
+    //========Remove closing popup from the popup array=====
+    hidePopup(index: number) {
+      this.isDrillDownPopupOpened = false;
+    }
+    //========Remove closing popup from the popup array=====
+    closePopup() {
+      this.popupStateService.setPopupState('ClaimSummaryBreakUpPopup', false);
+      this.isDrillDownPopupOpened = false;
+    }
 
   //================Show and Hide Search parameters==========
   toggleContent() {
@@ -179,6 +224,7 @@ export class ClaimSummaryMonthWiseComponent {
   handleRowDrillDownClick = (e: any) => {
     this.clickedRowData = e.row.data;
     this.isDrillDownPopupOpened = true;
+    this.popupStateService.setPopupState('ClaimSummaryBreakUpPopup', true);
   };
 
   //=====Making cutom datasource for facility datagrid and dropdown loADING=====
@@ -442,10 +488,6 @@ export class ClaimSummaryMonthWiseComponent {
     // console.log('advance filter imported data', filterData);
     this.ClaimNumber_Value = filterData.ClaimNumber;
 
-    // this.Facility_Value = this.Facility_DataSource.filter((item) =>
-    //   filterData.ReceiverID.split(',').includes(item.Name)
-    // ).map((item) => item.ID);
-
     this.ReceiverID_Value = this.RecieverID_DataSource.filter((item) =>
       filterData.ReceiverID.split(',').includes(item.Name)
     ).map((item) => item.ID);
@@ -453,10 +495,6 @@ export class ClaimSummaryMonthWiseComponent {
     this.PayerID_Value = this.PayerID_DataSource.filter((item) =>
       filterData.PayerID.split(',').includes(item.Name)
     ).map((item) => item.ID);
-
-    // this.Payer_Value = this.Payer_DataSource.filter((item) =>
-    //   filterData.ReceiverID.split(',').includes(item.Name)
-    // ).map((item) => item.ID);
 
     this.Clinician_Value = this.Clinician_DataSource.filter((item) =>
       filterData.Clinician.split(',').includes(item.Name)

@@ -56,7 +56,7 @@ export class SystemServicesService {
   //========Facility credentials verify ========
   verify_PostOfficeCredencial() {
     const UserId = sessionStorage.getItem('UserID');
-    const Url = `${BASE_URL}/facilitycredentials/verifyfacility`;
+    const Url = `${BASE_URL}/facilitycredentials/verifyuserfacilities`;
     const reqBody = {
       UserId: UserId,
     };
@@ -95,7 +95,7 @@ export class SystemServicesService {
     Password: any
   ) {
     const UserId = sessionStorage.getItem('UserID');
-    const url = `${BASE_URL}/facilitycredentials/verifyfacilityLicense`;
+    const url = `${BASE_URL}/facilitycredentials/verifyfacility`;
     const reqBody = {
       UserId: UserId,
       FacilityID: FacilityID,

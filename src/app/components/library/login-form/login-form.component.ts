@@ -150,7 +150,7 @@ export class LoginFormComponent implements OnInit {
                               this.router.navigateByUrl('/analytics-dashboard');
                               notify(
                                 {
-                                  message: response.message,
+                                  message: `You Have ${response.failurecount} Unverified credentials are finded`,
                                   position: {
                                     at: 'top right',
                                     my: 'top right',

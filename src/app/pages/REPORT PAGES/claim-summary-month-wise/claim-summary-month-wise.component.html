@@ -759,17 +759,28 @@
     ></app-advance-filter-popup>
   </form-popup>
 
-  <dx-popup
-    [(visible)]="isDrillDownPopupOpened"
-    title="Claim Summary Breakup"
-    height="100vh"
-    [width]="'90%'"
-  >
-    <app-claim-summary-month-wise-drill-down
-      [clickedRowData]="clickedRowData"
-      [DetailData]="detailData"
-    ></app-claim-summary-month-wise-drill-down>
-  </dx-popup>
+
+  <div *ngIf="isDrillDownPopupOpened">
+    <dx-popup
+      [(visible)]="isDrillDownPopupOpened"
+      title="Claim Summary BreakUp"
+      [height]="popupHeight"
+      [width]="popupWidth"
+      [resizeEnabled]="true"
+      [dragEnabled]="true"
+      [shading]="true"
+      [showCloseButton]="false"
+      [closeOnOutsideClick]="true"
+      [showCloseButton]="false"
+      (onResizeEnd)="onResizeEnd($event)"
+      [toolbarItems]="toolbarItems"
+    >
+      <app-claim-summary-month-wise-drill-down
+        [clickedRowData]="clickedRowData"
+        [DetailData]="detailData"
+      ></app-claim-summary-month-wise-drill-down>
+    </dx-popup>
+  </div>
 
   <dx-load-panel
     #loadPanel

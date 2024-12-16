@@ -93,24 +93,24 @@
       </dxo-pager>
     </dx-data-grid>
   </div>
-
-  <div *ngFor="let popup of popups; let i = index">
+  <div *ngIf="isSecondDrillOpened">
     <dx-popup
-      [(visible)]="popup.visible"
-      title="Claim Details"
-      [height]="popup.height"
-      [width]="popup.width"
+      [(visible)]="isSecondDrillOpened"
+      title="Claim Summary"
+      [height]="popupHeight"
+      [width]="popupWidth"
       [resizeEnabled]="true"
       [dragEnabled]="true"
-      [shading]="false"
-      [closeOnOutsideClick]="false"
+      [shading]="true"
+      [showCloseButton]="false"
+      [closeOnOutsideClick]="true"
+      [showCloseButton]="false"
       (onResizeEnd)="onResizeEnd($event)"
-      (onHidden)="closePopup(i)"
+      [toolbarItems]="toolbarItems"
     >
       <app-claim-detail-activity-drill-down
-        [clickedRowData]="popup.rowData.data"
+        [clickedRowData]="InnerClickedRowData"
       ></app-claim-detail-activity-drill-down>
     </dx-popup>
   </div>
-
 </div>

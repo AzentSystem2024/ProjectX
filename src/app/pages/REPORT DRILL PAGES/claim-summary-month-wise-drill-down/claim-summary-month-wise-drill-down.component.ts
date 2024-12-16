@@ -4,6 +4,7 @@ import {
   Input,
   NgModule,
   OnChanges,
+  OnInit,
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
@@ -28,6 +29,8 @@ import notify from 'devextreme/ui/notify';
 import DataSource from 'devextreme/data/data_source';
 import { ClaimDetailActivityDrillDownComponent } from '../claim-detail-activity-drill-down/claim-detail-activity-drill-down.component';
 import { ClaimDetailActivityDrillDownModule } from '../claim-detail-activity-drill-down/claim-detail-activity-drill-down.component';
+import { PopupStateService } from 'src/app/popupStateService.service';
+import { NavigationEnd, Router } from '@angular/router';
 @Component({
   selector: 'app-claim-summary-month-wise-drill-down',
   templateUrl: './claim-summary-month-wise-drill-down.component.html',
@@ -79,8 +82,8 @@ export class ClaimSummaryMonthWiseDrillDownComponent implements OnChanges {
   isSecondDrillOpened: boolean = false;
   selectedTab: any;
 
-  popupWidth: any = '90%';
-  popupHeight: any = '100%';
+  popupWidth: any = '50%';
+  popupHeight: any = '60%';
   popups: Array<{
     visible: boolean;
     height: number;
@@ -88,11 +91,41 @@ export class ClaimSummaryMonthWiseDrillDownComponent implements OnChanges {
     rowData: any;
   }> = [];
 
+  //============Custom close button for drilldown popup============
+  toolbarItems = [
+    {
+      widget: 'dxButton',
+      options: {
+        text: '',
+        icon: 'close',
+        type: 'normal',
+        stylingMode: 'contained',
+        onClick: () => this.closePopup(),
+      },
+      toolbar: 'top',
+      location: 'after',
+    },
+  ];
 
-  constructor(private service: ReportService) {}
+  constructor(
+    private service: ReportService,
+    private router: Router,
+    private popupStateService: PopupStateService
+  ) {
+    if (this.Year && this.Month && this.FacilityID) {
+      this.router.events.subscribe((event) => {
+        if (event instanceof NavigationEnd) {
+          this.isSecondDrillOpened = this.popupStateService.getPopupState(
+            'ClaimSummaryMonthWiseInnerDrillDown'
+          );
+        }
+      });
+    }
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['clickedRowData'] && this.clickedRowData) {
+      console.log('Clicked row data fetched ==>>', this.clickedRowData);
       this.loadingVisible = true;
       this.isContentVisible = true;
       this.Year = this.clickedRowData.ClaimYear;
@@ -104,33 +137,34 @@ export class ClaimSummaryMonthWiseDrillDownComponent implements OnChanges {
     }
   }
 
-   //=============Resize the popup drill down============
- onResizeEnd(event: any) {
-  this.popupWidth = event.width;
-  this.popupHeight = event.height;
-}
- //==========Remove closing popup from the popup array=======
- closePopup(index: number) {
-  this.popups.splice(index, 1); // Remove the popup from the array
-}
-
-   //=================Row click drill Down====================
-   handleRowDrillDownClick = (e: any) => {
-    const rowData = e.row;
-    const existingPopup = this.popups.find(
-      (popup) => popup.rowData.rowIndex === rowData.rowIndex
+  //=============Resize the popup drill down============
+  onResizeEnd(event: any) {
+    this.popupWidth = event.width;
+    this.popupHeight = event.height;
+  }
+  //========Remove closing popup from the popup array=====
+  hidePopup(index: number) {
+    this.isSecondDrillOpened = false;
+  }
+  //========Remove closing popup from the popup array=====
+  closePopup() {
+    this.popupStateService.setPopupState(
+      'ClaimSummaryMonthWiseInnerDrillDown',
+      false
     );
-    if (!existingPopup) {
-      this.popups.push({
-        visible: true,
-        height: this.popupHeight,
-        width: this.popupWidth,
-        rowData: rowData,
-      });
-    } else {
-      existingPopup.visible = true;
-    }
+    this.isSecondDrillOpened = false;
+  }
+
+  //=================Row click drill Down====================
+  handleRowDrillDownClick = (e: any) => {
+    this.InnerClickedRowData = e.row.data;
+    this.isSecondDrillOpened = true;
+    this.popupStateService.setPopupState(
+      'ClaimSummaryMonthWiseInnerDrillDown',
+      true
+    );
   };
+
   //===========Fetch DataSource For The Datagrid Table============
   async get_Datagrid_DataSource() {
     this.isContentVisible = false;
@@ -278,12 +312,6 @@ export class ClaimSummaryMonthWiseDrillDownComponent implements OnChanges {
       };
     });
   }
-  // //===============Datagrid row click event=======================
-  // handleRowDrillDownClick = (e: any) => {
-  //   this.InnerClickedRowData = e.row.data;
-  //   // console.log('inner drill down data =>', this.InnerClickedRowData);
-  //   this.isSecondDrillOpened = true;
-  // };
 
   //====================side tabs click event====================
   onTabClick(e: any) {

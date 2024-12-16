@@ -56,7 +56,7 @@ import { PopupStateService } from 'src/app/popupStateService.service';
   styleUrls: ['./claim-details-activity.component.scss'],
   providers: [ReportService, ReportEngineService, DatePipe, DataService],
 })
-export class ClaimDetailsActivityComponent implements OnInit {
+export class ClaimDetailsActivityComponent  {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
 
@@ -145,14 +145,8 @@ export class ClaimDetailsActivityComponent implements OnInit {
   columnFixed: boolean = true;
   initialized: boolean;
 
-  popupWidth: any = '90%';
-  popupHeight: any = '100%';
-  popups: Array<{
-    visible: boolean;
-    height: number;
-    width: number;
-    rowData: any;
-  }> = [];
+  popupWidth: any = '70%';
+  popupHeight: any = '90%';
   RecieverIDjsonData: any;
   PayerIDjsonData: any;
   ClinicianJsonData: any;
@@ -202,9 +196,9 @@ export class ClaimDetailsActivityComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
-    this.popupStateService.getPopupState('claimDetaisActivityDrillDownPopup');
-  }
+  // ngOnInit(): void {
+
+  // }
   //==================MAking cutom datasource for facility datagrid and dropdown loADING=======
   makeAsyncDataSourceFromJson(jsonData: any) {
     return new CustomStore({
