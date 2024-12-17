@@ -52,18 +52,15 @@
           *dxTemplate="let tab of 'title'"
           (click)="TabItemClick(tab)"
         >
-          <span class="tabSubItems ms-2">{{ tab.title }}</span>
+          <span class="tabSubItems ms-2" [title]="tab.title">{{
+            tab.title
+          }}</span>
           <i
             *ngIf="showCloseButton()"
             class="dx-icon dx-icon-close close-icon"
             (click)="closeButtonHandler(tab)"
           ></i>
         </div>
-        <!-- <div *dxTemplate="let tab of 'item'">
-          <ng-container>
-
-          </ng-container>
-        </div> -->
       </dx-tab-panel>
       <div>
         <router-outlet></router-outlet>

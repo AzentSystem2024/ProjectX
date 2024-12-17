@@ -13,7 +13,6 @@ export class CustomReuseStrategy implements RouteReuseStrategy {
 
   store(route: ActivatedRouteSnapshot, handle: DetachedRouteHandle): void {
     this.handlers[route.routeConfig?.path || ''] = handle;
-    console.log('stored Components ', this.handlers);
   }
 
   shouldAttach(route: ActivatedRouteSnapshot): boolean {
@@ -32,18 +31,17 @@ export class CustomReuseStrategy implements RouteReuseStrategy {
   }
 
   removeStoredComponent(routePath: string): void {
-    console.log('Available components before removal:', this.handlers);
     // Resolve the exact key matching the routePath
     const handlerKey = Object.keys(this.handlers).find(
       (key) => key === routePath
     );
     if (handlerKey) {
       delete this.handlers[handlerKey];
-      console.log(`Component with route path "${handlerKey}" removed.`);
+
     } else {
-      console.log(`No component found with route path "${routePath}".`);
+
     }
-    console.log('Available components after removal:', this.handlers);
+
   }
 
   // Method to clear stored data on logout

@@ -111,7 +111,6 @@ export class CPTTypeComponent  {
   onRowRemoving(event: any) {
     event.cancel = true;
     let SelectedRow = event.key;
-    console.log('selected row data :', SelectedRow);
     this.masterService.Remove_CPTType_Row_Data(SelectedRow.ID).subscribe(() => {
       try {
         notify(
@@ -141,7 +140,6 @@ export class CPTTypeComponent  {
     const updataDate = event.newData;
     const oldData = event.oldData;
     const combinedData = { ...oldData, ...updataDate };
-    // console.log('onrowUpdated Data getting ', combinedData);
     let id = combinedData.ID;
     let CptType = combinedData.CptType;
     let Description = combinedData.Description;

@@ -81,12 +81,9 @@ export class ImportMasterDataComponent implements OnInit {
   }
 
   viewDetails = (e) => {
-    console.log(e, 'event');
     this.selectedData = e.row.key;
     this.ViewImportDataPopup = true;
-    console.log('selected data', this.selectedData);
-    console.log(e, '.....');
-    console.log(e.row.key.ID, 'ID');
+    
   };
 
   getImportMasterLog() {

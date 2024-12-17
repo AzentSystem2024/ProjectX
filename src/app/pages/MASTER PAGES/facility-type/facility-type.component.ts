@@ -114,7 +114,6 @@ export class FacilityTypeComponent {
   onRowRemoving(event: any) {
     event.cancel = true;
     let SelectedRow = event.key;
-    console.log('selected row data :', SelectedRow);
     this.masterService
       .Remove_FacilityType_Row_Data(SelectedRow.ID)
       .subscribe(() => {
@@ -146,7 +145,6 @@ export class FacilityTypeComponent {
     const updataDate = event.newData;
     const oldData = event.oldData;
     const combinedData = { ...oldData, ...updataDate };
-    // console.log('onrowUpdated Data getting ', combinedData);
     let id = combinedData.ID;
     let FacilityType = combinedData.FacilityType;
     let Description = combinedData.Description;

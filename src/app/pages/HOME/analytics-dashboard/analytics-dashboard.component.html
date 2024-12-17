@@ -1,31 +1,71 @@
-<dx-scroll-view class="view-wrapper-scroll">
-  <div class="view-wrapper">
-    <toolbar-analytics
-      titleText="Dashboard"
-      [panelItems]="analyticsPanelItems"
-      [selectedItems]="[5]"
-      (selectionChanged)="selectionChange($event)"
-    >
-    </toolbar-analytics>
+<div class="view-wrapper list-page">
+  <dx-data-grid
+    class="grid theme-dependent"
+    noDataText="No Data"
+    height="84vh"
+    [dataSource]="dataSource"
+    [showBorders]="true"
+    [allowColumnResizing]="true"
+    [allowColumnReordering]="true"
+    [rowAlternationEnabled]="true"
+    rowAlternationInterval="2"
+  >
+    <dxo-paging [pageSize]="10"></dxo-paging>
+    <dxo-pager
+      [visible]="true"
+      [allowedPageSizes]="allowedPageSizes"
+      [displayMode]="displayMode"
+      [showPageSizeSelector]="showPageSizeSelector"
+      [showInfo]="true"
+      [showNavigationButtons]="true"
+    ></dxo-pager>
 
-    <div class="cards grey">
-      <opportunities-ticker [data]="opportunities"></opportunities-ticker>
-      <revenue-total-ticker [data]="sales"></revenue-total-ticker>
-      <conversion-ticker></conversion-ticker>
-      <leads-ticker></leads-ticker>
-    </div>
+    <dxo-load-panel [showPane]="false"></dxo-load-panel>
+    <dxo-scrolling mode="virtual"></dxo-scrolling>
+    <dxo-sorting mode="multiple"></dxo-sorting>
+    <dxo-header-filter [visible]="true"></dxo-header-filter>
+    <dxo-filter-row [visible]="false"></dxo-filter-row>
+    <dxo-search-panel [visible]="true" placeholder=" Search"></dxo-search-panel>
+    <dxo-toolbar>
+      <dxi-item location="before">
+        <div class="grid-header">Claim-Remittance Status</div>
+      </dxi-item>
+      <dxi-item
+        location="after"
+        locateInMenu="auto"
+        showText="inMenu"
+        widget="dxButton"
+        [options]="{
+          text: 'Refresh',
+          icon: 'refresh',
+          onClick: refresh,
+          stylingMode: 'text'
+        }"
+      ></dxi-item>
+      <dxi-item location="after" locateInMenu="auto">
+        <div class="separator"></div>
+      </dxi-item>
+      <dxi-item name="searchPanel" locateInMenu="auto"></dxi-item>
+    </dxo-toolbar>
 
-    <div class="cards">
-      <revenue-card [data]="sales"></revenue-card>
-      <conversion-card [data]="opportunities"></conversion-card>
-      <revenue-analysis-card [data]="salesByState"></revenue-analysis-card>
-      <revenue-snapshot-card [data]="salesByCategory"></revenue-snapshot-card>
-    </div>
-  </div>
-</dx-scroll-view>
-<dx-load-panel
-  container=".view-wrapper"
-  [position]="{ of: '.content' }"
-  [visible]="isLoading"
-  [showPane]="true"
-></dx-load-panel>
+    <dxo-header-filter [visible]="true">
+      <dxo-search [enabled]="true"></dxo-search>
+    </dxo-header-filter>
+
+    <dxi-column
+      dataField="FacilityLicense"
+      caption="Facility License"
+    ></dxi-column>
+    <dxi-column dataField="FacilityName" caption="Facility Name"></dxi-column>
+    <dxi-column dataField="Postoffice" caption="Post Office"></dxi-column>
+    <dxi-column
+      dataField="ClaimTransactionDate"
+      caption="Claim Transaction Date"
+    ></dxi-column>
+    <dxi-column
+      dataField="RemittanceTransactionDate"
+      caption="Remittance Transaction Date"
+    ></dxi-column>
+    <dxi-column dataField="LastSynchDate" caption="Last Sync Date"></dxi-column>
+  </dx-data-grid>
+</div>

@@ -31,6 +31,9 @@
 .tabSubItems {
   height: 100%;
   flex-grow: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .close-icon {
   margin-left: auto;
@@ -38,4 +41,3 @@
 .close-icon:hover {
   color: aliceblue;
 }
-

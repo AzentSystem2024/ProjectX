@@ -143,7 +143,6 @@ export class DenialTypeComponent  {
     const updataDate = event.newData;
     const oldData = event.oldData;
     const combinedData = { ...oldData, ...updataDate };
-    // console.log('onrowUpdated Data getting ', combinedData);
     let id = combinedData.ID;
     let DenialTypeValue = combinedData.DenialType;
     let Description = combinedData.Description;

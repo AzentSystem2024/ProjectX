@@ -48,17 +48,12 @@ export class LicenseInfoComponent {
           next: (response: any) => {
             this.LicensedTo = response.CustomerName;
             this.ProductKey = response.ProductKey;
-
-            // Modify the response data to add the serial number and format the expiry date
             response.data.forEach((item: any, index: number) => {
               item.serialNumber = index + 1;
 
-              const expiryDate = new Date(item.Expiry_Date);
-              item.Expiry_Date = expiryDate.toLocaleDateString('en-GB', {
-                day: '2-digit',
-                month: 'short',
-                year: 'numeric',
-              });
+              item.Expiry_Date = this.dataService.formatDateTime(
+                item.Expiry_Date
+              );
             });
 
             resolve(response.data); // Resolve with the modified data

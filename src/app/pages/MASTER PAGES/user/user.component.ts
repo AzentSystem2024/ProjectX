@@ -83,10 +83,10 @@ export class UserComponent  {
 
 
   onEditingRow(event): void {
-    console.log(event, 'event');
+
     event.cancel = true;
     const Id = event.data.UserID;
-    console.log(Id, 'id');
+
     this.isEditPopupOpened = true;
     this.service.get_User_Data_By_Id(Id).subscribe((res) => {
       this.selectedRowData = res;
@@ -104,7 +104,7 @@ export class UserComponent  {
 
   onClickSaveNewData() {
     const data = this.userNewForm.getNewUserData();
-    console.log('inserted data', data);
+
     this.service.insert_User_Data(data).subscribe((res: any) => {
       try {
         if (res.message === 'Success') {
@@ -134,14 +134,12 @@ export class UserComponent  {
   onClearData() {
     this.userNewForm.removeImage();
     this.userNewForm.clearData();
-    console.log('hai...');
+
   }
 
   onRowRemoving(event: any) {
-    console.log(event);
     event.cancel = true;
     let SelectedRow = event.key;
-    // console.log('selected row data :', SelectedRow);
     this.service.remove_User_Data(SelectedRow.UserID).subscribe(() => {
       try {
         notify(

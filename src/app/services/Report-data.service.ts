@@ -212,7 +212,6 @@ export class ReportService {
       RemittanceDownloadUID: RemittanceDownloadUID,
       RemittanceUID: RemittanceUID,
     };
-    console.log('service req body ==>>', reqBody);
     return this.http.post(url, reqBody);
   }
 

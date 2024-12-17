@@ -1,115 +1,71 @@
-import { Component, OnInit, NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { map, share } from 'rxjs/operators';
-import { Observable, forkJoin } from 'rxjs';
-
-import { DxPieChartModule } from 'devextreme-angular/ui/pie-chart';
-import { DxChartModule } from 'devextreme-angular/ui/chart';
-import { DxDataGridModule } from 'devextreme-angular/ui/data-grid';
-import { DxFunnelModule } from 'devextreme-angular/ui/funnel';
-import { DxBulletModule } from 'devextreme-angular/ui/bullet';
-import { DxLoadPanelModule } from 'devextreme-angular/ui/load-panel';
-import { DxScrollViewModule } from 'devextreme-angular/ui/scroll-view';
-
+import { Component, NgModule, ViewChild } from '@angular/core';
+import { CommonModule, formatDate } from '@angular/common';
 import { DataService } from 'src/app/services';
-import { CardAnalyticsModule } from 'src/app/components/library/card-analytics/card-analytics.component';
-import { ToolbarAnalyticsModule } from 'src/app/components/utils/toolbar-analytics/toolbar-analytics.component';
-import { ConversionCardModule } from 'src/app/components/utils/conversion-card/conversion-card.component';
-import { RevenueCardModule } from 'src/app/components/utils/revenue-card/revenue-card.component';
-import { RevenueAnalysisCardModule } from 'src/app/components/utils/revenue-analysis-card/revenue-analysis-card.component';
-import { RevenueSnapshotCardModule } from 'src/app/components/utils/revenue-snapshot-card/revenue-snapshot-card.component';
-import { OpportunitiesTickerModule } from 'src/app/components/utils/opportunities-ticker/opportunities-ticker.component';
-import { RevenueTotalTickerModule } from 'src/app/components/utils/revenue-total-ticker/revenue-total-ticker.component';
-import { ConversionTickerModule } from 'src/app/components/utils/conversion-ticker/conversion-ticker.component';
-import { LeadsTickerModule } from 'src/app/components/utils/leads-ticker/leads-ticker.component';
-import { analyticsPanelItems, Dates } from 'src/app/types/resource';
 import {
-  Sales,
-  SalesByState,
-  SalesByStateAndCity,
-  SalesOrOpportunitiesByCategory,
-} from 'src/app/types/analytics';
-import { ApplyPipeModule } from 'src/app/pipes/apply.pipe';
-
-type DashboardData =
-  | SalesOrOpportunitiesByCategory
-  | Sales
-  | SalesByState
-  | SalesByStateAndCity
-  | null;
-type DataLoader = (startDate: string, endDate: string) => Observable<Object>;
-
+  DxDataGridModule,
+  DxButtonModule,
+  DxDropDownButtonModule,
+  DxSelectBoxModule,
+  DxTextBoxModule,
+  DxLookupModule,
+  DxDataGridComponent,
+} from 'devextreme-angular';
+import DataSource from 'devextreme/data/data_source';
 @Component({
   templateUrl: './analytics-dashboard.component.html',
   styleUrls: ['./analytics-dashboard.component.scss'],
   providers: [DataService],
 })
-export class AnalyticsDashboardComponent implements OnInit {
-  analyticsPanelItems = analyticsPanelItems;
+export class AnalyticsDashboardComponent {
+  @ViewChild(DxDataGridComponent, { static: true })
+  dataGrid: DxDataGridComponent;
 
-  opportunities: SalesOrOpportunitiesByCategory = null;
-  sales: Sales = null;
-  salesByState: SalesByState = null;
-  salesByCategory: SalesByStateAndCity = null;
+  readonly allowedPageSizes: any = [5, 10, 'all'];
+  displayMode: any = 'full';
+  showPageSizeSelector = true;
 
-  isLoading: boolean = true;
+  dataSource = new DataSource<any>({
+    load: () =>
+      new Promise((resolve, reject) => {
+        this.dataService.get_DashbOard_SyncData_Details().subscribe({
+          next: (response: any) => {
+            const formattedData = response.data.map((item: any) => ({
+              ...item,
+              ClaimTransactionDate: this.formatDateTime(
+                item.ClaimTransactionDate
+              ),
+              RemittanceTransactionDate: this.formatDateTime(
+                item.RemittanceTransactionDate
+              ),
+              LastSynchDate: this.formatDateTime(item.LastSynchDate),
+            }));
+            resolve(formattedData);
+          },
+          error: (error) => reject(error.message),
+        });
+      }),
+  });
 
-  constructor(private service: DataService) {}
+  constructor(private dataService: DataService) {}
 
-  selectionChange(dates: Dates) {
-    this.loadData(dates.startDate, dates.endDate);
+  formatDateTime(date: string): string {
+    return formatDate(date, 'dd-MMM-yyyy hh:mm a', 'en-US');
   }
 
-  customizeSaleText(arg: { percentText: string }) {
-    return arg.percentText;
-  }
-
-  loadData = (startDate: string, endDate: string) => {
-    this.isLoading = true;
-    const tasks: Observable<object>[] = [
-    ].map(([dataName, loader]: [string, DataLoader]) => {
-      const loaderObservable = loader(startDate, endDate).pipe(share());
-
-      loaderObservable.subscribe((result: DashboardData) => {
-        this[dataName] = result;
-      });
-
-      return loaderObservable;
-    });
-
-    forkJoin(tasks).subscribe(() => {
-      this.isLoading = false;
-    });
-    this.isLoading = false;
+  refresh = () => {
+    this.dataGrid.instance.refresh();
   };
-
-  ngOnInit(): void {
-    const [startDate, endDate] = analyticsPanelItems[4].value.split('/');
-    this.loadData(startDate, endDate);
-  }
 }
 
 @NgModule({
   imports: [
-    DxScrollViewModule,
-    DxDataGridModule,
-    DxBulletModule,
-    DxFunnelModule,
-    DxPieChartModule,
-    DxChartModule,
-    CardAnalyticsModule,
-    ToolbarAnalyticsModule,
-    DxLoadPanelModule,
-    ApplyPipeModule,
-    ConversionCardModule,
-    RevenueAnalysisCardModule,
-    RevenueCardModule,
-    RevenueSnapshotCardModule,
-    OpportunitiesTickerModule,
-    RevenueTotalTickerModule,
-    ConversionTickerModule,
-    LeadsTickerModule,
     CommonModule,
+    DxDataGridModule,
+    DxButtonModule,
+    DxDropDownButtonModule,
+    DxSelectBoxModule,
+    DxTextBoxModule,
+    DxLookupModule,
   ],
   providers: [],
   exports: [],

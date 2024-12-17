@@ -1,5 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import {
   AfterViewChecked,
   ChangeDetectorRef,
@@ -33,8 +38,6 @@ import {
   DxTooltipModule,
   DxValidationGroupModule,
   DxNumberBoxModule,
-  
-  
 } from 'devextreme-angular';
 import { MasterReportService } from '../../MASTER PAGES/master-report.service';
 import { FormTextboxModule } from 'src/app/components';
@@ -45,37 +48,35 @@ import CountryList from 'country-list-with-dial-code-and-flag';
   selector: 'app-user-new-form',
   templateUrl: './user-new-form.component.html',
   styleUrls: ['./user-new-form.component.scss'],
-  providers:[MasterReportService,ReactiveFormsModule]
+  providers: [MasterReportService, ReactiveFormsModule],
 })
-export class UserNewFormComponent implements OnInit,AfterViewChecked {
-
-  @ViewChild('fileUploader', { static: false }) fileUploader!: DxFileUploaderComponent; // Update the type here
+export class UserNewFormComponent implements OnInit, AfterViewChecked {
+  @ViewChild('fileUploader', { static: false })
+  fileUploader!: DxFileUploaderComponent; // Update the type here
   @ViewChild('fileInput', { static: false }) fileInput!: ElementRef;
-  userData:any = {
+  userData: any = {
     UserName: '',
     Password: '',
     DateofBirth: '',
-    UserRoleID:'',
+    UserRoleID: '',
     Whatsapp: '',
-    LoginName:'',
-    GenderID:'',
-    Email:'',
-    Mobile:'',
-    countryCode:'',
-    IsInactive:false,
-    InactiveReason:'',
-    IsLocked:false,
-    LockDateFrom:'',
+    LoginName: '',
+    GenderID: '',
+    Email: '',
+    Mobile: '',
+    countryCode: '',
+    IsInactive: false,
+    InactiveReason: '',
+    IsLocked: false,
+    LockDateFrom: '',
     LockDateTo: '',
-    LoginExpiryDate : '',
-    PhotoFile:'',
-    changePasswordOnLogin:false,
-    user_facility: []
+    LoginExpiryDate: '',
+    PhotoFile: '',
+    changePasswordOnLogin: false,
+    user_facility: [],
   };
   newUserData = this.userData;
-  getNewUserData = () => ({ ...this.newUserData });
-
-  selectedRows:any[]=[];
+  selectedRows: any[] = [];
   userForm: FormGroup;
   images: string[] = [];
   stylingMode: any = 'primary';
@@ -84,8 +85,8 @@ export class UserNewFormComponent implements OnInit,AfterViewChecked {
   scrollByContent: boolean = true;
   showNavButtons: boolean = true;
   isPasswordVisible = false;
-  securityPolicyData:any;
-  facilityList
+  securityPolicyData: any;
+  facilityList;
   countryCodes: any[] = [];
 
   isDropZoneActive = false;
@@ -99,14 +100,9 @@ export class UserNewFormComponent implements OnInit,AfterViewChecked {
   tooltipVisible = false;
   onShowEvent = 'click';
   onHideEvent = 'click';
-  selectedRowCount: number = 0; 
+  selectedRowCount: number = 0;
   totalRowCount: number = 0;
-  userList:any;
-  // Method to handle tab click and set selected index
-  onTabClick(event: any) {
-    console.log(event);
-    this.selectedIndex = event.itemIndex;
-  }
+  userList: any;
 
   // Radio button options
   userTypes = ['Normal User', 'Clinician'];
@@ -114,33 +110,38 @@ export class UserNewFormComponent implements OnInit,AfterViewChecked {
   userRole: any;
   clinicianOptions = ['clinician1', 'clinician2', 'clinician3'];
   isLocked: boolean = false;
-  isInactive:boolean=false;
+  isInactive: boolean = false;
   showUserDetails: boolean = true; // Show User Details by default
-  showOptions: boolean = true;     // Show Options by default
+  showOptions: boolean = true; // Show Options by default
   selectedUserType: string = this.userTypes[0]; // Default to 'Normal User'
   isImageUploaded = false; // Variable to track image upload status
-  tabItems = [
-    { text: 'Facility' },
-    { text: 'Options' }
-  ];
+  tabItems = [{ text: 'Facility' }, { text: 'Options' }];
   facilityData = [
     { license: 'F12345', facility: 'Facility 1' },
     { license: 'F67890', facility: 'Facility 2' },
-    { license: 'F54321', facility: 'Facility 3' }
+    { license: 'F54321', facility: 'Facility 3' },
   ];
 
   facilityColumns = [
     { dataField: 'license', caption: 'Facility License' },
-    { dataField: 'facility', caption: 'Facility' }
+    { dataField: 'facility', caption: 'Facility' },
   ];
 
   public isDropdownOpen: boolean = false;
 
-  constructor(private service:MasterReportService,private cdr: ChangeDetectorRef){
-    
+  constructor(
+    private service: MasterReportService,
+    private cdr: ChangeDetectorRef
+  ) {}
+  getNewUserData = () => ({ ...this.newUserData });
+
+  // Method to handle tab click and set selected index
+  onTabClick(event: any) {
+    console.log(event);
+    this.selectedIndex = event.itemIndex;
   }
   ngAfterViewChecked() {
-    this.cdr.detectChanges();  // Triggers change detection
+    this.cdr.detectChanges(); // Triggers change detection
   }
 
   onDateOfBirthChange(event: any) {
@@ -156,101 +157,107 @@ export class UserNewFormComponent implements OnInit,AfterViewChecked {
     this.newUserData.LockDateTo = event.value; // Update the model with the selected date
   }
 
-  getUSerData(){
-    this.service.get_User_data().subscribe(data=>{
-      this.userList=data;
-      console.log('datasource',this.userList);
-    })
+  getUSerData() {
+    this.service.get_User_data().subscribe((data) => {
+      this.userList = data;
+      console.log('datasource', this.userList);
+    });
   }
-  
+
   onLoginNameInput(event: Event): void {
     const target = event.target as HTMLInputElement;
 
     // Remove spaces from the current value and sanitize it
-    const sanitizedValue = target.value.replace(/\s/g, '').replace(/[^a-zA-Z0-9]/g, '');
+    const sanitizedValue = target.value
+      .replace(/\s/g, '')
+      .replace(/[^a-zA-Z0-9]/g, '');
 
     // Check if the first character is an alphabet
     if (sanitizedValue.length > 0 && /^[a-zA-Z]/.test(sanitizedValue[0])) {
-        // Update the target value and the LoginName property
-        target.value = sanitizedValue; 
-        this.newUserData.LoginName = sanitizedValue; // Update the login name value
+      // Update the target value and the LoginName property
+      target.value = sanitizedValue;
+      this.newUserData.LoginName = sanitizedValue; // Update the login name value
 
-        // Validate the login name directly
-        this.checkLoginNameExists({ value: sanitizedValue });
+      // Validate the login name directly
+      this.checkLoginNameExists({ value: sanitizedValue });
     } else {
-        // If the first character is not an alphabet, reset the input
-        target.value = ''; // Optionally clear the input
-        this.newUserData.LoginName = ''; // Reset the login name value
+      // If the first character is not an alphabet, reset the input
+      target.value = ''; // Optionally clear the input
+      this.newUserData.LoginName = ''; // Reset the login name value
     }
-}
+  }
 
-checkLoginNameExists= (e: any): boolean => {
+  checkLoginNameExists = (e: any): boolean => {
     const loginName = e.value;
-    const exists = this.userList.some(user => user.LoginName === loginName);
-  
+    const exists = this.userList.some((user) => user.LoginName === loginName);
+
     // Return true if it does NOT exist, false if it DOES exist
     e.valid = !exists;
     return e.valid;
-}
+  };
 
   onUserNameInput(event: Event): void {
     const target = event.target as HTMLInputElement;
-  
+
     // Regular expression to allow only alphabets with a single space between words
     let sanitizedValue = target.value
       .replace(/[^a-zA-Z\s]/g, '') // Remove all characters except alphabets and spaces
-      .replace(/\s{2,}/g, ' ')     // Replace multiple spaces with a single space
-      .replace(/^\s+/g, '')    // Remove spaces at the beginning of the string
-      .toUpperCase(); 
-  
-    target.value = sanitizedValue; 
+      .replace(/\s{2,}/g, ' ') // Replace multiple spaces with a single space
+      .replace(/^\s+/g, '') // Remove spaces at the beginning of the string
+      .toUpperCase();
+
+    target.value = sanitizedValue;
     this.newUserData.UserName = sanitizedValue; // Update the UserName value
   }
 
   // This function removes spaces from the email input and updates the Email property
-onEmailInput(event: Event): void {
-  const target = event.target as HTMLInputElement;
+  onEmailInput(event: Event): void {
+    const target = event.target as HTMLInputElement;
 
-  // Remove spaces from the email input
-  const sanitizedValue = target.value.replace(/\s/g, '');
+    // Remove spaces from the email input
+    const sanitizedValue = target.value.replace(/\s/g, '');
 
-  // Update the target value and the Email property
-  target.value = sanitizedValue;
-  this.newUserData.Email = sanitizedValue;
-  this.checkEmailExists({ value: sanitizedValue });
-}
+    // Update the target value and the Email property
+    target.value = sanitizedValue;
+    this.newUserData.Email = sanitizedValue;
+    this.checkEmailExists({ value: sanitizedValue });
+  }
 
-// This function checks if the email already exists in the user list
-checkEmailExists=(e: any): boolean => {
-  const email = e.value;
-  
-  // Check if the email already exists in the user list
-  const exists = this.userList.some(user => user.Email.toLowerCase() === email.toLowerCase());
+  // This function checks if the email already exists in the user list
+  checkEmailExists = (e: any): boolean => {
+    const email = e.value;
 
-  // Return true if it does NOT exist, false if it DOES exist
-  e.valid = !exists;
-  return e.valid;
-}
+    // Check if the email already exists in the user list
+    const exists = this.userList.some(
+      (user) => user.Email.toLowerCase() === email.toLowerCase()
+    );
 
-// Email format validation using custom regex (only alphanumerics before @)
-customEmailValidation = (e: any): boolean => {
-  const email = e.value;
+    // Return true if it does NOT exist, false if it DOES exist
+    e.valid = !exists;
+    return e.valid;
+  };
 
-  // Custom regex: only alphanumeric before @, at least one alphabet, followed by valid domain
-  const emailPattern = /^[a-zA-Z0-9]+[a-zA-Z]+[a-zA-Z0-9]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  // Email format validation using custom regex (only alphanumerics before @)
+  customEmailValidation = (e: any): boolean => {
+    const email = e.value;
 
-  // Validate email against the custom pattern
-  const isValid = emailPattern.test(email);
+    // Custom regex: only alphanumeric before @, at least one alphabet, followed by valid domain
+    const emailPattern =
+      /^[a-zA-Z0-9]+[a-zA-Z]+[a-zA-Z0-9]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-  e.valid = isValid;
-  return e.valid;
-}
+    // Validate email against the custom pattern
+    const isValid = emailPattern.test(email);
+
+    e.valid = isValid;
+    return e.valid;
+  };
 
   // Function to handle selection changes
   onSelectionChanged(e: any) {
     // Map selected row keys to the desired format
-    this.userData.user_facility = e.selectedRowKeys.map((key: number) => ({      // Generate an ID for each entry starting from 1
-      FacilityID: key        // Assign the selected FacilityID
+    this.userData.user_facility = e.selectedRowKeys.map((key: number) => ({
+      // Generate an ID for each entry starting from 1
+      FacilityID: key, // Assign the selected FacilityID
     }));
     console.log('User Facility:', this.userData.user_facility);
     this.selectedRowCount = e.selectedRowKeys.length;
@@ -279,8 +286,8 @@ customEmailValidation = (e: any): boolean => {
   //   });
   // };
 
-  onSubmit(){
-    console.log('userform data',this.userForm)
+  onSubmit() {
+    console.log('userform data', this.userForm);
   }
 
   toggleUserDetails(): void {
@@ -327,38 +334,38 @@ customEmailValidation = (e: any): boolean => {
   }
 
   // Function to reset the file input
-resetFileInput() {
-  if (this.fileInput && this.fileInput.nativeElement) {
-    this.fileInput.nativeElement.value = ''; // Reset the file input value
+  resetFileInput() {
+    if (this.fileInput && this.fileInput.nativeElement) {
+      this.fileInput.nativeElement.value = ''; // Reset the file input value
+    }
   }
-}
 
-readFile(file: File) {
-  const reader = new FileReader();
-  reader.onload = () => {
-    const result = reader.result as string;
-    this.isImageUploaded = true;
-    this.newUserData.PhotoFile = result;
-    this.images = [result]; // Only store one image
-  };
-  reader.readAsDataURL(file);
-}
+  readFile(file: File) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      this.isImageUploaded = true;
+      this.newUserData.PhotoFile = result;
+      this.images = [result]; // Only store one image
+    };
+    reader.readAsDataURL(file);
+  }
   // readFile(file: File) {
   //   const reader = new FileReader();
   //   reader.onload = () => {
   //     // Read the file as an ArrayBuffer (binary format)
   //     const arrayBuffer = reader.result as ArrayBuffer;
-      
+
   //     // Directly store the ArrayBuffer or its binary representation into the newUserData object
   //     this.newUserData.PhotoFile = arrayBuffer; // Storing as ArrayBuffer for binary data
-      
+
   //     console.log(this.newUserData.PhotoFile, "Binary Data Ready to be Sent to DB");
-  
+
   //     // Optionally, display the image using URL.createObjectURL for gallery purposes
   //     const imageUrl = URL.createObjectURL(new Blob([arrayBuffer]));
   //     this.images.push(imageUrl); // Add the image URL to the gallery for display
   //   };
-  
+
   //   // Read the file as an ArrayBuffer to get binary data
   //   reader.readAsArrayBuffer(file);
   // }
@@ -379,40 +386,39 @@ readFile(file: File) {
     this.newUserData.PhotoFile = ''; // Clear the stored file data
   }
 
-  
   getCountryCodeList() {
     const codes = CountryList.getAll(); // Get all country codes
     this.countryCodes = codes.map((country: any) => ({
-      data: country.data
+      data: country.data,
     }));
     console.log(this.countryCodes, 'country code'); // Optional: For debugging
   }
 
   // Use this function to display based on dropdown state
   countryCodeDisplay = (item: any) => {
-    return item ? (this.isDropdownOpen 
-                   ? `${item.data.flag} ${item.data.dial_code} - ${item.data.name}` 
-                   : `${item.data.flag}`) : '';  // Display only country flag before dropdown is opened
+    return item
+      ? this.isDropdownOpen
+        ? `${item.data.flag} ${item.data.dial_code} - ${item.data.name}`
+        : `${item.data.flag}`
+      : ''; // Display only country flag before dropdown is opened
   };
 
   // Triggered when the dropdown is opened
   onDropdownOpened() {
-    this.isDropdownOpen = true;  // Mark dropdown as open
+    this.isDropdownOpen = true; // Mark dropdown as open
   }
 
   // Triggered when the dropdown is closed
   onDropdownClosed() {
-    this.isDropdownOpen = false;  // Mark dropdown as closed
+    this.isDropdownOpen = false; // Mark dropdown as closed
   }
 
-  clearData(){
-    this.selectedRows=[];
-    this.newUserData.GenderID='';
-  this.cdr.detectChanges(); 
+  clearData() {
+    this.selectedRows = [];
+    this.newUserData.GenderID = '';
+    this.cdr.detectChanges();
     console.log(this.newUserData);
   }
-
-  
 
   ngOnInit(): void {
     this.getDropDownData('GENDER_DATA');
@@ -420,11 +426,10 @@ readFile(file: File) {
     this.getUserSecurityPolicyData();
     this.getFacilityData();
     this.getCountryCodeList();
-    
+
     this.setDefaultCountryCode();
     this.updateMobileNumber(); // Update mobile field with the default country code
     this.getUSerData();
-  
   }
 
   setDefaultCountryCode() {
@@ -438,91 +443,104 @@ readFile(file: File) {
     }
   }
 
-  getDropDownData(data:any){
-    this.service.Get_GropDown(data).subscribe(res=>{
-      console.log(res,"res");
-      if(data==='GENDER_DATA')
-      {
-       this.gender=res;
-        console.log("gender",this.gender)
+  getDropDownData(data: any) {
+    this.service.Get_GropDown(data).subscribe((res) => {
+      console.log(res, 'res');
+      if (data === 'GENDER_DATA') {
+        this.gender = res;
+        console.log('gender', this.gender);
       }
-      if(data==='USER_ROLE'){
-        this.userRole=res;
-        console.log(this.userRole,'userRole')
+      if (data === 'USER_ROLE') {
+        this.userRole = res;
+        console.log(this.userRole, 'userRole');
       }
-    })
+    });
   }
-  getUserSecurityPolicyData(){
-    this.service.getUserSecurityPolicityData().subscribe((res:any)=>{
+  getUserSecurityPolicyData() {
+    this.service.getUserSecurityPolicityData().subscribe((res: any) => {
       this.securityPolicyData = res.data[0];
-      console.log('user security policy data',this.securityPolicyData)
+      console.log('user security policy data', this.securityPolicyData);
       this.generatedPassword = this.generateRandomPassword();
-    })
+    });
   }
-  getFacilityData(){
-    this.service.Get_Facility_List_Data().subscribe((res:any)=>{
-      this.facilityList=res.data;
-      console.log('facility data',this.facilityList)
-    })
+  getFacilityData() {
+    this.service.Get_Facility_List_Data().subscribe((res: any) => {
+      this.facilityList = res.data;
+      console.log('facility data', this.facilityList);
+    });
   }
   generateRandomPassword(): string {
     // Fetch the minimum length from security policy; default to 8 if not provided
     const minLength = Math.max(this.securityPolicyData.MinimumLength || 8, 8); // Ensure a minimum length of at least 8
-  
+
     // Set a maximum length (e.g., 12) or based on your requirement
     const maxLength = 12;
-  
+
     // Calculate random length between minLength and maxLength
-    const length = Math.floor(Math.random() * (maxLength - minLength + 1)) + minLength;
-  
-    const specialChars = "@#$%&*";
+    const length =
+      Math.floor(Math.random() * (maxLength - minLength + 1)) + minLength;
+
+    const specialChars = '@#$%&*';
     const lowerCase = 'abcdefghijklmnopqrstuvwxyz';
     const upperCase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const numbers = '0123456789';
-  
+
     // Initialize password and characters array
     let password = '';
     const characters = [];
     const requiredCharacters = [];
-  
+
     // Include character sets and ensure at least one character from each selected set
     if (this.securityPolicyData.Numbers) {
       characters.push(numbers);
-      requiredCharacters.push(numbers.charAt(Math.floor(Math.random() * numbers.length)));
+      requiredCharacters.push(
+        numbers.charAt(Math.floor(Math.random() * numbers.length))
+      );
     }
     if (this.securityPolicyData.UppercaseCharacters) {
       characters.push(upperCase);
-      requiredCharacters.push(upperCase.charAt(Math.floor(Math.random() * upperCase.length)));
+      requiredCharacters.push(
+        upperCase.charAt(Math.floor(Math.random() * upperCase.length))
+      );
     }
     if (this.securityPolicyData.LowercaseCharacters) {
       characters.push(lowerCase);
-      requiredCharacters.push(lowerCase.charAt(Math.floor(Math.random() * lowerCase.length)));
+      requiredCharacters.push(
+        lowerCase.charAt(Math.floor(Math.random() * lowerCase.length))
+      );
     }
     if (this.securityPolicyData.SpecialCharacters) {
       characters.push(specialChars);
-      requiredCharacters.push(specialChars.charAt(Math.floor(Math.random() * specialChars.length)));
+      requiredCharacters.push(
+        specialChars.charAt(Math.floor(Math.random() * specialChars.length))
+      );
     }
-  
+
     // Ensure there are character sets to choose from
     if (characters.length === 0) {
-      throw new Error('No character sets selected based on the security policy.');
+      throw new Error(
+        'No character sets selected based on the security policy.'
+      );
     }
-  
+
     // Add at least one character of each required type to the password
-    requiredCharacters.forEach(char => password += char);
-  
+    requiredCharacters.forEach((char) => (password += char));
+
     // Calculate remaining length to fill
     const remainingLength = length - requiredCharacters.length;
-  
+
     // Fill the rest of the password with random characters from the selected sets
     for (let i = 0; i < remainingLength; i++) {
       const charSet = characters[Math.floor(Math.random() * characters.length)];
       password += charSet.charAt(Math.floor(Math.random() * charSet.length));
     }
-  
+
     // Shuffle the password to ensure randomness
-    password = password.split('').sort(() => 0.5 - Math.random()).join('');
-  
+    password = password
+      .split('')
+      .sort(() => 0.5 - Math.random())
+      .join('');
+
     return password;
   }
 
@@ -535,157 +553,158 @@ readFile(file: File) {
     const selectedCountry = this.countryCodes.find(
       (code) => code.data.dial_code === this.newUserData.countryCode
     );
-  
+
     if (selectedCountry) {
       const dialCode = selectedCountry.data.dial_code; // Extract country code
-  
+
       // Extract and validate the mobile number part
       const mobileNumber = this.getOnlyMobileNumber(this.newUserData.Mobile);
       const validMobileNumber = this.validateMobileNumber(mobileNumber);
-  
+
       // Update the mobile field with valid country code and mobile number
       this.newUserData.Mobile = `${dialCode} ${validMobileNumber}`;
-      
+
       console.log('Updated Mobile:', this.newUserData.Mobile); // For debugging
     }
   }
-  
+
   getOnlyMobileNumber(fullPhoneNumber: string): string {
     // Extract mobile number by removing the dial code part
-    const selectedCountry = this.countryCodes.find(
-      (code) => fullPhoneNumber.startsWith(code.data.dial_code)
+    const selectedCountry = this.countryCodes.find((code) =>
+      fullPhoneNumber.startsWith(code.data.dial_code)
     );
-  
+
     if (selectedCountry) {
       return fullPhoneNumber.replace(selectedCountry.data.dial_code, '').trim();
     }
-  
+
     return fullPhoneNumber; // Return as is if no match found
   }
-  
 
   onMobileInputChange(event: any) {
     const target = event.target as HTMLInputElement;
-  
+
     // Get the input value and allow only '+' at the start and digits after that
     let newValue = target.value.replace(/[^0-9+]/g, '');
-    
+
     // Ensure the input starts with '+' and not '0'
     if (!newValue.startsWith('+')) {
       newValue = '+' + newValue;
     }
-    
+
     // Remove any leading '0' after '+'
     newValue = newValue.replace(/\+0/g, '+');
 
     // Set the cleaned value back to the input
     target.value = newValue;
-  
+
     // Find the selected country code
     const selectedCountry = this.countryCodes.find(
       (code) => code.data.dial_code === this.newUserData.countryCode
     );
-  
+
     if (selectedCountry) {
       const dialCode = selectedCountry.data.dial_code;
-  
+
       // If the user tries to backspace to remove the dial code, reset the input
       if (!newValue.startsWith(dialCode)) {
         this.newUserData.Mobile = dialCode; // Reset mobile number to only show dial code
         return;
       }
-  
+
       // Extract the mobile number part
       const mobileNumberPart = newValue.replace(dialCode, '').trim();
       const validMobileNumber = this.validateMobileNumber(mobileNumberPart);
-  
+
       // Update the mobile field, keeping the dial code intact
       this.newUserData.Mobile = `${dialCode} ${validMobileNumber}`;
     }
   }
 
-  
-
   validateMobileNumber(mobileNumber: string): string {
     // Remove any non-digit characters
     const digitsOnly = mobileNumber.replace(/\D/g, '');
-  
+
     // Ensure the number does not start with zero and return valid number or empty string if invalid
     return digitsOnly.startsWith('0') ? '' : digitsOnly;
   }
-  
 
-  MobileNumberValidate=(e: any): boolean => {
+  MobileNumberValidate = (e: any): boolean => {
     const mobileNumber = e.value;
-  
+
     // Remove all non-digit characters
     const sanitizedNumber = mobileNumber.replace(/\D/g, '');
-  
+
     // Check if the sanitized number has at least 10 digits
     if (sanitizedNumber.length >= 10) {
       return true; // Valid
     }
     return false; // Invalid
-  }
+  };
 
-  WhatsappValidate=(e: any): boolean => {
+  WhatsappValidate = (e: any): boolean => {
     const whatsappNumber = e.value;
-  
+
     // Remove all non-digit characters
     const sanitizedNumber = whatsappNumber.replace(/\D/g, '');
-  
+
     // Check if the sanitized number has at least 10 digits
     if (sanitizedNumber.length >= 10) {
       return true; // Valid
     }
     return false; // Invalid
-  }
+  };
 
   validateWhatsapp(event: any) {
     const target = event.target as HTMLInputElement;
 
-  // Allow only input that starts with '+' and contains only digits
-  const sanitizedValue = target.value.replace(/[^0-9+]/g, '');
+    // Allow only input that starts with '+' and contains only digits
+    const sanitizedValue = target.value.replace(/[^0-9+]/g, '');
 
-  // Ensure the '+' is only at the start
-  if (sanitizedValue.indexOf('+') > 0) {
-    target.value = '+' + sanitizedValue.replace(/\+/g, '');
-  } else {
-    target.value = sanitizedValue;
+    // Ensure the '+' is only at the start
+    if (sanitizedValue.indexOf('+') > 0) {
+      target.value = '+' + sanitizedValue.replace(/\+/g, '');
+    } else {
+      target.value = sanitizedValue;
+    }
+
+    // Update the WhatsApp property with the sanitized value
+    this.newUserData.Whatsapp = target.value;
   }
 
-  // Update the WhatsApp property with the sanitized value
-  this.newUserData.Whatsapp = target.value;
-  }
-
- 
   autoBindWhatsapp() {
     console.log('WhatsApp field focused.');
     setTimeout(() => {
       if (!this.newUserData.Whatsapp && this.newUserData.Mobile) {
-        console.log('Populating WhatsApp with Mobile:', this.newUserData.Mobile);
+        console.log(
+          'Populating WhatsApp with Mobile:',
+          this.newUserData.Mobile
+        );
         this.newUserData.Whatsapp = this.newUserData.Mobile;
       }
     }, 0);
   }
-  
-  
 
   copyToClipboard(): void {
     if (!navigator.clipboard) {
-      console.warn('Clipboard API not available. Make sure you are running the application over HTTPS.');
+      console.warn(
+        'Clipboard API not available. Make sure you are running the application over HTTPS.'
+      );
       // Optionally show a user-friendly message or fallback logic
-      this.tooltipVisible = false; 
+      this.tooltipVisible = false;
       return;
     }
-  
-    navigator.clipboard.writeText(this.generatedPassword).then(() => {
-      this.tooltipVisible = true;
-      console.log('Password copied to clipboard');
-    }).catch(err => {
-      console.error('Error copying password to clipboard', err);
-      // You can show an error message to the user here
-    });
+
+    navigator.clipboard
+      .writeText(this.generatedPassword)
+      .then(() => {
+        this.tooltipVisible = true;
+        console.log('Password copied to clipboard');
+      })
+      .catch((err) => {
+        console.error('Error copying password to clipboard', err);
+        // You can show an error message to the user here
+      });
   }
 }
 @NgModule({
@@ -711,7 +730,6 @@ readFile(file: File) {
     ReactiveFormsModule,
     DxValidationGroupModule,
     DxNumberBoxModule,
-   
   ],
   providers: [],
   declarations: [UserNewFormComponent],

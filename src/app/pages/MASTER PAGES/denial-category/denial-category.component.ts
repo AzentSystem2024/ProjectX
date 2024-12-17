@@ -142,7 +142,6 @@ export class DenialCategoryComponent  {
     const updataDate = event.newData;
     const oldData = event.oldData;
     const combinedData = { ...oldData, ...updataDate };
-    // console.log('onrowUpdated Data getting ', combinedData);
     let id = combinedData.ID;
     let DenialCategoryValue = combinedData.DenialCategorys;
     let Description = combinedData.Description;

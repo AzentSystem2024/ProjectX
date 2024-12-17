@@ -10,7 +10,7 @@ import notify from 'devextreme/ui/notify';
   templateUrl: './reset-password.component.html',
   styleUrls: ['./reset-password.component.scss']
 })
-export class ResetPasswordComponent implements OnInit,OnChanges {
+export class ResetPasswordComponent implements OnChanges {
 
   @Input() formdata: any;
   @Output() closeForm = new EventEmitter();
@@ -41,30 +41,26 @@ export class ResetPasswordComponent implements OnInit,OnChanges {
   this.newFormData = this.formData;
 }
 
-  ngOnInit(): void {
-    // this.securityPolicyData();
-  }
-
   generateRandomPassword(): string {
     // Fetch the minimum length from security policy; default to 8 if not provided
     const minLength = Math.max(this.securityPolicyData.MinimumLength || 8, 8); // Ensure a minimum length of at least 8
-  
+
     // Set a maximum length (e.g., 12) or based on your requirement
     const maxLength = 12;
-  
+
     // Calculate random length between minLength and maxLength
     const length = Math.floor(Math.random() * (maxLength - minLength + 1)) + minLength;
-  
+
     const specialChars = "@#$%&*";
     const lowerCase = 'abcdefghijklmnopqrstuvwxyz';
     const upperCase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const numbers = '0123456789';
-  
+
     // Initialize password and characters array
     let password = '';
     const characters = [];
     const requiredCharacters = [];
-  
+
     // Include character sets and ensure at least one character from each selected set
     if (this.securityPolicyData.Numbers) {
       characters.push(numbers);
@@ -82,27 +78,27 @@ export class ResetPasswordComponent implements OnInit,OnChanges {
       characters.push(specialChars);
       requiredCharacters.push(specialChars.charAt(Math.floor(Math.random() * specialChars.length)));
     }
-  
+
     // Ensure there are character sets to choose from
     if (characters.length === 0) {
       throw new Error('No character sets selected based on the security policy.');
     }
-  
+
     // Add at least one character of each required type to the password
     requiredCharacters.forEach(char => password += char);
-  
+
     // Calculate remaining length to fill
     const remainingLength = length - requiredCharacters.length;
-  
+
     // Fill the rest of the password with random characters from the selected sets
     for (let i = 0; i < remainingLength; i++) {
       const charSet = characters[Math.floor(Math.random() * characters.length)];
       password += charSet.charAt(Math.floor(Math.random() * charSet.length));
     }
-  
+
     // Shuffle the password to ensure randomness
     password = password.split('').sort(() => 0.5 - Math.random()).join('');
-  
+
     return password;
   }
 
@@ -114,10 +110,10 @@ export class ResetPasswordComponent implements OnInit,OnChanges {
     if (!navigator.clipboard) {
       console.warn('Clipboard API not available. Make sure you are running the application over HTTPS.');
       // Optionally show a user-friendly message or fallback logic
-      this.tooltipVisible = false; 
+      this.tooltipVisible = false;
       return;
     }
-  
+
     navigator.clipboard.writeText(this.generatedPassword).then(() => {
       this.tooltipVisible = true;
       console.log('Password copied to clipboard');
@@ -126,7 +122,7 @@ export class ResetPasswordComponent implements OnInit,OnChanges {
       // You can show an error message to the user here
     });
   }
-  
+
   ResetPassword(){
     console.log(this.newFormData,"formdata");
     this.service.reset_Password(this.newFormData).subscribe(data=>{
@@ -159,7 +155,7 @@ export class ResetPasswordComponent implements OnInit,OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (changes.formdata && changes.formdata.currentValue) {
       console.log(this.formdata, "..............");
-      this.formData.UserID=this.formdata; 
+      this.formData.UserID=this.formdata;
     }
   }
 

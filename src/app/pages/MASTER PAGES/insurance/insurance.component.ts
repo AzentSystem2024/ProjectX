@@ -119,7 +119,6 @@ export class InsuranceComponent  {
   onRowRemoving(event: any) {
     event.cancel = true;
     let SelectedRow = event.key;
-    // console.log('selected row data :', SelectedRow);
     this.masterService
       .Remove_Insurance_Row_Data(SelectedRow.ID)
       .subscribe(() => {

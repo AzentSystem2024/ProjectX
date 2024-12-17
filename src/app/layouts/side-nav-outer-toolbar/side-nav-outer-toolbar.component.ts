@@ -80,7 +80,7 @@ export class SideNavOuterToolbarComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     let path = 'analytics-dashboard';
-    let title = 'Home';
+    let title = 'Dashboard';
     this.tabs.push({
       title: title,
       path: path,
@@ -138,7 +138,6 @@ export class SideNavOuterToolbarComponent implements OnInit, OnDestroy {
       } else {
         this.selectedIndex = this.tabs.findIndex((tab) => tab.path === path);
         this.router.navigate([path]);
-
       }
       if (this.menuOpened) {
         pointerEvent?.preventDefault();
