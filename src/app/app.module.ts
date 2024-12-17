@@ -30,9 +30,10 @@ import { ImportMasterDataFormModule } from './pages/POP-UP_PAGES/import-master-d
 import { ViewImportedMasterDataFormModule } from './pages/POP-UP_PAGES/view-imported-master-data-form/view-imported-master-data-form.component';
 import { RouteReuseStrategy } from '@angular/router';
 import { CustomReuseStrategy } from './custom-reuse-strategy';
+import { SynchronizeDataComponent } from './pages/ACTIVITY/synchronize-data/synchronize-data.component';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, SynchronizeDataComponent],
   imports: [
     TaskListModule,
     BrowserModule,

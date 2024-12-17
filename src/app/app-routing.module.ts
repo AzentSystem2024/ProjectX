@@ -43,6 +43,7 @@ import { ClaimDetailsActivityComponent } from './pages/REPORT PAGES/claim-detail
 import { ImportMasterDataComponent } from './pages/MASTER PAGES/import-master-data/import-master-data.component';
 import { ClaimDetailsComponent } from './pages/REPORT PAGES/claim-details/claim-details.component';
 import { ClaimSummaryMonthWiseComponent } from './pages/REPORT PAGES/claim-summary-month-wise/claim-summary-month-wise.component';
+import { SynchronizeDataComponent } from './pages/ACTIVITY/synchronize-data/synchronize-data.component';
 const routes: Routes = [
   {
     path: '',
@@ -237,6 +238,11 @@ const routes: Routes = [
       {
         path: 'license-info-page',
         component: LicenseInfoComponent,
+        canActivate: [AuthGuardService],
+      },
+      {
+        path: 'Synchronize-Data-Pages',
+        component: SynchronizeDataComponent,
         canActivate: [AuthGuardService],
       },
       {
