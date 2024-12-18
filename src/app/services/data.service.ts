@@ -41,4 +41,40 @@ export class DataService {
     };
     return this.http.post(url, reqBody);
   }
+
+  get_Claim_SyncData_Details(facilityID: any, DateFrom: any, DateTo: any) {
+    const userid = sessionStorage.getItem('UserID');
+    const url = `${BASE_URL}facility/synchclaim`;
+    const reqBody = {
+      UserID: userid,
+      DateFrom: DateFrom,
+      DateTo: DateTo,
+      FacilityID: facilityID,
+    };
+    return this.http.post(url, reqBody);
+  }
+
+  get_Remittance_SyncData_Details(facilityID: any, DateFrom: any, DateTo: any) {
+    const userid = sessionStorage.getItem('UserID');
+    const url = `${BASE_URL}facility/synchremittance`;
+    const reqBody = {
+      UserID: userid,
+      DateFrom: DateFrom,
+      DateTo: DateTo,
+      FacilityID: facilityID,
+    };
+    return this.http.post(url, reqBody);
+  }
+
+  get_Process_ReportData_Details(facilityID: any) {
+    const userid = sessionStorage.getItem('UserID');
+    const url = `${BASE_URL}facility/process`;
+    const reqBody = {
+      UserID: userid,
+      DateFrom: '',
+      DateTo: '',
+      FacilityID: facilityID,
+    };
+    return this.http.post(url, reqBody);
+  }
 }

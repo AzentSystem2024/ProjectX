@@ -79,7 +79,7 @@ export class SideNavOuterToolbarComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    let path = 'analytics-dashboard';
+    let path = 'Synchronize-Data-Pages';
     let title = 'Dashboard';
     this.tabs.push({
       title: title,

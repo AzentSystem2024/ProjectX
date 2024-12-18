@@ -1,1 +1,132 @@
-<p>synchronize-data works!</p>
+<div [class.disabled-overlay]="showProgressBar" class="view-wrapper list-page">
+  <div class="toolBarData ps-4">
+    <dx-toolbar [items]="toolbarItems"> </dx-toolbar>
+  </div>
+
+  <div class="contentDiv mt-2">
+    <div class="SearchParamsDiv mb-3 mt-1">
+      <dx-select-box
+        labelMode="floating"
+        labelLocation="left"
+        label="Select Facility"
+        [items]="FacilitydropdownItems"
+        displayExpr="FacilityName"
+        valueExpr="ID"
+        [(value)]="FacilityValue"
+        [width]="'60%'"
+      >
+        <dx-validator #facilityValidator>
+          <dxi-validation-rule
+            type="required"
+            message="Facility selection is required"
+          ></dxi-validation-rule>
+        </dx-validator>
+      </dx-select-box>
+
+      <dx-date-box
+        labelMode="floating"
+        labelLocation="left"
+        label="From Date"
+        type="date"
+        displayFormat="dd/MM/yyyy"
+        valueFormat="yyyy/MM/dd"
+        [(value)]="startDate"
+        [min]="minDate"
+        [max]="endDate"
+        [width]="'20%'"
+        (onValueChanged)="onStartDateChange($event)"
+      >
+      </dx-date-box>
+
+      <dx-date-box
+        labelMode="floating"
+        labelLocation="left"
+        label="To Date"
+        type="date"
+        displayFormat="dd/MM/yyyy"
+        valueFormat="yyyy/MM/dd"
+        [(value)]="endDate"
+        [min]="startDate"
+        [max]="maxDate"
+        [width]="'20%'"
+        (onValueChanged)="onEndDateChange($event)"
+      >
+      </dx-date-box>
+    </div>
+
+    <div class="innerContentDiv d-flex">
+      <div class="FacilityDownloadDiv d-flex">
+        <p class="FacilityCount mb-5">
+          Claim Last Sync Time Is 18-12-2024 3:29PM
+        </p>
+        <h1>{{ facilityDownloadedCount }}</h1>
+        <dx-button
+          [disabled]="!facilityButtonVisibility"
+          text="Sync Claim Data"
+          type="default"
+          stylingMode="contained"
+          class="FacilitycountButton mt-5"
+          [width]="300"
+          [height]="40"
+          (onClick)="handleFacilityButtonClick()"
+        >
+        </dx-button>
+      </div>
+
+      <div class="RemittanceDownloadDiv d-flex">
+        <p class="FacilityCount mb-5">
+          Claim Last Sync Time Is 18-12-2024 3:29PM
+        </p>
+
+        <h1>{{ RemittanceDownloadedCount }}</h1>
+        <dx-button
+          [disabled]="!remittanceButtonVisibility"
+          text="Sync Remittance Data"
+          type="default"
+          stylingMode="contained"
+          class="FacilitycountButton mt-5"
+          [width]="300"
+          [height]="40"
+          (onClick)="handleRemittanceButtonClick()"
+        >
+        </dx-button>
+      </div>
+    </div>
+    <div class="ButtonContentDiv mt-2">
+      <dx-button
+        [disabled]="!processReportButtonVisibility"
+        text="Process Report"
+        type="default"
+        stylingMode="contained"
+        [width]="500"
+        [height]="40"
+        (onClick)="ProcessReportButtonClick()"
+      >
+      </dx-button>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="isLoading" class="loading-indicator">
+  <dx-load-panel
+    *ngIf="isLoading"
+    [visible]="true"
+    shadingColor="rgba(0,0,0,0)"
+    [position]="{ of: '.view-wrapper' }"
+    message="Downloading..."
+  ></dx-load-panel>
+</div>
+
+<dx-progress-bar
+  *ngIf="showProgressBar"
+  #progressBar
+  id="progress-bar-status"
+  width="80%"
+  [class.complete]="progressBar.value === maxValue"
+  [min]="0"
+  [max]="maxValue"
+  [statusFormat]="format"
+  [value]="seconds"
+  class="progress-bar-centered"
+>
+</dx-progress-bar>
