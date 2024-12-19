@@ -152,25 +152,13 @@ export class ClaimSummaryMonthWiseComponent {
   ClinicianJsonData: any;
   orderingClinicianJsonData: any;
 
-
   popupWidth: any = '70%';
   popupHeight: any = '90%';
+  popupPosition: any = { my: 'center', at: 'center', of: '.view-wrapper' };
+  isPopupMinimised: boolean = false;
 
-    //============Custom close button for drilldown popup============
-    toolbarItems = [
-      {
-        widget: 'dxButton',
-        options: {
-          text: '',
-          icon: 'close',
-          type: 'normal',
-          stylingMode: 'contained',
-          onClick: () => this.closePopup(),
-        },
-        toolbar: 'top',
-        location: 'after',
-      },
-    ];
+  //============Custom close button for drilldown popup============
+  toolbarItems: any;
 
   constructor(
     private service: ReportService,
@@ -200,20 +188,62 @@ export class ClaimSummaryMonthWiseComponent {
     });
   }
 
-    //=============Resize the popup drill down============
-    onResizeEnd(event: any) {
-      this.popupWidth = event.width;
-      this.popupHeight = event.height;
+  //=============Resize the popup drill down============
+  onResizeEnd(event: any) {
+    this.popupWidth = event.width;
+    this.popupHeight = event.height;
+  }
+  //=============update toolbar items==================
+  updateToolbarItems() {
+    this.toolbarItems = [
+      {
+        widget: 'dxButton',
+        options: {
+          text: '',
+          icon: this.isPopupMinimised ? 'expandform' : 'minus', // Toggle icon based on minimize state
+          type: 'normal',
+          stylingMode: 'contained',
+          onClick: () => this.minimisePopup(), // Minimize the popup on click
+        },
+        toolbar: 'top',
+        location: 'after',
+      },
+      {
+        widget: 'dxButton',
+        options: {
+          text: '',
+          icon: 'close',
+          type: 'normal',
+          stylingMode: 'contained',
+          onClick: () => this.closePopup(), // Close the popup on click
+        },
+        toolbar: 'top',
+        location: 'after',
+      },
+    ];
+  }
+  //========Remove closing popup from the popup array=====
+  minimisePopup() {
+    if (this.isPopupMinimised) {
+      this.popupWidth = '70%';
+      this.popupHeight = '90%';
+      this.popupPosition = { my: 'center', at: 'center', of: '.view-wrapper' };
+    } else {
+      this.popupHeight = '30vh';
+      this.popupWidth = '30%';
+      this.popupPosition = {
+        my: 'bottom right',
+        at: 'bottom right',
+        of: '.grid',
+      };
     }
-    //========Remove closing popup from the popup array=====
-    hidePopup(index: number) {
-      this.isDrillDownPopupOpened = false;
-    }
-    //========Remove closing popup from the popup array=====
-    closePopup() {
-      this.popupStateService.setPopupState('ClaimSummaryBreakUpPopup', false);
-      this.isDrillDownPopupOpened = false;
-    }
+    this.isPopupMinimised = !this.isPopupMinimised;
+  }
+  //========Remove closing popup from the popup array=====
+  closePopup() {
+    this.popupStateService.setPopupState('ClaimSummaryBreakUpPopup', false);
+    this.isDrillDownPopupOpened = false;
+  }
 
   //================Show and Hide Search parameters==========
   toggleContent() {
@@ -222,6 +252,11 @@ export class ClaimSummaryMonthWiseComponent {
 
   //=================Row click drill Down====================
   handleRowDrillDownClick = (e: any) => {
+    this.isPopupMinimised = false;
+    this.updateToolbarItems();
+    this.popupWidth = '70%';
+    this.popupHeight = '90%';
+    this.popupPosition = { my: 'center', at: 'center', of: '.view-wrapper' };
     this.clickedRowData = e.row.data;
     this.isDrillDownPopupOpened = true;
     this.popupStateService.setPopupState('ClaimSummaryBreakUpPopup', true);
@@ -244,19 +279,19 @@ export class ClaimSummaryMonthWiseComponent {
     });
   }
 
-    //===================Function to handle selection change and sort the data==========
-    onSelectionChanged(event: any, jsonData: any[], dataSourceKey: string): void {
-      console.log('Original JSON Data:', jsonData);
-      const selectedRows = event.selectedRowsData;
-      const selectedRowIds = selectedRows.map((row) => row.ID);
-      const unselectedRows = jsonData.filter(
-        (row) => !selectedRowIds.includes(row.ID)
-      );
-      const reorderedData = [...selectedRows, ...unselectedRows];
-      this[dataSourceKey] = this.makeAsyncDataSourceFromJson(reorderedData);
-      console.log('Updated DataSource:', this[dataSourceKey]);
-      this.dataGrid.instance.refresh();
-    }
+  //===================Function to handle selection change and sort the data==========
+  onSelectionChanged(event: any, jsonData: any[], dataSourceKey: string): void {
+    console.log('Original JSON Data:', jsonData);
+    const selectedRows = event.selectedRowsData;
+    const selectedRowIds = selectedRows.map((row) => row.ID);
+    const unselectedRows = jsonData.filter(
+      (row) => !selectedRowIds.includes(row.ID)
+    );
+    const reorderedData = [...selectedRows, ...unselectedRows];
+    this[dataSourceKey] = this.makeAsyncDataSourceFromJson(reorderedData);
+    console.log('Updated DataSource:', this[dataSourceKey]);
+    this.dataGrid.instance.refresh();
+  }
 
   //============Get search parameters dropdown values=======
   get_searchParameters_Dropdown_Values() {

@@ -56,7 +56,7 @@ import { PopupStateService } from 'src/app/popupStateService.service';
   styleUrls: ['./claim-details-activity.component.scss'],
   providers: [ReportService, ReportEngineService, DatePipe, DataService],
 })
-export class ClaimDetailsActivityComponent  {
+export class ClaimDetailsActivityComponent {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
 
@@ -147,26 +147,16 @@ export class ClaimDetailsActivityComponent  {
 
   popupWidth: any = '70%';
   popupHeight: any = '90%';
+  popupPosition: any = { my: 'center', at: 'center', of: '.view-wrapper' };
+  isPopupMinimised: boolean = false;
+
   RecieverIDjsonData: any;
   PayerIDjsonData: any;
   ClinicianJsonData: any;
   orderingClinicianJsonData: any;
 
   //============Custom close button for drilldown popup============
-  toolbarItems = [
-    {
-      widget: 'dxButton',
-      options: {
-        text: '',
-        icon: 'close',
-        type: 'normal',
-        stylingMode: 'contained',
-        onClick: () => this.closePopup(),
-      },
-      toolbar: 'top',
-      location: 'after',
-    },
-  ];
+  toolbarItems: any;
 
   constructor(
     private service: ReportService,
@@ -187,6 +177,7 @@ export class ClaimDetailsActivityComponent  {
     //=============month field datasource============
     this.monthDataSource = this.service.getMonths();
     this.get_searchParameters_Dropdown_Values();
+    this.updateToolbarItems();
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         this.isDrillDownPopupOpened = this.popupStateService.getPopupState(
@@ -221,13 +212,58 @@ export class ClaimDetailsActivityComponent  {
     this.popupWidth = event.width;
     this.popupHeight = event.height;
   }
+
+  updateToolbarItems() {
+    this.toolbarItems = [
+      {
+        widget: 'dxButton',
+        options: {
+          text: '',
+          icon: this.isPopupMinimised ? 'expandform' : 'minus', // Toggle icon based on minimize state
+          type: 'normal',
+          stylingMode: 'contained',
+          onClick: () => this.minimisePopup(), // Minimize the popup on click
+        },
+        toolbar: 'top',
+        location: 'after',
+      },
+      {
+        widget: 'dxButton',
+        options: {
+          text: '',
+          icon: 'close',
+          type: 'normal',
+          stylingMode: 'contained',
+          onClick: () => this.closePopup(), // Close the popup on click
+        },
+        toolbar: 'top',
+        location: 'after',
+      },
+    ];
+  }
   //========Remove closing popup from the popup array=====
-  hidePopup(index: number) {
-    this.isDrillDownPopupOpened = false;
+  minimisePopup() {
+    if (this.isPopupMinimised) {
+      this.popupWidth = '70%';
+      this.popupHeight = '90%';
+      this.popupPosition = { my: 'center', at: 'center', of: '.view-wrapper' };
+    } else {
+      this.popupHeight = '30vh';
+      this.popupWidth = '30%';
+      this.popupPosition = {
+        my: 'bottom right',
+        at: 'bottom right',
+        of: '.grid',
+      };
+    }
+    this.isPopupMinimised = !this.isPopupMinimised;
   }
   //========Remove closing popup from the popup array=====
   closePopup() {
-    this.popupStateService.setPopupState('claimDetaisActivityDrillDownPopup', false);
+    this.popupStateService.setPopupState(
+      'claimDetaisActivityDrillDownPopup',
+      false
+    );
     this.isDrillDownPopupOpened = false;
   }
 
@@ -239,10 +275,18 @@ export class ClaimDetailsActivityComponent  {
   //=================Row click drill Down====================
 
   handleRowDrillDownClick = (e: any) => {
+    this.isPopupMinimised = false;
+    this.updateToolbarItems();
+    this.popupWidth = '70%';
+    this.popupHeight = '90%';
+    this.popupPosition = { my: 'center', at: 'center', of: '.view-wrapper' };
     const rowData = e.row.data;
     this.clickedRowData = rowData;
     this.isDrillDownPopupOpened = true;
-    this.popupStateService.setPopupState('claimDetaisActivityDrillDownPopup', true);
+    this.popupStateService.setPopupState(
+      'claimDetaisActivityDrillDownPopup',
+      true
+    );
   };
 
   //===================Function to handle selection change and sort the data==========

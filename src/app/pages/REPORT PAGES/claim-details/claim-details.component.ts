@@ -149,26 +149,16 @@ export class ClaimDetailsComponent implements OnInit {
 
   popupWidth: any = '70%';
   popupHeight: any = '90%';
+  popupPosition: any = { my: 'center', at: 'center', of: '.view-wrapper' };
+  isPopupMinimised: boolean = false;
+
   jsonData: any;
   PayerIDjsonData: any;
   RecieverIDjsonData: any;
   ClinicianJsonData: any;
   orderingClinicianJsonData: any;
   //============Custom close button for drilldown popup============
-  toolbarItems = [
-    {
-      widget: 'dxButton',
-      options: {
-        text: '',
-        icon: 'close',
-        type: 'normal',
-        stylingMode: 'contained',
-        onClick: () => this.closePopup(),
-      },
-      toolbar: 'top',
-      location: 'after',
-    },
-  ];
+  toolbarItems: any;
 
   constructor(
     private service: ReportService,
@@ -190,6 +180,7 @@ export class ClaimDetailsComponent implements OnInit {
     //=============month field datasource============
     this.monthDataSource = this.service.getMonths();
     this.get_searchParameters_Dropdown_Values();
+    this.updateToolbarItems();
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         this.isDrillDownPopupOpened = this.popupStateService.getPopupState(
@@ -224,9 +215,51 @@ export class ClaimDetailsComponent implements OnInit {
     this.popupHeight = event.height;
   }
 
-  //========Remove closing popup from the popup array=====
-  hidePopup(index: number) {
-    this.isDrillDownPopupOpened = false;
+  updateToolbarItems() {
+    this.toolbarItems = [
+      {
+        widget: 'dxButton',
+        options: {
+          text: '',
+          icon: this.isPopupMinimised ? 'expandform' : 'minus', // Toggle icon based on minimize state
+          type: 'normal',
+          stylingMode: 'contained',
+          onClick: () => this.minimisePopup(), // Minimize the popup on click
+        },
+        toolbar: 'top',
+        location: 'after',
+      },
+      {
+        widget: 'dxButton',
+        options: {
+          text: '',
+          icon: 'close',
+          type: 'normal',
+          stylingMode: 'contained',
+          onClick: () => this.closePopup(), // Close the popup on click
+        },
+        toolbar: 'top',
+        location: 'after',
+      },
+    ];
+  }
+  //============= minimise popup ==========
+  minimisePopup() {
+    if (this.isPopupMinimised) {
+      this.popupWidth = '70%';
+      this.popupHeight = '90%';
+      this.popupPosition = { my: 'center', at: 'center', of: '.view-wrapper' };
+    } else {
+      this.popupHeight = '30vh';
+      this.popupWidth = '30%';
+      this.popupPosition = {
+        my: 'bottom right',
+        at: 'bottom right',
+        of: '.grid',
+      };
+    }
+    this.isPopupMinimised = !this.isPopupMinimised;
+    this.updateToolbarItems();
   }
   //========Remove closing popup from the popup array=====
   closePopup() {
@@ -240,6 +273,11 @@ export class ClaimDetailsComponent implements OnInit {
 
   //=================Row click drill Down===================
   handleRowDrillDownClick = (e: any) => {
+    this.isPopupMinimised = false;
+    this.updateToolbarItems();
+    this.popupWidth = '70%';
+    this.popupHeight = '90%';
+    this.popupPosition = { my: 'center', at: 'center', of: '.view-wrapper' };
     const rowData = e.row.data;
     this.clickedRowData = rowData;
     this.isDrillDownPopupOpened = true;

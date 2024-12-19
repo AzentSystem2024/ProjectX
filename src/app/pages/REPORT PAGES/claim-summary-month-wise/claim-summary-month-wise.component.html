@@ -759,7 +759,6 @@
     ></app-advance-filter-popup>
   </form-popup>
 
-
   <div *ngIf="isDrillDownPopupOpened">
     <dx-popup
       [(visible)]="isDrillDownPopupOpened"
@@ -774,6 +773,7 @@
       [showCloseButton]="false"
       (onResizeEnd)="onResizeEnd($event)"
       [toolbarItems]="toolbarItems"
+      [position]="popupPosition"
     >
       <app-claim-summary-month-wise-drill-down
         [clickedRowData]="clickedRowData"
