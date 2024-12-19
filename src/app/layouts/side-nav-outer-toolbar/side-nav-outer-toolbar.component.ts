@@ -179,13 +179,14 @@ export class SideNavOuterToolbarComponent implements OnInit, OnDestroy {
   }
 
   closeButtonHandler(tab: any) {
+    console.log('tabs are =>', tab);
     const index = this.tabs.indexOf(tab);
     if (index > -1) {
       this.tabs.splice(index, 1);
+      this.customReuseStrategy.removeStoredComponent(tab.path);
       this.dataService
         .set_pageLoading_And_Closing_Log(10, tab.path)
         .subscribe((response: any) => {});
-      this.customReuseStrategy.removeStoredComponent(tab.path);
       if (this.selectedIndex >= this.tabs.length) {
         this.selectedIndex = this.tabs.length - 1;
       }

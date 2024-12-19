@@ -3,24 +3,32 @@ import {
   ActivatedRouteSnapshot,
   DetachedRouteHandle,
 } from '@angular/router';
+import { Injectable } from '@angular/core';
+import { ReuseStrategyService } from './reuse-strategy.service'; // Adjust the path as needed
 
+@Injectable({
+  providedIn: 'root',
+})
 export class CustomReuseStrategy implements RouteReuseStrategy {
-   handlers: { [key: string]: DetachedRouteHandle } = {};
+  constructor(private reuseStrategyService: ReuseStrategyService) {}
 
   shouldDetach(route: ActivatedRouteSnapshot): boolean {
-    return true;
+    return true; // Logic can be extended if needed
   }
 
   store(route: ActivatedRouteSnapshot, handle: DetachedRouteHandle): void {
-    this.handlers[route.routeConfig?.path || ''] = handle;
+    const path = route.routeConfig?.path || '';
+    this.reuseStrategyService.storeHandler(path, handle);
   }
 
   shouldAttach(route: ActivatedRouteSnapshot): boolean {
-    return !!this.handlers[route.routeConfig?.path || ''];
+    const path = route.routeConfig?.path || '';
+    return this.reuseStrategyService.hasHandler(path);
   }
 
   retrieve(route: ActivatedRouteSnapshot): DetachedRouteHandle | null {
-    return this.handlers[route.routeConfig?.path || ''] || null;
+    const path = route.routeConfig?.path || '';
+    return this.reuseStrategyService.getHandler(path);
   }
 
   shouldReuseRoute(
@@ -31,21 +39,10 @@ export class CustomReuseStrategy implements RouteReuseStrategy {
   }
 
   removeStoredComponent(routePath: string): void {
-    // Resolve the exact key matching the routePath
-    const handlerKey = Object.keys(this.handlers).find(
-      (key) => key === routePath
-    );
-    if (handlerKey) {
-      delete this.handlers[handlerKey];
-
-    } else {
-
-    }
-
+    this.reuseStrategyService.removeHandler(routePath);
   }
 
-  // Method to clear stored data on logout
   clearStoredData(): void {
-    this.handlers = {};
+    this.reuseStrategyService.clearHandlers();
   }
 }
