@@ -32,10 +32,20 @@ export class DataService {
     };
     return this.http.post(url, reqBody);
   }
-
+//==================dashboard facility sync details data==========
   get_DashbOard_SyncData_Details() {
     const userid = sessionStorage.getItem('UserID');
     const url = `${BASE_URL}facility/synchstatus`;
+    const reqBody = {
+      UserID: userid,
+    };
+    return this.http.post(url, reqBody);
+  }
+
+  //==================dashboard facility sync details data==========
+  get_UserWise_FacilityList_Data() {
+    const userid = sessionStorage.getItem('UserID');
+    const url = `${BASE_URL}facility/facilitydetails`;
     const reqBody = {
       UserID: userid,
     };

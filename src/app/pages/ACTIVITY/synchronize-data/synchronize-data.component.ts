@@ -52,12 +52,15 @@ export class SynchronizeDataComponent implements OnInit {
   remittanceButtonVisibility: boolean = true;
   facilityButtonVisibility: boolean = true;
   processReportButtonVisibility: boolean = true;
+  lastClaimSyncTime: any;
+  lastRemittanceSyncTime: any;
 
   constructor(
     private dataService: DataService,
     private masterservice: MasterReportService
   ) {
     this.get_Facility_List_Data();
+    this.fetch_last_sync_times();
   }
 
   ngOnInit() {
@@ -71,28 +74,34 @@ export class SynchronizeDataComponent implements OnInit {
 
   //=========================Fetch facility list======================
   get_Facility_List_Data() {
-    this.masterservice.Get_Facility_List_Data().subscribe((response: any) => {
+    this.dataService.get_UserWise_FacilityList_Data().subscribe((response: any) => {
       if (response) {
-        this.FacilitydropdownItems = response.data;
+        this.FacilitydropdownItems = response.facilityDetails;
       }
     });
   }
-  //====================Click event of Claim Sync====================
-  // handleFacilityButtonClick() {
-  //   this.facilityButtonVisibility = false;
-  //   let facilityID = this.FacilityValue;
-  //   let fromDate = this.convertDateToYYYYMMDD(this.startDate);
-  //   let endDate = this.convertDateToYYYYMMDD(this.endDate);
-  //   this.dataService
-  //     .get_Claim_SyncData_Details(facilityID, fromDate, endDate)
-  //     .subscribe((response: any) => {
-  //       if (response.flag === 1) {
-  //         console.log('Claim Sync data response =>', response);
-  //       }
-  //     });
-  // }
 
-  //====================Click event of Remittance Sync====================
+  //==================get last sync time===========================
+  fetch_last_sync_times() {
+    this.dataService
+      .get_DashbOard_SyncData_Details()
+      .subscribe((response: any) => {
+        const formattedData = response.data.map((item: any) => ({
+          ...item,
+          ClaimTransactionDate: this.dataService.formatDateTime(
+            item.ClaimTransactionDate
+          ),
+          RemittanceTransactionDate: this.dataService.formatDateTime(
+            item.RemittanceTransactionDate
+          ),
+          LastSynchDate: this.dataService.formatDateTime(item.LastSynchDate),
+        }));
+        this.lastClaimSyncTime = `Last Claim Sync Time is : ${formattedData[0].ClaimTransactionDate}`;
+        this.lastRemittanceSyncTime = `Last Remittance Sync Time is : ${formattedData[0].RemittanceTransactionDate}`;
+      });
+  }
+
+  //====================Click event of Facility Sync===============
   handleFacilityButtonClick() {
     const validationResult = this.facilityValidator.instance.validate();
     if (validationResult.isValid) {
@@ -156,6 +165,7 @@ export class SynchronizeDataComponent implements OnInit {
     }
   }
 
+  //===================Click event of Remittance Sync============
   handleRemittanceButtonClick() {
     const validationResult = this.facilityValidator.instance.validate();
     if (validationResult.isValid) {

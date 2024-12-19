@@ -11,7 +11,7 @@
         label="Select Facility"
         [items]="FacilitydropdownItems"
         displayExpr="FacilityName"
-        valueExpr="ID"
+        valueExpr="FacilityID"
         [(value)]="FacilityValue"
         [width]="'60%'"
       >
@@ -57,7 +57,7 @@
     <div class="innerContentDiv d-flex">
       <div class="FacilityDownloadDiv d-flex">
         <p class="FacilityCount mb-5">
-          Claim Last Sync Time Is 18-12-2024 3:29PM
+          {{ lastClaimSyncTime }}
         </p>
         <h1>{{ facilityDownloadedCount }}</h1>
         <dx-button
@@ -75,7 +75,7 @@
 
       <div class="RemittanceDownloadDiv d-flex">
         <p class="FacilityCount mb-5">
-          Claim Last Sync Time Is 18-12-2024 3:29PM
+          {{ lastRemittanceSyncTime }}
         </p>
 
         <h1>{{ RemittanceDownloadedCount }}</h1>

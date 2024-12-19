@@ -31,13 +31,15 @@ export class AnalyticsDashboardComponent {
           next: (response: any) => {
             const formattedData = response.data.map((item: any) => ({
               ...item,
-              ClaimTransactionDate: this.formatDateTime(
+              ClaimTransactionDate: this.dataService.formatDateTime(
                 item.ClaimTransactionDate
               ),
-              RemittanceTransactionDate: this.formatDateTime(
+              RemittanceTransactionDate: this.dataService.formatDateTime(
                 item.RemittanceTransactionDate
               ),
-              LastSynchDate: this.formatDateTime(item.LastSynchDate),
+              LastSynchDate: this.dataService.formatDateTime(
+                item.LastSynchDate
+              ),
             }));
             resolve(formattedData);
           },
@@ -47,10 +49,6 @@ export class AnalyticsDashboardComponent {
   });
 
   constructor(private dataService: DataService) {}
-
-  formatDateTime(date: string): string {
-    return formatDate(date, 'dd-MMM-yyyy hh:mm a', 'en-US');
-  }
 
   refresh = () => {
     this.dataGrid.instance.refresh();
