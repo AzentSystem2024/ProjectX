@@ -229,11 +229,11 @@ export class ClaimSummaryMonthWiseComponent {
       this.popupHeight = '90%';
       this.popupPosition = { my: 'center', at: 'center', of: '.view-wrapper' };
     } else {
-      this.popupHeight = '30vh';
+      this.popupHeight = '40vh';
       this.popupWidth = '30%';
       this.popupPosition = {
-        my: 'bottom right',
-        at: 'bottom right',
+        my: 'center right',
+        at: 'center right',
         of: '.grid',
       };
     }
