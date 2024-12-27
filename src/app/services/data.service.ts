@@ -32,7 +32,7 @@ export class DataService {
     };
     return this.http.post(url, reqBody);
   }
-//==================dashboard facility sync details data==========
+  //==================dashboard facility sync details data==========
   get_DashbOard_SyncData_Details() {
     const userid = sessionStorage.getItem('UserID');
     const url = `${BASE_URL}facility/synchstatus`;
@@ -84,6 +84,16 @@ export class DataService {
       DateFrom: '',
       DateTo: '',
       FacilityID: facilityID,
+    };
+    return this.http.post(url, reqBody);
+  }
+
+  get_Download_Log_DataView(fromDate: any, endDate: any) {
+    const userid = sessionStorage.getItem('UserID');
+    const url = `${BASE_URL}downloadsettings/loglist`;
+    const reqBody = {
+      DATE_FROM: '2024-12-26',
+      DATE_TO: '2024-12-26',
     };
     return this.http.post(url, reqBody);
   }

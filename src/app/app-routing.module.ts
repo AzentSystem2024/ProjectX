@@ -44,6 +44,8 @@ import { ImportMasterDataComponent } from './pages/MASTER PAGES/import-master-da
 import { ClaimDetailsComponent } from './pages/REPORT PAGES/claim-details/claim-details.component';
 import { ClaimSummaryMonthWiseComponent } from './pages/REPORT PAGES/claim-summary-month-wise/claim-summary-month-wise.component';
 import { SynchronizeDataComponent } from './pages/ACTIVITY/synchronize-data/synchronize-data.component';
+import { AutoDownloadSettingsComponent } from './pages/ACTIVITY/auto-download-settings/auto-download-settings.component';
+import { DownloadLogViewComponent } from './pages/ACTIVITY/download-log-view/download-log-view.component';
 const routes: Routes = [
   {
     path: '',
@@ -243,6 +245,16 @@ const routes: Routes = [
       {
         path: 'Synchronize-Data-Pages',
         component: SynchronizeDataComponent,
+        canActivate: [AuthGuardService],
+      },
+      {
+        path: 'Auto-Download-Settings-Page',
+        component: AutoDownloadSettingsComponent,
+        canActivate: [AuthGuardService],
+      },
+      {
+        path: 'download-log-view-page',
+        component: DownloadLogViewComponent,
         canActivate: [AuthGuardService],
       },
       {

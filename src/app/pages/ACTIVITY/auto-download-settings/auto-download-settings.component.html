@@ -1,0 +1,116 @@
+<div class="view-wrapper list-page">
+  <!-- =================================ToolBar============================ -->
+
+  <div class="toolbarDiv mb-2">
+    <dx-toolbar>
+      <dxi-item location="center" text="Downloader Settings"></dxi-item>
+    </dx-toolbar>
+  </div>
+  <!-- =================================Content============================ -->
+  <div class="contentBody">
+    <div class="mainContent mb-1">
+      <div id="form-container" class="m-3">
+        <dx-form id="form" [labelMode]="'floating'">
+          <dxi-item itemType="group" [colCount]="3">
+            <!-- Database Name Field with Checkbox -->
+            <dxi-item itemType="group" [colCount]="1">
+              <dxi-item>
+                <dx-check-box
+                  [(value)]="isDatabaseNameEditable"
+                  text="Enable Database Name"
+                ></dx-check-box>
+              </dxi-item>
+              <dxi-item
+                dataField="DatabaseName"
+                editorType="dxTextBox"
+                [disabled]="!isDatabaseNameEditable"
+              >
+                <dxo-label text="Database Name"></dxo-label>
+              </dxi-item>
+            </dxi-item>
+
+            <!-- XML Directory Field with Checkbox -->
+            <dxi-item itemType="group" [colCount]="1">
+              <dxi-item>
+                <dx-check-box
+                  [(value)]="isXMLDirectoryEditable"
+                  text="Enable XML Directory"
+                ></dx-check-box>
+              </dxi-item>
+              <dxi-item
+                dataField="XMLDirectory"
+                editorType="dxTextBox"
+                [disabled]="!isXMLDirectoryEditable"
+              >
+                <dxo-label text="XML Directory"></dxo-label>
+              </dxi-item>
+            </dxi-item>
+
+            <!-- Other Fields -->
+            <dxi-item itemType="group" [colCount]="1">
+              <dxi-item dataField="ServiceRestartTime" editorType="dxTextBox">
+                <dxo-label text="Service Restart Time"></dxo-label>
+              </dxi-item>
+              <dxi-item
+                dataField="ProcessClaimsAutomtically"
+                editorType="dxTextBox"
+              >
+                <dxo-label text="Process Claims Automatically"></dxo-label>
+              </dxi-item>
+            </dxi-item>
+
+            <dxi-item dataField="ServiceInterval" editorType="dxTextBox">
+              <dxo-label text="Service Interval"></dxo-label>
+            </dxi-item>
+            <dxi-item
+              dataField="ClaimTransactionStartDate"
+              editorType="dxDateBox"
+            >
+              <dxo-label text="Claim Transaction Start Date"></dxo-label>
+            </dxi-item>
+            <dxi-item
+              dataField="RemittanceTransactionStartDate"
+              editorType="dxDateBox"
+            >
+              <dxo-label text="Remittance Transaction Start Date"></dxo-label>
+            </dxi-item>
+            <dxi-item dataField="DownlaodPriorInterval" editorType="dxTextBox">
+              <dxo-label text="Download Prior Interval"></dxo-label>
+            </dxi-item>
+            <dxi-item
+              dataField="DownlaodPriorIntervalRestart"
+              editorType="dxTextBox"
+            >
+              <dxo-label text="Download Prior Interval Restart"></dxo-label>
+            </dxi-item>
+          </dxi-item>
+        </dx-form>
+      </div>
+    </div>
+    <!-- Footer Section -->
+    <div class="footerDiv">
+      <dx-toolbar class="pe-4">
+        <dxi-item
+          location="after"
+          widget="dxButton"
+          [options]="{
+            text: 'Clear',
+            stylingMode: 'contained',
+            type: 'normal',
+            onClick: onClearClick
+          }"
+        ></dxi-item>
+        <dxi-item
+          location="after"
+          widget="dxButton"
+          [options]="{
+            text: 'Save',
+            stylingMode: 'contained',
+            type: 'default',
+            onClick: onAddClick
+          }"
+        ></dxi-item>
+      </dx-toolbar>
+    </div>
+  </div>
+</div>

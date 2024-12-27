@@ -681,10 +681,14 @@ body {
   font-weight: bolder;
 }
 
-
-
 .dx-dropdowneditor-overlay.dx-popup-wrapper .dx-overlay-content {
   box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.24), 0 8px 16px 0 rgba(0, 0, 0, 0.28);
   border: 2px solid var(--border-color);
   overflow: hidden;
+}
+
+.mainContent .dx-checkbox .dx-checkbox-container {
+  overflow: visible;
+  margin-top: 18px;
+  margin-bottom: 5px;
 }

@@ -51,12 +51,10 @@
 }
 
 .toolBarData {
-  margin: 0px;
-  // padding-left: 5px;
-  // padding-right: 5px;
-  height: auto;
-  border-radius: 6px;
   background-color: var(--base-bg);
+  padding: 5px var(--content-padding);
+  border-radius: 8px;
+  box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.04)
 }
 .contentDiv {
   padding: 10px;

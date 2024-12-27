@@ -1,0 +1,107 @@
+<div class="view-wrapper list-page">
+  <dx-data-grid
+    class="grid theme-dependent"
+    noDataText="No Data"
+    height="84vh"
+    [dataSource]="dataSource"
+    [columns]="columns"
+    [showBorders]="true"
+    [allowColumnResizing]="false"
+    [allowColumnReordering]="true"
+    [rowAlternationEnabled]="true"
+    rowAlternationInterval="2"
+  >
+    <dxo-paging [pageSize]="10"></dxo-paging>
+    <dxo-pager
+      [visible]="true"
+      [allowedPageSizes]="allowedPageSizes"
+      [displayMode]="displayMode"
+      [showPageSizeSelector]="showPageSizeSelector"
+      [showInfo]="true"
+      [showNavigationButtons]="true"
+    ></dxo-pager>
+
+    <dxo-load-panel [showPane]="false"></dxo-load-panel>
+    <dxo-scrolling mode="virtual"></dxo-scrolling>
+    <dxo-sorting mode="multiple"></dxo-sorting>
+    <dxo-header-filter [visible]="false"></dxo-header-filter>
+    <dxo-filter-row [visible]="false"></dxo-filter-row>
+    <dxo-search-panel [visible]="false" placeholder=" Search"></dxo-search-panel>
+    <dxo-toolbar>
+      <dxi-item location="before">
+        <div class="grid-header">Download Log</div>
+      </dxi-item>
+
+      <!-- First DateBox -->
+      <dxi-item location="after" locateInMenu="auto">
+        <dx-date-box
+          [(value)]="startDate"
+          placeholder="Start Date"
+          [displayFormat]="'dd-MMM-yyyy'"
+          valueFormat="yyyy/MM/dd"
+          width="150"
+        ></dx-date-box>
+      </dxi-item>
+
+      <!-- Second DateBox -->
+      <dxi-item location="after" locateInMenu="auto">
+        <dx-date-box
+          [(value)]="endDate"
+          placeholder="End Date"
+          [displayFormat]="'dd-MMM-yyyy'"
+          valueFormat="yyyy/MM/dd"
+          width="150"
+        ></dx-date-box>
+      </dxi-item>
+      <dxi-item location="after" locateInMenu="auto">
+        <div class="separator"></div>
+      </dxi-item>
+
+      <!-- Submit Button -->
+      <dxi-item location="after" locateInMenu="auto">
+        <dx-button
+          text="Apply"
+          icon="check"
+          stylingMode="contained"
+          type="default"
+          (onClick)="fetch_download_log_data()"
+        ></dx-button>
+      </dxi-item>
+      <dxi-item location="after" locateInMenu="auto">
+        <div class="separator"></div>
+      </dxi-item>
+
+      <!-- Refresh Button -->
+      <dxi-item
+        location="after"
+        locateInMenu="auto"
+        showText="inMenu"
+        widget="dxButton"
+        [options]="{
+          text: 'Refresh',
+          icon: 'refresh',
+          type: 'default',
+          onClick: refresh,
+          stylingMode: 'text'
+        }"
+      ></dxi-item>
+
+      <dxi-item location="after" locateInMenu="auto">
+        <div class="separator"></div>
+      </dxi-item>
+    </dxo-toolbar>
+
+    <dxo-header-filter [visible]="true">
+      <dxo-search [enabled]="true"></dxo-search>
+    </dxo-header-filter>
+
+    <!-- <dxi-column dataField="SerialNumber" caption="SL NO"></dxi-column>
+    <dxi-column dataField="LOG_TIME" caption="Date And Time"></dxi-column>
+    <dxi-column dataField="INSTANCE" caption="Instance"></dxi-column>
+    <dxi-column dataField="FACILITY_LICENSE" caption="Facility"></dxi-column>
+    <dxi-column
+      dataField="LOG_MESSAGE"
+      caption="Description"
+    ></dxi-column> -->
+  </dx-data-grid>
+</div>

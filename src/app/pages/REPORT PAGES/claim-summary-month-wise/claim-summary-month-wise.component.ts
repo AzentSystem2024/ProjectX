@@ -238,6 +238,7 @@ export class ClaimSummaryMonthWiseComponent {
       };
     }
     this.isPopupMinimised = !this.isPopupMinimised;
+    this.updateToolbarItems();
   }
   //========Remove closing popup from the popup array=====
   closePopup() {
