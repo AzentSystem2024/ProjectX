@@ -1,6 +1,6 @@
 import { CommonModule, formatDate } from '@angular/common';
 import { Component, NgModule, ViewChild } from '@angular/core';
-import DevExpress from 'devextreme';
+
 import {
   DxDataGridModule,
   DxButtonModule,
@@ -9,7 +9,6 @@ import {
   DxLookupModule,
   DxDataGridComponent,
   DxDateBoxModule,
-  DevExtremeModule,
 } from 'devextreme-angular';
 import { DxDropDownButtonModule } from 'devextreme-angular/ui/drop-down-button';
 import DataSource from 'devextreme/data/data_source';
@@ -44,7 +43,6 @@ export class DownloadLogViewComponent {
         new Promise((resolve, reject) => {
           const fromDate = this.formatDateTime(this.startDate);
           const endDate = this.formatDateTime(this.endDate);
-          // console.log('From date and end date:', fromDate, endDate);
           this.dataService
             .get_Download_Log_DataView(fromDate, endDate)
             .subscribe({
@@ -83,51 +81,50 @@ export class DownloadLogViewComponent {
         dataField: 'SerialNumber',
         caption: 'SL NO',
         allowEditing: false,
-        alignment: 'center',
+        alignment: 'left',
         width: 80,
       },
       {
         dataField: 'LOG_TIME',
         caption: 'Date And Time',
         allowEditing: false,
-        width: 200,
       },
       {
         dataField: 'INSTANCE',
         caption: 'Instance',
         allowEditing: false,
-        width: 150,
       },
       {
         dataField: 'FACILITY_LICENSE',
         caption: 'Facility',
         allowEditing: false,
-        width: 180,
-      },
-      {
-        dataField: 'IS_ERROR',
-        caption: ' ',
-        allowEditing: false,
-        width: 'auto',
-        cellTemplate: (container: any, options: any) => {
-          const icon = options.value ? 'error' : 'check'; // Set the icon based on the value
-          const button = document.createElement('div'); // Create a div to hold the button
-          container.appendChild(button);
-          // Create and append the DevExtreme button with an icon
-          const dxButton = new DevExpress.ui.dxButton(button, {
-            icon: icon, // Use DevExtreme icon
-            stylingMode: 'contained', // Optional: To add background color
-            type: 'normal',
-            width: 'auto',
-            height: 'auto',
-          });
-        },
       },
       {
         dataField: 'LOG_MESSAGE',
         caption: 'Description',
         allowEditing: false,
-        width: 250,
+        width: 200,
+      },
+      {
+        dataField: 'IS_ERROR',
+        caption: ' ',
+        allowEditing: false,
+        allowSorting: false,
+        allowResizing: false,
+        allowHeaderFiltering: false,
+        allowReordering: false,
+        allowGrouping: false,
+        width: 'auto',
+        cellTemplate: (container: any, options: any) => {
+          const button = document.createElement('button');
+          button.textContent = options.value ? 'Error' : 'No Error';
+          button.style.backgroundColor = options.value ? 'red' : '#2393d9';
+          button.style.color = 'white';
+          button.style.border = 'none';
+          button.style.borderRadius = '5px';
+          button.style.padding = '5px';
+          container.appendChild(button);
+        },
       },
     ];
   }
@@ -151,7 +148,6 @@ export class DownloadLogViewComponent {
     DxTextBoxModule,
     DxLookupModule,
     DxDateBoxModule,
-    DevExtremeModule,
   ],
   providers: [],
   exports: [],

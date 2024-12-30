@@ -92,8 +92,8 @@ export class DataService {
     const userid = sessionStorage.getItem('UserID');
     const url = `${BASE_URL}downloadsettings/loglist`;
     const reqBody = {
-      DATE_FROM: '2024-12-26',
-      DATE_TO: '2024-12-26',
+      DATE_FROM: fromDate,
+      DATE_TO: endDate,
     };
     return this.http.post(url, reqBody);
   }

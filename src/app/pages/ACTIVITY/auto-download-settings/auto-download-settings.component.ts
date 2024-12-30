@@ -1,5 +1,7 @@
 import {
+  DxButtonModule,
   DxCheckBoxModule,
+  DxDropDownBoxModule,
   DxFormModule,
   DxSelectBoxModule,
   DxTextAreaModule,
@@ -20,7 +22,28 @@ export class AutoDownloadSettingsComponent {
   isDatabaseNameEditable = false;
   isXMLDirectoryEditable = false;
 
-  
+  options: any;
+
+  dropdowns: any[] = [{ selectedValues: [] }];
+
+  selectedValues:any
+
+  constructor() {
+    this.options = [
+      { ID: 1, Name: 'Option 1' },
+      { ID: 2, Name: 'Option 2' },
+      { ID: 3, Name: 'Option 3' },
+      { ID: 4, Name: 'Option 4' },
+    ];
+  }
+
+  addDropdown() {
+    this.dropdowns.push({ selectedValues: [] });
+  }
+
+  onDropdownValueChanged(event: any, index: number) {
+    this.dropdowns[index].selectedValues = event.value;
+  }
 }
 @NgModule({
   imports: [
@@ -30,6 +53,8 @@ export class AutoDownloadSettingsComponent {
     DxTextAreaModule,
     DxFormModule,
     DxCheckBoxModule,
+    DxButtonModule,
+    DxDropDownBoxModule,
   ],
   providers: [],
   exports: [],

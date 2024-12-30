@@ -3,12 +3,13 @@
 
   <div class="toolbarDiv mb-2">
     <dx-toolbar>
-      <dxi-item location="center" text="Downloader Settings"></dxi-item>
+      <dxi-item location="before" text="Download Settings"></dxi-item>
     </dx-toolbar>
   </div>
   <!-- =================================Content============================ -->
   <div class="contentBody">
     <div class="mainContent mb-1">
+      <!-- ============================Form Data========================== -->
       <div id="form-container" class="m-3">
         <dx-form id="form" [labelMode]="'floating'">
           <dxi-item itemType="group" [colCount]="3">
@@ -17,7 +18,7 @@
               <dxi-item>
                 <dx-check-box
                   [(value)]="isDatabaseNameEditable"
-                  text="Enable Database Name"
+                  text="Enable External Database"
                 ></dx-check-box>
               </dxi-item>
               <dxi-item
@@ -34,7 +35,7 @@
               <dxi-item>
                 <dx-check-box
                   [(value)]="isXMLDirectoryEditable"
-                  text="Enable XML Directory"
+                  text="Enable external XML Directory"
                 ></dx-check-box>
               </dxi-item>
               <dxi-item
@@ -85,6 +86,47 @@
             </dxi-item>
           </dxi-item>
         </dx-form>
+      </div>
+      <!-- =======================Instance Creation======================= -->
+      <div class="facilityContainer">
+        <div class="row justify-content-center align-items-center">
+          <div class="col-12 d-flex mb-3">
+            <div class="col-10 position-relative dropdownContent">
+              <div
+                *ngFor="let dropdown of dropdowns; let i = index"
+                class="col-12 d-flex align-items-center mb-3"
+              >
+                <div class="col-10 ">
+                  <dx-drop-down-box
+                    labelMode="floating"
+                    labelLocation="left"
+                    label="Instance #{{ i }}"
+                    [(value)]="selectedValues"
+                    [dataSource]="options"
+                    valueExpr="ID"
+                    displayExpr="Name"
+                    [showClearButton]="true"
+                    (onValueChanged)="onDropdownValueChanged($event, i)"
+                  >
+                  </dx-drop-down-box>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-2">
+              <dx-button
+                text="Add Instance"
+                (onClick)="addDropdown()"
+                type="default"
+                icon="plus"
+                stylingMode="contained"
+              >
+              </dx-button>
+            </div>
+          </div>
+
+          <!-- Additional dropdowns with floating label -->
+        </div>
       </div>
     </div>
     <!-- Footer Section -->
