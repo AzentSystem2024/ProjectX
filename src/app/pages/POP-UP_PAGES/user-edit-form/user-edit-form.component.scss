@@ -59,7 +59,7 @@
     max-height: 200px ;
     max-width: 200px; /* Maximum width */
     height: 150px; /* Fixed height for the drop area */
-    margin: 20px auto; /* Centered with margin */
+    margin: 4px auto; /* Centered with margin */
     padding: 20px; /* Padding inside the area */
     text-align: center; /* Centered text */
     transition: border-color 0.3s; /* Smooth transition for border color */
@@ -151,3 +151,15 @@ button:hover {
       }
     }
   }
+
+  .profile-img-label{
+    font-family: Inter ;  
+      top: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+   }
+  
