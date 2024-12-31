@@ -1015,6 +1015,9 @@ export class MasterReportService {
       user_facility: data.user_facility,
       changePasswordOnLogin: data.changePasswordOnLogin,
       LoginExpiryReason: '',
+      Date_Format:data.Date_Format,
+      Time_Format:data.Time_Format,
+      Decimal_Points:data.Decimal_Points
     };
 
     return this.http.post(url, reqBody);
@@ -1044,6 +1047,9 @@ export class MasterReportService {
       user_facility: data.user_facility,
       changePasswordOnLogin: data.changePasswordOnLogin,
       LoginExpiryReason: '',
+      Date_Format:data.Date_Format,
+      Time_Format:data.Time_Format,
+      Decimal_Points:data.Decimal_Points,
     };
 
     return this.http.post(url, reqBody);

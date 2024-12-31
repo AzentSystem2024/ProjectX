@@ -104,6 +104,9 @@ export class UserEditFormComponent implements OnInit, OnChanges {
     LoginExpiryDate: '',
     PhotoFile: '',
     user_facility: [],
+    Date_Format:'',
+    Time_Format:'',
+    Decimal_Points:'',
   };
 
   newUserData = this.userData;
@@ -160,6 +163,10 @@ export class UserEditFormComponent implements OnInit, OnChanges {
   currentLoginName: any;
   currentEmail: any;
 
+  dateFormat: any;
+  timeFormat: any;
+  decimal:any;
+
   constructor(
     private service: MasterReportService,
     private cdr: ChangeDetectorRef
@@ -177,6 +184,10 @@ export class UserEditFormComponent implements OnInit, OnChanges {
       this.userList = data;
       console.log('datasource', this.userList);
     });
+  }
+
+  onDecimalInput(event:any){
+    this.newUserData.Decimal_Points = event.value
   }
 
   onLoginNameInput(event: Event): void {
@@ -427,6 +438,12 @@ export class UserEditFormComponent implements OnInit, OnChanges {
     return fullPhoneNumber; // Return as is if no match found
   }
 
+  onDecimalPointsChanged(event: any): void {
+    this.newUserData.Decimal_Points = event.value; // Ensure the value is updated in newUserData
+    console.log('Updated Decimal_Points:', this.newUserData.Decimal_Points);
+  }
+  
+
   onMobileInputChange(event: any) {
     const newValue = event.value;
 
@@ -517,9 +534,21 @@ export class UserEditFormComponent implements OnInit, OnChanges {
     }, 0);
   }
 
+  onDateFormatChange(event: any) {
+    this.newUserData.Date_Format = event.value;
+    console.log('Dropdown value changed:', event.value);
+  }
+
+  onTimeFormatChange(event: any){
+    this.newUserData.Time_Format = event.value;
+    console.log('Dropdown Time value changed:', event.value);
+  }
+
   ngOnInit(): void {
     this.getDropDownData('GENDER_DATA');
     this.getDropDownData('USER_ROLE');
+    this.getDropDownData('DATE_FORMAT');
+    this.getDropDownData('TIME_FORMAT');
     this.getUserSecurityPolicyData();
     this.getFacilityData();
     this.getCountryCodeList();
@@ -544,6 +573,14 @@ export class UserEditFormComponent implements OnInit, OnChanges {
       if (data === 'USER_ROLE') {
         this.userRole = res;
         console.log(this.userRole, 'userRole');
+      }
+      if(data == 'DATE_FORMAT'){
+        this.dateFormat = res;
+        console.log(this.dateFormat,"DATEFORMAT")
+      }
+      if(data == 'TIME_FORMAT'){
+        this.timeFormat = res;
+        console.log(this.timeFormat,"TIMEFORMAT")
       }
     });
   }
@@ -585,6 +622,7 @@ export class UserEditFormComponent implements OnInit, OnChanges {
     }
 
     console.log(this.newUserData, 'edit form data');
+    console.log('Decimal_Points before saving:', this.newUserData.Decimal_Points);
     console.log(this.userData.user_facility, 'userfacility');
     this.service.update_User_Data(this.newUserData).subscribe((res: any) => {
       try {

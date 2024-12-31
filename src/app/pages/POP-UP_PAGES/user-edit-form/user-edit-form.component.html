@@ -218,8 +218,8 @@
               </dx-validator>
             </dx-text-box>
           </div>
-          <div class="form-column" style="flex: 1">
-            <label>Profile Image</label>
+          <div class="form-column" style="flex: 2">
+            <label class="profile-img-label">Profile Image</label>
             <div
               id="drop-area"
               (dragenter)="preventDefaults($event)"
@@ -449,6 +449,62 @@
               hint="Login Expiry Date"
             ></dx-date-box>
           </div>
+          <div style="margin: 30px 0 10px; font-size: 16px; font-weight: bold;">Date-Time and Currency Settings</div>
+
+          <div
+          style="
+          border: 1px solid #ccc; 
+          padding: 15px; 
+          border-radius: 8px; 
+        ">
+        <!-- New Dropdown Field Below -->
+        <div style="display: flex; align-items: center;">
+          <dx-select-box
+            [items]="dateFormat"
+            [(value)]="newUserData.Date_Format"
+            placeholder="Select an option"
+            stylingMode="outlined"
+            label="Date Format"
+            displayExpr="DESCRIPTION"
+            valueExpr="ID"
+            hint="Dropdown Field"
+            [searchEnabled]="true"
+            width="235"
+            (onValueChanged)="onDateFormatChange($event)"
+            style="margin-right: 20px;"
+          ></dx-select-box>
+        <!-- </div> -->
+
+        
+        <!-- Thousand Separator Input Field -->
+        <!-- <div style="display: flex; align-items: center; margin: 20px 0  10px"> -->
+          <dx-number-box
+            [(value)]="newUserData.Decimal_Points"
+            format="#,##0"
+            label="Fraction Values"
+            stylingMode="outlined"
+            placeholder="Fraction Values"
+            hint="Fraction Values"
+            width="235"
+          ></dx-number-box>
+        </div>
+        <div style="display: flex; align-items: center; margin: 20px 0  10px">
+          <dx-select-box
+            [items]="timeFormat"
+            [(value)]="newUserData.Time_Format"
+            placeholder="Select an option"
+            stylingMode="outlined"
+            label="Time Format"
+            displayExpr="DESCRIPTION"
+            valueExpr="ID"
+            hint="Dropdown Field"
+            [searchEnabled]="true"
+            width="235"
+            (onValueChanged)="onTimeFormatChange($event)"
+            style="margin-right: 20px;"
+          ></dx-select-box>
+        </div>
+        </div>
         </div>
       </div>
     </div>

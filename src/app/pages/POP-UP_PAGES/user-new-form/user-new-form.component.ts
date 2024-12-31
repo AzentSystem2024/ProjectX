@@ -74,6 +74,9 @@ export class UserNewFormComponent implements OnInit, AfterViewChecked {
     PhotoFile: '',
     changePasswordOnLogin: false,
     user_facility: [],
+    Date_Format:'',
+    Time_Format:'',
+    Decimal_Points:'',
   };
   newUserData = this.userData;
   selectedRows: any[] = [];
@@ -127,7 +130,16 @@ export class UserNewFormComponent implements OnInit, AfterViewChecked {
     { dataField: 'facility', caption: 'Facility' },
   ];
 
+  //dateformat options
+
+  selectedDropdownOption: string;
+  //thousandseparator
+  thousandSeparatorValue: number;
+  decimal:number;
+
   public isDropdownOpen: boolean = false;
+  dateFormat: any;
+  timeFormat: any;
 
   constructor(
     private service: MasterReportService,
@@ -156,6 +168,14 @@ export class UserNewFormComponent implements OnInit, AfterViewChecked {
   onLockDateToChange(event: any) {
     this.newUserData.LockDateTo = event.value; // Update the model with the selected date
   }
+  onDateFormatChange(event: any) {
+    this.newUserData.Date_Format = event.value;
+    console.log('Dropdown value changed:', event.value);
+  }
+  onTimeFormatChange(event: any){
+    this.newUserData.Time_Format = event.value;
+    console.log('Dropdown Time value changed:', event.value);
+  }
 
   getUSerData() {
     this.service.get_User_data().subscribe((data) => {
@@ -163,6 +183,8 @@ export class UserNewFormComponent implements OnInit, AfterViewChecked {
       console.log('datasource', this.userList);
     });
   }
+
+
 
   onLoginNameInput(event: Event): void {
     const target = event.target as HTMLInputElement;
@@ -423,6 +445,8 @@ export class UserNewFormComponent implements OnInit, AfterViewChecked {
   ngOnInit(): void {
     this.getDropDownData('GENDER_DATA');
     this.getDropDownData('USER_ROLE');
+    this.getDropDownData('DATE_FORMAT');
+    this.getDropDownData('TIME_FORMAT');
     this.getUserSecurityPolicyData();
     this.getFacilityData();
     this.getCountryCodeList();
@@ -443,6 +467,8 @@ export class UserNewFormComponent implements OnInit, AfterViewChecked {
     }
   }
 
+
+
   getDropDownData(data: any) {
     this.service.Get_GropDown(data).subscribe((res) => {
       console.log(res, 'res');
@@ -453,6 +479,14 @@ export class UserNewFormComponent implements OnInit, AfterViewChecked {
       if (data === 'USER_ROLE') {
         this.userRole = res;
         console.log(this.userRole, 'userRole');
+      }
+      if(data == 'DATE_FORMAT') {
+        this.dateFormat = res;
+        console.log(this.dateFormat,"DATEFORMAT")
+      }
+      if(data == 'TIME_FORMAT') {
+        this.timeFormat = res;
+        console.log(this.timeFormat,"TIMEFORMAT")
       }
     });
   }
