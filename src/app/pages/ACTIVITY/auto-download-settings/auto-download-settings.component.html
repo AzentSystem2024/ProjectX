@@ -11,7 +11,7 @@
     <div class="mainContent mb-1">
       <!-- ============================Form Data========================== -->
       <div id="form-container" class="m-3">
-        <dx-form id="form" [labelMode]="'floating'">
+        <dx-form [formData]="formModel" [labelMode]="'floating'">
           <dxi-item itemType="group" [colCount]="3">
             <!-- Database Name Field with Checkbox -->
             <dxi-item itemType="group" [colCount]="1">
@@ -21,11 +21,7 @@
                   text="Enable External Database"
                 ></dx-check-box>
               </dxi-item>
-              <dxi-item
-                dataField="DatabaseName"
-                editorType="dxTextBox"
-                [disabled]="!isDatabaseNameEditable"
-              >
+              <dxi-item dataField="DatabaseName" editorType="dxTextBox">
                 <dxo-label text="Database Name"></dxo-label>
               </dxi-item>
             </dxi-item>
@@ -38,11 +34,7 @@
                   text="Enable external XML Directory"
                 ></dx-check-box>
               </dxi-item>
-              <dxi-item
-                dataField="XMLDirectory"
-                editorType="dxTextBox"
-                [disabled]="!isXMLDirectoryEditable"
-              >
+              <dxi-item dataField="XMLDirectory" editorType="dxTextBox">
                 <dxo-label text="XML Directory"></dxo-label>
               </dxi-item>
             </dxi-item>
@@ -96,24 +88,37 @@
                 *ngFor="let dropdown of dropdowns; let i = index"
                 class="col-12 d-flex align-items-center mb-3"
               >
-                <div class="col-10 ">
-                  <dx-drop-down-box
+                <div class="col-10">
+                  <dx-tag-box
                     labelMode="floating"
                     labelLocation="left"
-                    label="Instance #{{ i }}"
-                    [(value)]="selectedValues"
-                    [dataSource]="options"
+                    label="Instance #{{ i + 1 }}"
+                    [(value)]="dropdown.selectedValues"
+                    [dataSource]="dataSource"
                     valueExpr="ID"
-                    displayExpr="Name"
+                    displayExpr="FacilityName"
+                    [showSelectionControls]="true"
                     [showClearButton]="true"
-                    (onValueChanged)="onDropdownValueChanged($event, i)"
+                    [multiline]="true"
+                    [searchEnabled]="true"
+                    [maxDisplayedTags]="5"
+                    (onValueChanged)="onTagBoxValueChanged($event, i)"
                   >
-                  </dx-drop-down-box>
+                  </dx-tag-box>
+                </div>
+                <div class="col-2 ms-2 mt-2">
+                  <dx-button
+                    text=""
+                    (onClick)="removeDropdown(i)"
+                    type="danger"
+                    icon="close"
+                    stylingMode="outlined"
+                  >
+                  </dx-button>
                 </div>
               </div>
             </div>
-
-            <div class="col-2">
+            <div class="col-2 mt-2">
               <dx-button
                 text="Add Instance"
                 (onClick)="addDropdown()"
@@ -124,8 +129,6 @@
               </dx-button>
             </div>
           </div>
-
-          <!-- Additional dropdowns with floating label -->
         </div>
       </div>
     </div>
