@@ -466,10 +466,11 @@
             stylingMode="outlined"
             label="Date Format"
             displayExpr="DESCRIPTION"
-            valueExpr="ID"
+            valueExpr="DESCRIPTION"
             hint="Dropdown Field"
             [searchEnabled]="true"
             width="235"
+            (onKeyDown)="preventTyping($event)"
             (onValueChanged)="onDateFormatChange($event)"
             style="margin-right: 20px;"
           ></dx-select-box>
@@ -478,15 +479,49 @@
         
         <!-- Thousand Separator Input Field -->
         <!-- <div style="display: flex; align-items: center; margin: 20px 0  10px"> -->
-          <dx-number-box
-            [(value)]="newUserData.Decimal_Points"
-            format="#,##0"
-            label="Fraction Values"
+
+          <!-- <dx-select-box
+            [items]="currencySymbol"
+            [(value)]="newUserData.Currency_Symbol"
+            placeholder="Select an option"
             stylingMode="outlined"
-            placeholder="Fraction Values"
-            hint="Fraction Values"
+            label="Currency Symbol"
+            displayExpr="DESCRIPTION"
+            valueExpr="ID"
+            hint="Dropdown Field"
+            [searchEnabled]="true"
             width="235"
-          ></dx-number-box>
+    
+            (onValueChanged)="onCurrencySymbolChange($event)"
+            style="margin-right: 20px;"
+          ></dx-select-box> -->
+
+          <dx-drop-down-box
+          [value]="newUserData.Currency_Symbol"
+          [items]="currencySymbol"
+          label="Currency Symbol"
+          displayExpr="DESCRIPTION"
+          valueExpr="DESCRIPTION"
+          placeholder="Select or enter a custom value"
+          [acceptCustomValue]="true"
+          [showClearButton]="true"
+          stylingMode="outlined"
+          (onValueChanged)="onCurrencySymbolChange($event)"
+          (input)="onCurrencySymbolInput($event)"
+          (onClosed)="onCurrencySymbolBlur()"
+          width="235"
+        >
+          <div *dxTemplate="let data of 'content'">
+            <dx-list
+              [dataSource]="currencySymbol"
+              displayExpr="DESCRIPTION"
+              (onItemClick)="onCurrencySymbolListSelect($event)"
+            ></dx-list>
+          </div>
+        </dx-drop-down-box>
+        </div>
+        <div *ngIf="exampleDateFormat" style="margin-top: 10px; color: gray;">
+          Eg: {{ exampleDateFormat }}
         </div>
         <div style="display: flex; align-items: center; margin: 20px 0  10px">
           <dx-select-box
@@ -496,13 +531,30 @@
             stylingMode="outlined"
             label="Time Format"
             displayExpr="DESCRIPTION"
-            valueExpr="ID"
+            valueExpr="DESCRIPTION"
             hint="Dropdown Field"
             [searchEnabled]="true"
             width="235"
+            (onKeyDown)="preventTyping($event)"
             (onValueChanged)="onTimeFormatChange($event)"
             style="margin-right: 20px;"
           ></dx-select-box>
+
+          <dx-number-box
+            [(value)]="newUserData.Decimal_Points"
+            format="#,##0"
+            label="No. of digits after decimal"
+            stylingMode="outlined"
+            placeholder="Fraction Values"
+            hint="Fraction Values"
+            width="235"
+            [showSpinButtons]="true"
+            [min]="0"  
+            [max]="10"
+          ></dx-number-box>
+        </div>
+        <div *ngIf="exampleTimeFormat" style="margin-top: 10px; color: gray;">
+          Eg: {{ exampleTimeFormat }}
         </div>
         </div>
         </div>

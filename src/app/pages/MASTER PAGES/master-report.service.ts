@@ -1017,7 +1017,8 @@ export class MasterReportService {
       LoginExpiryReason: '',
       Date_Format:data.Date_Format,
       Time_Format:data.Time_Format,
-      Decimal_Points:data.Decimal_Points
+      Decimal_Points:data.Decimal_Points,
+      Currency_Symbol:data.Currency_Symbol
     };
 
     return this.http.post(url, reqBody);
@@ -1050,6 +1051,7 @@ export class MasterReportService {
       Date_Format:data.Date_Format,
       Time_Format:data.Time_Format,
       Decimal_Points:data.Decimal_Points,
+      Currency_Symbol:data.Currency_Symbol
     };
 
     return this.http.post(url, reqBody);
