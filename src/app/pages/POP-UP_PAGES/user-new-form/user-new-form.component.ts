@@ -80,8 +80,8 @@ export class UserNewFormComponent implements OnInit, AfterViewChecked {
     user_facility: [],
     Date_Format:'',
     Time_Format:'',
-    Decimal_Points:'',
-    Currency_Symbol:'',
+    // Decimal_Points:'',
+    // Currency_Symbol:'',
   };
   newUserData = this.userData;
   selectedRows: any[] = [];

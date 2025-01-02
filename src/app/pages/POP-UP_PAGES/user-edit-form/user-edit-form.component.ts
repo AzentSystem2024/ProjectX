@@ -108,8 +108,8 @@ export class UserEditFormComponent implements OnInit, OnChanges {
     user_facility: [],
     Date_Format:'',
     Time_Format:'',
-    Decimal_Points:'',
-    Currency_Symbol:'',
+    // Decimal_Points:'',
+    // Currency_Symbol:'',
   };
 
   newUserData = this.userData;
