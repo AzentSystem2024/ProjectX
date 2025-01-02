@@ -2,11 +2,12 @@ import {
   DxButtonModule,
   DxCheckBoxModule,
   DxDataGridModule,
-  DxDropDownBoxModule,
+  DxDateBoxModule,
   DxFormModule,
   DxSelectBoxModule,
   DxTagBoxModule,
   DxTextAreaModule,
+  DxTextBoxModule,
   DxToolbarModule,
 } from 'devextreme-angular';
 import { CommonModule } from '@angular/common';
@@ -36,21 +37,21 @@ export class AutoDownloadSettingsComponent {
   selectedFacilities: any[] = [];
 
   formModel: any = {
-    DatabaseName: 'dummy',
-    XMLDirectory: 'fghjfg',
-    ServiceRestartTime: 'hjhfj',
-    ProcessClaimsAutomtically: 'hfjf',
-    ServiceInterval: 'hfjhf',
+    DatabaseName: '',
+    XMLDirectory: '',
+    ServiceRestartTime: '',
+    ProcessClaimsAutomtically: '',
+    ServiceInterval: '',
     ClaimTransactionStartDate: null,
     RemittanceTransactionStartDate: null,
-    DownlaodPriorInterval: 'hjh',
-    DownlaodPriorIntervalRestart: 'hfjhj',
+    DownlaodPriorInterval: '',
+    DownlaodPriorIntervalRestart: '',
   };
 
   constructor(private dataService: DataService) {
     this.get_Facility_List();
   }
-  
+
   get_Facility_List() {
     this.dataService
       .get_DashbOard_SyncData_Details()
@@ -76,7 +77,6 @@ export class AutoDownloadSettingsComponent {
 
   // Handle value change in a tag box
   onTagBoxValueChanged(event: any, index: number): void {
-    // Get the newly selected values
     const newlySelectedValues = event.value;
     this.dropdowns[index].selectedValues = newlySelectedValues;
     this.updateSelectedFacilities();
@@ -137,6 +137,8 @@ export class AutoDownloadSettingsComponent {
     DxCheckBoxModule,
     DxButtonModule,
     DxTagBoxModule,
+    DxDateBoxModule,
+    DxTextBoxModule,
   ],
   providers: [],
   exports: [],
