@@ -495,67 +495,73 @@
             stylingMode="outlined"
             hint="Login Expiry Date"
             (onValueChanged)="onLoginExpiryDateChange($event)"
-            style="margin-right: 20px;"
+            style="margin-right: 20px"
           ></dx-date-box>
         </div>
-        <div style="margin: 30px 0 10px; font-size: 16px; font-weight: bold;">Date-Time and Currency Settings</div>
+        <div style="margin: 30px 0 10px; font-size: 16px; font-weight: bold">
+          Date-Time and Currency Settings
+        </div>
 
-        <div
-        style="
-        border: 1px solid #ccc; 
-        padding: 15px; 
-        border-radius: 8px; 
-      
-      ">
-        <!-- New Dropdown Field Below -->
-        <div style="display: flex; align-items: center;">
-          <dx-select-box
-            [items]="dateFormat"
-            [(value)]="newUserData.Date_Format"
-            placeholder="Select an option"
-            stylingMode="outlined"
-            label="Date Format"
-            displayExpr="DESCRIPTION"
-            valueExpr="ID"
-            hint="Dropdown Field"
-            [searchEnabled]="true"
-            width="235"
-            (onValueChanged)="onDateFormatChange($event)"
-            style="margin-right: 20px;"
-          ></dx-select-box>
-        <!-- </div> -->
-
+        <div style="border: 1px solid #ccc; padding: 15px; border-radius: 8px">
+          <div style="display: flex; align-items: flex-start; gap: 20px">
+            <!-- Date Format Section -->
+            <div>
+              <dx-select-box
+                [items]="dateFormat"
+                [(value)]="newUserData.Date_Format"
+                placeholder="Select an option"
+                stylingMode="outlined"
+                label="Date Format"
+                displayExpr="DESCRIPTION"
+                valueExpr="DESCRIPTION"
+                hint="Dropdown Field"
+                [searchEnabled]="true"
+                width="235"
+                (onKeyDown)="preventTyping($event)"
+                (onValueChanged)="onDateFormatChange($event)"
+              ></dx-select-box>
+              <div *ngIf="exampleDateFormat" style="margin-top: 10px; color: gray">
+                Eg: {{ exampleDateFormat }}
+              </div>
+            </div>
         
-        <!-- Thousand Separator Input Field -->
-        <!-- <div style="display: flex; align-items: center; margin: 20px 0  10px"> -->
-          <dx-number-box
-            [(value)]="newUserData.Decimal_Points"
-            format="#,##0"
-            label="Fraction Values"
-            stylingMode="outlined"
-            placeholder="Fraction Values"
-            hint="Fraction Values"
-            width="235"
-          ></dx-number-box>
+            <!-- Time Format Section -->
+            <div>
+              <dx-select-box
+                [items]="timeFormat"
+                [(value)]="newUserData.Time_Format"
+                placeholder="Select an option"
+                stylingMode="outlined"
+                label="Time Format"
+                displayExpr="DESCRIPTION"
+                valueExpr="DESCRIPTION"
+                hint="Dropdown Field"
+                [searchEnabled]="true"
+                width="235"
+                (onKeyDown)="preventTyping($event)"
+                (onValueChanged)="onTimeFormatChange($event)"
+              ></dx-select-box>
+              <div *ngIf="exampleTimeFormat" style="margin-top: 10px; color: gray">
+                Eg: {{ exampleTimeFormat }}
+              </div>
+            </div>
+          </div>
         </div>
-        <div style="display: flex; align-items: center; margin: 20px 0  10px">
-          <dx-select-box
-            [items]="timeFormat"
-            [(value)]="newUserData.Time_Format"
-            placeholder="Select an option"
-            stylingMode="outlined"
-            label="Time Format"
-            displayExpr="DESCRIPTION"
-            valueExpr="ID"
-            hint="Dropdown Field"
-            [searchEnabled]="true"
-            width="235"
-            (onValueChanged)="onTimeFormatChange($event)"
-            style="margin-right: 20px;"
-          ></dx-select-box>
-        </div>
-      </div>
-      </div>
+        
+              <!-- <dx-number-box
+                [(value)]="newUserData.Decimal_Points"
+                format="#,##0"
+                label="No. of digits after decimal"
+                stylingMode="outlined"
+                placeholder="Fraction Values"
+                hint="Fraction Values"
+                width="235"
+                [showSpinButtons]="true"
+                [min]="0"
+                [max]="10"
+              ></dx-number-box> -->
+        <!-- </div>
+      </div> -->
     </div>
   </div>
 </div>

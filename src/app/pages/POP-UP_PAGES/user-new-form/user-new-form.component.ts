@@ -10,6 +10,7 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  HostListener,
   Input,
   NgModule,
   OnChanges,
@@ -38,6 +39,8 @@ import {
   DxTooltipModule,
   DxValidationGroupModule,
   DxNumberBoxModule,
+  DxDropDownBoxModule,
+  DxListModule,
 } from 'devextreme-angular';
 import { MasterReportService } from '../../MASTER PAGES/master-report.service';
 import { FormTextboxModule } from 'src/app/components';
@@ -54,6 +57,7 @@ export class UserNewFormComponent implements OnInit, AfterViewChecked {
   @ViewChild('fileUploader', { static: false })
   fileUploader!: DxFileUploaderComponent; // Update the type here
   @ViewChild('fileInput', { static: false }) fileInput!: ElementRef;
+  @ViewChild('currencySelectBox') currencySelectBox: ElementRef;
   userData: any = {
     UserName: '',
     Password: '',
@@ -76,7 +80,8 @@ export class UserNewFormComponent implements OnInit, AfterViewChecked {
     user_facility: [],
     Date_Format:'',
     Time_Format:'',
-    Decimal_Points:'',
+    // Decimal_Points:'',
+    // Currency_Symbol:'',
   };
   newUserData = this.userData;
   selectedRows: any[] = [];
@@ -140,6 +145,9 @@ export class UserNewFormComponent implements OnInit, AfterViewChecked {
   public isDropdownOpen: boolean = false;
   dateFormat: any;
   timeFormat: any;
+  currencySymbol: any;
+  exampleDateFormat: any;
+  exampleTimeFormat: any;
 
   constructor(
     private service: MasterReportService,
@@ -168,14 +176,122 @@ export class UserNewFormComponent implements OnInit, AfterViewChecked {
   onLockDateToChange(event: any) {
     this.newUserData.LockDateTo = event.value; // Update the model with the selected date
   }
-  onDateFormatChange(event: any) {
-    this.newUserData.Date_Format = event.value;
-    console.log('Dropdown value changed:', event.value);
+  onDateFormatChange(event: any): void {
+    // Directly set the value from the event
+    const selectedFormat = this.dateFormat.find(format => format.DESCRIPTION === event.value)?.DESCRIPTION;
+    if (selectedFormat) {
+      this.newUserData.Date_Format = event.value; // Ensure the correct value is set
+      this.exampleDateFormat = this.getFormattedDate(selectedFormat); // Generate the example format
+    } else {
+      this.exampleDateFormat = '';
+    }
   }
-  onTimeFormatChange(event: any){
-    this.newUserData.Time_Format = event.value;
-    console.log('Dropdown Time value changed:', event.value);
+
+  onTimeFormatChange(event:any){
+    const selectedTimeFormat = this.timeFormat.find(format => format.DESCRIPTION === event.value)?.DESCRIPTION;
+    if(selectedTimeFormat){
+      this.newUserData.Time_Format = event.value;
+      this.exampleTimeFormat = this.getFormattedTime(selectedTimeFormat);
+    } else{
+      this.exampleTimeFormat = '';
+    }
   }
+
+  onCurrencySymbolChange(event: any) {
+    const selectedValue = event.value;
+console.log(selectedValue,"SELECTED")
+    if (selectedValue) {
+      // Check if the selected value is from the dropdown or entered by the user
+      const existingItem = this.currencySymbol.find(item => item.DESCRIPTION === selectedValue);
+
+      if (!existingItem) {
+        // If it's a custom value (not from the dropdown)
+        console.log('Custom value entered:', selectedValue);
+        this.newUserData.Currency_Symbol = selectedValue; // Store the custom value
+      } else {
+        // If it's a valid value from the dropdown
+        console.log('Selected value from dropdown:', selectedValue);
+        this.newUserData.Currency_Symbol = selectedValue; // Store the dropdown value
+      }
+    }
+  }
+  onCurrencySymbolInput(event: any) {
+    const typedValue = event.target.value;
+    console.log('Typed value in input field:', typedValue);
+
+    // Update the value as the user types, if necessary
+    this.newUserData.Currency_Symbol = typedValue;
+  }
+  
+  onCurrencySymbolBlur() {
+    const enteredValue = this.newUserData.Currency_Symbol;
+    console.log('Field lost focus, entered value:', enteredValue);
+
+    // If the value is not part of the dropdown options, treat it as a custom value
+    if (enteredValue) {
+      const existingItem = this.currencySymbol.find(item => item.DESCRIPTION === enteredValue);
+
+      if (!existingItem) {
+        // If it's a custom value (not in dropdown), save it
+        console.log('Custom value entered:', enteredValue);
+        this.newUserData.Currency_Symbol = enteredValue;  // Keep the custom value
+      }
+    }
+  }
+
+  onCurrencySymbolListSelect(event: any) {
+    const selectedValue = event.itemData.DESCRIPTION;
+    console.log('Dropdown item selected:', selectedValue);
+    this.newUserData.Currency_Symbol = selectedValue;
+  }
+
+
+  getFormattedTime(format: string): string {
+    const currentDate = new Date();
+
+    // Get components of the date and time
+    const hour24 = currentDate.getHours(); // 24-hour format
+    const hour12 = hour24 % 12 || 12; // 12-hour format
+    const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+    const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+    const ampm = hour24 >= 12 ? 'PM' : 'AM'; // AM/PM
+  
+    // Based on the selected format, return the example time
+    switch(format) {
+      case 'HH:MM':
+        return `${String(hour24).padStart(2, '0')}:${minutes}`; // Example for 'HH:MM'
+      
+      case 'HH:MM:SS':
+        return `${String(hour24).padStart(2, '0')}:${minutes}:${seconds}`; // Example for 'HH:MM:SS'
+      
+      case 'hh:mm a':
+        return `${String(hour12).padStart(2, '0')}:${minutes} ${ampm}`; // Example for 'hh:mm a'
+      
+      case 'hh:mm:ss a':
+        return `${String(hour12).padStart(2, '0')}:${minutes}:${seconds} ${ampm}`; // Example for 'hh:mm:ss a'
+      
+      default:
+        return ''; // Default case
+    }
+  }
+
+
+
+  getFormattedDate(format: string): string {
+    const currentDate = new Date();
+  
+    // Replace placeholders in the selected format with actual date values
+    return format
+      .replace('YYYY', currentDate.getFullYear().toString())
+      .replace('MM', String(currentDate.getMonth() + 1).padStart(2, '0'))
+      .replace('DD', String(currentDate.getDate()).padStart(2, '0'))
+      .replace('HH', String(currentDate.getHours()).padStart(2, '0'))
+      .replace('MM', String(currentDate.getMinutes()).padStart(2, '0'))
+      .replace('SS', String(currentDate.getSeconds()).padStart(2, '0'))
+      .replace('Month', currentDate.toLocaleString('en-US', { month: 'long' }))
+      .replace('Day', currentDate.toLocaleString('en-US', { weekday: 'long' }));
+  }
+  
 
   getUSerData() {
     this.service.get_User_data().subscribe((data) => {
@@ -435,18 +551,37 @@ export class UserNewFormComponent implements OnInit, AfterViewChecked {
     this.isDropdownOpen = false; // Mark dropdown as closed
   }
 
+  // clearData() {
+  //   this.selectedRows = [];
+  //   this.newUserData.GenderID = '';
+  //   this.newUserData = '';
+  //   this.newUserData.Currency_Symbol = null;
+  //   this.cdr.detectChanges();
+  //   console.log(this.newUserData);
+  // }
+
   clearData() {
-    this.selectedRows = [];
-    this.newUserData.GenderID = '';
-    this.cdr.detectChanges();
-    console.log(this.newUserData);
+    this.selectedRows = []; // Clear any selected rows
+    this.newUserData = { Currency_Symbol: null, GenderID: '' }; // Reset to a valid object with initial values
+    this.currencySymbol = [...this.currencySymbol]; // Trigger refresh by creating a new reference
+    this.cdr.detectChanges(); // Ensure Angular detects changes
+    console.log('Form data cleared:', this.newUserData);
+  }
+  
+
+  preventTyping(event: any): void {
+    if (event.event) {
+      event.event.preventDefault(); // Prevent keypress
+    }
   }
 
   ngOnInit(): void {
+    
     this.getDropDownData('GENDER_DATA');
     this.getDropDownData('USER_ROLE');
     this.getDropDownData('DATE_FORMAT');
     this.getDropDownData('TIME_FORMAT');
+    this.getDropDownData('CURRENCY_SYMBOL');
     this.getUserSecurityPolicyData();
     this.getFacilityData();
     this.getCountryCodeList();
@@ -487,6 +622,10 @@ export class UserNewFormComponent implements OnInit, AfterViewChecked {
       if(data == 'TIME_FORMAT') {
         this.timeFormat = res;
         console.log(this.timeFormat,"TIMEFORMAT")
+      }
+      if(data == 'CURRENCY_SYMBOL') {
+        this.currencySymbol = res;
+        console.log(this.currencySymbol,"currencySymbol")
       }
     });
   }
@@ -764,6 +903,8 @@ export class UserNewFormComponent implements OnInit, AfterViewChecked {
     ReactiveFormsModule,
     DxValidationGroupModule,
     DxNumberBoxModule,
+    DxDropDownBoxModule,
+    DxListModule
   ],
   providers: [],
   declarations: [UserNewFormComponent],
