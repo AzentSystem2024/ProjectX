@@ -551,13 +551,23 @@ console.log(selectedValue,"SELECTED")
     this.isDropdownOpen = false; // Mark dropdown as closed
   }
 
+  // clearData() {
+  //   this.selectedRows = [];
+  //   this.newUserData.GenderID = '';
+  //   this.newUserData = '';
+  //   this.newUserData.Currency_Symbol = null;
+  //   this.cdr.detectChanges();
+  //   console.log(this.newUserData);
+  // }
+
   clearData() {
-    this.selectedRows = [];
-    this.newUserData.GenderID = '';
-    this.newUserData = '';
-    this.cdr.detectChanges();
-    console.log(this.newUserData);
+    this.selectedRows = []; // Clear any selected rows
+    this.newUserData = { Currency_Symbol: null, GenderID: '' }; // Reset to a valid object with initial values
+    this.currencySymbol = [...this.currencySymbol]; // Trigger refresh by creating a new reference
+    this.cdr.detectChanges(); // Ensure Angular detects changes
+    console.log('Form data cleared:', this.newUserData);
   }
+  
 
   preventTyping(event: any): void {
     if (event.event) {

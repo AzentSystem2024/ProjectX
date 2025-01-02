@@ -812,6 +812,21 @@ console.log(selectedValue,"SELECTED")
         console.log('No photo available');
       }
 
+      const selectedFormat = this.dateFormat.find(format => format.DESCRIPTION === this.formdata.Date_Format)?.DESCRIPTION;
+    if (selectedFormat) {
+      this.newUserData.Date_Format = this.formdata.Date_Format; // Ensure the correct value is set
+      this.exampleDateFormat = this.getFormattedDate(selectedFormat); // Generate the example format
+    } else {
+      this.exampleDateFormat = '';
+    }
+    const selectedTimeFormat = this.timeFormat.find(format => format.DESCRIPTION === this.formdata.Time_Format)?.DESCRIPTION;
+    if(selectedTimeFormat){
+      this.newUserData.Time_Format = this.formdata.Time_Format;
+      this.exampleTimeFormat = this.getFormattedTime(selectedTimeFormat);
+    } else{
+      this.exampleTimeFormat = '';
+    }
+
       // Extract country code from mobile number
       const extractedCountryCode = this.extractCountryCode(
         this.newUserData.Mobile
