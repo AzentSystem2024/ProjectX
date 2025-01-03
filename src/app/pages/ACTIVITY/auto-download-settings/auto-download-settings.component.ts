@@ -1,9 +1,11 @@
 import {
   DxButtonModule,
   DxCheckBoxModule,
+  DxDataGridComponent,
   DxDataGridModule,
   DxDateBoxModule,
   DxFormModule,
+  DxRadioGroupModule,
   DxSelectBoxModule,
   DxTagBoxModule,
   DxTextAreaModule,
@@ -11,7 +13,7 @@ import {
   DxToolbarModule,
 } from 'devextreme-angular';
 import { CommonModule } from '@angular/common';
-import { Component, NgModule } from '@angular/core';
+import { Component, NgModule, OnInit, ViewChild } from '@angular/core';
 import { DataService } from 'src/app/services';
 
 @Component({
@@ -20,112 +22,102 @@ import { DataService } from 'src/app/services';
   styleUrls: ['./auto-download-settings.component.scss'],
 })
 export class AutoDownloadSettingsComponent {
+  @ViewChild(DxDataGridComponent, { static: true })
+  dataGrid: DxDataGridComponent;
   isDatabaseNameEditable = false;
   isXMLDirectoryEditable = false;
 
-  dataSource: any;
-  originalDataSource: any;
+  dataSource: any = [];
 
-  dropdowns: any[] = [
-    {
-      selectedValues: [],
-    },
-  ];
+  FacilityDataSource: any;
 
-  selectedValues: number[] = [];
+  instanceCounter: number = 1;
 
-  selectedFacilities: any[] = [];
+  DatabaseName: any;
+  XMLDirectory: any;
+  ServiceRestartTime: any;
+  ProcessClaimsAutomtically: any;
+  ServiceInterval: any;
+  ClaimTransactionStartDate: any = new Date();
+  RemittanceTransactionStartDate: any = new Date();
+  DownlaodPriorInterval: any;
+  DownlaodPriorIntervalRestart: any;
 
-  formModel: any = {
-    DatabaseName: '',
-    XMLDirectory: '',
-    ServiceRestartTime: '',
-    ProcessClaimsAutomtically: '',
-    ServiceInterval: '',
-    ClaimTransactionStartDate: null,
-    RemittanceTransactionStartDate: null,
-    DownlaodPriorInterval: '',
-    DownlaodPriorIntervalRestart: '',
-  };
+  checkBox1: boolean = false;
+  checkBox2: boolean = false;
+  checkBox3: boolean = false;
 
   constructor(private dataService: DataService) {
     this.get_Facility_List();
+    this.dataSource = [];
   }
 
   get_Facility_List() {
     this.dataService
-      .get_DashbOard_SyncData_Details()
+      .get_UserWise_FacilityList_Data()
       .subscribe((response: any) => {
-        this.originalDataSource = response.data || [];
-        this.updateDataSource();
+        this.FacilityDataSource = response.facilityDetails || [];
       });
   }
 
-  // Add a new dropdown instance
-  addDropdown(): void {
-    this.dropdowns.push({
-      selectedValues: [],
-    });
-    this.updateDataSource();
-  }
-
-  // Remove a specific dropdown
-  removeDropdown(index: number): void {
-    this.dropdowns.splice(index, 1);
-    this.updateDataSource();
-  }
-
-  // Handle value change in a tag box
-  onTagBoxValueChanged(event: any, index: number): void {
-    const newlySelectedValues = event.value;
-    this.dropdowns[index].selectedValues = newlySelectedValues;
-    this.updateSelectedFacilities();
-    // this.updateDataSource();
-  }
-
-  // Update the selectedFacilities array to store values in the required format
-  updateSelectedFacilities() {
-    this.selectedFacilities = this.dropdowns
-      .map((dropdown, index) =>
-        dropdown.selectedValues.map((facilityId: any) => ({
-          InstanceNo: index + 1,
-          FacilityID: facilityId,
-        }))
-      )
-      .flat();
-  }
-
-  // Update the main dataSource to exclude selected values
-  updateDataSource(): void {
-    const selectedValuesInAllTagBoxes = this.dropdowns
-      .flatMap((dropdown) => dropdown.selectedValues)
-      .filter((value, index, self) => self.indexOf(value) === index);
-
-    this.dataSource = this.originalDataSource.filter(
-      (item) => !selectedValuesInAllTagBoxes.includes(item.ID)
-    );
-  }
-
-  onAddClick() {
-    let formdata = this.formModel;
-    console.log('form data ;=>', formdata);
-    console.log('selected facilities are =>', this.selectedFacilities);
-  }
-
-  onClearClick() {
-    this.formModel = {
-      DatabaseName: '',
-      XMLDirectory: '',
-      ServiceRestartTime: '',
-      ProcessClaimsAutomtically: '',
-      ServiceInterval: '',
-      ClaimTransactionStartDate: null,
-      RemittanceTransactionStartDate: null,
-      DownlaodPriorInterval: '',
-      DownlaodPriorIntervalRestart: '',
+  //===============Add instance function===================
+  addInstance = () => {
+    const newRow = {
+      Instance: `Instance ${this.instanceCounter}`,
+      Facility: [],
+      'Date 1': null,
+      'Date 2': null,
     };
-    this.dropdowns = [{ selectedValues: [] }];
+    this.dataSource = [...this.dataSource, newRow];
+    this.instanceCounter++;
+    this.updateInstanceNumbers();
+  };
+
+  // ==========Function to Delete the Selected Row================
+  deleteRow(event) {
+    const rowIndex = event.rowIndex;
+    const rowData = this.dataSource[rowIndex];
+    if (confirm(`Are you sure you want to delete ${rowData.Instance}?`)) {
+      this.dataSource.splice(rowIndex, 1);
+    }
+    this.updateInstanceNumbers();
   }
+
+  // =======Function to Update Instance Numbers After Deletion or Addition=========
+  updateInstanceNumbers() {
+    this.dataSource.forEach((item, index) => {
+      item.Instance = `Instance ${index + 1}`;
+    });
+  }
+
+  //=========================onclick of save button ==========================
+  onAddClick = () => {
+    const formData = {
+      isDatabaseNameEditable: this.isDatabaseNameEditable,
+      DatabaseName: this.DatabaseName,
+      isXMLDirectoryEditable: this.isXMLDirectoryEditable,
+      XMLDirectory: this.XMLDirectory,
+      ClaimTransactionStartDate: this.ClaimTransactionStartDate,
+      RemittanceTransactionStartDate: this.RemittanceTransactionStartDate,
+      ServiceInterval: this.ServiceInterval,
+      // dataSource: this.dataSource,
+    };
+
+    console.log('Form Data:', formData);
+  };
+
+  //=========================onclick of clear button ==========================
+
+  onClearClick = () => {
+    // Reset form-bound properties
+    // this.isDatabaseNameEditable = false;
+    // this.isXMLDirectoryEditable = true;
+    this.DatabaseName = '';
+    this.XMLDirectory = '';
+    this.ClaimTransactionStartDate = null;
+    this.RemittanceTransactionStartDate = null;
+    this.ServiceInterval = '';
+  };
 }
 @NgModule({
   imports: [
@@ -139,6 +131,8 @@ export class AutoDownloadSettingsComponent {
     DxTagBoxModule,
     DxDateBoxModule,
     DxTextBoxModule,
+    DxDataGridModule,
+    DxRadioGroupModule,
   ],
   providers: [],
   exports: [],

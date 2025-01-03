@@ -16,6 +16,13 @@
   border-radius: 7px;
 
   .grid {
+    border-radius: 8px;
+    .name-template {
+      .position {
+        font-size: 12px;
+        color: var(--texteditor-label-color);
+      }
+    }
     ::ng-deep & {
       .dx-datagrid-header-panel {
         padding: 0 var(--content-padding);
@@ -68,16 +75,7 @@
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
 }
 .facilityContainer {
-  padding: 10px;
   border-radius: 8px;
   border: 1px solid var(--border-color);
-  height: 38vh;
-}
-.dropdownContent {
-  height: 35vh;
-  overflow-x: auto; 
-}
-
-.dropdownContent::-webkit-scrollbar {
-  display: none;
+  height: 40vh;
 }

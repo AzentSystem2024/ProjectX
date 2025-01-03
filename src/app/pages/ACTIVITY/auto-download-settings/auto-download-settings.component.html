@@ -1,6 +1,5 @@
 <div class="view-wrapper list-page">
   <!-- =================================ToolBar============================ -->
-
   <div class="toolbarDiv mb-2">
     <dx-toolbar>
       <dxi-item location="before" text="Download Settings"></dxi-item>
@@ -11,124 +10,152 @@
     <div class="mainContent mb-1">
       <!-- ============================Form Data========================== -->
       <div id="form-container" class="ms-3 me-3">
-        <div class="form-container">
-          <div class="row mb-3">
-            <!-- Database Name Field with Checkbox -->
-            <div class="col-md-6">
-              <dx-check-box
-                class="mb-0"
-                [(value)]="isDatabaseNameEditable"
-                text="Enable External Database"
-              ></dx-check-box>
-              <dx-text-box
-                class="mt-0"
-                [(value)]="formModel.DatabaseName"
-                [disabled]="!isDatabaseNameEditable"
-                label="Database Name"
-                labelMode="floating"
-              ></dx-text-box>
-            </div>
-
-            <!-- XML Directory Field with Checkbox -->
-            <div class="col-md-6">
-              <dx-check-box
-                class="mb-0"
-                [(value)]="isXMLDirectoryEditable"
-                text="Enable external XML Directory"
-              ></dx-check-box>
-              <dx-text-box
-                class="mt-0"
-                [(value)]="formModel.XMLDirectory"
-                [disabled]="!isXMLDirectoryEditable"
-                label="XML Directory"
-                labelMode="floating"
-              ></dx-text-box>
-            </div>
+        <div class="row mb-3">
+          <!-- Database Name Field with Checkbox -->
+          <div class="col-md-6">
+            <dx-check-box
+              class="mb-0"
+              [(value)]="isDatabaseNameEditable"
+              text="Enable External Database"
+            ></dx-check-box>
+            <dx-text-box
+              class="mt-0"
+              [(value)]="DatabaseName"
+              [disabled]="!isDatabaseNameEditable"
+              label="Database Name"
+              labelMode="floating"
+            ></dx-text-box>
           </div>
 
-          <!-- Date Fields -->
-          <div class="row mb-3">
-            <div class="col-md-4">
-              <dx-date-box
-                class="me-0"
-                [(value)]="formModel.ClaimTransactionStartDate"
-                label="Claim Transaction Start Date"
-                labelMode="floating"
-              ></dx-date-box>
-            </div>
-            <div class="col-md-4">
-              <dx-date-box
-                class="me-0"
-                [(value)]="formModel.RemittanceTransactionStartDate"
-                label="Remittance Transaction Start Date"
-                labelMode="floating"
-              ></dx-date-box>
-            </div>
-            <div class="col-md-4">
-              <dx-text-box
-                class="ms-0"
-                [(value)]="formModel.ServiceInterval"
-                label="Service Interval"
-                labelMode="floating"
-              ></dx-text-box>
-            </div>
+          <!-- XML Directory Field with Checkbox -->
+          <div class="col-md-6">
+            <dx-check-box
+              class="mb-0"
+              [(value)]="isXMLDirectoryEditable"
+              text="Enable external XML Directory"
+            ></dx-check-box>
+            <dx-text-box
+              class="mt-0"
+              [(value)]="XMLDirectory"
+              [disabled]="!isXMLDirectoryEditable"
+              label="XML Directory"
+              labelMode="floating"
+            ></dx-text-box>
+          </div>
+        </div>
+
+        <!-- Date Fields -->
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <dx-date-box
+              class="me-0"
+              [(value)]="ClaimTransactionStartDate"
+              label="Claim Transaction Start Date"
+              labelMode="floating"
+              displayFormat="dd/MM/yyyy"
+              valueFormat="yyyy/MM/dd"
+            ></dx-date-box>
+          </div>
+          <div class="col-md-4">
+            <dx-date-box
+              class="me-0"
+              [(value)]="RemittanceTransactionStartDate"
+              label="Remittance Transaction Start Date"
+              labelMode="floating"
+              displayFormat="dd/MM/yyyy"
+              valueFormat="yyyy/MM/dd"
+            ></dx-date-box>
+          </div>
+          <div class="col-md-4">
+            <dx-text-box
+              class="ms-0"
+              [(value)]="ServiceInterval"
+              label="Service Interval"
+              labelMode="floating"
+            ></dx-text-box>
           </div>
         </div>
       </div>
       <!-- =======================Instance Creation======================= -->
-      <div class="facilityContainer">
-        <div class="row justify-content-center align-items-center">
-          <div class="col-12 d-flex mb-3">
-            <div class="col-10 position-relative dropdownContent">
-              <div
-                *ngFor="let dropdown of dropdowns; let i = index"
-                class="col-12 d-flex align-items-center mb-3"
-              >
-                <div class="col-10">
-                  <dx-tag-box
-                    labelMode="floating"
-                    labelLocation="left"
-                    label="Instance #{{ i + 1 }}"
-                    [(value)]="dropdown.selectedValues"
-                    [dataSource]="dataSource"
-                    valueExpr="ID"
-                    displayExpr="FacilityName"
-                    [showSelectionControls]="true"
-                    [showClearButton]="true"
-                    [multiline]="true"
-                    [searchEnabled]="true"
-                    [maxDisplayedTags]="5"
-                    (onValueChanged)="onTagBoxValueChanged($event, i)"
-                  >
-                  </dx-tag-box>
-                </div>
-                <div class="col-2 ms-2 mt-2">
-                  <dx-button
-                    text=""
-                    (onClick)="removeDropdown(i)"
-                    type="danger"
-                    icon="close"
-                    stylingMode="outlined"
-                  >
-                  </dx-button>
-                </div>
-              </div>
+      <div class="facilityContainer m-3 p-0">
+        <!-- Toolbar with Add Instance Button -->
+        <dx-toolbar class="mb-1 pe-4">
+          <dxi-item location="before">
+            <div class="grid-header p-2">
+              <h6 class="ms-2">Instance List</h6>
             </div>
-            <div class="col-2 mt-2">
-              <dx-button
-                text="Add Instance"
-                (onClick)="addDropdown()"
-                type="default"
-                icon="plus"
-                stylingMode="contained"
-              >
-              </dx-button>
-            </div>
-          </div>
-        </div>
+          </dxi-item>
+          <dxi-item
+            widget="dxButton"
+            location="after"
+            [options]="{
+              text: 'Add Instance',
+              stylingMode: 'contained',
+              type: 'success',
+              onClick: addInstance
+            }"
+          ></dxi-item>
+        </dx-toolbar>
+
+        <!-- DataGrid -->
+        <dx-data-grid
+          class="grid"
+          [dataSource]="dataSource"
+          [remoteOperations]="false"
+          [allowColumnReordering]="true"
+          [rowAlternationEnabled]="true"
+          [showBorders]="true"
+          [editing]="{ mode: 'cell', allowUpdating: true, allowDeleting: true }"
+          [width]="'100%'"
+          [height]="'100%'"
+          (onRowRemoving)="deleteRow($event)"
+          [selection]="{ mode: 'multiple', showCheckBoxesMode: 'always' }"
+        >
+          <!-- Paging -->
+          <!-- <dxo-paging [pageSize]="10"></dxo-paging> -->
+
+          <!-- Grouping -->
+          <dxo-group-panel [visible]="false"></dxo-group-panel>
+          <dxo-grouping [autoExpandAll]="true"></dxo-grouping>
+
+          <!-- Instance Column (Groupable) -->
+          <dxi-column
+            dataField="Instance"
+            caption="Instance"
+            [allowEditing]="false"
+            [groupIndex]="0"
+          ></dxi-column>
+
+          <!-- Facility Column with Multi-Select -->
+          <dxi-column
+            dataField="Facility"
+            caption="Facility"
+            [allowSorting]="false"
+            [lookup]="{
+              dataSource: FacilityDataSource,
+              valueExpr: 'FacilityID',
+              displayExpr: 'FacilityName'
+            }"
+          ></dxi-column>
+
+          <!-- Start Date Column -->
+          <dxi-column
+            dataField="ClaimTransactionDate"
+            caption="Claim Transaction Date"
+            dataType="date"
+            [allowSorting]="false"
+          ></dxi-column>
+
+          <!-- End Date Column -->
+          <dxi-column
+            dataField="RemittanceTransactionDate"
+            caption="Remittance Transaction Date"
+            dataType="date"
+            [allowSorting]="false"
+          ></dxi-column>
+        </dx-data-grid>
       </div>
     </div>
-    <!-- Footer Section -->
     <div class="footerDiv">
       <dx-toolbar class="pe-4">
         <dxi-item

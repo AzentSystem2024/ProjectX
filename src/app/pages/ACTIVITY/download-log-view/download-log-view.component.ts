@@ -75,8 +75,31 @@ export class DownloadLogViewComponent {
   }
 
   update_Columns() {
-    console.log('calling column update function');
     this.columns = [
+      {
+        dataField: 'IS_ERROR',
+        caption: ' ',
+        allowEditing: false,
+        allowSorting: false,
+        allowResizing: false,
+        allowHeaderFiltering: false,
+        allowReordering: false,
+        allowGrouping: false,
+        width: 'auto',
+        cellTemplate: (container: any, options: any) => {
+          const button = document.createElement('button');
+          button.innerHTML = options.value
+            ? '<i class="bi bi-exclamation-circle-fill"></i>' // Icon for Error
+            : '<i class="bi bi-check-circle-fill"></i>'; // Icon for No Error
+          button.style.backgroundColor = options.value ? 'red' : '#2393d9';
+          button.style.color = 'white';
+          button.style.border = 'none';
+          button.style.borderRadius = '5px';
+          button.style.padding = '5px';
+          button.title = options.value ? 'Error' : 'No Error';
+          container.appendChild(button);
+        },
+      },
       {
         dataField: 'SerialNumber',
         caption: 'SL NO',
@@ -103,27 +126,13 @@ export class DownloadLogViewComponent {
         dataField: 'LOG_MESSAGE',
         caption: 'Description',
         allowEditing: false,
-        width: 200,
-      },
-      {
-        dataField: 'IS_ERROR',
-        caption: ' ',
-        allowEditing: false,
-        allowSorting: false,
-        allowResizing: false,
-        allowHeaderFiltering: false,
-        allowReordering: false,
-        allowGrouping: false,
-        width: 'auto',
+        width: 400,
         cellTemplate: (container: any, options: any) => {
-          const button = document.createElement('button');
-          button.textContent = options.value ? 'Error' : 'No Error';
-          button.style.backgroundColor = options.value ? 'red' : '#2393d9';
-          button.style.color = 'white';
-          button.style.border = 'none';
-          button.style.borderRadius = '5px';
-          button.style.padding = '5px';
-          container.appendChild(button);
+          const textDiv = document.createElement('div');
+          textDiv.innerText = options.value;
+          textDiv.style.whiteSpace = 'normal'; // Enable text wrapping
+          textDiv.style.wordWrap = 'break-word'; // Break long words if needed
+          container.appendChild(textDiv);
         },
       },
     ];
