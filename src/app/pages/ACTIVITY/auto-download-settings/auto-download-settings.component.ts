@@ -5,8 +5,6 @@ import {
   DxDataGridModule,
   DxDateBoxModule,
   DxFormModule,
-  DxHtmlEditorModule,
-  DxRadioGroupModule,
   DxSelectBoxModule,
   DxTagBoxModule,
   DxTextAreaModule,
@@ -16,8 +14,9 @@ import {
   DxTreeListModule,
 } from 'devextreme-angular';
 import { CommonModule } from '@angular/common';
-import { Component, NgModule, OnInit, ViewChild } from '@angular/core';
+import { Component, NgModule, ViewChild } from '@angular/core';
 import { DataService } from 'src/app/services';
+import { DxTreeListTypes } from 'devextreme-angular/ui/tree-list';
 
 @Component({
   selector: 'app-auto-download-settings',
@@ -117,6 +116,32 @@ export class AutoDownloadSettingsComponent {
       });
   }
 
+  //===================Adding Row to the DataSource====================
+  validateRowInserting(event: any) {
+    // Validate the row being added
+    if (event.data.parentId === null || event.data.parentId === '') {
+      console.warn('Adding rows without a parent is not allowed.');
+      event.cancel = true; // Cancel the adding process
+      return;
+    }
+    // Determine the new row ID
+    const newId = this.dataSource.length + 1;
+    // Create the new row data
+    const newRow = {
+      id: newId,
+      parentId: event.data.parentId || null,
+      Instance: event.data.Instance || `Instance ${newId}`,
+      Facility: event.data.Facility || null,
+      ClaimTransactionDate: event.data.ClaimTransactionDate || null,
+      RemittanceTransactionDate: event.data.RemittanceTransactionDate || null,
+    };
+    // Add the new row to the data source
+    this.dataSource.push(newRow);
+    // Update the TreeList (if necessary)
+    this.dataSource = [...this.dataSource]; // Trigger change detection
+    console.log('Updated DataSource:', this.dataSource);
+  }
+
   //=============== Add instance function ===================
   addInstance = () => {
     const newRow = {
@@ -145,23 +170,22 @@ export class AutoDownloadSettingsComponent {
 
     if (index !== -1) {
       this.dataSource[index] = { ...this.dataSource[index], ...updatedRow };
-      console.log('Row updated:', this.dataSource[index]);
+      console.log('Row updated:', this.dataSource);
+    }
+    console.log('updated datasource is =>:', this.dataSource);
+  }
+
+  // ==============On new row initialization, set parentId if not a new instance===========
+  editorPreparing(e: DxTreeListTypes.EditorPreparingEvent) {
+    if (e.dataField === 'parentId' && e.row.data.ID === 1) {
+      e.editorOptions.disabled = true;
+      e.editorOptions.value = null;
     }
   }
 
-  //===============Add instance function===================
-  // addInstance = () => {
-  //   const newRow = {
-  //     Instance: `Instance ${this.instanceCounter}`,
-  //     Facility: [],
-  //     'Date 1': null,
-  //     'Date 2': null,
-  //   };
-  //   this.dataSource = [...this.dataSource, newRow];
-  //   this.instanceCounter++;
-  //   this.updateInstanceNumbers();
-  // };
-
+  initNewRow(e: DxTreeListTypes.InitNewRowEvent) {
+    e.data.parentId = 1;
+  }
   // // ==================Reference to the DataGrid===================
   // duplicateRow = (): void => {
   //   const selectedRows = this.dataGrid.instance.getSelectedRowsData();
@@ -233,8 +257,6 @@ export class AutoDownloadSettingsComponent {
     DxTextBoxModule,
     DxDataGridModule,
     DxTreeListModule,
-    DxRadioGroupModule,
-    DxHtmlEditorModule
   ],
   providers: [],
   exports: [],

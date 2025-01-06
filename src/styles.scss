@@ -686,3 +686,11 @@ body {
   border: 2px solid var(--border-color);
   overflow: hidden;
 }
+.instanceTreeList
+  .dx-treelist-header-panel
+  .dx-toolbar-text-auto-hide
+  .dx-button.dx-button-has-icon {
+  border-radius: 4px;
+  background-color: #00a1e0;
+  margin-right: 10px;
+}
