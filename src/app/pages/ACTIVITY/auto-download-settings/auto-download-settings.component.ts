@@ -5,12 +5,15 @@ import {
   DxDataGridModule,
   DxDateBoxModule,
   DxFormModule,
+  DxHtmlEditorModule,
   DxRadioGroupModule,
   DxSelectBoxModule,
   DxTagBoxModule,
   DxTextAreaModule,
   DxTextBoxModule,
   DxToolbarModule,
+  DxTreeListComponent,
+  DxTreeListModule,
 } from 'devextreme-angular';
 import { CommonModule } from '@angular/common';
 import { Component, NgModule, OnInit, ViewChild } from '@angular/core';
@@ -24,10 +27,64 @@ import { DataService } from 'src/app/services';
 export class AutoDownloadSettingsComponent {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
+
+  @ViewChild(DxTreeListComponent, { static: true })
+  treelist: DxTreeListComponent;
+
   isDatabaseNameEditable = false;
   isXMLDirectoryEditable = false;
 
-  dataSource: any = [];
+  // dataSource: any = [];
+  dataSource: any = [
+    {
+      id: 1,
+      parentId: null,
+      Instance: 'Instance 1',
+      Facility: null,
+      ClaimTransactionDate: null,
+      RemittanceTransactionDate: null,
+    },
+    {
+      id: 2,
+      parentId: 1,
+      Instance: 'Instance 1',
+      Facility: 12,
+      ClaimTransactionDate: new Date(),
+      RemittanceTransactionDate: new Date(),
+    },
+    {
+      id: 3,
+      parentId: 1,
+      Instance: 'Instance 1',
+      Facility: 14,
+      ClaimTransactionDate: new Date(),
+      RemittanceTransactionDate: new Date(),
+    },
+    {
+      id: 4,
+      parentId: 1,
+      Instance: 'Instance 1',
+      Facility: 14,
+      ClaimTransactionDate: new Date(),
+      RemittanceTransactionDate: new Date(),
+    },
+    {
+      id: 5,
+      parentId: null,
+      Instance: 'Instance 3',
+      Facility: null,
+      ClaimTransactionDate: null,
+      RemittanceTransactionDate: null,
+    },
+    {
+      id: 6,
+      parentId: 5,
+      Instance: 'Instance 3',
+      Facility: 16,
+      ClaimTransactionDate: new Date(),
+      RemittanceTransactionDate: new Date(),
+    },
+  ];
 
   FacilityDataSource: any;
 
@@ -49,7 +106,7 @@ export class AutoDownloadSettingsComponent {
 
   constructor(private dataService: DataService) {
     this.get_Facility_List();
-    this.dataSource = [];
+    // this.dataSource = [];
   }
 
   get_Facility_List() {
@@ -60,27 +117,72 @@ export class AutoDownloadSettingsComponent {
       });
   }
 
-  //===============Add instance function===================
+  //=============== Add instance function ===================
   addInstance = () => {
     const newRow = {
+      id: this.instanceCounter, // Unique identifier for the new row
+      parentId: null, // Root-level row (no parent)
       Instance: `Instance ${this.instanceCounter}`,
       Facility: [],
-      'Date 1': null,
-      'Date 2': null,
+      ClaimTransactionDate: null,
+      RemittanceTransactionDate: null,
     };
+
     this.dataSource = [...this.dataSource, newRow];
+    // Increment instance counter for unique IDs
     this.instanceCounter++;
-    this.updateInstanceNumbers();
+    this.updateTreeList();
   };
 
-  // ==========Function to Delete the Selected Row================
-  deleteRow(event) {
-    const rowIndex = event.rowIndex;
-    const rowData = this.dataSource[rowIndex];
-    if (confirm(`Are you sure you want to delete ${rowData.Instance}?`)) {
-      this.dataSource.splice(rowIndex, 1);
+  // Update the TreeList instance after dataSource changes
+  updateTreeList() {
+    this.treelist?.instance.refresh();
+  }
+  //=====================update row data====================
+  updateRow(event: any): void {
+    const updatedRow = event.data;
+    const index = this.dataSource.findIndex((row) => row.id === updatedRow.id);
+
+    if (index !== -1) {
+      this.dataSource[index] = { ...this.dataSource[index], ...updatedRow };
+      console.log('Row updated:', this.dataSource[index]);
     }
-    this.updateInstanceNumbers();
+  }
+
+  //===============Add instance function===================
+  // addInstance = () => {
+  //   const newRow = {
+  //     Instance: `Instance ${this.instanceCounter}`,
+  //     Facility: [],
+  //     'Date 1': null,
+  //     'Date 2': null,
+  //   };
+  //   this.dataSource = [...this.dataSource, newRow];
+  //   this.instanceCounter++;
+  //   this.updateInstanceNumbers();
+  // };
+
+  // // ==================Reference to the DataGrid===================
+  // duplicateRow = (): void => {
+  //   const selectedRows = this.dataGrid.instance.getSelectedRowsData();
+  //   if (selectedRows.length > 0) {
+  //     selectedRows.forEach((row) => {
+  //       const newRow = { ...row };
+  //       newRow.Instance = `${row.Instance}`;
+  //       this.dataSource = [...this.dataSource, newRow];
+  //     });
+  //     this.updateInstanceNumbers();
+  //     this.dataGrid.instance.refresh();
+  //   } else {
+  //     alert('Please select a row to duplicate.');
+  //   }
+  // };
+
+  // ==========Function to Delete the Selected Row================
+  deleteRow(event: any): void {
+    const rowId = event.data.id;
+    this.dataSource = this.dataSource.filter((row) => row.id !== rowId);
+    console.log('Row deleted:', rowId);
   }
 
   // =======Function to Update Instance Numbers After Deletion or Addition=========
@@ -97,8 +199,6 @@ export class AutoDownloadSettingsComponent {
       DatabaseName: this.DatabaseName,
       isXMLDirectoryEditable: this.isXMLDirectoryEditable,
       XMLDirectory: this.XMLDirectory,
-      ClaimTransactionStartDate: this.ClaimTransactionStartDate,
-      RemittanceTransactionStartDate: this.RemittanceTransactionStartDate,
       ServiceInterval: this.ServiceInterval,
       // dataSource: this.dataSource,
     };
@@ -132,7 +232,9 @@ export class AutoDownloadSettingsComponent {
     DxDateBoxModule,
     DxTextBoxModule,
     DxDataGridModule,
+    DxTreeListModule,
     DxRadioGroupModule,
+    DxHtmlEditorModule
   ],
   providers: [],
   exports: [],
