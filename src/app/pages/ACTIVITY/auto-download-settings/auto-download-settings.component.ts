@@ -146,7 +146,7 @@ export class AutoDownloadSettingsComponent {
   addInstance = () => {
     const newRow = {
       id: this.instanceCounter, // Unique identifier for the new row
-      parentId: null, // Root-level row (no parent)
+      parentId: null,
       Instance: `Instance ${this.instanceCounter}`,
       Facility: [],
       ClaimTransactionDate: null,
@@ -175,9 +175,12 @@ export class AutoDownloadSettingsComponent {
     console.log('updated datasource is =>:', this.dataSource);
   }
 
+  allowAdding = ({ row }) => row.data.parentId === null;
+
   // ==============On new row initialization, set parentId if not a new instance===========
   editorPreparing(e: DxTreeListTypes.EditorPreparingEvent) {
     if (e.dataField === 'parentId' && e.row.data.ID === 1) {
+      e.cancel = true;
       e.editorOptions.disabled = true;
       e.editorOptions.value = null;
     }

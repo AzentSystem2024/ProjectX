@@ -78,7 +78,6 @@
         <dx-tree-list
           class="instanceTreeList"
           [keyExpr]="'id'"
-          
           [dataSource]="dataSource"
           [allowColumnReordering]="true"
           [rowAlternationEnabled]="true"
@@ -86,16 +85,17 @@
           [autoExpandAll]="false"
           [width]="'100%'"
           [height]="'100%'"
-          (onRowInserting)="validateRowInserting($event)"
           (onRowUpdated)="updateRow($event)"
           (onRowRemoving)="deleteRow($event)"
+          (onRowInserting)="validateRowInserting($event)"
+          (onEditorPreparing)="editorPreparing($event)"
         >
           <dxo-selection mode="multiple" [recursive]="true"></dxo-selection>
           <dxo-editing
-            mode="row"
+            mode="popup"
             [allowUpdating]="true"
             [allowDeleting]="true"
-            [allowAdding]="true"
+            [allowAdding]="allowAdding"
           >
             <dxo-popup
               title="Instance Managing"
@@ -107,18 +107,12 @@
           </dxo-editing>
 
           <!-- Instance Column -->
-          <dxi-column
-            dataField="Instance"
-            caption="Instance"
-            [allowSorting]="true"
-            [allowEditing]="true"
-          ></dxi-column>
+          <dxi-column dataField="Instance" caption="Instance"></dxi-column>
 
           <!-- Facility Column with dxTagBox as editor -->
           <dxi-column
             dataField="Facility"
             caption="Facility"
-            [allowSorting]="false"
             [lookup]="{
               dataSource: FacilityDataSource,
               valueExpr: 'FacilityID',
@@ -130,7 +124,6 @@
             dataField="ClaimTransactionDate"
             caption="Claim Transaction Date"
             dataType="date"
-            [allowSorting]="false"
           ></dxi-column>
 
           <!-- Remittance Transaction Date Column -->
@@ -138,7 +131,6 @@
             dataField="RemittanceTransactionDate"
             caption="Remittance Transaction Date"
             dataType="date"
-            [allowSorting]="false"
           ></dxi-column>
         </dx-tree-list>
       </div>
