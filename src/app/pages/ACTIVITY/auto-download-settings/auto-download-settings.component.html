@@ -56,23 +56,6 @@
       <!-- =======================Instance Creation======================= -->
       <div class="facilityContainer m-1 p-0">
         <!-- Toolbar with Add Instance Button -->
-        <!-- <dx-toolbar class="mb-1 pe-4">
-          <dxi-item location="before">
-            <div class="grid-header p-2">
-              <h6 class="ms-2">Instance List</h6>
-            </div>
-          </dxi-item>
-          <dxi-item
-            widget="dxButton"
-            location="after"
-            [options]="{
-              text: 'Add Instance',
-              stylingMode: 'contained',
-              type: 'default',
-              onClick: addInstance
-            }"
-          ></dxi-item>
-        </dx-toolbar> -->
 
         <!-- DataGrid -->
         <dx-tree-list
@@ -87,8 +70,7 @@
           [height]="'100%'"
           (onRowUpdated)="updateRow($event)"
           (onRowRemoving)="deleteRow($event)"
-          (onRowInserting)="validateRowInserting($event)"
-          (onEditorPreparing)="editorPreparing($event)"
+          (onEditingStart)="onEditingStart($event)"
         >
           <dxo-selection mode="multiple" [recursive]="true"></dxo-selection>
           <dxo-editing
@@ -97,14 +79,35 @@
             [allowDeleting]="true"
             [allowAdding]="allowAdding"
           >
-            <dxo-popup
-              title="Instance Managing"
-              [showTitle]="true"
-              [width]="'60%'"
-              [height]="'60vh'"
-            >
+            <dxo-popup [showTitle]="true" [width]="'60%'" [height]="'60vh'">
             </dxo-popup>
           </dxo-editing>
+
+          <dxo-row-dragging
+            [onDragChange]="onDragChange"
+            [onReorder]="onReorder"
+            [allowDropInsideItem]="true"
+            [allowReordering]="true"
+            [showDragIcons]="true"
+          ></dxo-row-dragging>
+
+          <dxo-toolbar>
+            <dxi-item location="before">
+              <div class="grid-header ms-3"><h6>Instance managing</h6></div>
+            </dxi-item>
+
+            <dxi-item location="after" locateInMenu="auto" class="me-3">
+              <dx-button
+                text=""
+                icon="plus"
+                type="default"
+                stylingMode="contained"
+                class="add-button"
+                hint="Add new Instant"
+                (onClick)="on_Add_New_Instance($event)"
+              ></dx-button>
+            </dxi-item>
+          </dxo-toolbar>
 
           <!-- Instance Column -->
           <dxi-column dataField="Instance" caption="Instance"></dxi-column>
@@ -113,6 +116,7 @@
           <dxi-column
             dataField="Facility"
             caption="Facility"
+            width="'auto'"
             [lookup]="{
               dataSource: FacilityDataSource,
               valueExpr: 'FacilityID',
@@ -161,3 +165,103 @@
     </div>
   </div>
 </div>
+
+<!-- dxPopup -->
+<dx-popup
+  [(visible)]="isAddPopupVisible"
+  [width]="'50%'"
+  [height]="'auto'"
+  [showTitle]="true"
+  title="Instance Management"
+  [closeOnOutsideClick]="true"
+>
+  <div *dxTemplate="let data of 'content'">
+    <dx-form [colCount]="1">
+      <!-- Instance Field -->
+      <dxi-item>
+        <div>
+          <dx-text-box
+            labelMode="floating"
+            labelLocation="left"
+            label="Instance"
+            [(value)]="InstanceValue"
+          >
+          </dx-text-box>
+        </div>
+      </dxi-item>
+
+      <!-- Updated Facility Field -->
+      <dxi-item
+        itemType="group"
+        cssClass="form-group"
+        class="rowGroup"
+        [colCount]="8"
+        [colCountByScreen]="{ xs: 8, sm: 8, md: 8, lg: 8 }"
+      >
+        <dxi-item [colSpan]="8">
+          <dx-tag-box
+            [items]="filteredFacilityDataSource"
+            displayExpr="FacilityName"
+            valueExpr="FacilityID"
+            [(value)]="Facility_Value"
+            [showSelectionControls]="true"
+            applyValueMode="instantly"
+            [inputAttr]="{ 'aria-label': 'Product' }"
+          >
+          </dx-tag-box>
+        </dxi-item>
+      </dxi-item>
+
+      <!-- Claim Transaction Date Field -->
+      <dxi-item>
+        <div>
+          <dx-date-box
+            labelMode="floating"
+            labelLocation="left"
+            label="Claim Transaction Date"
+            type="date"
+            displayFormat="dd/MM/yyyy"
+            valueFormat="yyyy/MM/dd"
+            [(value)]="instanceClaimDownloadStartDate"
+          >
+          </dx-date-box>
+        </div>
+      </dxi-item>
+
+      <!-- Remittance Transaction Date Field -->
+      <dxi-item>
+        <div>
+          <dx-date-box
+            labelMode="floating"
+            labelLocation="left"
+            label="Claim Remittance Date"
+            type="date"
+            displayFormat="dd/MM/yyyy"
+            valueFormat="yyyy/MM/dd"
+            [(value)]="instanceRemittanceDownloadStartDate"
+          >
+          </dx-date-box>
+        </div>
+      </dxi-item>
+    </dx-form>
+
+    <!-- Popup Buttons -->
+    <div class="d-flex justify-content-end mt-4 border-top pt-3">
+      <dx-button
+        text="Cancel"
+        stylingMode="outlined"
+        type="normal"
+        class="me-2"
+        (onClick)="resetForm()"
+      ></dx-button>
+
+      <!-- Save Button -->
+      <dx-button
+        text="Save"
+        stylingMode="contained"
+        type="default"
+        (onClick)="onAddClick()"
+      ></dx-button>
+    </div>
+  </div>
+</dx-popup>

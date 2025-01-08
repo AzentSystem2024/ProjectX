@@ -4,7 +4,9 @@ import {
   DxDataGridComponent,
   DxDataGridModule,
   DxDateBoxModule,
+  DxDropDownBoxModule,
   DxFormModule,
+  DxPopupModule,
   DxSelectBoxModule,
   DxTagBoxModule,
   DxTextAreaModule,
@@ -17,6 +19,7 @@ import { CommonModule } from '@angular/common';
 import { Component, NgModule, ViewChild } from '@angular/core';
 import { DataService } from 'src/app/services';
 import { DxTreeListTypes } from 'devextreme-angular/ui/tree-list';
+import notify from 'devextreme/ui/notify';
 
 @Component({
   selector: 'app-auto-download-settings',
@@ -33,7 +36,6 @@ export class AutoDownloadSettingsComponent {
   isDatabaseNameEditable = false;
   isXMLDirectoryEditable = false;
 
-  // dataSource: any = [];
   dataSource: any = [
     {
       id: 1,
@@ -86,27 +88,29 @@ export class AutoDownloadSettingsComponent {
   ];
 
   FacilityDataSource: any;
-
+  filteredFacilityDataSource: any;
   instanceCounter: number = 1;
 
   DatabaseName: any;
   XMLDirectory: any;
-  ServiceRestartTime: any;
-  ProcessClaimsAutomtically: any;
   ServiceInterval: any;
   ClaimTransactionStartDate: any = new Date();
   RemittanceTransactionStartDate: any = new Date();
-  DownlaodPriorInterval: any;
-  DownlaodPriorIntervalRestart: any;
+  editingRowData: any;
 
-  checkBox1: boolean = false;
-  checkBox2: boolean = false;
-  checkBox3: boolean = false;
+  Facility_Value: any[] = [];
+  InstanceValue: any;
+  instanceClaimDownloadStartDate: any;
+  instanceRemittanceDownloadStartDate: any;
+
+  isAddPopupVisible: boolean = false;
 
   constructor(private dataService: DataService) {
     this.get_Facility_List();
-    // this.dataSource = [];
+    this.get_settingsData_List();
   }
+  //======used to enable add button only parent nodes of the tree view=======
+  allowAdding = ({ row }) => row.data.parentId === null;
 
   get_Facility_List() {
     this.dataService
@@ -116,94 +120,144 @@ export class AutoDownloadSettingsComponent {
       });
   }
 
-  //===================Adding Row to the DataSource====================
-  validateRowInserting(event: any) {
-    // Validate the row being added
-    if (event.data.parentId === null || event.data.parentId === '') {
-      console.warn('Adding rows without a parent is not allowed.');
-      event.cancel = true; // Cancel the adding process
+  //=============fetch settings annd instance data from API============
+  get_settingsData_List() {
+    this.dataService
+      .get_AutoDownload_Instance_Settings()
+      .subscribe((response: any) => {
+        const settingsData = response.Settings;
+        const instanceData = response.Instance;
+        const facilityData = response.InstanceFacility;
+        const dataSource = this.convertToDataSource(instanceData, facilityData);
+        console.log('api data converted successfully :=>', dataSource);
+      });
+  }
+
+  //=========convert the api response to datasourse format ========
+  convertToDataSource(instances: any[], instanceFacilities: any[]): any[] {
+    const dataSource = [];
+    instances.forEach((instance) => {
+      // Find all facilities related to the current instance
+      const relatedFacilities = instanceFacilities.filter(
+        (facility) => facility.InstanceNo === instance.InstanceNo
+      );
+      relatedFacilities.forEach((facility) => {
+        // Create a new data source entry combining instance and facility
+        dataSource.push({
+          id: facility.ID || instance.ID,
+          parentId: facility.ParentID,
+          Instance: instance.InstanceNo,
+          Facility: facility.FacilityID,
+          FacilityLicense: facility.FacilityLicense,
+          FacilityName: facility.FacilityName,
+          ClaimTransactionDate: facility.ClaimTransactionDate || null,
+          RemittanceTransactionDate: facility.RemittanceTransactionDate || null,
+        });
+      });
+
+      // For facilities that don't have related instance data, we create a parent entry
+      if (relatedFacilities.length === 0 && instance.ID !== 0) {
+        dataSource.push({
+          id: instance.ID,
+          parentId: null,
+          Instance: instance.InstanceNo,
+          Facility: null,
+          FacilityLicense: null,
+          FacilityName: null,
+          ClaimTransactionDate: null,
+          RemittanceTransactionDate: null,
+        });
+      }
+    });
+
+    return dataSource;
+  }
+
+  //====================row drag and reordering ====================
+  onDragChange(e: DxTreeListTypes.RowDraggingChangeEvent) {
+    const sourceNode = e.component.getNodeByKey(e.itemData.id);
+    // Prevent dragging for root-level rows (parentId === null)
+    if (sourceNode.data.parentId === null) {
+      e.event.preventDefault(); // Prevent the drag action
+    }
+  }
+
+  //====================row drag and reordering completed====================
+  onReorder = (e: DxTreeListTypes.RowDraggingReorderEvent) => {
+    const visibleRows = e.component.getVisibleRows();
+    const sourceData = e.itemData;
+    // Prevent reordering if the sourceData is a root-level row
+    if (sourceData.parentId === null) {
+      e.event.preventDefault();
       return;
     }
-    // Determine the new row ID
-    const newId = this.dataSource.length + 1;
-    // Create the new row data
-    const newRow = {
-      id: newId,
-      parentId: event.data.parentId || null,
-      Instance: event.data.Instance || `Instance ${newId}`,
-      Facility: event.data.Facility || null,
-      ClaimTransactionDate: event.data.ClaimTransactionDate || null,
-      RemittanceTransactionDate: event.data.RemittanceTransactionDate || null,
-    };
-    // Add the new row to the data source
-    this.dataSource.push(newRow);
-    // Update the TreeList (if necessary)
-    this.dataSource = [...this.dataSource]; // Trigger change detection
-    console.log('Updated DataSource:', this.dataSource);
-  }
-
-  //=============== Add instance function ===================
-  addInstance = () => {
-    const newRow = {
-      id: this.instanceCounter, // Unique identifier for the new row
-      parentId: null,
-      Instance: `Instance ${this.instanceCounter}`,
-      Facility: [],
-      ClaimTransactionDate: null,
-      RemittanceTransactionDate: null,
-    };
-
-    this.dataSource = [...this.dataSource, newRow];
-    // Increment instance counter for unique IDs
-    this.instanceCounter++;
-    this.updateTreeList();
+    if (e.dropInsideItem) {
+      const targetNode = visibleRows[e.toIndex].node;
+      if (targetNode && targetNode.data.parentId === null) {
+        sourceData.parentId = targetNode.key;
+      } else {
+        e.event.preventDefault();
+      }
+    } else {
+      const toIndex = e.fromIndex > e.toIndex ? e.toIndex - 1 : e.toIndex;
+      const targetData = toIndex >= 0 ? visibleRows[toIndex].node.data : null;
+      // Allow reordering among valid siblings
+      if (targetData && targetData.parentId === sourceData.parentId) {
+        const sourceIndex = this.dataSource.indexOf(sourceData);
+        this.dataSource.splice(sourceIndex, 1);
+        const targetIndex = this.dataSource.indexOf(targetData) + 1;
+        this.dataSource.splice(targetIndex, 0, sourceData);
+      } else {
+        e.event.preventDefault(); // Prevent invalid reordering
+      }
+    }
+    console.log(
+      'datasource after instance row dragging eneded ==>>',
+      this.dataSource
+    );
+    e.component.refresh();
   };
 
-  // Update the TreeList instance after dataSource changes
-  updateTreeList() {
-    this.treelist?.instance.refresh();
-  }
   //=====================update row data====================
   updateRow(event: any): void {
     const updatedRow = event.data;
     const index = this.dataSource.findIndex((row) => row.id === updatedRow.id);
-
     if (index !== -1) {
       this.dataSource[index] = { ...this.dataSource[index], ...updatedRow };
       console.log('Row updated:', this.dataSource);
     }
-    console.log('updated datasource is =>:', this.dataSource);
+    // console.log('updated datasource is =>:', this.dataSource);
   }
 
-  allowAdding = ({ row }) => row.data.parentId === null;
+  //=================New instance add button click event=============
+  on_Add_New_Instance(e: any) {
+    const usedFacilityIds = new Set(
+      this.dataSource.map((item) => item.Facility)
+    );
+    this.filteredFacilityDataSource = this.FacilityDataSource.filter(
+      (facility) => !usedFacilityIds.has(facility.FacilityID)
+    );
 
-  // ==============On new row initialization, set parentId if not a new instance===========
-  editorPreparing(e: DxTreeListTypes.EditorPreparingEvent) {
-    if (e.dataField === 'parentId' && e.row.data.ID === 1) {
-      e.cancel = true;
-      e.editorOptions.disabled = true;
-      e.editorOptions.value = null;
+    if (this.filteredFacilityDataSource.length === 0) {
+      notify(
+        {
+          message:
+            'All facilities are already assigned to existing instances. No facilities available to add at this time.',
+          position: { at: 'top right', my: 'top right' },
+          hideDuration: 3000,
+        },
+        'error'
+      );
+    } else {
+      this.isAddPopupVisible = true;
     }
   }
 
-  initNewRow(e: DxTreeListTypes.InitNewRowEvent) {
-    e.data.parentId = 1;
+  //==================editing start event =============================
+  onEditingStart(e: any): void {
+    // e.cancel = true;
+    this.editingRowData = { ...e.data };
   }
-  // // ==================Reference to the DataGrid===================
-  // duplicateRow = (): void => {
-  //   const selectedRows = this.dataGrid.instance.getSelectedRowsData();
-  //   if (selectedRows.length > 0) {
-  //     selectedRows.forEach((row) => {
-  //       const newRow = { ...row };
-  //       newRow.Instance = `${row.Instance}`;
-  //       this.dataSource = [...this.dataSource, newRow];
-  //     });
-  //     this.updateInstanceNumbers();
-  //     this.dataGrid.instance.refresh();
-  //   } else {
-  //     alert('Please select a row to duplicate.');
-  //   }
-  // };
 
   // ==========Function to Delete the Selected Row================
   deleteRow(event: any): void {
@@ -212,33 +266,51 @@ export class AutoDownloadSettingsComponent {
     console.log('Row deleted:', rowId);
   }
 
-  // =======Function to Update Instance Numbers After Deletion or Addition=========
-  updateInstanceNumbers() {
-    this.dataSource.forEach((item, index) => {
-      item.Instance = `Instance ${index + 1}`;
-    });
-  }
-
   //=========================onclick of save button ==========================
   onAddClick = () => {
-    const formData = {
-      isDatabaseNameEditable: this.isDatabaseNameEditable,
-      DatabaseName: this.DatabaseName,
-      isXMLDirectoryEditable: this.isXMLDirectoryEditable,
-      XMLDirectory: this.XMLDirectory,
-      ServiceInterval: this.ServiceInterval,
-      // dataSource: this.dataSource,
+    // Generate the next available ID
+    const maxId = Math.max(...this.dataSource.map((item) => item.id), 0);
+    // Add a parent entry
+    const parentEntry = {
+      id: maxId + 1,
+      parentId: null,
+      Instance: this.InstanceValue,
+      Facility: null,
+      ClaimTransactionDate: null,
+      RemittanceTransactionDate: null,
     };
+    this.dataSource.push(parentEntry);
 
-    console.log('Form Data:', formData);
+    // Add child entries for each selected facility
+    this.Facility_Value.forEach((facilityId, index) => {
+      const childEntry = {
+        id: maxId + 2 + index, // Ensure unique IDs
+        parentId: parentEntry.id,
+        Instance: this.InstanceValue,
+        Facility: facilityId,
+        ClaimTransactionDate: this.instanceClaimDownloadStartDate,
+        RemittanceTransactionDate: this.instanceRemittanceDownloadStartDate,
+      };
+      this.dataSource.push(childEntry);
+    });
+    console.log('datasource after add instance ==>>', this.dataSource);
+    this.resetForm();
   };
+  //====================Reset the add popup form===================
+  resetForm(): void {
+    this.isAddPopupVisible = false;
+    this.InstanceValue = '';
+    this.Facility_Value = [];
+    this.instanceClaimDownloadStartDate = null;
+    this.instanceRemittanceDownloadStartDate = null;
+  }
 
   //=========================onclick of clear button ==========================
 
   onClearClick = () => {
     // Reset form-bound properties
-    // this.isDatabaseNameEditable = false;
-    // this.isXMLDirectoryEditable = true;
+    this.isDatabaseNameEditable = false;
+    this.isXMLDirectoryEditable = true;
     this.DatabaseName = '';
     this.XMLDirectory = '';
     this.ClaimTransactionStartDate = null;
@@ -260,6 +332,8 @@ export class AutoDownloadSettingsComponent {
     DxTextBoxModule,
     DxDataGridModule,
     DxTreeListModule,
+    DxPopupModule,
+    DxDropDownBoxModule,
   ],
   providers: [],
   exports: [],

@@ -97,4 +97,12 @@ export class DataService {
     };
     return this.http.post(url, reqBody);
   }
+
+  //==================dashboard facility sync details data==========
+  get_AutoDownload_Instance_Settings() {
+    const userid = sessionStorage.getItem('UserID');
+    const url = `${BASE_URL}downloadsettings/list`;
+
+    return this.http.post(url, {});
+  }
 }
