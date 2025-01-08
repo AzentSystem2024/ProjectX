@@ -62,14 +62,6 @@ export class AutoDownloadSettingsComponent {
       RemittanceTransactionDate: new Date(),
     },
     {
-      id: 4,
-      parentId: 1,
-      Instance: 'Instance 1',
-      Facility: 14,
-      ClaimTransactionDate: new Date(),
-      RemittanceTransactionDate: new Date(),
-    },
-    {
       id: 5,
       parentId: null,
       Instance: 'Instance 3',
@@ -103,7 +95,14 @@ export class AutoDownloadSettingsComponent {
   instanceClaimDownloadStartDate: any;
   instanceRemittanceDownloadStartDate: any;
 
+  Update_InstanceValue: any;
+  Update_Facility_Value: any[] = [];
+  update_instanceClaimDownloadStartDate: any;
+  update_instanceRemittanceDownloadStartDate: any;
+
   isAddPopupVisible: boolean = false;
+  is_EditFormVisible: boolean = false;
+  updatenodeId: any;
 
   constructor(private dataService: DataService) {
     this.get_Facility_List();
@@ -218,17 +217,6 @@ export class AutoDownloadSettingsComponent {
     e.component.refresh();
   };
 
-  //=====================update row data====================
-  updateRow(event: any): void {
-    const updatedRow = event.data;
-    const index = this.dataSource.findIndex((row) => row.id === updatedRow.id);
-    if (index !== -1) {
-      this.dataSource[index] = { ...this.dataSource[index], ...updatedRow };
-      console.log('Row updated:', this.dataSource);
-    }
-    // console.log('updated datasource is =>:', this.dataSource);
-  }
-
   //=================New instance add button click event=============
   on_Add_New_Instance(e: any) {
     const usedFacilityIds = new Set(
@@ -255,20 +243,44 @@ export class AutoDownloadSettingsComponent {
 
   //==================editing start event =============================
   onEditingStart(e: any): void {
-    // e.cancel = true;
-    this.editingRowData = { ...e.data };
-  }
-
-  // ==========Function to Delete the Selected Row================
-  deleteRow(event: any): void {
-    const rowId = event.data.id;
-    this.dataSource = this.dataSource.filter((row) => row.id !== rowId);
-    console.log('Row deleted:', rowId);
+    e.cancel = true;
+    console.log('Update data:', e);
+    this.updatenodeId = e.data.id;
+    // Fetch the current parent node's ID
+    const parentId = e.data.id;
+    // Fetch all child nodes of the current parent
+    const childNodes = this.dataSource.filter(
+      (item) => item.parentId === parentId
+    );
+    // Collect all facility IDs used by the current parent's children
+    const currentParentFacilityIds = new Set(
+      childNodes.map((item) => item.Facility)
+    );
+    // Collect all facility IDs used across the entire dataSource
+    const allUsedFacilityIds = new Set(
+      this.dataSource
+        .filter((item) => item.Facility !== null)
+        .map((item) => item.Facility)
+    );
+    // Filter FacilityDataSource:
+    // - Include facilities assigned to the current parent's children
+    // - Include facilities not used by any other node in the dataSource
+    this.filteredFacilityDataSource = this.FacilityDataSource.filter(
+      (facility) =>
+        currentParentFacilityIds.has(facility.FacilityID) || // Keep facilities assigned to the current parent
+        !allUsedFacilityIds.has(facility.FacilityID) // Include facilities not present in the dataSource
+    );
+    // Initialize popup fields
+    this.Update_InstanceValue = e.data.Instance;
+    this.update_instanceClaimDownloadStartDate = null;
+    this.update_instanceRemittanceDownloadStartDate = null;
+    this.Update_Facility_Value = Array.from(currentParentFacilityIds);
+    // Show the popup
+    this.is_EditFormVisible = true;
   }
 
   //=========================onclick of save button ==========================
   onAddClick = () => {
-    // Generate the next available ID
     const maxId = Math.max(...this.dataSource.map((item) => item.id), 0);
     // Add a parent entry
     const parentEntry = {
@@ -285,7 +297,7 @@ export class AutoDownloadSettingsComponent {
     this.Facility_Value.forEach((facilityId, index) => {
       const childEntry = {
         id: maxId + 2 + index, // Ensure unique IDs
-        parentId: parentEntry.id,
+        parentId: this.updatenodeId,
         Instance: this.InstanceValue,
         Facility: facilityId,
         ClaimTransactionDate: this.instanceClaimDownloadStartDate,
@@ -293,9 +305,84 @@ export class AutoDownloadSettingsComponent {
       };
       this.dataSource.push(childEntry);
     });
-    console.log('datasource after add instance ==>>', this.dataSource);
     this.resetForm();
   };
+
+  //=====================update row data====================
+  On_Update_DataSource(): void {
+    const parentId = this.updatenodeId;
+    // Find the parent node in the dataSource
+    const parentNode = this.dataSource.find((item) => item.id === parentId);
+    if (!parentNode) {
+      console.error('Parent node not found!');
+      return;
+    }
+    // Update the parent node's Instance name
+    parentNode.Instance = this.Update_InstanceValue;
+    // Get current child nodes for the parent
+    const currentChildNodes = this.dataSource.filter(
+      (item) => item.parentId === parentId
+    );
+    // Create a set of existing facility IDs for the current parent
+    const existingFacilityIds = new Set(
+      currentChildNodes.map((child) => child.Facility)
+    );
+    // Prepare updated child nodes based on selected facilities
+    const selectedFacilities = this.Update_Facility_Value;
+    const updatedChildNodes: any[] = selectedFacilities.map((facilityId) => {
+      const existingChildNode = currentChildNodes.find(
+        (child) => child.Facility === facilityId
+      );
+      if (existingChildNode) {
+        // If the child node already exists, return it with updated values
+        return {
+          ...existingChildNode,
+          Instance: this.Update_InstanceValue,
+          ClaimTransactionDate: this.update_instanceClaimDownloadStartDate,
+          RemittanceTransactionDate:
+            this.update_instanceRemittanceDownloadStartDate,
+        };
+      } else {
+        // Create a new child node for the selected facility
+        return {
+          id: this.generateUniqueId(),
+          parentId: parentId,
+          Instance: this.Update_InstanceValue,
+          Facility: facilityId,
+          ClaimTransactionDate: this.update_instanceClaimDownloadStartDate,
+          RemittanceTransactionDate:
+            this.update_instanceRemittanceDownloadStartDate,
+        };
+      }
+    });
+
+    // Remove existing child nodes for the parent and add the updated ones
+    this.dataSource = [
+      ...this.dataSource.filter((item) => item.parentId !== parentId),
+      ...updatedChildNodes,
+    ];
+
+    // Reset the form and log the updated dataSource
+    this.resetForm();
+    console.log('Updated dataSource:', this.dataSource);
+  }
+
+  //=======find the next available id of dataSource Object==========
+  generateUniqueId(): number {
+    // Find the highest existing ID in the dataSource
+    const maxId = this.dataSource.reduce(
+      (max, item) => (item.id > max ? item.id : max),
+      0
+    );
+    return maxId + 1;
+  }
+
+  // ==========Function to Delete the Selected Row================
+  deleteRow(event: any): void {
+    const rowId = event.data.id;
+    this.dataSource = this.dataSource.filter((row) => row.id !== rowId);
+    console.log('Row deleted:', rowId);
+  }
   //====================Reset the add popup form===================
   resetForm(): void {
     this.isAddPopupVisible = false;
@@ -303,6 +390,12 @@ export class AutoDownloadSettingsComponent {
     this.Facility_Value = [];
     this.instanceClaimDownloadStartDate = null;
     this.instanceRemittanceDownloadStartDate = null;
+
+    this.is_EditFormVisible = false;
+    this.Update_InstanceValue = '';
+    this.update_instanceClaimDownloadStartDate = null;
+    this.update_instanceRemittanceDownloadStartDate = null;
+    this.Update_Facility_Value = [];
   }
 
   //=========================onclick of clear button ==========================
