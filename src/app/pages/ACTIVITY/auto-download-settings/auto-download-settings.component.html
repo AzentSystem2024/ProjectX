@@ -77,8 +77,42 @@
             [allowDeleting]="true"
             [allowAdding]="allowAdding"
           >
-            <dxo-popup [showTitle]="true" [width]="'60%'" [height]="'60vh'">
+            <dxo-popup
+              title="Edit Facility"
+              [showTitle]="true"
+              [width]="'50%'"
+              [height]="'auto'"
+            >
             </dxo-popup>
+            <dxo-form [colCount]="1">
+              <!-- Instance Field -->
+              <dxi-item
+                dataField="Instance"
+                editorType="dxTextBox"
+                caption="Instance"
+                [disabled]="isChildNodeData"
+              ></dxi-item>
+
+              <!-- Facility Field -->
+              <dxi-item
+                dataField="Facility"
+                editorType="dxTextBox"
+                caption="Facility Name"
+                [disabled]="isChildNodeData"
+              ></dxi-item>
+              <dxi-item
+                dataField="ClaimTransactionDate"
+                caption="Claim Transaction Date"
+                dataType="date"
+                format="dd-MMM-yyyy"
+              ></dxi-item>
+              <dxi-item
+                dataField="RemittanceTransactionDate"
+                caption="Remittance Transaction Date"
+                dataType="date"
+                format="dd-MMM-yyyy"
+              ></dxi-item>
+            </dxo-form>
           </dxo-editing>
 
           <dxo-row-dragging
@@ -108,7 +142,11 @@
           </dxo-toolbar>
 
           <!-- Instance Column -->
-          <dxi-column dataField="Instance" caption="Instance"></dxi-column>
+          <dxi-column
+            dataField="Instance"
+            caption="Instance"
+            [allowEditing]="!isChildNodeData"
+          ></dxi-column>
 
           <!-- Facility Column with dxTagBox as editor -->
           <dxi-column
@@ -120,6 +158,7 @@
               valueExpr: 'FacilityID',
               displayExpr: 'FacilityName'
             }"
+            [allowEditing]="!isChildNodeData"
           ></dxi-column>
 
           <dxi-column
@@ -200,6 +239,9 @@
       >
         <dxi-item [colSpan]="8">
           <dx-tag-box
+            labelMode="floating"
+            labelLocation="left"
+            label="Facility"
             [items]="filteredFacilityDataSource"
             displayExpr="FacilityName"
             valueExpr="FacilityID"
@@ -246,7 +288,7 @@
     </dx-form>
 
     <!-- Popup Buttons -->
-    <div class="d-flex justify-content-end mt-4 border-top pt-3">
+    <div class="footerButton d-flex justify-content-end mt-4 pt-3">
       <dx-button
         text="Cancel"
         stylingMode="outlined"
@@ -270,7 +312,7 @@
 <dx-popup
   [(visible)]="is_EditFormVisible"
   [width]="'50%'"
-  [height]="'60vh'"
+  [height]="'auto'"
   [showTitle]="true"
   title="Update Instance"
   [closeOnOutsideClick]="true"
@@ -300,6 +342,9 @@
       >
         <dxi-item [colSpan]="8">
           <dx-tag-box
+            label="Facility"
+            labelMode="floating"
+            labelLocation="left"
             [items]="filteredFacilityDataSource"
             displayExpr="FacilityName"
             valueExpr="FacilityID"
@@ -346,7 +391,7 @@
     </dx-form>
 
     <!-- Popup Buttons -->
-    <div class="d-flex justify-content-end mt-4 border-top pt-3">
+    <div class="footerButton d-flex justify-content-end mt-4 pt-3">
       <dx-button
         text="Cancel"
         stylingMode="outlined"

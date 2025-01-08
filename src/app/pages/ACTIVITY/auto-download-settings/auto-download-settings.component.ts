@@ -103,6 +103,7 @@ export class AutoDownloadSettingsComponent {
   isAddPopupVisible: boolean = false;
   is_EditFormVisible: boolean = false;
   updatenodeId: any;
+  isChildNodeData: boolean = false;
 
   constructor(private dataService: DataService) {
     this.get_Facility_List();
@@ -243,40 +244,45 @@ export class AutoDownloadSettingsComponent {
 
   //==================editing start event =============================
   onEditingStart(e: any): void {
-    e.cancel = true;
-    console.log('Update data:', e);
     this.updatenodeId = e.data.id;
     // Fetch the current parent node's ID
-    const parentId = e.data.id;
-    // Fetch all child nodes of the current parent
-    const childNodes = this.dataSource.filter(
-      (item) => item.parentId === parentId
-    );
-    // Collect all facility IDs used by the current parent's children
-    const currentParentFacilityIds = new Set(
-      childNodes.map((item) => item.Facility)
-    );
-    // Collect all facility IDs used across the entire dataSource
-    const allUsedFacilityIds = new Set(
-      this.dataSource
-        .filter((item) => item.Facility !== null)
-        .map((item) => item.Facility)
-    );
-    // Filter FacilityDataSource:
-    // - Include facilities assigned to the current parent's children
-    // - Include facilities not used by any other node in the dataSource
-    this.filteredFacilityDataSource = this.FacilityDataSource.filter(
-      (facility) =>
-        currentParentFacilityIds.has(facility.FacilityID) || // Keep facilities assigned to the current parent
-        !allUsedFacilityIds.has(facility.FacilityID) // Include facilities not present in the dataSource
-    );
-    // Initialize popup fields
-    this.Update_InstanceValue = e.data.Instance;
-    this.update_instanceClaimDownloadStartDate = null;
-    this.update_instanceRemittanceDownloadStartDate = null;
-    this.Update_Facility_Value = Array.from(currentParentFacilityIds);
-    // Show the popup
-    this.is_EditFormVisible = true;
+    const selectedNodeId = e.data.id;
+    const parentId = e.data.parentId;
+    if (!parentId) {
+      e.cancel = true;
+      // Fetch all child nodes of the current parent
+      const childNodes = this.dataSource.filter(
+        (item) => item.parentId === selectedNodeId
+      );
+      // Collect all facility IDs used by the current parent's children
+      const currentParentFacilityIds = new Set(
+        childNodes.map((item) => item.Facility)
+      );
+      // Collect all facility IDs used across the entire dataSource
+      const allUsedFacilityIds = new Set(
+        this.dataSource
+          .filter((item) => item.Facility !== null)
+          .map((item) => item.Facility)
+      );
+      // Filter FacilityDataSource:
+      // - Include facilities assigned to the current parent's children
+      // - Include facilities not used by any other node in the dataSource
+      this.filteredFacilityDataSource = this.FacilityDataSource.filter(
+        (facility) =>
+          currentParentFacilityIds.has(facility.FacilityID) || // Keep facilities assigned to the current parent
+          !allUsedFacilityIds.has(facility.FacilityID) // Include facilities not present in the dataSource
+      );
+      // Initialize popup fields
+      this.Update_InstanceValue = e.data.Instance;
+      this.update_instanceClaimDownloadStartDate = null;
+      this.update_instanceRemittanceDownloadStartDate = null;
+      this.Update_Facility_Value = Array.from(currentParentFacilityIds);
+      // Show the popup
+      this.is_EditFormVisible = true;
+    } else {
+      e.cancel = false;
+      this.isChildNodeData = true;
+    }
   }
 
   //=========================onclick of save button ==========================
