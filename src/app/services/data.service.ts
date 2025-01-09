@@ -98,11 +98,19 @@ export class DataService {
     return this.http.post(url, reqBody);
   }
 
-  //==================dashboard facility sync details data==========
+  //==================Auto  download settings data List==========
   get_AutoDownload_Instance_Settings() {
     const userid = sessionStorage.getItem('UserID');
     const url = `${BASE_URL}downloadsettings/list`;
 
     return this.http.post(url, {});
+  }
+
+  //==================Auto  download settings data List==========
+  autoDownload_Instance_Settings_insert(data: any) {
+    const userid = sessionStorage.getItem('UserID');
+    const url = `${BASE_URL}downloadsettings/insert`;
+    const reqBody = data;
+    return this.http.post(url, reqBody);
   }
 }

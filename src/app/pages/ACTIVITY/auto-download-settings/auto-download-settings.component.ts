@@ -85,20 +85,37 @@ export class AutoDownloadSettingsComponent {
     this.dataService
       .get_AutoDownload_Instance_Settings()
       .subscribe((response: any) => {
-        const settingsData = response.Settings;
-        const instanceData = response.Instance;
-        this.dataSource = response.InstanceFacility.map((item) => ({
-          id: item.ID,
-          parentId: item.ParentID,
-          Instance: `Instance ${item.InstanceNo}`,
-          Facility: item.FacilityID,
-          ClaimTransactionDate: item.ClaimTransactionDate
-            ? new Date(item.ClaimTransactionDate)
-            : null,
-          RemittanceTransactionDate: item.RemittanceTransactionDate
-            ? new Date(item.RemittanceTransactionDate)
-            : null,
-        }));
+        const { Settings: settingsData, InstanceFacility } = response;
+
+        // Extract settings data
+        this.DatabaseName = settingsData.LogDatabase;
+        this.ServiceInterval = settingsData.ServiceInterval;
+        this.XMLDirectory = settingsData.SaveXMLDirectory;
+        this.isDatabaseNameEditable = !!this.DatabaseName;
+        this.isXMLDirectoryEditable = !!this.XMLDirectory;
+
+        // Transform and assign instance facility data
+        this.dataSource = InstanceFacility.map(
+          ({
+            ID,
+            ParentID,
+            InstanceNo,
+            FacilityID,
+            ClaimTransactionDate,
+            RemittanceTransactionDate,
+          }) => ({
+            id: ID,
+            parentId: ParentID,
+            Instance: InstanceNo,
+            Facility: FacilityID,
+            ClaimTransactionDate: ClaimTransactionDate
+              ? new Date(ClaimTransactionDate)
+              : null,
+            RemittanceTransactionDate: RemittanceTransactionDate
+              ? new Date(RemittanceTransactionDate)
+              : null,
+          })
+        );
       });
   }
 
@@ -193,9 +210,6 @@ export class AutoDownloadSettingsComponent {
           .filter((item) => item.Facility !== null)
           .map((item) => item.Facility)
       );
-      // Filter FacilityDataSource:
-      // - Include facilities assigned to the current parent's children
-      // - Include facilities not used by any other node in the dataSource
       this.filteredFacilityDataSource = this.FacilityDataSource.filter(
         (facility) =>
           currentParentFacilityIds.has(facility.FacilityID) || // Keep facilities assigned to the current parent
@@ -347,13 +361,53 @@ export class AutoDownloadSettingsComponent {
 
   //======================on click event of save button =======================
   on_Click_Save_Settings = () => {
-    let finaldata = {
-      dataBase: this.DatabaseName,
-      XMLDirectory: this.XMLDirectory,
+    const userId = parseInt(sessionStorage.getItem('UserID') || '0', 10);
+
+    const formatDate = (date: Date | null) =>
+      date ? date.toISOString().split('T')[0] : null; // Format the date correctly
+
+    const downloadInstance = this.dataSource
+      .filter((item: any) => item.parentId !== null)
+      .map((item: any) => ({
+        InstanceNo: parseInt(item.Instance),
+        FacilityID: item.Facility,
+        ClaimTransactionDate: formatDate(item.ClaimTransactionDate), // Use formatted date
+        RemittanceTransactionDate: formatDate(item.RemittanceTransactionDate), // Use formatted date
+      }));
+
+    const finalData = {
+      UserID: userId,
+      LogDatabase: this.DatabaseName,
       ServiceInterval: this.ServiceInterval,
-      DataSorce: this.dataSource,
+      SaveXMLDirectory: this.XMLDirectory,
+      download_instance: downloadInstance,
     };
-    console.log('final datasource and other details:=>', finaldata);
+
+    console.log('Final data to insert:', finalData);
+
+    this.dataService.autoDownload_Instance_Settings_insert(finalData).subscribe(
+      (response) => {
+        console.log('Insert successful:', response);
+        notify(
+          {
+            message: 'Download settings saved successfully',
+            position: { at: 'top right', my: 'top right' },
+            hideDuration: 3000,
+          },
+          'success'
+        );
+      },
+      (error) => {
+        notify(
+          {
+            message: 'Save Download settings failed',
+            position: { at: 'top right', my: 'top right' },
+            hideDuration: 3000,
+          },
+          'error'
+        );
+      }
+    );
   };
 
   //=========================onclick of clear button ==========================
