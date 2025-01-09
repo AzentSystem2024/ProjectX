@@ -70,5 +70,4 @@ export class ReportEngineService {
       day: '2-digit',
     });
   }
-
 }

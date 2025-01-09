@@ -36,48 +36,7 @@ export class AutoDownloadSettingsComponent {
   isDatabaseNameEditable = false;
   isXMLDirectoryEditable = false;
 
-  dataSource: any = [
-    {
-      id: 1,
-      parentId: null,
-      Instance: 'Instance 1',
-      Facility: null,
-      ClaimTransactionDate: null,
-      RemittanceTransactionDate: null,
-    },
-    {
-      id: 2,
-      parentId: 1,
-      Instance: 'Instance 1',
-      Facility: 12,
-      ClaimTransactionDate: new Date(),
-      RemittanceTransactionDate: new Date(),
-    },
-    {
-      id: 3,
-      parentId: 1,
-      Instance: 'Instance 1',
-      Facility: 14,
-      ClaimTransactionDate: new Date(),
-      RemittanceTransactionDate: new Date(),
-    },
-    {
-      id: 5,
-      parentId: null,
-      Instance: 'Instance 3',
-      Facility: null,
-      ClaimTransactionDate: null,
-      RemittanceTransactionDate: null,
-    },
-    {
-      id: 6,
-      parentId: 5,
-      Instance: 'Instance 3',
-      Facility: 16,
-      ClaimTransactionDate: new Date(),
-      RemittanceTransactionDate: new Date(),
-    },
-  ];
+  dataSource: any[] = [];
 
   FacilityDataSource: any;
   filteredFacilityDataSource: any;
@@ -110,7 +69,8 @@ export class AutoDownloadSettingsComponent {
     this.get_settingsData_List();
   }
   //======used to enable add button only parent nodes of the tree view=======
-  allowAdding = ({ row }) => row.data.parentId === null;
+  // allowAdding = ({ row }) => row.data.parentId === null;
+  allowAdding = ({ row }) => false;
 
   get_Facility_List() {
     this.dataService
@@ -120,60 +80,29 @@ export class AutoDownloadSettingsComponent {
       });
   }
 
-  //=============fetch settings annd instance data from API============
+  //===============fetch settings annd instance data from API==============
   get_settingsData_List() {
     this.dataService
       .get_AutoDownload_Instance_Settings()
       .subscribe((response: any) => {
         const settingsData = response.Settings;
         const instanceData = response.Instance;
-        const facilityData = response.InstanceFacility;
-        const dataSource = this.convertToDataSource(instanceData, facilityData);
-        console.log('api data converted successfully :=>', dataSource);
+        this.dataSource = response.InstanceFacility.map((item) => ({
+          id: item.ID,
+          parentId: item.ParentID,
+          Instance: `Instance ${item.InstanceNo}`,
+          Facility: item.FacilityID,
+          ClaimTransactionDate: item.ClaimTransactionDate
+            ? new Date(item.ClaimTransactionDate)
+            : null,
+          RemittanceTransactionDate: item.RemittanceTransactionDate
+            ? new Date(item.RemittanceTransactionDate)
+            : null,
+        }));
       });
   }
 
-  //=========convert the api response to datasourse format ========
-  convertToDataSource(instances: any[], instanceFacilities: any[]): any[] {
-    const dataSource = [];
-    instances.forEach((instance) => {
-      // Find all facilities related to the current instance
-      const relatedFacilities = instanceFacilities.filter(
-        (facility) => facility.InstanceNo === instance.InstanceNo
-      );
-      relatedFacilities.forEach((facility) => {
-        // Create a new data source entry combining instance and facility
-        dataSource.push({
-          id: facility.ID || instance.ID,
-          parentId: facility.ParentID,
-          Instance: instance.InstanceNo,
-          Facility: facility.FacilityID,
-          FacilityLicense: facility.FacilityLicense,
-          FacilityName: facility.FacilityName,
-          ClaimTransactionDate: facility.ClaimTransactionDate || null,
-          RemittanceTransactionDate: facility.RemittanceTransactionDate || null,
-        });
-      });
-
-      // For facilities that don't have related instance data, we create a parent entry
-      if (relatedFacilities.length === 0 && instance.ID !== 0) {
-        dataSource.push({
-          id: instance.ID,
-          parentId: null,
-          Instance: instance.InstanceNo,
-          Facility: null,
-          FacilityLicense: null,
-          FacilityName: null,
-          ClaimTransactionDate: null,
-          RemittanceTransactionDate: null,
-        });
-      }
-    });
-
-    return dataSource;
-  }
-
-  //====================row drag and reordering ====================
+  //======================row drag and reordering ==========================
   onDragChange(e: DxTreeListTypes.RowDraggingChangeEvent) {
     const sourceNode = e.component.getNodeByKey(e.itemData.id);
     // Prevent dragging for root-level rows (parentId === null)
@@ -182,7 +111,7 @@ export class AutoDownloadSettingsComponent {
     }
   }
 
-  //====================row drag and reordering completed====================
+  //====================row drag and reordering completed===================
   onReorder = (e: DxTreeListTypes.RowDraggingReorderEvent) => {
     const visibleRows = e.component.getVisibleRows();
     const sourceData = e.itemData;
@@ -218,7 +147,7 @@ export class AutoDownloadSettingsComponent {
     e.component.refresh();
   };
 
-  //=================New instance add button click event=============
+  //====================New instance add button click event================
   on_Add_New_Instance(e: any) {
     const usedFacilityIds = new Set(
       this.dataSource.map((item) => item.Facility)
@@ -303,7 +232,7 @@ export class AutoDownloadSettingsComponent {
     this.Facility_Value.forEach((facilityId, index) => {
       const childEntry = {
         id: maxId + 2 + index, // Ensure unique IDs
-        parentId: this.updatenodeId,
+        parentId: parentEntry.id,
         Instance: this.InstanceValue,
         Facility: facilityId,
         ClaimTransactionDate: this.instanceClaimDownloadStartDate,
@@ -384,10 +313,22 @@ export class AutoDownloadSettingsComponent {
   }
 
   // ==========Function to Delete the Selected Row================
-  deleteRow(event: any): void {
-    const rowId = event.data.id;
-    this.dataSource = this.dataSource.filter((row) => row.id !== rowId);
-    console.log('Row deleted:', rowId);
+  deleteRow(event: any) {
+    const deletedId = event.data.id;
+    const isParent = this.dataSource.some(
+      (item) => item.parentId === deletedId
+    );
+    if (isParent) {
+      // Remove the parent and all its children
+      this.dataSource = this.dataSource.filter(
+        (item) => item.id !== deletedId && item.parentId !== deletedId
+      );
+    } else {
+      // Remove only the child
+      this.dataSource = this.dataSource.filter((item) => item.id !== deletedId);
+    }
+    // Refresh the TreeList (if necessary)
+    event.component.refresh();
   }
   //====================Reset the add popup form===================
   resetForm(): void {
@@ -404,16 +345,24 @@ export class AutoDownloadSettingsComponent {
     this.Update_Facility_Value = [];
   }
 
-  //=========================onclick of clear button ==========================
+  //======================on click event of save button =======================
+  on_Click_Save_Settings = () => {
+    let finaldata = {
+      dataBase: this.DatabaseName,
+      XMLDirectory: this.XMLDirectory,
+      ServiceInterval: this.ServiceInterval,
+      DataSorce: this.dataSource,
+    };
+    console.log('final datasource and other details:=>', finaldata);
+  };
 
+  //=========================onclick of clear button ==========================
   onClearClick = () => {
     // Reset form-bound properties
     this.isDatabaseNameEditable = false;
-    this.isXMLDirectoryEditable = true;
+    this.isXMLDirectoryEditable = false;
     this.DatabaseName = '';
     this.XMLDirectory = '';
-    this.ClaimTransactionStartDate = null;
-    this.RemittanceTransactionStartDate = null;
     this.ServiceInterval = '';
   };
 }

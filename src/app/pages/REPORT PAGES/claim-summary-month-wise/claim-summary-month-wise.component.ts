@@ -372,19 +372,14 @@ export class ClaimSummaryMonthWiseComponent {
         .fetch_Claim_Summary_Month_Wise(formData)
         .toPromise();
       if (response.flag === '1') {
+        console.log('response data :=>', response);
         this.isEmptyDatagrid = false;
-        this.columndata = response.ReportColumns;
-
-        this.detailData = response.detail;
-
+        this.detailData = response.summary;
+        this.columndata = this.detailData.ReportColumns;
         const userLocale = navigator.language || 'en-US';
-        console.log('user locale settings:', userLocale);
-
         this.summaryColumnsData = this.generateSummaryColumns(
           response.summary.ReportColumns
         );
-        // console.log('Summary columns are:', this.summaryColumnsData);
-
         this.columnsConfig = this.generateColumnsConfig(
           response.summary.ReportColumns,
           userLocale
@@ -657,6 +652,7 @@ export class ClaimSummaryMonthWiseComponent {
   }
   //================Save Memorize Reports=================
   save_Memorise_Report() {
+    console.log('column data are :=>', this.columndata);
     const memoriseName = this.MemoriseReportName;
     const filterParameters = JSON.parse(sessionStorage.getItem('reportData'));
     const reportColumns = this.columndata;
@@ -674,6 +670,7 @@ export class ClaimSummaryMonthWiseComponent {
         Visibility: hiddenColumns.includes(column.Name) ? false : true,
       };
     });
+    console.log('memorise report columns =>:', memoriseReportColumns);
     this.reportengine
       .save_Memorise_report(
         memoriseName,

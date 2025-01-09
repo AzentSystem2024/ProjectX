@@ -186,10 +186,6 @@ export class ClaimDetailsActivityComponent {
       }
     });
   }
-
-  // ngOnInit(): void {
-
-  // }
   //==================MAking cutom datasource for facility datagrid and dropdown loADING=======
   makeAsyncDataSourceFromJson(jsonData: any) {
     return new CustomStore({
@@ -219,10 +215,10 @@ export class ClaimDetailsActivityComponent {
         widget: 'dxButton',
         options: {
           text: '',
-          icon: this.isPopupMinimised ? 'expandform' : 'minus', // Toggle icon based on minimize state
+          icon: this.isPopupMinimised ? 'expandform' : 'minus', 
           type: 'normal',
           stylingMode: 'contained',
-          onClick: () => this.minimisePopup(), // Minimize the popup on click
+          onClick: () => this.minimisePopup(), 
         },
         toolbar: 'top',
         location: 'after',
@@ -478,11 +474,9 @@ export class ClaimDetailsActivityComponent {
     const decimalColumns = reportColumns.filter(
       (col) => col.Type === 'Decimal' && col.Summary
     );
-
     const intColumns = reportColumns.filter(
       (col) => col.Type === 'Int32' && col.Summary
     );
-
     return {
       totalItems: [
         ...decimalColumns.map((col) =>
@@ -524,7 +518,6 @@ export class ClaimDetailsActivityComponent {
   generateColumnsConfig(reportColumns: any, userLocale: any) {
     return reportColumns.map((column) => {
       let columnFormat;
-
       if (column.Type === 'DateTime') {
         columnFormat = {
           type: 'date',
