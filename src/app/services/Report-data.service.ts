@@ -135,6 +135,38 @@ export class ReportService {
     return this.http.post(url, reqBody);
   }
 
+
+   //========fetch datasource of Resubmission_summary========
+   fetch_Resubmission_summary(formData: any) {
+    const userid = sessionStorage.getItem('UserID');
+    const currentPathName = this.router.url.replace('/', '');
+    const url = `${BASE_URL}reports/resubmissionsummary/summary`;
+    const reqBody = {
+      userid: userid,
+      // reportid: currentPathName,
+      SearchOn: formData.SearchOn,
+      encounterType: formData.EncounterType,
+      DateFrom: formData.From_Date,
+      DateTo: formData.To_Date,
+      Facility: formData.Facility,
+      ReceiverId: formData.ReceiverID,
+      PayerId: formData.PayerID,
+      // Payer: formData.Payer,
+      Clinician: formData.Clinician,
+      OrderingClinician: formData.OrderingClinician,
+      // ClaimStatus: formData.CliamStatus,
+      // ResubmissionType: formData.Resubmission,
+      // PaymentStatus: formData.paymentStatus,
+      ClaimNumber: formData.ClaimNumber,
+      // PatientID: formData.PatientID,
+      // MemberID: formData.memberID,
+      DenialCode: formData.DenialCodes,
+      RemittanceBasedOn:formData.RemittanceBasedOn,
+      CPTCode:formData.CPTCode
+    };
+    return this.http.post(url, reqBody);
+  }
+
   //========fetch datasource of Claim-Summary-month-wise========
   fetch_Claim_Summary_Month_Wise(formData: any) {
     const userid = sessionStorage.getItem('UserID');

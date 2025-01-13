@@ -30,6 +30,7 @@ import { ImportMasterDataFormModule } from './pages/POP-UP_PAGES/import-master-d
 import { ViewImportedMasterDataFormModule } from './pages/POP-UP_PAGES/view-imported-master-data-form/view-imported-master-data-form.component';
 import { RouteReuseStrategy } from '@angular/router';
 import { CustomReuseStrategy } from './custom-reuse-strategy';
+import { ResubmissionSummaryComponent, ResubmissionSummaryModule } from './pages/REPORT PAGES/resubmission-summary/resubmission-summary.component';
 
 @NgModule({
   declarations: [AppComponent],
@@ -59,6 +60,7 @@ import { CustomReuseStrategy } from './custom-reuse-strategy';
     ImportMasterDataModule,
     ImportMasterDataFormModule,
     ViewImportedMasterDataFormModule,
+    ResubmissionSummaryModule
   ],
   providers: [
     AuthService,

@@ -46,6 +46,7 @@ import { ClaimSummaryMonthWiseComponent } from './pages/REPORT PAGES/claim-summa
 import { SynchronizeDataComponent } from './pages/ACTIVITY/synchronize-data/synchronize-data.component';
 import { AutoDownloadSettingsComponent } from './pages/ACTIVITY/auto-download-settings/auto-download-settings.component';
 import { DownloadLogViewComponent } from './pages/ACTIVITY/download-log-view/download-log-view.component';
+import { ResubmissionSummaryComponent } from './pages/REPORT PAGES/resubmission-summary/resubmission-summary.component';
 const routes: Routes = [
   {
     path: '',
@@ -255,6 +256,11 @@ const routes: Routes = [
       {
         path: 'download-log-view-page',
         component: DownloadLogViewComponent,
+        canActivate: [AuthGuardService],
+      },
+      {
+        path: 'Resubmission-Summary-Page',
+        component: ResubmissionSummaryComponent,
         canActivate: [AuthGuardService],
       },
       {
