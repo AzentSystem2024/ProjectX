@@ -1,3 +1,5 @@
+
+import { MasterReportService } from 'src/app/pages/MASTER PAGES/master-report.service';
 import { CommonModule, DatePipe } from '@angular/common';
 import {
   Component,
@@ -43,30 +45,29 @@ import { ReportEngineService } from '../report-engine.service';
 import DataSource from 'devextreme/data/data_source';
 import { NavigationEnd, Router } from '@angular/router';
 import notify from 'devextreme/ui/notify';
-import {
-  ClaimSummaryMonthWiseDrillDownComponent,
-  ClaimSummaryMonthWiseDrillDownModule,
-} from '../../REPORT DRILL PAGES/claim-summary-month-wise-drill-down/claim-summary-month-wise-drill-down.component';
+import { ClaimDetailActivityDrillDownComponent } from '../../REPORT DRILL PAGES/claim-detail-activity-drill-down/claim-detail-activity-drill-down.component';
+import { ClaimDetailActivityDrillDownModule } from '../../REPORT DRILL PAGES/claim-detail-activity-drill-down/claim-detail-activity-drill-down.component';
 import { AdvanceFilterPopupModule } from '../../POP-UP_PAGES/advance-filter-popup/advance-filter-popup.component';
 import { DataService } from 'src/app/services';
 import CustomStore from 'devextreme/data/custom_store';
-import { MasterReportService } from '../../MASTER PAGES/master-report.service';
 import { PopupStateService } from 'src/app/popupStateService.service';
+import { text } from 'stream/consumers';
+
 @Component({
-  selector: 'app-claim-summary-month-wise',
-  templateUrl: './claim-summary-month-wise.component.html',
-  styleUrls: ['./claim-summary-month-wise.component.scss'],
+  selector: 'app-resubmission-summary',
+  templateUrl: './resubmission-summary.component.html',
+  styleUrls: ['./resubmission-summary.component.scss'],
   providers: [ReportService, ReportEngineService, DatePipe, DataService],
 })
-export class ClaimSummaryMonthWiseComponent {
+export class ResubmissionSummaryComponent implements OnInit {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
 
   @ViewChild(DxTreeViewComponent, { static: false })
   treeView: DxTreeViewComponent;
 
-  @ViewChild(ClaimSummaryMonthWiseDrillDownComponent, { static: false })
-  claimSummaryMonthWiseDrill: ClaimSummaryMonthWiseDrillDownComponent;
+  @ViewChild(ClaimDetailActivityDrillDownComponent, { static: false })
+  claimDrill: ClaimDetailActivityDrillDownComponent;
 
   @ViewChild('lookup', { static: false }) lookup: DxLookupComponent;
 
@@ -125,7 +126,7 @@ export class ClaimSummaryMonthWiseComponent {
   isContentVisible: boolean = true;
   hint_for_Parametr_div: any = 'Hide Parameters';
   currentPathName: any;
-  userId: string;
+
   minDate: Date;
   maxDate: Date;
   ColumnNames: any;
@@ -146,25 +147,34 @@ export class ClaimSummaryMonthWiseComponent {
   loadingVisible: boolean = false;
   columnFixed: boolean = true;
   initialized: boolean;
-  detailData: any;
-  RecieverIDjsonData: any;
-  PayerIDjsonData: any;
-  ClinicianJsonData: any;
-  orderingClinicianJsonData: any;
 
   popupWidth: any = '100%';
   popupHeight: any = '100%';
   popupPosition: any = { my: 'center', at: 'center', of: '.view-wrapper' };
   isPopupMinimised: boolean = false;
 
+  jsonData: any;
+  PayerIDjsonData: any;
+  RecieverIDjsonData: any;
+  ClinicianJsonData: any;
+  orderingClinicianJsonData: any;
   //============Custom close button for drilldown popup============
   toolbarItems: any;
+  CPTCode: any;
+  // RemittanceBasedOn: any;
+  remittanceOptions = [
+    { ID: 1, Name: 'Last Remittance' },
+    { ID: 2, Name: 'All Remittance' }
+  ];
 
+  // Selected value
+  RemittanceBasedOn: number | undefined;
   constructor(
     private service: ReportService,
-    private reportengine: ReportEngineService,
-    private masterService: MasterReportService,
     private router: Router,
+    private reportengine: ReportEngineService,
+    private datePipe: DatePipe,
+    private masterService: MasterReportService,
     private popupStateService: PopupStateService
   ) {
     this.loadingVisible = true;
@@ -179,21 +189,41 @@ export class ClaimSummaryMonthWiseComponent {
     //=============month field datasource============
     this.monthDataSource = this.service.getMonths();
     this.get_searchParameters_Dropdown_Values();
+    this.updateToolbarItems();
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         this.isDrillDownPopupOpened = this.popupStateService.getPopupState(
-          'ClaimSummaryBreakUpPopup'
+          'claimDetaisDrillDownPopup'
         );
       }
     });
   }
 
+  ngOnInit(): void {
+    this.popupStateService.getPopupState('claimDetaisDrillDownPopup');
+  }
+  //==================MAking cutom datasource for facility datagrid and dropdown loADING=======
+  makeAsyncDataSourceFromJson(jsonData: any) {
+    return new CustomStore({
+      loadMode: 'raw',
+      key: 'ID',
+      load: () => {
+        return new Promise((resolve, reject) => {
+          try {
+            resolve(jsonData);
+          } catch (error) {
+            reject(error);
+          }
+        });
+      },
+    });
+  }
   //=============Resize the popup drill down============
   onResizeEnd(event: any) {
     this.popupWidth = event.width;
     this.popupHeight = event.height;
   }
-  //=============update toolbar items==================
+
   updateToolbarItems() {
     this.toolbarItems = [
       {
@@ -222,7 +252,7 @@ export class ClaimSummaryMonthWiseComponent {
       },
     ];
   }
-  //========Remove closing popup from the popup array=====
+  //============= minimise popup ==========
   minimisePopup() {
     if (this.isPopupMinimised) {
       this.popupWidth = '70%';
@@ -242,45 +272,28 @@ export class ClaimSummaryMonthWiseComponent {
   }
   //========Remove closing popup from the popup array=====
   closePopup() {
-    this.popupStateService.setPopupState('ClaimSummaryBreakUpPopup', false);
+    this.popupStateService.setPopupState('claimDetaisDrillDownPopup', false);
     this.isDrillDownPopupOpened = false;
   }
-
-  //================Show and Hide Search parameters==========
+  //================Show and Hide Search parameters========
   toggleContent() {
     this.isContentVisible = !this.isContentVisible;
   }
 
-  //=================Row click drill Down====================
+  //=================Row click drill Down===================
   handleRowDrillDownClick = (e: any) => {
     this.isPopupMinimised = false;
     this.updateToolbarItems();
     this.popupWidth = '100%';
     this.popupHeight = '100%';
     this.popupPosition = { my: 'center', at: 'center', of: '.view-wrapper' };
-    this.clickedRowData = e.row.data;
+    const rowData = e.row.data;
+    this.clickedRowData = rowData;
     this.isDrillDownPopupOpened = true;
-    this.popupStateService.setPopupState('ClaimSummaryBreakUpPopup', true);
+    this.popupStateService.setPopupState('claimDetaisDrillDownPopup', true);
   };
 
-  //=====Making cutom datasource for facility datagrid and dropdown loADING=====
-  makeAsyncDataSourceFromJson(jsonData: any) {
-    return new CustomStore({
-      loadMode: 'raw',
-      key: 'ID',
-      load: () => {
-        return new Promise((resolve, reject) => {
-          try {
-            resolve(jsonData);
-          } catch (error) {
-            reject(error);
-          }
-        });
-      },
-    });
-  }
-
-  //===================Function to handle selection change and sort the data==========
+  //===========Function to handle selection change and sort the data==========
   onSelectionChanged(event: any, jsonData: any[], dataSourceKey: string): void {
     console.log('Original JSON Data:', jsonData);
     const selectedRows = event.selectedRowsData;
@@ -303,16 +316,13 @@ export class ClaimSummaryMonthWiseComponent {
         );
       }
     });
-
     this.service.get_SearchParametrs_Data().subscribe(
       (response: any) => {
-        if (response) {
-          this.loadingVisible = false;
+        if (response.flag == '1') {
           this.SearchOn_DataSource = response.SearchOn;
           this.SearchOn_Value = this.SearchOn_DataSource.find(
             (item) => item.ID === 'EncounterStartDate'
           )?.ID;
-
           this.EncounterType_DataSource = response.EncounterType;
           this.RecieverID_DataSource = this.makeAsyncDataSourceFromJson(
             response.ReceiverID
@@ -335,6 +345,10 @@ export class ClaimSummaryMonthWiseComponent {
           this.CliamStatus_DataSource = response.ClaimStatus;
           this.paymentStatus_DataSource = response.PaymentStatus;
           this.advanceFilterGridColumns = response.AdvanceFilter;
+          this.RemittanceBasedOn = response.RemittanceBasedOn
+          console.log(this.RemittanceBasedOn,"REMITTANCE BASED ON")
+          console.log(this.advanceFilterGridColumns,"advanceFilterGridColumns")
+          this.loadingVisible = false;
         }
       },
       (error) => {
@@ -343,7 +357,7 @@ export class ClaimSummaryMonthWiseComponent {
     );
   }
 
-  //===========Fetch DataSource For The Datagrid Table=============
+  //=========Fetch DataSource For The Datagrid Table==========
   async get_Datagrid_DataSource() {
     const formData = {
       SearchOn: this.SearchOn_Value,
@@ -353,34 +367,38 @@ export class ClaimSummaryMonthWiseComponent {
       To_Date: this.reportengine.formatDate(this.To_Date_Value),
       ReceiverID: this.ReceiverID_Value.join(', '),
       PayerID: this.PayerID_Value.join(', '),
-      Payer: this.Payer_Value,
+      // Payer: this.Payer_Value,
       Clinician: this.Clinician_Value.join(', '),
       OrderingClinician: this.OrderingClinician_Value.join(', '),
       ClaimNumber: this.ClaimNumber_Value,
-      PatientID: this.PatientID_Value,
-      Resubmission: this.Resubmission_Value,
+      // PatientID: this.PatientID_Value,
+      // Resubmission: this.Resubmission_Value,
       DenialCodes: this.DenialCodes_Value,
-      CliamStatus: this.CliamStatus_Value,
-      memberID: this.memberID_Value,
-      paymentStatus: this.paymentStatus_Value,
+      // CliamStatus: this.CliamStatus_Value,
+      // memberID: this.memberID_Value,
+      // paymentStatus: this.paymentStatus_Value,
+      CPTCode:this.CPTCode,
+      RemittanceBasedOn:this.RemittanceBasedOn
     };
     this.isContentVisible = false;
     this.dataGrid.instance.beginCustomLoading('Loading...');
-
     try {
       const response: any = await this.service
-        .fetch_Claim_Summary_Month_Wise(formData)
+        .fetch_Resubmission_summary(formData)
         .toPromise();
       if (response.flag === '1') {
         this.isEmptyDatagrid = false;
-        this.detailData = response.detail;
-        this.columndata = response.summary.ReportColumns;
+
+        this.columndata = response.ReportColumns;
+
         const userLocale = navigator.language || 'en-US';
+
         this.summaryColumnsData = this.generateSummaryColumns(
-          response.summary.ReportColumns
+          response.ReportColumns
         );
+
         this.columnsConfig = this.generateColumnsConfig(
-          response.summary.ReportColumns,
+          response.ReportColumns,
           userLocale
         );
         this.ColumnNames = this.columnsConfig
@@ -394,11 +412,50 @@ export class ClaimSummaryMonthWiseComponent {
           })
         );
 
-        const ReportData = response.summary.ReportData;
+        // Format dates in ReportData
+        const formattedReportData = response.ReportData.map((data) => ({
+          ...data,
+          TransactionDate: this.datePipe.transform(
+            data.TransactionDate,
+            'dd-MMM-yyyy'
+          ),
+          ActivityStartDate: this.datePipe.transform(
+            data.ActivityStartDate,
+            'dd-MMM-yyyy'
+          ),
+          EncounterStartDate: this.datePipe.transform(
+            data.EncounterStartDate,
+            'dd-MMM-yyyy'
+          ),
+          EncounterEndDate: this.datePipe.transform(
+            data.EncounterEndDate,
+            'dd-MMM-yyyy'
+          ),
+          LastResubmissionDate: this.datePipe.transform(
+            data.LastResubmissionDate,
+            'dd-MMM-yyyy'
+          ),
+          InitialDateSettlement: this.datePipe.transform(
+            data.InitialDateSettlement,
+            'dd-MMM-yyyy'
+          ),
+          SubmissionDate: this.datePipe.transform(
+            data.SubmissionDate,
+            'dd-MMM-yyyy'
+          ),
+          LastRemittanceDate: this.datePipe.transform(
+            data.LastRemittanceDate,
+            'dd-MMM-yyyy'
+          ),
+          LastSubmissionDate: this.datePipe.transform(
+            data.LastSubmissionDate,
+            'dd-MMM-yyyy'
+          ),
+        }));
 
         // Initialize dataGrid_DataSource with the pre-loaded data
         this.dataGrid_DataSource = new DataSource<any>({
-          load: () => Promise.resolve(ReportData),
+          load: () => Promise.resolve(formattedReportData),
         });
         this.dataGrid.instance.endCustomLoading();
         this.isContentVisible = false;
@@ -474,7 +531,7 @@ export class ClaimSummaryMonthWiseComponent {
     };
   }
 
-  generateColumnsConfig(reportColumns: any, userLocale: any) {
+  generateColumnsConfig(reportColumns, userLocale) {
     return reportColumns.map((column) => {
       let columnFormat;
 
@@ -500,8 +557,17 @@ export class ClaimSummaryMonthWiseComponent {
             }).format(value),
         };
       }
-      if (column.Type === 'Percentage') {
-        columnFormat = 'percent';
+      if (column.Type === 'percentage') {
+        columnFormat = {
+          type: 'percent',
+          precision: 2,
+          formatter: (value) =>
+            new Intl.NumberFormat(userLocale, {
+              style: 'percent',
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            }).format(value / 100),
+        };
       }
       return {
         dataField: column.Name,
@@ -515,8 +581,12 @@ export class ClaimSummaryMonthWiseComponent {
 
   import_Advance_Filter() {
     const filterData = this.reportengine.getData();
-    // console.log('advance filter imported data', filterData);
+    console.log('advance filter imported data', filterData);
     this.ClaimNumber_Value = filterData.ClaimNumber;
+
+    // this.Facility_Value = this.Facility_DataSource.filter((item) =>
+    //   filterData.ReceiverID.split(',').includes(item.Name)
+    // ).map((item) => item.ID);
 
     this.ReceiverID_Value = this.RecieverID_DataSource.filter((item) =>
       filterData.ReceiverID.split(',').includes(item.Name)
@@ -525,6 +595,10 @@ export class ClaimSummaryMonthWiseComponent {
     this.PayerID_Value = this.PayerID_DataSource.filter((item) =>
       filterData.PayerID.split(',').includes(item.Name)
     ).map((item) => item.ID);
+
+    // this.Payer_Value = this.Payer_DataSource.filter((item) =>
+    //   filterData.ReceiverID.split(',').includes(item.Name)
+    // ).map((item) => item.ID);
 
     this.Clinician_Value = this.Clinician_DataSource.filter((item) =>
       filterData.Clinician.split(',').includes(item.Name)
@@ -557,8 +631,7 @@ export class ClaimSummaryMonthWiseComponent {
       reportGridElement.classList.toggle('reportGridFooter');
     }
   };
-
-  //================Year value change ===================
+  //================ Year value change ===================
   onYearChanged(e: any): void {
     this.selectedYear = e.value;
     this.selectedmonth = '';
@@ -577,7 +650,6 @@ export class ClaimSummaryMonthWiseComponent {
   //================Month value change ===================
   onMonthValueChanged(e: any) {
     this.selectedmonth = e.value ?? '';
-    // console.log('selected month', this.selectedmonth);
     if (this.selectedmonth === '') {
       this.From_Date_Value = new Date(this.selectedYear, 0, 1); // January 1 of the selected year
       this.To_Date_Value = new Date(this.selectedYear, 11, 31); // December 31 of the selected year
@@ -590,11 +662,13 @@ export class ClaimSummaryMonthWiseComponent {
       );
     }
   }
+
   //============Hide drop down after Value Selected======
   onDropdownValueChanged() {
     const lookupInstance = this.lookup.instance;
     if (lookupInstance) {
       lookupInstance.close();
+      lookupInstance.option('searchValue', '');
     }
   }
 
@@ -616,7 +690,7 @@ export class ClaimSummaryMonthWiseComponent {
     } else {
       this.refresh();
       this.columnsConfig = this.personalReportData
-        .filter((report: any) => report.name === SelectedValue)
+        .filter((report: any) => report.name == SelectedValue)
         .map((report: any) => {
           return report.Columns.map((column: any) => ({
             dataField: column.Name,
@@ -636,7 +710,8 @@ export class ClaimSummaryMonthWiseComponent {
 
       this.ColumnNames = this.columnsConfig
         .filter((column) => column.visible)
-        .map((column) => column.dataField);
+        .map((column) => column.dataField)
+        .sort((a, b) => a.localeCompare(b));
     }
   };
 
@@ -651,7 +726,6 @@ export class ClaimSummaryMonthWiseComponent {
   }
   //================Save Memorize Reports=================
   save_Memorise_Report() {
-    console.log('column data are :=>', this.columndata);
     const memoriseName = this.MemoriseReportName;
     const filterParameters = JSON.parse(sessionStorage.getItem('reportData'));
     const reportColumns = this.columndata;
@@ -669,7 +743,6 @@ export class ClaimSummaryMonthWiseComponent {
         Visibility: hiddenColumns.includes(column.Name) ? false : true,
       };
     });
-    console.log('memorise report columns =>:', memoriseReportColumns);
     this.reportengine
       .save_Memorise_report(
         memoriseName,
@@ -703,7 +776,6 @@ export class ClaimSummaryMonthWiseComponent {
   findColumnLocation = (e: any) => {
     const columnName = e.itemData;
     if (columnName != '' && columnName != null) {
-      this.refresh();
       this.reportengine.makeColumnVisible(this.dataGrid, columnName);
     }
   };
@@ -719,6 +791,7 @@ export class ClaimSummaryMonthWiseComponent {
     this.service.exportDataGrid(event, fileName);
   }
 }
+
 @NgModule({
   imports: [
     DxButtonModule,
@@ -749,10 +822,10 @@ export class ClaimSummaryMonthWiseComponent {
     DxValidationSummaryModule,
     DxLoadPanelModule,
     AdvanceFilterPopupModule,
-    ClaimSummaryMonthWiseDrillDownModule,
+    ClaimDetailActivityDrillDownModule,
   ],
   providers: [],
   exports: [],
-  declarations: [ClaimSummaryMonthWiseComponent],
+  declarations: [ResubmissionSummaryComponent],
 })
-export class ClaimSummaryMonthWiseModule {}
+export class ResubmissionSummaryModule {}
