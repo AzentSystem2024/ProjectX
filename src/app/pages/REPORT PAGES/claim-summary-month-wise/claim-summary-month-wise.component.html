@@ -760,7 +760,7 @@
   </form-popup>
 
   <div *ngIf="isDrillDownPopupOpened">
-    <dx-popup
+    <dx-popup *ngIf="isDrillDownPopupOpened"
       [(visible)]="isDrillDownPopupOpened"
       title="Claim Summary BreakUp"
       [height]="popupHeight"
