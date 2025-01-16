@@ -759,7 +759,55 @@
     ></app-advance-filter-popup>
   </form-popup>
 
-  <div *ngIf="isDrillDownPopupOpened">
+
+  <div *ngFor="let popup of drilldownPopups">
+    <dx-popup
+      [(visible)]="popup.isOpened"
+      title="Claim Summary BreakUp"
+      [height]="popup.height"
+      [width]="popup.width"
+      [resizeEnabled]="true"
+      [dragEnabled]="true"
+      [shading]="false"
+      [closeOnOutsideClick]="false"
+      [position]="popup.position"
+      [showCloseButton]="false"
+    >
+      <div *dxTemplate="let data of 'content'">
+        <!-- <button class="custom-minimize-btn" [attr.data-popup-id]="popup.id"  (click)="minimisePopup(popup.id)">
+          &minus;
+        </button> -->
+        <button
+          class="custom-minimize-btn"
+          [attr.data-popup-id]="popup.id"
+          (click)="minimisePopup(popup.id)"
+        >
+          <span
+            *ngIf="!popup.isPopupMinimised"
+            class="dx-icon dx-icon-minus"
+          ></span>
+          <!-- Minus icon when not minimized -->
+          <span
+            *ngIf="popup.isPopupMinimised"
+            class="dx-icon dx-icon-expandform"
+          ></span>
+          <!-- Expand icon when minimized -->
+        </button>
+
+        <!-- Close Button -->
+        <button class="custom-close-btn" (click)="closePopup1(popup)">
+          &times;
+        </button>
+
+        <!-- Popup Content -->
+        <app-claim-summary-month-wise-drill-down
+          [clickedRowData]="popup.rowData"
+        ></app-claim-summary-month-wise-drill-down>
+      </div>
+    </dx-popup>
+  </div>
+
+  <!-- <div *ngIf="isDrillDownPopupOpened">
     <dx-popup *ngIf="isDrillDownPopupOpened"
       [(visible)]="isDrillDownPopupOpened"
       title="Claim Summary BreakUp"
@@ -780,7 +828,7 @@
         [DetailData]="detailData"
       ></app-claim-summary-month-wise-drill-down>
     </dx-popup>
-  </div>
+  </div> -->
 
   <dx-load-panel
     #loadPanel
