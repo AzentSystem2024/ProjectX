@@ -2,6 +2,7 @@
 import { MasterReportService } from 'src/app/pages/MASTER PAGES/master-report.service';
 import { CommonModule, DatePipe } from '@angular/common';
 import {
+  ChangeDetectorRef,
   Component,
   NgModule,
   OnDestroy,
@@ -43,7 +44,7 @@ import { formatNumber } from 'devextreme/localization';
 import { ReportService } from 'src/app/services/Report-data.service';
 import { ReportEngineService } from '../report-engine.service';
 import DataSource from 'devextreme/data/data_source';
-import { NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 import notify from 'devextreme/ui/notify';
 import { ClaimDetailActivityDrillDownComponent } from '../../REPORT DRILL PAGES/claim-detail-activity-drill-down/claim-detail-activity-drill-down.component';
 import { ClaimDetailActivityDrillDownModule } from '../../REPORT DRILL PAGES/claim-detail-activity-drill-down/claim-detail-activity-drill-down.component';
@@ -161,6 +162,9 @@ export class ResubmissionSummaryComponent implements OnInit {
   //============Custom close button for drilldown popup============
   toolbarItems: any;
   CPTCode: any;
+
+  drilldownPopups: any[];
+  closedPopupsSet: Set<string> = new Set();
   // RemittanceBasedOn: any;
   remittanceOptions = [
     { ID: 1, Name: 'Last Remittance' },
@@ -175,7 +179,8 @@ export class ResubmissionSummaryComponent implements OnInit {
     private reportengine: ReportEngineService,
     private datePipe: DatePipe,
     private masterService: MasterReportService,
-    private popupStateService: PopupStateService
+    private popupStateService: PopupStateService,
+            private cdr: ChangeDetectorRef
   ) {
     this.loadingVisible = true;
 
@@ -189,12 +194,28 @@ export class ResubmissionSummaryComponent implements OnInit {
     //=============month field datasource============
     this.monthDataSource = this.service.getMonths();
     this.get_searchParameters_Dropdown_Values();
-    this.updateToolbarItems();
+    // this.updateToolbarItems();
+    if (this.drilldownPopups && this.drilldownPopups.length > 0) {
+      this.drilldownPopups.forEach((popup) => {
+        this.updateToolbarItems(popup.id); // Pass the popupId when calling this method
+      });
+    }
+    // this.router.events.subscribe((event) => {
+    //   if (event instanceof NavigationEnd) {
+    //     this.isDrillDownPopupOpened = this.popupStateService.getPopupState(
+    //       'claimDetaisDrillDownPopup'
+    //     );
+    //   }
+    // });
+
     this.router.events.subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        this.hidePopupsOnNavigation();
+      }
+
+      // Listen for NavigationEnd event to restore visibility
       if (event instanceof NavigationEnd) {
-        this.isDrillDownPopupOpened = this.popupStateService.getPopupState(
-          'claimDetaisDrillDownPopup'
-        );
+        this.restorePopupsOnNavigation();
       }
     });
   }
@@ -224,52 +245,153 @@ export class ResubmissionSummaryComponent implements OnInit {
     this.popupHeight = event.height;
   }
 
-  updateToolbarItems() {
-    this.toolbarItems = [
-      {
-        widget: 'dxButton',
-        options: {
-          text: '',
-          icon: this.isPopupMinimised ? 'expandform' : 'minus', // Toggle icon based on minimize state
-          type: 'normal',
-          stylingMode: 'contained',
-          onClick: () => this.minimisePopup(), // Minimize the popup on click
-        },
-        toolbar: 'top',
-        location: 'after',
-      },
-      {
-        widget: 'dxButton',
-        options: {
-          text: '',
-          icon: 'close',
-          type: 'normal',
-          stylingMode: 'contained',
-          onClick: () => this.closePopup(), // Close the popup on click
-        },
-        toolbar: 'top',
-        location: 'after',
-      },
-    ];
-  }
-  //============= minimise popup ==========
-  minimisePopup() {
-    if (this.isPopupMinimised) {
-      this.popupWidth = '70%';
-      this.popupHeight = '90%';
-      this.popupPosition = { my: 'center', at: 'center', of: '.view-wrapper' };
-    } else {
-      this.popupHeight = '40vh';
-      this.popupWidth = '30%';
-      this.popupPosition = {
-        my: 'center right',
-        at: 'center right',
-        of: '.grid',
-      };
+  hidePopupsOnNavigation() {
+    if (this.drilldownPopups && this.drilldownPopups.length > 0) {
+      // Hide all drilldown popups instead of closing them
+      this.drilldownPopups.forEach((popup) => {
+        popup.isOpened = false; // Hide the popup but keep its state
+      });
+
+      // Ensure UI reflects changes immediately
+      this.cdr.detectChanges();
     }
-    this.isPopupMinimised = !this.isPopupMinimised;
-    this.updateToolbarItems();
   }
+
+  restorePopupsOnNavigation(): void {
+    if (this.drilldownPopups && this.drilldownPopups.length > 0) {
+      this.drilldownPopups.forEach((popup) => {
+        // If the popup was manually closed, make sure it's not reopened
+        if (this.closedPopupsSet.has(popup.id)) {
+          popup.isOpened = false; // Keep it closed
+        } else {
+          popup.isOpened = true; // Restore visibility for popups that should be shown
+        }
+      });
+
+      // Ensure UI reflects changes immediately
+      this.cdr.detectChanges();
+    }
+  }
+
+  // updateToolbarItems() {
+  //   this.toolbarItems = [
+  //     {
+  //       widget: 'dxButton',
+  //       options: {
+  //         text: '',
+  //         icon: this.isPopupMinimised ? 'expandform' : 'minus', // Toggle icon based on minimize state
+  //         type: 'normal',
+  //         stylingMode: 'contained',
+  //         onClick: () => this.minimisePopup(), // Minimize the popup on click
+  //       },
+  //       toolbar: 'top',
+  //       location: 'after',
+  //     },
+  //     {
+  //       widget: 'dxButton',
+  //       options: {
+  //         text: '',
+  //         icon: 'close',
+  //         type: 'normal',
+  //         stylingMode: 'contained',
+  //         onClick: () => this.closePopup(), // Close the popup on click
+  //       },
+  //       toolbar: 'top',
+  //       location: 'after',
+  //     },
+  //   ];
+  // }
+  //============= minimise popup ==========
+ 
+
+  updateToolbarItems(popupId: string) {
+    const popup = this.drilldownPopups.find((p) => p.id === popupId); // Get the full popup object by its ID
+
+    if (popup) {
+      this.toolbarItems = [
+        {
+          widget: 'dxButton',
+          options: {
+            text: '',
+            icon: popup.isPopupMinimised ? 'expandform' : 'minus', // Toggle icon based on minimize state
+            type: 'normal',
+            stylingMode: 'contained',
+            onClick: () => this.minimisePopup(popupId), // Pass the popupId to minimize the popup
+          },
+          toolbar: 'top',
+          location: 'after',
+        },
+        {
+          widget: 'dxButton',
+          options: {
+            text: '',
+            icon: 'close', // Close icon for the button
+            type: 'normal',
+            stylingMode: 'contained',
+            onClick: () => this.closePopup1(popupId), // Pass only the popupId to close it
+          },
+          toolbar: 'top',
+          location: 'after',
+        },
+      ];
+    }
+  }
+
+  closePopup1(popup: any): void {
+    popup.isOpened = false; // Hide the popup
+    // console.log('Popup manually closed:', popup);
+    this.closedPopupsSet.add(popup.id);
+    // Additional logic for closing the popup can go here
+  }
+
+  minimisePopup(popupId: string): void {
+    const popup = this.drilldownPopups.find((p) => p.id === popupId);
+    if (popup) {
+      popup.isPopupMinimised = !popup.isPopupMinimised;
+
+      // Adjust the size and position based on minimize state
+      if (popup.isPopupMinimised) {
+        popup.width = '20%';
+        popup.height = '10%';
+        // popup.icon = 'minus';
+        popup.icon = 'expand-icon';
+        // popup.position = { my: 'center', at: 'center', of: '.view-wrapper' }; // Example position
+        popup.position = {
+          my: 'bottom right', // Align the popup's top-right corner
+          at: 'bottom right', // Align the popup's top-right corner to the right side
+          offset: '20 10px', // Add a 20px gap from the top and right edges
+          of: window, // Reference the entire window as the parent
+        };
+      } else {
+        popup.width = '100%';
+        popup.height = '80%';
+        popup.position = { my: 'center', at: 'center', of: '.view-wrapper' }; // Example position
+        popup.icon = 'minimize-icon';
+      }
+
+      // Re-render the popup
+      this.cdr.detectChanges(); // Trigger change detection
+      this.updateToolbarItems(popupId); // Update toolbar items after minimizing
+    }
+  }
+ 
+  // minimisePopup() {
+  //   if (this.isPopupMinimised) {
+  //     this.popupWidth = '70%';
+  //     this.popupHeight = '90%';
+  //     this.popupPosition = { my: 'center', at: 'center', of: '.view-wrapper' };
+  //   } else {
+  //     this.popupHeight = '40vh';
+  //     this.popupWidth = '30%';
+  //     this.popupPosition = {
+  //       my: 'center right',
+  //       at: 'center right',
+  //       of: '.grid',
+  //     };
+  //   }
+  //   this.isPopupMinimised = !this.isPopupMinimised;
+  //   this.updateToolbarItems();
+  // }
   //========Remove closing popup from the popup array=====
   closePopup() {
     this.popupStateService.setPopupState('claimDetaisDrillDownPopup', false);
@@ -281,16 +403,36 @@ export class ResubmissionSummaryComponent implements OnInit {
   }
 
   //=================Row click drill Down===================
+  // handleRowDrillDownClick = (e: any) => {
+  //   this.isPopupMinimised = false;
+  //   this.updateToolbarItems();
+  //   this.popupWidth = '100%';
+  //   this.popupHeight = '100%';
+  //   this.popupPosition = { my: 'center', at: 'center', of: '.view-wrapper' };
+  //   const rowData = e.row.data;
+  //   this.clickedRowData = rowData;
+  //   this.isDrillDownPopupOpened = true;
+  //   this.popupStateService.setPopupState('claimDetaisDrillDownPopup', true);
+  // };
+
   handleRowDrillDownClick = (e: any) => {
-    this.isPopupMinimised = false;
-    this.updateToolbarItems();
-    this.popupWidth = '100%';
-    this.popupHeight = '100%';
-    this.popupPosition = { my: 'center', at: 'center', of: '.view-wrapper' };
+    const popupId = `drilldown-${new Date().getTime()}`; // Unique ID for each popup
     const rowData = e.row.data;
-    this.clickedRowData = rowData;
-    this.isDrillDownPopupOpened = true;
-    this.popupStateService.setPopupState('claimDetaisDrillDownPopup', true);
+    if (!this.drilldownPopups) {
+      this.drilldownPopups = []; // Initialize if not already
+    }
+    // Add the new popup configuration
+    this.drilldownPopups.push({
+      id: popupId,
+      width: '100%',
+      height: '80%',
+      position: { my: 'center', at: 'center', of: '.view-wrapper' },
+      rowData: rowData,
+      isOpened: true, // Ensure this popup is opened
+      isPopupMinimised: false,
+    });
+    this.popupStateService.setPopupState(popupId, true);
+    // this.updateToolbarItems(popupId);
   };
 
   //===========Function to handle selection change and sort the data==========

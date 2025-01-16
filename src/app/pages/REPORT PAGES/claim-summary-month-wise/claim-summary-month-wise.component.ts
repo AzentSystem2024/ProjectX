@@ -1,5 +1,6 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import {
+  ChangeDetectorRef,
   Component,
   NgModule,
   OnDestroy,
@@ -165,7 +166,8 @@ export class ClaimSummaryMonthWiseComponent {
     private reportengine: ReportEngineService,
     private masterService: MasterReportService,
     private router: Router,
-    private popupStateService: PopupStateService
+    private popupStateService: PopupStateService,
+    private cdr: ChangeDetectorRef
   ) {
     this.loadingVisible = true;
 
@@ -259,6 +261,7 @@ export class ClaimSummaryMonthWiseComponent {
     this.popupHeight = '100%';
     this.popupPosition = { my: 'center', at: 'center', of: '.view-wrapper' };
     this.clickedRowData = e.row.data;
+    console.log("CLICKEDROWDATA",this.clickedRowData)
     this.isDrillDownPopupOpened = true;
     this.popupStateService.setPopupState('ClaimSummaryBreakUpPopup', true);
   };
