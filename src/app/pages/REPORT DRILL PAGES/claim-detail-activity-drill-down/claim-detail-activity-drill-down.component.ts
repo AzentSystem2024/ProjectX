@@ -115,8 +115,6 @@ export class ClaimDetailActivityDrillDownComponent implements OnInit {
     this.isActivityGridVisible = false;
     this.isDiagnosisGridVisible = false;
 
-    console.log('clicked row data available ==>>', this.clickedRowData);
-
     this.ClaimNumber = this.clickedRowData.ClaimNumber;
     this.FacilityID = this.clickedRowData.FacilityID;
     this.RowData = this.clickedRowData;

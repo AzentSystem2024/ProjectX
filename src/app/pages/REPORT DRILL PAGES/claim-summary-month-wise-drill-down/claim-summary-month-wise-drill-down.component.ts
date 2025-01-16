@@ -36,7 +36,7 @@ import { NavigationEnd, Router } from '@angular/router';
   templateUrl: './claim-summary-month-wise-drill-down.component.html',
   styleUrls: ['./claim-summary-month-wise-drill-down.component.scss'],
 })
-export class ClaimSummaryMonthWiseDrillDownComponent implements OnChanges {
+export class ClaimSummaryMonthWiseDrillDownComponent implements OnInit {
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
 
@@ -78,7 +78,7 @@ export class ClaimSummaryMonthWiseDrillDownComponent implements OnChanges {
   FacilityID: any;
   ReportData: any;
   filteredData: any;
-  
+
   isSecondDrillOpened: boolean = false;
   selectedTab: any;
 
@@ -123,19 +123,35 @@ export class ClaimSummaryMonthWiseDrillDownComponent implements OnChanges {
     }
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['clickedRowData'] && this.clickedRowData) {
-      console.log('Clicked row data fetched ==>>', this.clickedRowData);
-      this.loadingVisible = true;
-      this.isContentVisible = true;
-      this.Year = this.clickedRowData.ClaimYear;
-      this.Month = this.clickedRowData.ClaimMonth;
-      this.FacilityID = this.clickedRowData.FacilityID;
-      if (this.Year && this.Month && this.FacilityID) {
-        this.get_Datagrid_DataSource();
-      }
+  ngOnInit() {
+    this.loadingVisible = true;
+    this.isContentVisible = true;
+    this.Year = this.clickedRowData.ClaimYear;
+    this.Month = this.clickedRowData.ClaimMonth;
+    this.FacilityID = this.clickedRowData.FacilityID;
+    console.log('clicked row data =>', this.clickedRowData);
+    console.log('detailed data =>', this.DetailData);
+
+    if (this.Year && this.Month && this.FacilityID) {
+      this.get_Datagrid_DataSource();
     }
   }
+
+  // ngOnChanges(changes: SimpleChanges): void {
+  //   if (changes['clickedRowData'] && this.clickedRowData) {
+  //     console.log('Clicked row data fetched ==>>', this.clickedRowData);
+  //     console.log('detailed data==>', this.DetailData);
+  //     this.loadingVisible = true;
+  //     this.isContentVisible = true;
+  //     this.Year = this.clickedRowData.ClaimYear;
+  //     this.Month = this.clickedRowData.ClaimMonth;
+  //     this.FacilityID = this.clickedRowData.FacilityID;
+
+  //     if (this.Year && this.Month && this.FacilityID) {
+  //       this.get_Datagrid_DataSource();
+  //     }
+  //   }
+  // }
 
   //=============Resize the popup drill down============
   onResizeEnd(event: any) {
@@ -171,9 +187,10 @@ export class ClaimSummaryMonthWiseDrillDownComponent implements OnChanges {
     this.loadingVisible = true;
 
     try {
-      const response: any = this.DetailData;
-
-      if (response.ReportID != '') {
+      const response = this.DetailData;
+      console.log('try portion working');
+      if (response.ReportID !== '') {
+        console.log('if condition satisfied');
         this.isEmptyDatagrid = false;
         this.columndata = response.ReportColumns;
 
