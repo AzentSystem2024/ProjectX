@@ -132,10 +132,10 @@
 
 .custom-close-btn {
   position: absolute;
-  top: 8px;
+  // top: 1px;
   right: 10px;
-  background-color: transparent;
-  color: #ffffff;
+  background: var(--base-bg);
+  color: var(--border-color);
   border: none;
   font-size: 28px; /* Adjust the size of the X */
   cursor: pointer;
@@ -144,9 +144,6 @@
   margin: 0;
 }
 
-// .custom-close-btn:hover {
-//   color: #ffffff; /* Change color on hover */
-// }
 
 .custom-close-btn:focus {
   outline: none;
@@ -154,27 +151,22 @@
 
 .custom-minimize-btn,
 .custom-close-btn {
-  background: none;
-  
+  background: var(--base-bg);
+  color: var(--border-color);
+  font-weight: bold;
   border: none;
   right: 20px; 
   font-size: 25px;
   cursor: pointer;
-  padding: 5px;
+  padding: 0px;
 }
 
-.custom-minimize-btn {
-  position: absolute;
-  top: 10px;
-  right: 55px; /* Position to the left of the close button */
-  font-size: 25px;
-  color: #ffffff;
-}
+
 
 /* General button styles */
 .custom-minimize-btn {
   position: absolute;
-  top: 10px;
+  top: 7px;
   right: 55px; /* Position to the left of the close button */
   width: 40px; /* Square button width */
   height: 40px; /* Square button height */
@@ -182,28 +174,42 @@
   justify-content: center;
   align-items: center;
   border-radius: 5px; /* Optional: rounded corners */
-  // background-color: #333; /* Dark background for the button */
+  background: var(--base-bg);
   text-align: center;
-  color: white; /* Icon color */
-  font-size: 18px;
+  color: var(--border-color); /* Icon color */
+  font-size:large;
+  font-weight: bold;
   cursor: pointer;
   padding: 0;
 }
 
-/* Minimize state (red square) */
-.custom-minimize-btn.minimize {
-  // background-color: #dc3545; /* Red background when minimized */
-}
-
-/* Expand state - Using DevExtreme expandform icon */
-.custom-minimize-btn.expand {
-  // background-color: #007bff; /* Blue background when expanded */
-}
 
 /* Expandform icon for the expand state */
 .custom-minimize-btn.expand:before {
   content: "\e97b"; /* DevExtreme expandform icon (using Unicode) */
   font-family: "dx-icons"; /* Use DevExtreme's icon font */
   font-size: 18px; /* Adjust size of the icon */
-  color: white; /* Icon color */
+  background: var(--base-bg);
+  color: var(--border-color);
 }
+
+
+
+
+.custom-close-btn {
+  position: absolute;
+  top: 5px;
+  right: 30px; /* Position the close button to the right */
+}
+
+.dx-popup .dx-overlay-title {
+  font-size: 5px; /* Regular font size */
+}
+
+/* When minimized, reduce the title size */
+.minimized-title {
+  font-size: 5px; /* Smaller font size */
+  color: gray; /* Lighter color for minimized state */
+}
+
+

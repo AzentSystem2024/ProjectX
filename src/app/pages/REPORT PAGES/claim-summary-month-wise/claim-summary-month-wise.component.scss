@@ -130,7 +130,7 @@
 
 .custom-close-btn {
   position: absolute;
-  top: 8px;
+  // top: 1px;
   right: 10px;
   background: var(--base-bg);
   color: var(--border-color);
@@ -142,9 +142,6 @@
   margin: 0;
 }
 
-// .custom-close-btn:hover {
-//   color: #ffffff; /* Change color on hover */
-// }
 
 .custom-close-btn:focus {
   outline: none;
@@ -199,7 +196,7 @@
 
 .custom-close-btn {
   position: absolute;
-  top: 10px;
+  top: 5px;
   right: 30px; /* Position the close button to the right */
 }
 
@@ -212,3 +209,4 @@
   font-size: 5px; /* Smaller font size */
   color: gray; /* Lighter color for minimized state */
 }
+
