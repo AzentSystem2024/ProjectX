@@ -148,8 +148,8 @@ export class ResubmissionSummaryComponent implements OnInit {
   columnFixed: boolean = true;
   initialized: boolean;
 
-  popupWidth: any = '70%';
-  popupHeight: any = '90%';
+  popupWidth: any = '100%';
+  popupHeight: any = '100%';
   popupPosition: any = { my: 'center', at: 'center', of: '.view-wrapper' };
   isPopupMinimised: boolean = false;
 
@@ -284,8 +284,8 @@ export class ResubmissionSummaryComponent implements OnInit {
   handleRowDrillDownClick = (e: any) => {
     this.isPopupMinimised = false;
     this.updateToolbarItems();
-    this.popupWidth = '70%';
-    this.popupHeight = '90%';
+    this.popupWidth = '100%';
+    this.popupHeight = '100%';
     this.popupPosition = { my: 'center', at: 'center', of: '.view-wrapper' };
     const rowData = e.row.data;
     this.clickedRowData = rowData;
