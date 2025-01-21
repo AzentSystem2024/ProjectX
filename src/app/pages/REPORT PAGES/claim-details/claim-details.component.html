@@ -17,7 +17,7 @@
           <dx-drop-down-box
             labelMode="floating"
             labelLocation="left"
-            label="Select Facility value"
+            label="Facility value"
             [(value)]="Facility_Value"
             valueExpr="ID"
             displayExpr="FacilityName"
@@ -63,7 +63,7 @@
             <dx-select-box
               labelMode="floating"
               labelLocation="left"
-              label="select searchOn value"
+              label="searchOn value"
               [dataSource]="SearchOn_DataSource"
               displayExpr="Name"
               valueExpr="ID"
@@ -81,7 +81,7 @@
           <dx-select-box
             labelMode="floating"
             labelLocation="left"
-            label="select Year"
+            label="Year"
             [(value)]="selectedYear"
             [dataSource]="years"
             (onValueChanged)="onYearChanged($event)"
@@ -95,7 +95,7 @@
             <dx-select-box
               labelMode="floating"
               labelLocation="left"
-              label="select month"
+              label="month"
               [dataSource]="monthDataSource"
               displayExpr="name"
               valueExpr="value"
@@ -142,7 +142,7 @@
             <dx-select-box
               labelMode="floating"
               labelLocation="left"
-              label="select encounter type"
+              label="encounter type"
               [dataSource]="EncounterType_DataSource"
               displayExpr="Name"
               valueExpr="ID"
@@ -166,7 +166,7 @@
           <dx-select-box
             labelMode="floating"
             labelLocation="left"
-            label="select payer"
+            label="payer"
             [dataSource]="Payer_DataSource"
             displayExpr="Name"
             valueExpr="ID"
@@ -181,7 +181,7 @@
           <dx-drop-down-box
             labelMode="floating"
             labelLocation="left"
-            label="Select payer ID"
+            label="payer ID"
             [(value)]="PayerID_Value"
             valueExpr="ID"
             displayExpr="Name"
@@ -217,7 +217,7 @@
           <dx-drop-down-box
             labelMode="floating"
             labelLocation="left"
-            label="Select Clinician"
+            label="Clinician"
             [(value)]="Clinician_Value"
             valueExpr="ID"
             displayExpr="Name"
@@ -253,7 +253,7 @@
           <dx-drop-down-box
             labelMode="floating"
             labelLocation="left"
-            label="Select Ordering Clinician"
+            label="Ordering Clinician"
             [(value)]="OrderingClinician_Value"
             valueExpr="ID"
             displayExpr="Name"
@@ -296,7 +296,7 @@
           <dx-drop-down-box
             labelMode="floating"
             labelLocation="left"
-            label="Select Reciever ID"
+            label="Reciever ID"
             [(value)]="ReceiverID_Value"
             valueExpr="ID"
             displayExpr="Name"
@@ -375,7 +375,7 @@
           <dx-select-box
             labelMode="floating"
             labelLocation="left"
-            label="Select Resubmission Type"
+            label="Resubmission Type"
             [dataSource]="ResubmissionType_DataSource"
             displayExpr="Name"
             valueExpr="ID"
@@ -402,7 +402,7 @@
           <dx-select-box
             labelMode="floating"
             labelLocation="left"
-            label="Select Claim Status"
+            label="Claim Status"
             [dataSource]="CliamStatus_DataSource"
             displayExpr="Name"
             valueExpr="ID"
@@ -418,7 +418,7 @@
             <dx-select-box
               labelMode="floating"
               labelLocation="left"
-              label="select Payment Status"
+              label="Payment Status"
               [dataSource]="paymentStatus_DataSource"
               displayExpr="Name"
               valueExpr="ID"

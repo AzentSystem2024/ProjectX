@@ -113,4 +113,27 @@ export class DataService {
     const reqBody = data;
     return this.http.post(url, reqBody);
   }
+
+  //==================Email schedule data List==========
+  get_email_Log_data() {
+    const url = `${BASE_URL}emailscheduler/list`;
+    const reqBody = {};
+    return this.http.post(url, reqBody);
+  }
+
+  //================Insert email alert data============
+  insert_Email_alert_Data(formData: any) {
+    const userid = sessionStorage.getItem('UserID');
+    const url = `${BASE_URL}emailscheduler/insert`;
+    const reqBody = {
+      UserID: userid,
+      ReportID: formData.reportID,
+      SearchOn: formData.searchOn,
+      DatePeriod: formData.datePeriod,
+      EncounterType: formData.encounterType,
+      FacilityID: formData.facilities,
+      EmailUserID: formData.userID,
+    };
+    return this.http.post(url, reqBody);
+  }
 }
