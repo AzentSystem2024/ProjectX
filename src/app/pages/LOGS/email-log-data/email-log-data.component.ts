@@ -85,7 +85,10 @@ export class EmailLogDataComponent {
   onEditingStart(event) {
     const rowData = event.data;
     event.cancel = true;
-    this.selectedRowData = { ...rowData };
+    this.selectedRowData = {
+      ...rowData,
+      DatePeriod: parseInt(rowData.DatePeriod, 10),
+    };
     console.log('selected row data =>', this.selectedRowData);
     this.is_EditFormVisible = true;
   }
@@ -99,6 +102,24 @@ export class EmailLogDataComponent {
     return new CustomStore({
       loadMode: 'raw',
       key: 'ID',
+      load: () => {
+        return new Promise((resolve, reject) => {
+          try {
+            resolve(jsonData);
+          } catch (error) {
+            reject(error);
+          }
+        });
+      },
+    });
+  }
+
+  // ================================
+
+  makeAsyncDataSourceFromJsonforUser(jsonData: any) {
+    return new CustomStore({
+      loadMode: 'raw',
+      key: 'UserID',
       load: () => {
         return new Promise((resolve, reject) => {
           try {
@@ -145,13 +166,17 @@ export class EmailLogDataComponent {
         },
       },
       {
+        dataField: 'DatePeriod',
+        caption: 'Date Period',
+      },
+      {
         dataField: 'EmailUserName',
-        caption: 'User Name',
+        caption: 'Users',
         cellTemplate: (container: any, options: any) => {
           const textDiv = document.createElement('div');
           textDiv.innerText = options.value;
-          textDiv.style.whiteSpace = 'normal'; // Enable text wrapping
-          textDiv.style.wordWrap = 'break-word'; // Break long words if needed
+          textDiv.style.whiteSpace = 'normal';
+          textDiv.style.wordWrap = 'break-word';
           container.appendChild(textDiv);
         },
       },
@@ -168,7 +193,8 @@ export class EmailLogDataComponent {
     });
 
     this.masterService.get_User_data().subscribe((response: any) => {
-      this.userListDataSource = response;
+      this.userListDataSource =
+        this.makeAsyncDataSourceFromJsonforUser(response);
     });
 
     this.service.get_SearchParametrs_Data().subscribe((response: any) => {
@@ -189,7 +215,7 @@ export class EmailLogDataComponent {
       });
 
     this.masterService.Get_GropDown('REPORT').subscribe((response: any) => {
-      this.reportNameDatasource = response;
+      this.reportNameDatasource = this.makeAsyncDataSourceFromJson(response);
     });
   }
   //===============show add new alert popup===================
@@ -205,12 +231,13 @@ export class EmailLogDataComponent {
     this.newDatePeriodValue = null;
     this.newUserIDValue = [];
     this.is_addFormVisible = false;
+    this.is_EditFormVisible = false;
   }
 
   //===============Save New Email Alert Data===================
   On_Click_save_new_Data() {
     this.formData = {
-      reportID: this.newReportIDValue,
+      reportID: this.newReportIDValue.join(','),
       facilities: this.Facility_Value.join(','),
       searchOn: this.newSearchOnValue,
       encounterType: this.newEncounterTypeValue,
@@ -251,7 +278,32 @@ export class EmailLogDataComponent {
     this.is_EditFormVisible = false;
   }
   //==================Edit Save Button============================
-  On_Update_Log_Data() {}
+  On_Update_Log_Data() {
+    const formdata = this.selectedRowData;
+    this.dataService
+      .update_Email_alert_Data(formdata)
+      .subscribe((response: any) => {
+        if (response.Flag === 1) {
+          this.resert_addNew_Form();
+          this.dataGrid.instance.refresh();
+          notify(
+            {
+              message: `${response.message}`,
+              position: { at: 'top right', my: 'top right' },
+            },
+            'success'
+          );
+        } else {
+          notify(
+            {
+              message: `${response.message}`,
+              position: { at: 'top right', my: 'top right' },
+            },
+            'error'
+          );
+        }
+      });
+  }
   //======================Refresh Datagrid==================
   refresh = () => {
     this.dataGrid.instance.refresh();

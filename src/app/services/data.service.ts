@@ -136,4 +136,21 @@ export class DataService {
     };
     return this.http.post(url, reqBody);
   }
+
+  //================Insert email alert data============
+  update_Email_alert_Data(formData: any) {
+    const userid = sessionStorage.getItem('UserID');
+    const url = `${BASE_URL}emailscheduler/update`;
+    const reqBody = {
+      UserID: userid,
+      ID: formData.ID,
+      ReportID: formData.reportID,
+      SearchOn: formData.searchOn,
+      DatePeriod: formData.datePeriod,
+      EncounterType: formData.encounterType,
+      FacilityID: formData.facilities,
+      EmailUserID: formData.userID,
+    };
+    return this.http.post(url, reqBody);
+  }
 }
