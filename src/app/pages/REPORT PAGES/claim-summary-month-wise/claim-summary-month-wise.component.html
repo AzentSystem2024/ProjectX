@@ -759,7 +759,6 @@
     ></app-advance-filter-popup>
   </form-popup>
 
-
   <div *ngFor="let popup of drilldownPopups">
     <dx-popup
       [(visible)]="popup.isOpened"
@@ -778,6 +777,7 @@
           &minus;
         </button> -->
         <button
+          aria-label="minimise"
           class="custom-minimize-btn"
           [attr.data-popup-id]="popup.id"
           (click)="minimisePopup(popup.id)"
@@ -802,6 +802,7 @@
         <!-- Popup Content -->
         <app-claim-summary-month-wise-drill-down
           [clickedRowData]="popup.rowData"
+          [DetailData]="detailData"
         ></app-claim-summary-month-wise-drill-down>
       </div>
     </dx-popup>

@@ -14,9 +14,9 @@
           <!-- Database Name Field with Checkbox -->
           <div class="col-md-4">
             <dx-check-box
-              class="mb-0"
+              class="mb-1"
               [(value)]="isDatabaseNameEditable"
-              text="Enable External Database"
+              text=" Database"
             ></dx-check-box>
             <dx-text-box
               class="mt-0"
@@ -30,9 +30,9 @@
           <!-- XML Directory Field with Checkbox -->
           <div class="col-md-4">
             <dx-check-box
-              class="mb-0"
+              class="mb-1"
               [(value)]="isXMLDirectoryEditable"
-              text="Enable external XML Directory"
+              text="XML Directory"
             ></dx-check-box>
             <dx-text-box
               class="mt-0"
@@ -44,12 +44,12 @@
           </div>
 
           <div class="col-md-4 mt-3 pb-3">
-            <dx-text-box
+            <dx-number-box
               class="ms-0"
               [(value)]="ServiceInterval"
-              label="Service Interval"
+              label="Service Interval (min)"
               labelMode="floating"
-            ></dx-text-box>
+            ></dx-number-box>
           </div>
         </div>
       </div>

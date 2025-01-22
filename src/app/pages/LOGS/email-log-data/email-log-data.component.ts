@@ -89,7 +89,6 @@ export class EmailLogDataComponent {
       ...rowData,
       DatePeriod: parseInt(rowData.DatePeriod, 10),
     };
-    console.log('selected row data =>', this.selectedRowData);
     this.is_EditFormVisible = true;
   }
   //======================
@@ -242,11 +241,7 @@ export class EmailLogDataComponent {
       searchOn: this.newSearchOnValue,
       encounterType: this.newEncounterTypeValue,
       datePeriod: this.newDatePeriodValue,
-      userID: Array.isArray(this.newUserIDValue)
-        ? this.newUserIDValue.map((user: any) => user.UserID).join(',') // Handle array
-        : Object.values(this.newUserIDValue || {}) // Handle object
-            .map((entry: any) => entry.UserID)
-            .join(', '),
+      userEmailID: this.newUserIDValue.join(','),
     };
     this.dataService
       .insert_Email_alert_Data(this.formData)

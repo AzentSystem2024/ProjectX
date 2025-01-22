@@ -6,6 +6,7 @@ import {
   DxDateBoxModule,
   DxDropDownBoxModule,
   DxFormModule,
+  DxNumberBoxModule,
   DxPopupModule,
   DxSelectBoxModule,
   DxTagBoxModule,
@@ -436,6 +437,7 @@ export class AutoDownloadSettingsComponent {
     DxTreeListModule,
     DxPopupModule,
     DxDropDownBoxModule,
+    DxNumberBoxModule
   ],
   providers: [],
   exports: [],

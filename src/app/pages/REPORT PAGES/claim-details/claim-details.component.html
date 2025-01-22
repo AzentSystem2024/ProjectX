@@ -778,10 +778,8 @@
       [showCloseButton]="false"
     >
       <div *dxTemplate="let data of 'content'">
-        <!-- <button class="custom-minimize-btn" [attr.data-popup-id]="popup.id"  (click)="minimisePopup(popup.id)">
-          &minus;
-        </button> -->
         <button
+          aria-label="minimise"
           class="custom-minimize-btn"
           [attr.data-popup-id]="popup.id"
           (click)="minimisePopup(popup.id)"

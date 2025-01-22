@@ -132,7 +132,7 @@ export class DataService {
       DatePeriod: formData.datePeriod,
       EncounterType: formData.encounterType,
       FacilityID: formData.facilities,
-      EmailUserID: formData.userID,
+      EmailUserID: formData.userEmailID,
     };
     return this.http.post(url, reqBody);
   }
@@ -141,15 +141,16 @@ export class DataService {
   update_Email_alert_Data(formData: any) {
     const userid = sessionStorage.getItem('UserID');
     const url = `${BASE_URL}emailscheduler/update`;
+    console.log('selected row data after editing from service =>', formData);
     const reqBody = {
       UserID: userid,
       ID: formData.ID,
-      ReportID: formData.reportID,
-      SearchOn: formData.searchOn,
-      DatePeriod: formData.datePeriod,
-      EncounterType: formData.encounterType,
-      FacilityID: formData.facilities,
-      EmailUserID: formData.userID,
+      ReportID: formData.ReportIDList.join(','),
+      SearchOn: formData.SearchOn,
+      DatePeriod: formData.DatePeriod,
+      EncounterType: formData.EncounterType,
+      FacilityID: formData.FacilityIDList.join(','),
+      EmailUserID: formData.EmailUserIDList.join(','),
     };
     return this.http.post(url, reqBody);
   }
