@@ -187,10 +187,13 @@ export class AutoDownloadSettingsComponent {
     } else {
       this.isAddPopupVisible = true;
     }
+    
   }
 
   //==================editing start event =============================
   onEditingStart(e: any): void {
+    e.preventDefault();  // Prevent default behavior
+    e.stopPropagation(); // Prevent event propagation
     this.updatenodeId = e.data.id;
     // Fetch the current parent node's ID
     const selectedNodeId = e.data.id;
@@ -227,6 +230,7 @@ export class AutoDownloadSettingsComponent {
       e.cancel = false;
       this.isChildNodeData = true;
     }
+
   }
 
   //=========================onclick of save button ==========================
@@ -437,7 +441,7 @@ export class AutoDownloadSettingsComponent {
     DxTreeListModule,
     DxPopupModule,
     DxDropDownBoxModule,
-    DxNumberBoxModule
+    DxNumberBoxModule,
   ],
   providers: [],
   exports: [],
