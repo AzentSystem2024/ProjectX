@@ -64,6 +64,7 @@ export class AutoDownloadSettingsComponent {
   is_EditFormVisible: boolean = false;
   updatenodeId: any;
   isChildNodeData: boolean = false;
+  private currentMaxId = Math.max(...this.dataSource.map(item => item.id), 0);
 
   constructor(private dataService: DataService) {
     this.get_Facility_List();
@@ -187,13 +188,20 @@ export class AutoDownloadSettingsComponent {
     } else {
       this.isAddPopupVisible = true;
     }
-    
   }
 
   //==================editing start event =============================
   onEditingStart(e: any): void {
-    e.preventDefault();  // Prevent default behavior
-    e.stopPropagation(); // Prevent event propagation
+    if (e.event && e.event.target && e.event.target.classList.contains('add-button')) {
+      e.preventDefault();  // Prevent default behavior for Add button click
+      e.stopPropagation(); // Stop event propagation for Add button click
+  
+      // Manually call the Add Instance function
+      this.on_Add_New_Instance(e); 
+  
+      return;  // Skip the edit form logic
+    }
+
     this.updatenodeId = e.data.id;
     // Fetch the current parent node's ID
     const selectedNodeId = e.data.id;
@@ -219,6 +227,7 @@ export class AutoDownloadSettingsComponent {
           currentParentFacilityIds.has(facility.FacilityID) || // Keep facilities assigned to the current parent
           !allUsedFacilityIds.has(facility.FacilityID) // Include facilities not present in the dataSource
       );
+      console.log(this.filteredFacilityDataSource,"FILTEREDFACILITY")
       // Initialize popup fields
       this.Update_InstanceValue = e.data.Instance;
       this.update_instanceClaimDownloadStartDate = null;
@@ -226,11 +235,11 @@ export class AutoDownloadSettingsComponent {
       this.Update_Facility_Value = Array.from(currentParentFacilityIds);
       // Show the popup
       this.is_EditFormVisible = true;
+      this.isAddPopupVisible = false;
     } else {
       e.cancel = false;
       this.isChildNodeData = true;
     }
-
   }
 
   //=========================onclick of save button ==========================
@@ -263,73 +272,153 @@ export class AutoDownloadSettingsComponent {
   };
 
   //=====================update row data====================
-  On_Update_DataSource(): void {
-    const parentId = this.updatenodeId;
-    // Find the parent node in the dataSource
-    const parentNode = this.dataSource.find((item) => item.id === parentId);
-    if (!parentNode) {
-      console.error('Parent node not found!');
-      return;
-    }
-    // Update the parent node's Instance name
+  // On_Update_DataSource(): void {
+  //   const parentId = this.updatenodeId;
+  //   console.log(parentId,"PARENTID")
+  //   // Find the parent node in the dataSource
+  //   const parentNode = this.dataSource.find((item) => item.id === parentId);
+  //   if (!parentNode) {
+  //     console.error('Parent node not found!');
+  //     return;
+  //   }
+  //   console.log(parentNode,"PARENTNODEEEEEEEEE")
+  //   // Update the parent node's Instance name
+  //   parentNode.Instance = this.Update_InstanceValue;
+  //   console.log(parentNode.Instance,"INSTANCEEEEEE")
+  //   // Get current child nodes for the parent
+  //   const currentChildNodes = this.dataSource.filter(
+  //     (item) => item.parentId === parentId
+  //   );
+  //   console.log(currentChildNodes,"CURRENTCHILDNODES")
+  //   // Create a set of existing facility IDs for the current parent
+  //   const existingFacilityIds = new Set(
+  //     currentChildNodes.map((child) => child.Facility)
+  //   );
+  //   // Prepare updated child nodes based on selected facilities
+  //   const selectedFacilities = this.Update_Facility_Value;
+  //   console.log(selectedFacilities,"SELECTEDFACILITIES")
+  //   const updatedChildNodes: any[] = selectedFacilities.map((facilityId) => {
+  //     const existingChildNode = currentChildNodes.find(
+  //       (child) => child.Facility === facilityId
+  //     );
+  //     if (existingChildNode) {
+  //       // If the child node already exists, return it with updated values
+  //       return {
+  //         ...existingChildNode,
+  //         Instance: this.Update_InstanceValue,
+  //         ClaimTransactionDate: this.update_instanceClaimDownloadStartDate,
+  //         RemittanceTransactionDate:
+  //           this.update_instanceRemittanceDownloadStartDate,
+  //       };
+  //     } else {
+  //       // Create a new child node for the selected facility
+  //       return {
+  //         id: this.generateUniqueId(),
+  //         parentId: parentId,
+  //         Instance: this.Update_InstanceValue,
+  //         Facility: facilityId,
+  //         ClaimTransactionDate: this.update_instanceClaimDownloadStartDate,
+  //         RemittanceTransactionDate:
+  //           this.update_instanceRemittanceDownloadStartDate,
+  //       };
+  //     }
+  //   });
+
+  //   // Remove existing child nodes for the parent and add the updated ones
+  //   this.dataSource = [
+  //     ...this.dataSource.filter((item) => item.parentId !== parentId),
+  //     ...updatedChildNodes,
+  //   ];
+
+  //   // Reset the form and log the updated dataSource
+  //   this.resetForm();
+  //   console.log('Updated dataSource:', this.dataSource);
+  // }
+
+On_Update_DataSource() {
+  const newFacilities = this.Update_Facility_Value; // Facilities to add
+  const parentId = this.updatenodeId; // Parent node ID
+
+  // Update parent node
+  const parentNode = this.dataSource.find((node) => node.id === parentId);
+  if (parentNode) {
     parentNode.Instance = this.Update_InstanceValue;
-    // Get current child nodes for the parent
-    const currentChildNodes = this.dataSource.filter(
-      (item) => item.parentId === parentId
-    );
-    // Create a set of existing facility IDs for the current parent
-    const existingFacilityIds = new Set(
-      currentChildNodes.map((child) => child.Facility)
-    );
-    // Prepare updated child nodes based on selected facilities
-    const selectedFacilities = this.Update_Facility_Value;
-    const updatedChildNodes: any[] = selectedFacilities.map((facilityId) => {
-      const existingChildNode = currentChildNodes.find(
-        (child) => child.Facility === facilityId
-      );
-      if (existingChildNode) {
-        // If the child node already exists, return it with updated values
-        return {
-          ...existingChildNode,
-          Instance: this.Update_InstanceValue,
-          ClaimTransactionDate: this.update_instanceClaimDownloadStartDate,
-          RemittanceTransactionDate:
-            this.update_instanceRemittanceDownloadStartDate,
-        };
-      } else {
-        // Create a new child node for the selected facility
-        return {
-          id: this.generateUniqueId(),
-          parentId: parentId,
-          Instance: this.Update_InstanceValue,
-          Facility: facilityId,
-          ClaimTransactionDate: this.update_instanceClaimDownloadStartDate,
-          RemittanceTransactionDate:
-            this.update_instanceRemittanceDownloadStartDate,
-        };
-      }
-    });
-
-    // Remove existing child nodes for the parent and add the updated ones
-    this.dataSource = [
-      ...this.dataSource.filter((item) => item.parentId !== parentId),
-      ...updatedChildNodes,
-    ];
-
-    // Reset the form and log the updated dataSource
-    this.resetForm();
-    console.log('Updated dataSource:', this.dataSource);
   }
+
+  // Add or update child nodes for each facility
+  newFacilities.forEach((facility) => {
+    // Check if the facility already exists as a child of the parent
+    const existingChild = this.dataSource.find(
+      (node) => node.parentId === parentId && node.Facility === facility
+    );
+
+    if (!existingChild) {
+      // Create a new child node if it doesn't exist
+      const newId = this.generateUniqueId();
+      const newChild = {
+        id: newId,
+        parentId: parentId,
+        Instance: this.Update_InstanceValue,
+        Facility: facility,
+        ClaimTransactionDate: this.update_instanceClaimDownloadStartDate,
+        RemittanceTransactionDate: this.update_instanceRemittanceDownloadStartDate,
+      };
+
+      console.log('Adding new child:', newChild);
+
+      // Add the new child node to the dataSource
+      this.dataSource.push(newChild);
+    } else {
+      // Update existing child node
+      existingChild.Instance = this.Update_InstanceValue;
+      existingChild.ClaimTransactionDate = this.update_instanceClaimDownloadStartDate;
+      existingChild.RemittanceTransactionDate = this.update_instanceRemittanceDownloadStartDate;
+
+      console.log('Updated existing child:', existingChild);
+    }
+  });
+
+  console.log('Updated dataSource:', this.dataSource);
+}
+
+
+
+
+
+
+  
+
+  onFacilitySelectionChange(event: any): void {
+  console.log('Facilities changed:', event.value);
+  this.Update_Facility_Value = event.value;
+}
+
+
+
+
+  
 
   //=======find the next available id of dataSource Object==========
-  generateUniqueId(): number {
-    // Find the highest existing ID in the dataSource
-    const maxId = this.dataSource.reduce(
-      (max, item) => (item.id > max ? item.id : max),
-      0
-    );
-    return maxId + 1;
-  }
+  // generateUniqueId(): number {
+  //   // Find the highest existing ID in the dataSource
+  //   const maxId = this.dataSource.reduce(
+  //     (max, item) => (item.id > max ? item.id : max),
+  //     0
+  //   );
+  //   return maxId + 1;
+  // }
+generateUniqueId(): number {
+  const allIds = this.dataSource.map((item) => item.id).filter((id) => id !== null && id !== undefined);
+  const nextId = allIds.length > 0 ? Math.max(...allIds) + 1 : 1;
+
+  console.log('Generated unique ID:', nextId, 'from IDs:', allIds);
+  return nextId;
+}
+
+
+
+
+
 
   // ==========Function to Delete the Selected Row================
   deleteRow(event: any) {
@@ -441,7 +530,7 @@ export class AutoDownloadSettingsComponent {
     DxTreeListModule,
     DxPopupModule,
     DxDropDownBoxModule,
-    DxNumberBoxModule,
+    DxNumberBoxModule
   ],
   providers: [],
   exports: [],

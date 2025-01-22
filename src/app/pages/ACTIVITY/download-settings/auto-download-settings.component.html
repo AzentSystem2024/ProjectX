@@ -352,6 +352,7 @@
             [showSelectionControls]="true"
             applyValueMode="instantly"
             [inputAttr]="{ 'aria-label': 'Product' }"
+            (onValueChanged)="onFacilitySelectionChange($event)"
           >
           </dx-tag-box>
         </dxi-item>

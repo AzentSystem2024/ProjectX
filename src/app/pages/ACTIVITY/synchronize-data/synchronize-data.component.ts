@@ -351,7 +351,7 @@ export class SynchronizeDataComponent implements OnInit {
               my: 'top right',
             },
           }, 'success');
-        }, 30000);
+        }, 5000);
       } else {
         // If Flag is not 1, clear the interval
         this.clearNotificationInterval();
