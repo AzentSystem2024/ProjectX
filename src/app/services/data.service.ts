@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-
+import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
 import { formatDate } from '@angular/common';
@@ -113,4 +113,12 @@ export class DataService {
     const reqBody = data;
     return this.http.post(url, reqBody);
   }
+
+  getServiceSynchStatus(): Observable<{ Flag: number; Message: string }> {
+    console.trace('getServiceSynchStatus called');
+    const url = `${BASE_URL}downloadsettings/ServiceSynch`;
+    return this.http.post<{ Flag: number; Message: string }>(url, {}); // Empty object for POST body
+  }
+  
+  
 }

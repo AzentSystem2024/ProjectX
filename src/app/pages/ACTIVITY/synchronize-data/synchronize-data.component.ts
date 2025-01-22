@@ -14,6 +14,10 @@ import { DxProgressBarModule } from 'devextreme-angular';
 import { DataService } from 'src/app/services';
 import notify from 'devextreme/ui/notify';
 import { MasterReportService } from '../../MASTER PAGES/master-report.service';
+import { DxToastModule } from 'devextreme-angular';
+import { Subscription } from 'rxjs';
+import { NavigationEnd, NavigationStart, Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-synchronize-data',
@@ -26,7 +30,7 @@ export class SynchronizeDataComponent implements OnInit {
 
   toolbarItems = [
     {
-      text: 'Synchronize Claim & Remittance Data',
+      text: 'Synchronize Claim & Remittance',
       location: 'before',
     },
   ];
@@ -54,10 +58,18 @@ export class SynchronizeDataComponent implements OnInit {
   processReportButtonVisibility: boolean = true;
   lastClaimSyncTime: any;
   lastRemittanceSyncTime: any;
+  message: string = '';
+  disableButtons = false;
+  intervalId: any;
+  // serviceSubscription: Subscription | null = null; // For managing the service subscription
+  private serviceSubscription: Subscription | null = null;
+  private routerSubscription: Subscription | null = null;
+  
 
   constructor(
     private dataService: DataService,
-    private masterservice: MasterReportService
+    private masterservice: MasterReportService,
+    private router: Router
   ) {
     this.get_Facility_List_Data();
     this.fetch_last_sync_times();
@@ -66,7 +78,25 @@ export class SynchronizeDataComponent implements OnInit {
   ngOnInit() {
     this.minDate = new Date(2000, 1, 1);
     this.maxDate = new Date();
+    this.fetchServiceStatus();
+    this.routerSubscription = this.router.events.subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        // Stop notifications when leaving the page
+        console.log('NavigationStart detected, stopping notifications');
+        this.clearNotificationInterval();
+      } else if (event instanceof NavigationEnd && this.isCurrentPage(event.urlAfterRedirects)) {
+        // Restore notifications when returning to this page
+        console.log('NavigationEnd detected, restoring notifications');
+        this.restoreNotificationOnNavigation();
+      }
+    });
   }
+
+  isCurrentPage(url: string): boolean {
+    // Replace '/specific-page' with the actual route path of this page
+    return url === '/Synchronize-Data-Pages';
+  }
+  
 
   format(ratio) {
     return `Downloading: ${ratio * 100}%`;
@@ -288,6 +318,77 @@ export class SynchronizeDataComponent implements OnInit {
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   }
+
+  fetchServiceStatus() {
+    // Subscribe to the service and manage the notification logic
+    this.serviceSubscription = this.dataService.getServiceSynchStatus().subscribe((response: any) => {
+      console.log(response, "SERVICESTATUS");
+      
+      // If Flag is 1, enable notifications for this page
+      if (response.Flag === 1 || response.Flag === 2 || response.Flag === 3) {
+        this.disableButtons = true;
+
+        // Notify immediately
+        notify({
+          message: response.Message,
+          position: {
+            at: 'top right',
+            my: 'top right',
+          },
+        }, 'success');
+
+        // Clear any existing interval to avoid duplication
+        if (this.intervalId) {
+          clearInterval(this.intervalId);
+        }
+
+        // Start a new interval to display the message every 30 seconds
+        this.intervalId = setInterval(() => {
+          notify({
+            message: response.Message,
+            position: {
+              at: 'top right',
+              my: 'top right',
+            },
+          }, 'success');
+        }, 30000);
+      } else {
+        // If Flag is not 1, clear the interval
+        this.clearNotificationInterval();
+      }
+    });
+  }
+
+  restoreNotificationOnNavigation(): void {
+    console.log('Restoring notifications for SpecificPageComponent');
+    this.fetchServiceStatus();
+  }
+
+  clearNotificationInterval(): void {
+    // Clear the interval if it exists
+    if (this.intervalId) {
+      console.log('Clearing interval:', this.intervalId);
+      clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
+  }
+  ngOnDestroy(): void {
+    console.log('ngOnDestroy called for SpecificPageComponent');
+
+    // Clear the interval and unsubscribe from all subscriptions
+    this.clearNotificationInterval();
+
+    if (this.serviceSubscription) {
+      this.serviceSubscription.unsubscribe();
+      console.log('Unsubscribed from serviceSubscription');
+    }
+
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+      console.log('Unsubscribed from routerSubscription');
+    }
+  }
+  
 }
 
 @NgModule({
@@ -301,6 +402,7 @@ export class SynchronizeDataComponent implements OnInit {
     DxProgressBarModule,
     DxLoadPanelModule,
     DxValidatorModule,
+    DxToastModule 
   ],
   providers: [],
   exports: [],

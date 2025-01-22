@@ -61,7 +61,7 @@
         </p>
         <h1>{{ facilityDownloadedCount }}</h1>
         <dx-button
-          [disabled]="!facilityButtonVisibility"
+          [disabled]="!facilityButtonVisibility || disableButtons"
           text="Sync Claim Data"
           type="default"
           stylingMode="contained"
@@ -80,7 +80,7 @@
 
         <h1>{{ RemittanceDownloadedCount }}</h1>
         <dx-button
-          [disabled]="!remittanceButtonVisibility"
+          [disabled]="!remittanceButtonVisibility || disableButtons"
           text="Sync Remittance Data"
           type="default"
           stylingMode="contained"
@@ -94,7 +94,7 @@
     </div>
     <div class="ButtonContentDiv mt-2">
       <dx-button
-        [disabled]="!processReportButtonVisibility"
+        [disabled]="!processReportButtonVisibility || disableButtons"
         text="Process Report"
         type="default"
         stylingMode="contained"
