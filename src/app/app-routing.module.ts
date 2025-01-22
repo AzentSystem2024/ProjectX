@@ -44,9 +44,10 @@ import { ImportMasterDataComponent } from './pages/MASTER PAGES/import-master-da
 import { ClaimDetailsComponent } from './pages/REPORT PAGES/claim-details/claim-details.component';
 import { ClaimSummaryMonthWiseComponent } from './pages/REPORT PAGES/claim-summary-month-wise/claim-summary-month-wise.component';
 import { SynchronizeDataComponent } from './pages/ACTIVITY/synchronize-data/synchronize-data.component';
-import { AutoDownloadSettingsComponent } from './pages/ACTIVITY/auto-download-settings/auto-download-settings.component';
-import { DownloadLogViewComponent } from './pages/ACTIVITY/download-log-view/download-log-view.component';
+import { AutoDownloadSettingsComponent } from './pages/ACTIVITY/download-settings/auto-download-settings.component';
+import { DownloadLogViewComponent } from './pages/LOGS/download-log-view/download-log-view.component';
 import { ResubmissionSummaryComponent } from './pages/REPORT PAGES/resubmission-summary/resubmission-summary.component';
+import { EmailLogDataComponent } from './pages/LOGS/email-log-data/email-log-data.component';
 const routes: Routes = [
   {
     path: '',
@@ -261,6 +262,11 @@ const routes: Routes = [
       {
         path: 'Resubmission-Summary-Page',
         component: ResubmissionSummaryComponent,
+        canActivate: [AuthGuardService],
+      },
+      {
+        path: 'Email-Log-Scheduling',
+        component: EmailLogDataComponent,
         canActivate: [AuthGuardService],
       },
       {

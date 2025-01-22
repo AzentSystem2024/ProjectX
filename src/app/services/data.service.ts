@@ -121,4 +121,44 @@ export class DataService {
   }
   
   
+  //==================Email schedule data List==========
+  get_email_Log_data() {
+    const url = `${BASE_URL}emailscheduler/list`;
+    const reqBody = {};
+    return this.http.post(url, reqBody);
+  }
+
+  //================Insert email alert data============
+  insert_Email_alert_Data(formData: any) {
+    const userid = sessionStorage.getItem('UserID');
+    const url = `${BASE_URL}emailscheduler/insert`;
+    const reqBody = {
+      UserID: userid,
+      ReportID: formData.reportID,
+      SearchOn: formData.searchOn,
+      DatePeriod: formData.datePeriod,
+      EncounterType: formData.encounterType,
+      FacilityID: formData.facilities,
+      EmailUserID: formData.userEmailID,
+    };
+    return this.http.post(url, reqBody);
+  }
+
+  //================Insert email alert data============
+  update_Email_alert_Data(formData: any) {
+    const userid = sessionStorage.getItem('UserID');
+    const url = `${BASE_URL}emailscheduler/update`;
+    console.log('selected row data after editing from service =>', formData);
+    const reqBody = {
+      UserID: userid,
+      ID: formData.ID,
+      ReportID: formData.ReportIDList.join(','),
+      SearchOn: formData.SearchOn,
+      DatePeriod: formData.DatePeriod,
+      EncounterType: formData.EncounterType,
+      FacilityID: formData.FacilityIDList.join(','),
+      EmailUserID: formData.EmailUserIDList.join(','),
+    };
+    return this.http.post(url, reqBody);
+  }
 }

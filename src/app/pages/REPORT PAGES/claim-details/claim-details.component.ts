@@ -191,13 +191,6 @@ export class ClaimDetailsComponent implements OnInit {
         this.updateToolbarItems(popup.id); // Pass the popupId when calling this method
       });
     }
-    // this.router.events.subscribe((event) => {
-    //   if (event instanceof NavigationEnd) {
-    //     this.isDrillDownPopupOpened = this.popupStateService.getPopupState(
-    //       'claimDetaisDrillDownPopup'
-    //     );
-    //   }
-    // });
     // Add the subscription to NavigationStart here
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
@@ -312,18 +305,6 @@ export class ClaimDetailsComponent implements OnInit {
   }
 
   //=================Row click drill Down===================
-  // handleRowDrillDownClick = (e: any) => {
-  //   this.isPopupMinimised = false;
-  //   this.updateToolbarItems();
-  //   this.popupWidth = '100%';
-  //   this.popupHeight = '100%';
-  //   this.popupPosition = { my: 'center', at: 'center', of: '.view-wrapper' };
-  //   const rowData = e.row.data;
-  //   this.clickedRowData = rowData;
-  //   this.isDrillDownPopupOpened = true;
-  //   this.popupStateService.setPopupState('claimDetaisDrillDownPopup', true);
-  // };
-
   handleRowDrillDownClick = (e: any) => {
     const popupId = `drilldown-${new Date().getTime()}`; // Unique ID for each popup
     const rowData = e.row.data;

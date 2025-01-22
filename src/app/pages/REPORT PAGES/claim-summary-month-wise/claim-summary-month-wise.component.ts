@@ -192,7 +192,7 @@ export class ClaimSummaryMonthWiseComponent {
           if (event instanceof NavigationStart) {
             this.hidePopupsOnNavigation();
           }
-    
+
           // Listen for NavigationEnd event to restore visibility
           if (event instanceof NavigationEnd) {
             this.restorePopupsOnNavigation();
