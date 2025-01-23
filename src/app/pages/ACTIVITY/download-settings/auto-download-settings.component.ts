@@ -168,6 +168,7 @@ export class AutoDownloadSettingsComponent {
 
   //====================New instance add button click event================
   on_Add_New_Instance(e: any) {
+    e.event?.stopPropagation();
     const usedFacilityIds = new Set(
       this.dataSource.map((item) => item.Facility)
     );
@@ -187,8 +188,12 @@ export class AutoDownloadSettingsComponent {
       );
     } else {
       this.isAddPopupVisible = true;
+      this.is_EditFormVisible = false;
     }
   }
+
+  
+  
 
   //==================editing start event =============================
   onEditingStart(e: any): void {
@@ -227,7 +232,7 @@ export class AutoDownloadSettingsComponent {
           currentParentFacilityIds.has(facility.FacilityID) || // Keep facilities assigned to the current parent
           !allUsedFacilityIds.has(facility.FacilityID) // Include facilities not present in the dataSource
       );
-      console.log(this.filteredFacilityDataSource,"FILTEREDFACILITY")
+      // console.log(this.filteredFacilityDataSource,"FILTEREDFACILITY")
       // Initialize popup fields
       this.Update_InstanceValue = e.data.Instance;
       this.update_instanceClaimDownloadStartDate = null;
@@ -235,12 +240,16 @@ export class AutoDownloadSettingsComponent {
       this.Update_Facility_Value = Array.from(currentParentFacilityIds);
       // Show the popup
       this.is_EditFormVisible = true;
-      this.isAddPopupVisible = false;
     } else {
       e.cancel = false;
       this.isChildNodeData = true;
     }
   }
+
+  
+  
+  
+  
 
   //=========================onclick of save button ==========================
   onAddClick = () => {
@@ -364,7 +373,7 @@ On_Update_DataSource() {
         RemittanceTransactionDate: this.update_instanceRemittanceDownloadStartDate,
       };
 
-      console.log('Adding new child:', newChild);
+      // console.log('Adding new child:', newChild);
 
       // Add the new child node to the dataSource
       this.dataSource.push(newChild);
@@ -374,22 +383,18 @@ On_Update_DataSource() {
       existingChild.ClaimTransactionDate = this.update_instanceClaimDownloadStartDate;
       existingChild.RemittanceTransactionDate = this.update_instanceRemittanceDownloadStartDate;
 
-      console.log('Updated existing child:', existingChild);
+      // console.log('Updated existing child:', existingChild);
     }
   });
 
-  console.log('Updated dataSource:', this.dataSource);
+  // console.log('Updated dataSource:', this.dataSource);
+  this.is_EditFormVisible = false;
 }
-
-
-
-
-
 
   
 
   onFacilitySelectionChange(event: any): void {
-  console.log('Facilities changed:', event.value);
+  // console.log('Facilities changed:', event.value);
   this.Update_Facility_Value = event.value;
 }
 
@@ -411,7 +416,7 @@ generateUniqueId(): number {
   const allIds = this.dataSource.map((item) => item.id).filter((id) => id !== null && id !== undefined);
   const nextId = allIds.length > 0 ? Math.max(...allIds) + 1 : 1;
 
-  console.log('Generated unique ID:', nextId, 'from IDs:', allIds);
+  // console.log('Generated unique ID:', nextId, 'from IDs:', allIds);
   return nextId;
 }
 

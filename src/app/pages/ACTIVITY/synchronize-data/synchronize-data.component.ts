@@ -325,7 +325,7 @@ export class SynchronizeDataComponent implements OnInit {
       console.log(response, "SERVICESTATUS");
       
       // If Flag is 1, enable notifications for this page
-      if (response.Flag === 1 || response.Flag === 2 || response.Flag === 3) {
+      if (response.Flag === 1) {
         this.disableButtons = true;
 
         // Notify immediately
@@ -355,6 +355,7 @@ export class SynchronizeDataComponent implements OnInit {
       } else {
         // If Flag is not 1, clear the interval
         this.clearNotificationInterval();
+        this.disableButtons = false;
       }
     });
   }
