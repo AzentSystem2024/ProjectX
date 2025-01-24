@@ -232,7 +232,7 @@ export class AutoDownloadSettingsComponent {
           currentParentFacilityIds.has(facility.FacilityID) || // Keep facilities assigned to the current parent
           !allUsedFacilityIds.has(facility.FacilityID) // Include facilities not present in the dataSource
       );
-      // console.log(this.filteredFacilityDataSource,"FILTEREDFACILITY")
+      console.log(this.filteredFacilityDataSource,"FILTEREDFACILITY")
       // Initialize popup fields
       this.Update_InstanceValue = e.data.Instance;
       this.update_instanceClaimDownloadStartDate = null;
@@ -372,9 +372,6 @@ On_Update_DataSource() {
         ClaimTransactionDate: this.update_instanceClaimDownloadStartDate,
         RemittanceTransactionDate: this.update_instanceRemittanceDownloadStartDate,
       };
-
-      // console.log('Adding new child:', newChild);
-
       // Add the new child node to the dataSource
       this.dataSource.push(newChild);
     } else {

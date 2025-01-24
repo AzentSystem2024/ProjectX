@@ -95,11 +95,17 @@
 
               <!-- Facility Field -->
               <dxi-item
-                dataField="Facility"
-                editorType="dxTextBox"
-                caption="Facility Name"
-                [disabled]="isChildNodeData"
-              ></dxi-item>
+              dataField="Facility"
+              [editorType]="'dxSelectBox'"
+
+              [editorOptions]="{
+                dataSource: filteredFacilityDataSource,
+                displayExpr: 'FacilityName',
+                valueExpr: 'FacilityID'
+              }"
+              caption="Facility Name"
+              [disabled]="isChildNodeData"
+            ></dxi-item>
               <dxi-item
                 dataField="ClaimTransactionDate"
                 caption="Claim Transaction Date"
