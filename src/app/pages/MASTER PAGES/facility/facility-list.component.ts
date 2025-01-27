@@ -108,6 +108,7 @@ export class FacilityListComponent implements OnInit {
     let id = combinedData.ID;
     let FacilityLicense = combinedData.FacilityLicense;
     let FacilityName = combinedData.FacilityName;
+    let FacilityShortName = combinedData.FacilityShortName;
     let Region = combinedData.Region;
     let FacilityTypeID = combinedData.FacilityTypeID;
     let FacilityAddress = combinedData.FacilityAddress;
@@ -123,6 +124,7 @@ export class FacilityListComponent implements OnInit {
         id,
         FacilityLicense,
         FacilityName,
+        FacilityShortName,
         Region,
         FacilityTypeID,
         FacilityAddress,
