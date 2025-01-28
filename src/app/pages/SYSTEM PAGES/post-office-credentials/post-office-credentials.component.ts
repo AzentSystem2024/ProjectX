@@ -22,6 +22,8 @@ import notify from 'devextreme/ui/notify';
 import DataSource from 'devextreme/data/data_source';
 import { Router } from '@angular/router';
 import { DataService } from 'src/app/services';
+import { of, switchMap } from 'rxjs';
+import { delay } from 'rxjs/operators';
 
 @Component({
   selector: 'app-post-office-credentials',
@@ -151,12 +153,112 @@ export class PostOfficeCredentialsComponent implements OnInit {
   }
 
   //==================update data===================
+  // onRowUpdating(event: any) {
+  //   const oldData = event.oldData;
+  //   const newData = event.newData;
+  //   const updatedData = { ...oldData, ...newData };
+  //   const { FacilityID, PostOfficeID, LoginName, Password } = updatedData;
+
+  //   this.systemService
+  //     .verify_update_PostOfficeCredencial_Data(
+  //       FacilityID,
+  //       PostOfficeID,
+  //       LoginName,
+  //       Password
+  //     )
+  //     .subscribe(
+  //       (verifyResponse: any) => {
+  //         if (verifyResponse.flag === 1) {
+  //           notify(
+  //             {
+  //               // message: `Verification successful! Proceeding to update.`,
+  //               message: `Verifying Credentials. Please Wait...`,
+  //               position: { at: 'top right', my: 'top right' },
+  //               displayTime: 5000,
+  //             },
+  //             'success',
+  //           );
+  //           // If verification is successful, proceed to update the data
+  //           this.systemService
+  //             .update_PostOfficeCredencial_Data(
+  //               FacilityID,
+  //               PostOfficeID,
+  //               LoginName,
+  //               Password
+  //             )
+  //             .subscribe(
+  //               (updateResponse: any) => {
+  //                 if (updateResponse) {
+  //                   notify(
+  //                     {
+  //                       message: `${updateResponse.message}`,
+  //                       position: { at: 'top right', my: 'top right' },
+  //                       displayTime: 1000,
+  //                     },
+  //                     'success'
+  //                   );
+                    
+  //                   this.dataGrid.instance.refresh(); // Refresh the grid after update
+  //                 } else {
+  //                   notify(
+  //                     {
+  //                       message: `Failed to update data.`,
+  //                       position: { at: 'top right', my: 'top right' },
+  //                       displayTime: 1000,
+  //                     },
+  //                     'error'
+  //                   );
+  //                 }
+  //                 event.component.cancelEditData(); // Close the edit popup
+  //               },
+  //               (error: any) => {
+  //                 console.error('Update error:', error);
+  //                 notify(
+  //                   {
+  //                     message: `Error updating data: ${error.message}`,
+  //                     position: { at: 'top right', my: 'top right' },
+  //                     displayTime: 1000,
+  //                   },
+  //                   'error'
+  //                 );
+  //                 event.component.cancelEditData();
+  //               }
+  //             );
+  //         } else {
+  //           notify(
+  //             {
+  //               message: `Verification failed. Update not performed.`,
+  //               position: { at: 'top right', my: 'top right' },
+  //               displayTime: 1000,
+  //             },
+  //             'error'
+  //           );
+  //           event.component.cancelEditData(); // Close the edit popup
+  //         }
+  //       },
+  //       (error: any) => {
+  //         console.error('Verification error:', error);
+  //         notify(
+  //           {
+  //             message: `Error verifying data: ${error.message}`,
+  //             position: { at: 'top right', my: 'top right' },
+  //             displayTime: 1000,
+  //           },
+  //           'error'
+  //         );
+  //         event.component.cancelEditData();
+  //       }
+  //     );
+
+  //   event.cancel = true; // Prevent the default update operation
+  // }
+
   onRowUpdating(event: any) {
     const oldData = event.oldData;
     const newData = event.newData;
     const updatedData = { ...oldData, ...newData };
     const { FacilityID, PostOfficeID, LoginName, Password } = updatedData;
-
+  
     this.systemService
       .verify_update_PostOfficeCredencial_Data(
         FacilityID,
@@ -164,79 +266,63 @@ export class PostOfficeCredentialsComponent implements OnInit {
         LoginName,
         Password
       )
-      .subscribe(
-        (verifyResponse: any) => {
+      .pipe(
+        switchMap((verifyResponse: any) => {
           if (verifyResponse.flag === 1) {
             notify(
               {
-                message: `Verification successful! Proceeding to update.`,
+                message: `Verifying Credentials. Please Wait...`,
                 position: { at: 'top right', my: 'top right' },
                 displayTime: 5000,
               },
               'success'
             );
-            // If verification is successful, proceed to update the data
-            this.systemService
-              .update_PostOfficeCredencial_Data(
-                FacilityID,
-                PostOfficeID,
-                LoginName,
-                Password
-              )
-              .subscribe(
-                (updateResponse: any) => {
-                  if (updateResponse) {
-                    notify(
-                      {
-                        message: `${updateResponse.message}`,
-                        position: { at: 'top right', my: 'top right' },
-                        displayTime: 1000,
-                      },
-                      'success'
-                    );
-                    this.dataGrid.instance.refresh(); // Refresh the grid after update
-                  } else {
-                    notify(
-                      {
-                        message: `Failed to update data.`,
-                        position: { at: 'top right', my: 'top right' },
-                        displayTime: 1000,
-                      },
-                      'error'
-                    );
-                  }
-                  event.component.cancelEditData(); // Close the edit popup
-                },
-                (error: any) => {
-                  console.error('Update error:', error);
-                  notify(
-                    {
-                      message: `Error updating data: ${error.message}`,
-                      position: { at: 'top right', my: 'top right' },
-                      displayTime: 1000,
-                    },
-                    'error'
-                  );
-                  event.component.cancelEditData();
-                }
-              );
+  
+            // Wait 5 seconds before proceeding
+            return of(verifyResponse).pipe(delay(5000));
+          } else {
+            throw new Error('Verification failed');
+          }
+        }),
+        switchMap(() =>
+          this.systemService.update_PostOfficeCredencial_Data(
+            FacilityID,
+            PostOfficeID,
+            LoginName,
+            Password
+          )
+        )
+      )
+      .subscribe(
+        (updateResponse: any) => {
+          if (updateResponse) {
+            notify(
+              {
+                message: `${updateResponse.message}`,
+                position: { at: 'top right', my: 'top right' },
+                displayTime: 1000,
+              },
+              'success'
+            );
+  
+            this.dataGrid.instance.refresh();
           } else {
             notify(
               {
-                message: `Verification failed. Update not performed.`,
+                message: `Failed to update data.`,
                 position: { at: 'top right', my: 'top right' },
                 displayTime: 1000,
               },
               'error'
             );
-            event.component.cancelEditData(); // Close the edit popup
           }
+          event.component.cancelEditData();
         },
         (error: any) => {
-          console.error('Verification error:', error);
+          console.error('Error:', error);
           notify(
             {
-              message: `Error verifying data: ${error.message}`,
+              message: `Error: ${error.message}`,
               position: { at: 'top right', my: 'top right' },
               displayTime: 1000,
             },
@@ -245,9 +331,10 @@ export class PostOfficeCredentialsComponent implements OnInit {
           event.component.cancelEditData();
         }
       );
-
+  
     event.cancel = true; // Prevent the default update operation
   }
+  
 
   // onRowRemoving(event: any) {}
   //=================== Page refreshing==========================
