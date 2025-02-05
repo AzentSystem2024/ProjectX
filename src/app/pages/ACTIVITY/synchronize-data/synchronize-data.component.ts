@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, NgModule, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  NgModule,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   DxLoadPanelModule,
   DxToolbarModule,
@@ -15,18 +22,23 @@ import { DataService } from 'src/app/services';
 import notify from 'devextreme/ui/notify';
 import { MasterReportService } from '../../MASTER PAGES/master-report.service';
 import { DxToastModule } from 'devextreme-angular';
-import { Subscription } from 'rxjs';
+import { concatMap, finalize, from, Subscription } from 'rxjs';
 import { NavigationEnd, NavigationStart, Router } from '@angular/router';
-
 
 @Component({
   selector: 'app-synchronize-data',
   templateUrl: './synchronize-data.component.html',
   styleUrls: ['./synchronize-data.component.scss'],
 })
-export class SynchronizeDataComponent implements OnInit {
+export class SynchronizeDataComponent implements OnInit, OnDestroy {
   @ViewChild('facilityValidator', { static: false })
   facilityValidator!: DxValidatorComponent;
+
+  @ViewChild('folderInput') fileInput!: ElementRef<HTMLInputElement>;
+
+  selectedFiles: File[] = [];
+  uploading: boolean = false;
+  currentFileIndex: any = 0;
 
   toolbarItems = [
     {
@@ -64,7 +76,6 @@ export class SynchronizeDataComponent implements OnInit {
   // serviceSubscription: Subscription | null = null; // For managing the service subscription
   private serviceSubscription: Subscription | null = null;
   private routerSubscription: Subscription | null = null;
-  
 
   constructor(
     private dataService: DataService,
@@ -84,7 +95,10 @@ export class SynchronizeDataComponent implements OnInit {
         // Stop notifications when leaving the page
         console.log('NavigationStart detected, stopping notifications');
         this.clearNotificationInterval();
-      } else if (event instanceof NavigationEnd && this.isCurrentPage(event.urlAfterRedirects)) {
+      } else if (
+        event instanceof NavigationEnd &&
+        this.isCurrentPage(event.urlAfterRedirects)
+      ) {
         // Restore notifications when returning to this page
         console.log('NavigationEnd detected, restoring notifications');
         this.restoreNotificationOnNavigation();
@@ -93,10 +107,8 @@ export class SynchronizeDataComponent implements OnInit {
   }
 
   isCurrentPage(url: string): boolean {
-    // Replace '/specific-page' with the actual route path of this page
     return url === '/Synchronize-Data-Pages';
   }
-  
 
   format(ratio) {
     return `Downloading: ${ratio * 100}%`;
@@ -104,11 +116,13 @@ export class SynchronizeDataComponent implements OnInit {
 
   //=========================Fetch facility list======================
   get_Facility_List_Data() {
-    this.dataService.get_UserWise_FacilityList_Data().subscribe((response: any) => {
-      if (response) {
-        this.FacilitydropdownItems = response.facilityDetails;
-      }
-    });
+    this.dataService
+      .get_UserWise_FacilityList_Data()
+      .subscribe((response: any) => {
+        if (response) {
+          this.FacilitydropdownItems = response.facilityDetails;
+        }
+      });
   }
 
   //==================get last sync time===========================
@@ -131,7 +145,107 @@ export class SynchronizeDataComponent implements OnInit {
       });
   }
 
-  //====================Click event of Facility Sync===============
+  // ==================== Trigger File Selection ====================
+  handleManualImportClick(type: 'claim' | 'remittance'): void {
+    const validationResult = this.facilityValidator.instance.validate();
+    if (validationResult && this.FacilityValue) {
+      const folderInput = document.getElementById(
+        'folderInput'
+      ) as HTMLInputElement;
+      folderInput.onchange = (event) => this.handleFolderImport(event, type);
+      folderInput.click();
+    } else {
+      notify(
+        {
+          message: `Select a facility value and try again..`,
+          position: { at: 'top right', my: 'top right' },
+        },
+        'error'
+      );
+    }
+  }
+  // ==================== Handle File Selection ====================
+  handleFolderImport(event: Event, type: 'claim' | 'remittance'): void {
+    const validationResult = this.facilityValidator.instance.validate();
+    if (validationResult && this.FacilityValue) {
+      const input = event.target as HTMLInputElement;
+      if (input.files) {
+        const files = Array.from(input.files);
+        const fileDataPromises = files.map((file) =>
+          this.readFileContent(file)
+        );
+
+        Promise.all(fileDataPromises)
+          .then((fileDataArray) => {
+            this.uploadFiles(fileDataArray, type);
+          })
+          .catch((error) => {
+            console.error(`Error reading ${type} files:`, error);
+          });
+      }
+    } else {
+      notify(
+        {
+          message: `Select a facility value and try again..`,
+          position: { at: 'top right', my: 'top right' },
+        },
+        'error'
+      );
+    }
+  }
+
+  // ==================== Read File Content ====================
+  readFileContent(file: File): Promise<{ fileName: string; fileData: string }> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () =>
+        resolve({ fileName: file.name, fileData: reader.result as string });
+      reader.onerror = reject;
+      reader.readAsText(file);
+    });
+  }
+
+  // ==================== Upload Files Based on Type ====================
+  uploadFiles(
+    filesData: { fileName: string; fileData: string }[],
+    type: 'claim' | 'remittance'
+  ): void {
+    this.isLoading = true;
+
+    from(filesData) // Convert the array into an Observable sequence
+      .pipe(
+        concatMap(({ fileName, fileData }) =>
+          type === 'claim'
+            ? this.dataService.import_Local_folder_Claim_data(
+                this.FacilityValue,
+                fileName,
+                fileData
+              )
+            : this.dataService.import_Local_folder_Remittance_data(
+                this.FacilityValue,
+                fileName,
+                fileData
+              )
+        ),
+        finalize(() => {
+          this.isLoading = false; // Set loading to false when all uploads complete
+          notify(
+            {
+              message: `All files imported successfully.`,
+              position: { at: 'top right', my: 'top right' },
+            },
+            'success'
+          );
+        })
+      )
+      .subscribe({
+        next: (response) =>
+          console.log('File uploaded successfully:', response),
+        error: (error) => console.error('Error uploading file:', error),
+      });
+  }
+
+  //====================Click event of Facility Sync==============
   handleFacilityButtonClick() {
     const validationResult = this.facilityValidator.instance.validate();
     if (validationResult.isValid) {
@@ -195,7 +309,7 @@ export class SynchronizeDataComponent implements OnInit {
     }
   }
 
-  //===================Click event of Remittance Sync============
+  //===================Click event of Remittance Sync=============
   handleRemittanceButtonClick() {
     const validationResult = this.facilityValidator.instance.validate();
     if (validationResult.isValid) {
@@ -262,11 +376,10 @@ export class SynchronizeDataComponent implements OnInit {
     }
   }
 
-  //====================Click event of Process Report====================
+  //================ Click event of Process Report ===============
   ProcessReportButtonClick() {
     const validationResult = this.facilityValidator.instance.validate();
     if (validationResult.isValid) {
-      console.log('function started');
       this.isLoading = true;
       this.processReportButtonVisibility = false;
       let facilityID = this.FacilityValue;
@@ -321,43 +434,51 @@ export class SynchronizeDataComponent implements OnInit {
 
   fetchServiceStatus() {
     // Subscribe to the service and manage the notification logic
-    this.serviceSubscription = this.dataService.getServiceSynchStatus().subscribe((response: any) => {
-      console.log(response, "SERVICESTATUS");
-      
-      // If Flag is 1, enable notifications for this page
-      if (response.Flag === 1) {
-        this.disableButtons = true;
+    this.serviceSubscription = this.dataService
+      .getServiceSynchStatus()
+      .subscribe((response: any) => {
+        console.log(response, 'SERVICESTATUS');
 
-        // Notify immediately
-        notify({
-          message: response.Message,
-          position: {
-            at: 'top right',
-            my: 'top right',
-          },
-        }, 'success');
+        // If Flag is 1, enable notifications for this page
+        if (response.Flag === 1) {
+          this.disableButtons = true;
 
-        // Clear any existing interval to avoid duplication
-        if (this.intervalId) {
-          clearInterval(this.intervalId);
-        }
-
-        // Start a new interval to display the message every 30 seconds
-        this.intervalId = setInterval(() => {
-          notify({
-            message: response.Message,
-            position: {
-              at: 'top right',
-              my: 'top right',
+          // Notify immediately
+          notify(
+            {
+              message: response.Message,
+              position: {
+                at: 'top right',
+                my: 'top right',
+              },
             },
-          }, 'success');
-        }, 5000);
-      } else {
-        // If Flag is not 1, clear the interval
-        this.clearNotificationInterval();
-        this.disableButtons = false;
-      }
-    });
+            'success'
+          );
+
+          // // Clear any existing interval to avoid duplication
+          // if (this.intervalId) {
+          //   clearInterval(this.intervalId);
+          // }
+
+          // // Start a new interval to display the message every 30 seconds
+          // this.intervalId = setInterval(() => {
+          //   notify(
+          //     {
+          //       message: response.Message,
+          //       position: {
+          //         at: 'top right',
+          //         my: 'top right',
+          //       },
+          //     },
+          //     'success'
+          //   );
+          // }, 5000);
+        } else {
+          // If Flag is not 1, clear the interval
+          this.clearNotificationInterval();
+          this.disableButtons = false;
+        }
+      });
   }
 
   restoreNotificationOnNavigation(): void {
@@ -389,7 +510,6 @@ export class SynchronizeDataComponent implements OnInit {
       console.log('Unsubscribed from routerSubscription');
     }
   }
-  
 }
 
 @NgModule({
@@ -403,7 +523,7 @@ export class SynchronizeDataComponent implements OnInit {
     DxProgressBarModule,
     DxLoadPanelModule,
     DxValidatorModule,
-    DxToastModule 
+    DxToastModule,
   ],
   providers: [],
   exports: [],

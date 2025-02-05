@@ -194,20 +194,6 @@ export class AutoDownloadSettingsComponent {
 
   //==================editing start event =============================
   onEditingStart(e: any): void {
-    if (
-      e.event &&
-      e.event.target &&
-      e.event.target.classList.contains('add-button')
-    ) {
-      e.preventDefault(); // Prevent default behavior for Add button click
-      e.stopPropagation(); // Stop event propagation for Add button click
-
-      // Manually call the Add Instance function
-      this.on_Add_New_Instance(e);
-
-      return; // Skip the edit form logic
-    }
-
     this.updatenodeId = e.data.id;
     // Fetch the current parent node's ID
     const selectedNodeId = e.data.id;

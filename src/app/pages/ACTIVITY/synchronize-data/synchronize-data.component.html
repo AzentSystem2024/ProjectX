@@ -55,43 +55,84 @@
     </div>
 
     <div class="innerContentDiv d-flex">
-      <div class="FacilityDownloadDiv d-flex">
+      <div class="FacilityDownloadDiv d-flex flex-column">
         <p class="FacilityCount mb-5">
           {{ lastClaimSyncTime }}
         </p>
         <h1>{{ facilityDownloadedCount }}</h1>
-        <dx-button
-          [disabled]="!facilityButtonVisibility || disableButtons"
-          text="Sync Claim Data"
-          type="default"
-          stylingMode="contained"
-          class="FacilitycountButton mt-5"
-          [width]="300"
-          [height]="40"
-          (onClick)="handleFacilityButtonClick()"
-        >
-        </dx-button>
+        <div class="d-flex align-items-center mt-5 gap-2">
+          <input type="file" id="folderInput" hidden multiple />
+          <!-- Manual Import Button -->
+          <dx-button
+            text="Import Claim"
+            hint="Manually import XML file"
+            type="success"
+            icon="activefolder"
+            stylingMode="contained"
+            class="FacilitycountButton"
+            [width]="'auto'"
+            [height]="40"
+            (onClick)="handleManualImportClick('claim')"
+          >
+          </dx-button>
+
+          <!-- Sync Claim Data Button -->
+          <dx-button
+            [disabled]="!facilityButtonVisibility || disableButtons"
+            text="Sync Claim Data"
+            type="default"
+            icon="arrowdown"
+            hint="Download Data"
+            stylingMode="contained"
+            class="FacilitycountButton"
+            [width]="'auto'"
+            [height]="40"
+            (onClick)="handleFacilityButtonClick()"
+          >
+          </dx-button>
+        </div>
       </div>
 
-      <div class="RemittanceDownloadDiv d-flex">
+      <div class="RemittanceDownloadDiv d-flex flex-column">
         <p class="FacilityCount mb-5">
           {{ lastRemittanceSyncTime }}
         </p>
-
         <h1>{{ RemittanceDownloadedCount }}</h1>
-        <dx-button
-          [disabled]="!remittanceButtonVisibility || disableButtons"
-          text="Sync Remittance Data"
-          type="default"
-          stylingMode="contained"
-          class="FacilitycountButton mt-5"
-          [width]="300"
-          [height]="40"
-          (onClick)="handleRemittanceButtonClick()"
-        >
-        </dx-button>
+        <div class="d-flex align-items-center mt-5 gap-2">
+          <!-- Manual Import Button -->
+          <div>
+            <!-- Manual Import Button -->
+            <dx-button
+              text="Import Remittance"
+              hint="Manually import XML file"
+              type="success"
+              icon="activefolder"
+              stylingMode="contained"
+              class="FacilitycountButton"
+              [width]="'auto'"
+              [height]="40"
+              (onClick)="handleManualImportClick('remittance')"
+            >
+            </dx-button>
+          </div>
+          <!-- Sync Remittance Button -->
+          <dx-button
+            [disabled]="!remittanceButtonVisibility || disableButtons"
+            text="Sync Remittance Data"
+            type="default"
+            icon="arrowdown"
+            hint="Download Data"
+            stylingMode="contained"
+            class="FacilitycountButton"
+            [width]="'auto'"
+            [height]="40"
+            (onClick)="handleRemittanceButtonClick()"
+          >
+          </dx-button>
+        </div>
       </div>
     </div>
+
     <div class="ButtonContentDiv mt-2">
       <dx-button
         [disabled]="!processReportButtonVisibility || disableButtons"
@@ -113,7 +154,7 @@
     [visible]="true"
     shadingColor="rgba(0,0,0,0)"
     [position]="{ of: '.view-wrapper' }"
-    message="Downloading..."
+    message="Processing..."
   ></dx-load-panel>
 </div>
 

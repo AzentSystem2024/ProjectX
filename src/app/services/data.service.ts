@@ -52,6 +52,38 @@ export class DataService {
     return this.http.post(url, reqBody);
   }
 
+  import_Local_folder_Claim_data(
+    facilityID: any,
+    fileName: any,
+    fileData: any
+  ) {
+    const userid = sessionStorage.getItem('UserID');
+    const url = `${BASE_URL}facility/importclaim`;
+    const reqBody = {
+      userID: userid,
+      facilityID: facilityID,
+      fileName: fileName,
+      fileData: fileData,
+    };
+    return this.http.post(url, reqBody);
+  }
+
+  import_Local_folder_Remittance_data(
+    facilityID: any,
+    fileName: any,
+    fileData: any
+  ) {
+    const userid = sessionStorage.getItem('UserID');
+    const url = `${BASE_URL}facility/importremittance`;
+    const reqBody = {
+      userID: userid,
+      facilityID: facilityID,
+      fileName: fileName,
+      fileData: fileData,
+    };
+    return this.http.post(url, reqBody);
+  }
+
   get_Claim_SyncData_Details(facilityID: any, DateFrom: any, DateTo: any) {
     const userid = sessionStorage.getItem('UserID');
     const url = `${BASE_URL}facility/synchclaim`;
@@ -119,8 +151,7 @@ export class DataService {
     const url = `${BASE_URL}downloadsettings/ServiceSynch`;
     return this.http.post<{ Flag: number; Message: string }>(url, {}); // Empty object for POST body
   }
-  
-  
+
   //==================Email schedule data List==========
   get_email_Log_data() {
     const url = `${BASE_URL}emailscheduler/list`;
