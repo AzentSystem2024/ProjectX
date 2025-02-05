@@ -65,6 +65,7 @@ export class AutoDownloadSettingsComponent {
   updatenodeId: any;
   isChildNodeData: boolean = false;
   private currentMaxId = Math.max(...this.dataSource.map((item) => item.id), 0);
+  iseditfilteredFacility: any;
 
   constructor(private dataService: DataService) {
     this.get_Facility_List();
@@ -78,7 +79,7 @@ export class AutoDownloadSettingsComponent {
     this.dataService
       .get_UserWise_FacilityList_Data()
       .subscribe((response: any) => {
-        this.FacilityDataSource = response.facilityDetails || [];
+        this.FacilityDataSource = response.facilityDetails;
       });
   }
 
@@ -103,6 +104,7 @@ export class AutoDownloadSettingsComponent {
             ParentID,
             InstanceNo,
             FacilityID,
+            FacilityName,
             ClaimTransactionDate,
             RemittanceTransactionDate,
           }) => ({
@@ -110,6 +112,7 @@ export class AutoDownloadSettingsComponent {
             parentId: ParentID,
             Instance: InstanceNo,
             Facility: FacilityID,
+            FacilityName: FacilityName,
             ClaimTransactionDate: ClaimTransactionDate
               ? new Date(ClaimTransactionDate)
               : null,
@@ -118,6 +121,7 @@ export class AutoDownloadSettingsComponent {
               : null,
           })
         );
+        console.log('data source :>>', this.dataSource);
       });
   }
 
@@ -143,6 +147,7 @@ export class AutoDownloadSettingsComponent {
       const targetNode = visibleRows[e.toIndex].node;
       if (targetNode && targetNode.data.parentId === null) {
         sourceData.parentId = targetNode.key;
+        sourceData.Instance = targetNode.data.Instance;
       } else {
         e.event.preventDefault();
       }
@@ -214,12 +219,11 @@ export class AutoDownloadSettingsComponent {
           .filter((item) => item.Facility !== null)
           .map((item) => item.Facility)
       );
-      this.filteredFacilityDataSource = this.FacilityDataSource.filter(
+      this.iseditfilteredFacility = this.FacilityDataSource.filter(
         (facility) =>
-          currentParentFacilityIds.has(facility.FacilityID) || // Keep facilities assigned to the current parent
-          !allUsedFacilityIds.has(facility.FacilityID) // Include facilities not present in the dataSource
+          currentParentFacilityIds.has(facility.FacilityID) ||
+          !allUsedFacilityIds.has(facility.FacilityID)
       );
-      console.log(this.filteredFacilityDataSource, 'FILTEREDFACILITY');
       // Initialize popup fields
       this.Update_InstanceValue = e.data.Instance;
       this.update_instanceClaimDownloadStartDate = null;
@@ -262,70 +266,6 @@ export class AutoDownloadSettingsComponent {
     this.resetForm();
   };
 
-  //=====================update row data====================
-  // On_Update_DataSource(): void {
-  //   const parentId = this.updatenodeId;
-  //   console.log(parentId,"PARENTID")
-  //   // Find the parent node in the dataSource
-  //   const parentNode = this.dataSource.find((item) => item.id === parentId);
-  //   if (!parentNode) {
-  //     console.error('Parent node not found!');
-  //     return;
-  //   }
-  //   console.log(parentNode,"PARENTNODEEEEEEEEE")
-  //   // Update the parent node's Instance name
-  //   parentNode.Instance = this.Update_InstanceValue;
-  //   console.log(parentNode.Instance,"INSTANCEEEEEE")
-  //   // Get current child nodes for the parent
-  //   const currentChildNodes = this.dataSource.filter(
-  //     (item) => item.parentId === parentId
-  //   );
-  //   console.log(currentChildNodes,"CURRENTCHILDNODES")
-  //   // Create a set of existing facility IDs for the current parent
-  //   const existingFacilityIds = new Set(
-  //     currentChildNodes.map((child) => child.Facility)
-  //   );
-  //   // Prepare updated child nodes based on selected facilities
-  //   const selectedFacilities = this.Update_Facility_Value;
-  //   console.log(selectedFacilities,"SELECTEDFACILITIES")
-  //   const updatedChildNodes: any[] = selectedFacilities.map((facilityId) => {
-  //     const existingChildNode = currentChildNodes.find(
-  //       (child) => child.Facility === facilityId
-  //     );
-  //     if (existingChildNode) {
-  //       // If the child node already exists, return it with updated values
-  //       return {
-  //         ...existingChildNode,
-  //         Instance: this.Update_InstanceValue,
-  //         ClaimTransactionDate: this.update_instanceClaimDownloadStartDate,
-  //         RemittanceTransactionDate:
-  //           this.update_instanceRemittanceDownloadStartDate,
-  //       };
-  //     } else {
-  //       // Create a new child node for the selected facility
-  //       return {
-  //         id: this.generateUniqueId(),
-  //         parentId: parentId,
-  //         Instance: this.Update_InstanceValue,
-  //         Facility: facilityId,
-  //         ClaimTransactionDate: this.update_instanceClaimDownloadStartDate,
-  //         RemittanceTransactionDate:
-  //           this.update_instanceRemittanceDownloadStartDate,
-  //       };
-  //     }
-  //   });
-
-  //   // Remove existing child nodes for the parent and add the updated ones
-  //   this.dataSource = [
-  //     ...this.dataSource.filter((item) => item.parentId !== parentId),
-  //     ...updatedChildNodes,
-  //   ];
-
-  //   // Reset the form and log the updated dataSource
-  //   this.resetForm();
-  //   console.log('Updated dataSource:', this.dataSource);
-  // }
-
   On_Update_DataSource() {
     const newFacilities = this.Update_Facility_Value; // Facilities to add
     const parentId = this.updatenodeId; // Parent node ID
@@ -364,29 +304,16 @@ export class AutoDownloadSettingsComponent {
           this.update_instanceClaimDownloadStartDate;
         existingChild.RemittanceTransactionDate =
           this.update_instanceRemittanceDownloadStartDate;
-
-        // console.log('Updated existing child:', existingChild);
       }
     });
-
-    // console.log('Updated dataSource:', this.dataSource);
     this.is_EditFormVisible = false;
   }
-
+  //==================facility dropdown selection change event=================
   onFacilitySelectionChange(event: any): void {
     // console.log('Facilities changed:', event.value);
     this.Update_Facility_Value = event.value;
   }
-
-  //=======find the next available id of dataSource Object==========
-  // generateUniqueId(): number {
-  //   // Find the highest existing ID in the dataSource
-  //   const maxId = this.dataSource.reduce(
-  //     (max, item) => (item.id > max ? item.id : max),
-  //     0
-  //   );
-  //   return maxId + 1;
-  // }
+  //=====unique id making for insering data==================
   generateUniqueId(): number {
     const allIds = this.dataSource
       .map((item) => item.id)

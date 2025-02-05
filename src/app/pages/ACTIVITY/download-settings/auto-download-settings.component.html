@@ -84,41 +84,7 @@
               [height]="'auto'"
             >
             </dxo-popup>
-            <dxo-form [colCount]="1">
-              <!-- Instance Field -->
-              <dxi-item
-                dataField="Instance"
-                editorType="dxTextBox"
-                caption="Instance"
-                [disabled]="isChildNodeData"
-              ></dxi-item>
-
-              <!-- Facility Field -->
-              <dxi-item
-              dataField="Facility"
-              [editorType]="'dxSelectBox'"
-
-              [editorOptions]="{
-                dataSource: filteredFacilityDataSource,
-                displayExpr: 'FacilityName',
-                valueExpr: 'FacilityID'
-              }"
-              caption="Facility Name"
-              [disabled]="isChildNodeData"
-            ></dxi-item>
-              <dxi-item
-                dataField="ClaimTransactionDate"
-                caption="Claim Transaction Date"
-                dataType="date"
-                format="dd-MMM-yyyy"
-              ></dxi-item>
-              <dxi-item
-                dataField="RemittanceTransactionDate"
-                caption="Remittance Transaction Date"
-                dataType="date"
-                format="dd-MMM-yyyy"
-              ></dxi-item>
-            </dxo-form>
+            <dxo-form [colCount]="1"> </dxo-form>
           </dxo-editing>
 
           <dxo-row-dragging
@@ -152,6 +118,7 @@
             dataField="Instance"
             caption="Instance"
             [allowEditing]="!isChildNodeData"
+            disabled="!isChildNodeData"
           ></dxi-column>
 
           <!-- Facility Column with dxTagBox as editor -->
@@ -351,7 +318,7 @@
             label="Facility"
             labelMode="floating"
             labelLocation="left"
-            [items]="filteredFacilityDataSource"
+            [items]="iseditfilteredFacility"
             displayExpr="FacilityName"
             valueExpr="FacilityID"
             [(value)]="Update_Facility_Value"
