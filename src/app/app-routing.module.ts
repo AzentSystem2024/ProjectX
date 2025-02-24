@@ -48,6 +48,7 @@ import { AutoDownloadSettingsComponent } from './pages/ACTIVITY/download-setting
 import { DownloadLogViewComponent } from './pages/LOGS/download-log-view/download-log-view.component';
 import { ResubmissionSummaryComponent } from './pages/REPORT PAGES/resubmission-summary/resubmission-summary.component';
 import { EmailLogDataComponent } from './pages/LOGS/email-log-data/email-log-data.component';
+import { SingleCliamDetailsComponent } from './pages/REPORT PAGES/single-cliam-details/single-cliam-details.component';
 const routes: Routes = [
   {
     path: '',
@@ -226,6 +227,11 @@ const routes: Routes = [
       {
         path: 'claim-detail-report',
         component: ClaimDetailsComponent,
+        canActivate: [AuthGuardService],
+      },
+      {
+        path: 'Single-Claim-Details',
+        component: SingleCliamDetailsComponent,
         canActivate: [AuthGuardService],
       },
       {

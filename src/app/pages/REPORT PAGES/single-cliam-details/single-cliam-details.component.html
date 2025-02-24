@@ -1,0 +1,393 @@
+<div id="parent" class="parentDiv view-wrapper">
+  <div>
+    <div
+      class="data-container"
+      [ngClass]="{ 'hide-content': !isContentVisible }"
+    >
+      <div class="headingText ps-2">Basic info</div>
+      <div class="d-flex RowgroupDiv">
+        <div class="BorderBox">
+          <div class="mt-1">
+            <div class="label-container">
+              <label class="custom-label"
+                >Facility <i class="icon-dataportability"></i
+              ></label>
+              <dx-drop-down-box
+                [(value)]="FacilityID"
+                valueExpr="FacilityLicense"
+                displayExpr="FacilityLicense"
+                [showClearButton]="true"
+                [dataSource]="Facility_DataSource"
+                [dropDownOptions]="{ width: 'auto' }"
+                [width]="'60%'"
+                [(opened)]="isGridBoxOpened"
+                (onOptionChanged)="onGridBoxOptionChanged($event)"
+              >
+                <div *dxTemplate="let data of 'content'">
+                  <dx-data-grid
+                    [dataSource]="Facility_DataSource"
+                    [columns]="[
+                      {
+                        dataField: 'FacilityLicense',
+                        caption: 'License',
+                        width: 'auto'
+                      },
+                      {
+                        dataField: 'FacilityName',
+                        caption: 'Name',
+                        width: 'auto'
+                      }
+                    ]"
+                    [selection]="{ mode: 'single' }"
+                    [hoverStateEnabled]="true"
+                    [paging]="{ enabled: true, pageSize: 10 }"
+                    [filterRow]="{ visible: true }"
+                    [headerFilter]="{ visible: true }"
+                    [scrolling]="{ mode: 'virtual' }"
+                    [height]="250"
+                    [(selectedRowKeys)]="FacilityID"
+                  >
+                  </dx-data-grid>
+                </div>
+              </dx-drop-down-box>
+            </div>
+          </div>
+
+          <div class="mt-1">
+            <div class="label-container">
+              <label class="custom-label">Member ID</label>
+              <dx-text-box
+                [(value)]="MemberIDValue"
+                labelMode="static"
+                [width]="'60%'"
+              >
+              </dx-text-box>
+            </div>
+          </div>
+
+          <div class="mt-1">
+            <div class="label-container">
+              <label class="custom-label">Receiver ID</label>
+              <dx-text-box
+                [(value)]="ReceiverIDValue"
+                labelMode="static"
+                [width]="'60%'"
+              >
+              </dx-text-box>
+            </div>
+          </div>
+
+          <div class="mt-1">
+            <div class="label-container">
+              <label class="custom-label">Payer</label>
+              <dx-text-box
+                [(value)]="PayerIDValue"
+                labelMode="static"
+                [width]="'60%'"
+              >
+              </dx-text-box>
+            </div>
+          </div>
+          <div class="mt-1">
+            <div class="label-container">
+              <label class="custom-label">Emirates ID</label>
+              <dx-text-box
+                [(value)]="EmiratesIDvalue"
+                labelMode="static"
+                [width]="'60%'"
+              >
+              </dx-text-box>
+            </div>
+          </div>
+        </div>
+
+        <div class="BorderBox">
+          <div class="mt-1">
+            <div class="label-container">
+              <label class="custom-label">Claim Number</label>
+              <dx-text-box
+                labelMode="static"
+                [width]="'60%'"
+                [(value)]="ClaimNumber"
+              >
+              </dx-text-box>
+            </div>
+          </div>
+
+          <div class="mt-1">
+            <div class="label-container">
+              <label class="custom-label">Claim Count</label>
+              <dx-text-box
+                [(value)]="ClaimCountValue"
+                labelMode="static"
+                [width]="'60%'"
+              >
+              </dx-text-box>
+            </div>
+          </div>
+          <div class="mt-1">
+            <div class="label-container">
+              <label class="custom-label">Remittance Count</label>
+              <dx-text-box
+                [(value)]="RemittanceCountValue"
+                labelMode="static"
+                [width]="'60%'"
+              >
+              </dx-text-box>
+            </div>
+          </div>
+
+          <div class="mt-1">
+            <div class="label-container">
+              <label class="custom-label">ID Payer</label>
+              <dx-text-box
+                [(value)]="IDPayerValue"
+                labelMode="static"
+                [width]="'60%'"
+              >
+              </dx-text-box>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex gap-2 buttonGrp">
+          <div class="mt-1">
+            <div class="label-container">
+              <dx-button
+                text=""
+                type="success"
+                icon="find"
+                hint="refresh"
+                stylingMode="contained"
+                (onClick)="get_All_DataSource()"
+              >
+              </dx-button>
+            </div>
+          </div>
+          <div class="mt-1">
+            <div class="label-container">
+              <dx-button
+                text=""
+                icon="refresh"
+                type="danger"
+                hint="Clear"
+                stylingMode="contained"
+                (onClick)="clearButtonAction()"
+              >
+              </dx-button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="button-container mt-1">
+      <dx-button
+        class="toggleButton"
+        icon="{{ isContentVisible ? 'spinup' : 'spindown' }}"
+        stylingMode="outlined"
+        type="normal"
+        [hint]="isContentVisible ? 'Hide Basic Info' : 'Show Basic Info'"
+        [width]="200"
+        [height]="15"
+        (onClick)="toggleContent()"
+      >
+      </dx-button>
+    </div>
+  </div>
+
+  <div class="DetailsDrillDown RowgroupDiv2 mt-1">
+    <div class="tabs-demo view-wrapper">
+      <div class="widget-container">
+        <!-- ------------------ Transaction DataGrid (Visible for Tab 0)---------------- -->
+        <div class="gridDataDiv mt-1">
+          <div class="headingText">Transaction Details</div>
+          <dx-data-grid
+            class="grid theme-dependent"
+            noDataText="No Data Available"
+            [height]="'auto'"
+            [dataSource]="TransactionDataSource"
+            [allowColumnResizing]="true"
+            [allowColumnReordering]="true"
+            [hoverStateEnabled]="true"
+            [columnAutoWidth]="true"
+            [focusedRowEnabled]="true"
+            [autoNavigateToFocusedRow]="false"
+            [keyExpr]="'TransactionDate'"
+            [(focusedRowKey)]="focusedRow"
+            [headerFilter]="{ visible: true }"
+            [columnFixing]="{
+              enabled: true,
+              texts: { fix: 'Freeze', unfix: 'Unfreeze' }
+            }"
+            (onFocusedRowChanged)="onTransactionGridFocusedRowChanged($event)"
+            (onRowExpanding)="TransactionRowDrillDownClick($event)"
+            (onRowPrepared)="onRowPrepared($event)"
+          >
+            <dxi-column
+              *ngFor="let column of transactionColumns"
+              [dataField]="column.Title"
+              [caption]="column.ToolTip"
+              [visible]="column.Visibility"
+            ></dxi-column>
+
+            <dxo-master-detail
+              [enabled]="true"
+              [autoExpandAll]="false"
+              template="masterDetail"
+            ></dxo-master-detail>
+
+            <div *dxTemplate="let detailData of 'masterDetail'">
+              <div
+                *ngIf="ResubmissionDrillDownLoaded"
+                class="data-grid-container mt-1 mb-2"
+              >
+                <span class="po-title">Resubmission Details</span>
+                <dx-data-grid
+                  [columnAutoWidth]="true"
+                  [showBorders]="true"
+                  [dataSource]="ResubmissionDatasource"
+                  [width]="'100%'"
+                  [height]="'10vh'"
+                >
+                </dx-data-grid>
+              </div>
+
+              <div
+                *ngIf="cliamDetailsDrillDownLoaded"
+                class="data-grid-container mt-1"
+              >
+                <span class="po-title">Claim Details</span>
+                <dx-data-grid
+                  [columnAutoWidth]="true"
+                  [showBorders]="true"
+                  [dataSource]="claimDetailsDataSource"
+                  [width]="'100%'"
+                  [height]="'10vh'"
+                >
+                </dx-data-grid>
+              </div>
+
+              <div
+                *ngIf="encounterDrillDownLoaded"
+                class="data-grid-container mt-1"
+              >
+                <span class="po-title">Encounter Details</span>
+                <dx-data-grid
+                  [columnAutoWidth]="true"
+                  [showBorders]="true"
+                  [dataSource]="encounterDataSource"
+                  [width]="'100%'"
+                  [height]="'10vh'"
+                >
+                </dx-data-grid>
+              </div>
+
+              <div
+                *ngIf="RemittanceDrillDownLoaded"
+                class="data-grid-container mt-1 mb-2"
+              >
+                <span class="po-title">Remittance Details</span>
+                <dx-data-grid
+                  [columnAutoWidth]="true"
+                  [showBorders]="true"
+                  [dataSource]="remittanceDataSource"
+                  [width]="'100%'"
+                  [height]="'10vh'"
+                >
+                </dx-data-grid>
+              </div>
+
+              <div
+                *ngIf="OthersDrillDownLoaded"
+                class="data-grid-container mt-1 mb-2"
+              >
+                <span class="po-title">Other Details</span>
+                <dx-data-grid
+                  [columnAutoWidth]="true"
+                  [showBorders]="true"
+                  [dataSource]="othersDataSource"
+                  [width]="'100%'"
+                  [height]="'10vh'"
+                >
+                </dx-data-grid>
+              </div>
+            </div>
+          </dx-data-grid>
+        </div>
+
+        <!-- -------------------Activity DataGrid (Visible for Tab 1)------------------- -->
+        <div class="gridDataDiv mt-1" *ngIf="isActivityGridVisible">
+          <div class="headingText">Submission Activities</div>
+          <dx-data-grid
+            class="grid theme-dependent"
+            noDataText="No Data Available"
+            [height]="'auto'"
+            [dataSource]="filteredActivityDataSource"
+            [allowColumnResizing]="true"
+            [allowColumnReordering]="true"
+            [hoverStateEnabled]="true"
+            [columnAutoWidth]="true"
+            [focusedRowEnabled]="true"
+            [autoNavigateToFocusedRow]="false"
+            [keyExpr]="'ClaimActivityNumber'"
+            [headerFilter]="{ visible: true }"
+            [columnFixing]="{
+              enabled: true,
+              texts: { fix: 'Freeze', unfix: 'Unfreeze' }
+            }"
+            [(focusedRowKey)]="activityFocusRow"
+            (onFocusedRowChanged)="onActivityGridFocusedRowChanged($event)"
+          >
+            <dxi-column
+              *ngFor="let column of SubmisstionActivityColumns"
+              [dataField]="column.Title"
+              [caption]="column.ToolTip"
+              [visible]="column.Visibility"
+            ></dxi-column>
+          </dx-data-grid>
+        </div>
+
+        <!-- ------------------Diagnosis DataGrid (Visible for Tab 2)------------------- -->
+        <div class="gridDataDiv mt-1" *ngIf="isDiagnosisGridVisible">
+          <div class="headingText">Details of Diagnosis</div>
+          <dx-data-grid
+            class="grid theme-dependent"
+            noDataText="No Data Available"
+            [height]="'auto'"
+            [dataSource]="filteredDiagnosisDataSource"
+            [allowColumnResizing]="true"
+            [allowColumnReordering]="true"
+            [hoverStateEnabled]="true"
+            [columnAutoWidth]="true"
+            [headerFilter]="{ visible: true }"
+            [columnFixing]="{
+              enabled: true,
+              texts: { fix: 'Freeze', unfix: 'Unfreeze' }
+            }"
+          >
+            <dxi-column
+              *ngFor="let column of DiagnosisColumns"
+              [dataField]="column.Title"
+              [caption]="column.ToolTip"
+              [visible]="column.Visibility"
+            ></dxi-column>
+          </dx-data-grid>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<dx-load-panel
+  #loadPanel
+  shadingColor="rgba(0,0,0,0.0)"
+  [position]="{ of: '#parent' }"
+  [(visible)]="loadingVisible"
+  [showIndicator]="true"
+  [showPane]="true"
+  [shading]="true"
+  [hideOnOutsideClick]="false"
+  [message]="'Loading...'"
+>
+</dx-load-panel>
