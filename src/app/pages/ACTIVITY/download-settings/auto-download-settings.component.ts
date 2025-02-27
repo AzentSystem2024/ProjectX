@@ -5,6 +5,7 @@ import {
   DxDataGridModule,
   DxDateBoxModule,
   DxDropDownBoxModule,
+  DxFormComponent,
   DxFormModule,
   DxNumberBoxModule,
   DxPopupModule,
@@ -15,6 +16,8 @@ import {
   DxToolbarModule,
   DxTreeListComponent,
   DxTreeListModule,
+  DxValidatorComponent,
+  DxValidatorModule,
 } from 'devextreme-angular';
 import { CommonModule } from '@angular/common';
 import { Component, NgModule, ViewChild } from '@angular/core';
@@ -33,6 +36,9 @@ export class AutoDownloadSettingsComponent {
 
   @ViewChild(DxTreeListComponent, { static: true })
   treelist: DxTreeListComponent;
+
+  @ViewChild('dateValidator', { static: false })
+  dateValidator!: DxValidatorComponent;
 
   isDatabaseNameEditable = false;
   isXMLDirectoryEditable = false;
@@ -265,49 +271,56 @@ export class AutoDownloadSettingsComponent {
     });
     this.resetForm();
   };
-
+  //=================== Edit the instance by clicking parent node ==============
   On_Update_DataSource() {
-    const newFacilities = this.Update_Facility_Value; // Facilities to add
-    const parentId = this.updatenodeId; // Parent node ID
-
-    // Update parent node
-    const parentNode = this.dataSource.find((node) => node.id === parentId);
-    if (parentNode) {
-      parentNode.Instance = this.Update_InstanceValue;
-    }
-
-    // Add or update child nodes for each facility
-    newFacilities.forEach((facility) => {
-      // Check if the facility already exists as a child of the parent
-      const existingChild = this.dataSource.find(
-        (node) => node.parentId === parentId && node.Facility === facility
-      );
-
-      if (!existingChild) {
-        // Create a new child node if it doesn't exist
-        const newId = this.generateUniqueId();
-        const newChild = {
-          id: newId,
-          parentId: parentId,
-          Instance: this.Update_InstanceValue,
-          Facility: facility,
-          ClaimTransactionDate: this.update_instanceClaimDownloadStartDate,
-          RemittanceTransactionDate:
-            this.update_instanceRemittanceDownloadStartDate,
-        };
-        // Add the new child node to the dataSource
-        this.dataSource.push(newChild);
-      } else {
-        // Update existing child node
-        existingChild.Instance = this.Update_InstanceValue;
-        existingChild.ClaimTransactionDate =
-          this.update_instanceClaimDownloadStartDate;
-        existingChild.RemittanceTransactionDate =
-          this.update_instanceRemittanceDownloadStartDate;
+    const validationResult = this.dateValidator.instance.validate();
+    if (validationResult.isValid) {
+      const newFacilities = this.Update_Facility_Value; // Facilities to add
+      const parentId = this.updatenodeId; // Parent node ID
+      console.log('new facility values are :>', newFacilities);
+      // Update parent node
+      const parentNode = this.dataSource.find((node) => node.id === parentId);
+      if (parentNode) {
+        parentNode.Instance = this.Update_InstanceValue;
       }
-    });
-    this.is_EditFormVisible = false;
+      // Filter out child nodes that do not belong to newFacilities
+      this.dataSource = this.dataSource.filter(
+        (node) =>
+          node.parentId !== parentId || newFacilities.includes(node.Facility)
+      );
+      // Add or update child nodes for each facility
+      newFacilities.forEach((facility) => {
+        // Check if the facility already exists as a child of the parent
+        let existingChild = this.dataSource.find(
+          (node) => node.parentId === parentId && node.Facility === facility
+        );
+        if (!existingChild) {
+          // Create a new child node if it doesn't exist
+          const newId = this.generateUniqueId();
+          existingChild = {
+            id: newId,
+            parentId: parentId,
+            Instance: this.Update_InstanceValue,
+            Facility: facility,
+            ClaimTransactionDate: this.update_instanceClaimDownloadStartDate,
+            RemittanceTransactionDate:
+              this.update_instanceRemittanceDownloadStartDate,
+          };
+          // Add the new child node to the dataSource
+          this.dataSource.push(existingChild);
+        } else {
+          // Update existing child node
+          existingChild.Instance = this.Update_InstanceValue;
+          existingChild.ClaimTransactionDate =
+            this.update_instanceClaimDownloadStartDate;
+          existingChild.RemittanceTransactionDate =
+            this.update_instanceRemittanceDownloadStartDate;
+        }
+      });
+      this.is_EditFormVisible = false;
+    }
   }
+
   //==================facility dropdown selection change event=================
   onFacilitySelectionChange(event: any): void {
     // console.log('Facilities changed:', event.value);
@@ -360,9 +373,15 @@ export class AutoDownloadSettingsComponent {
   //======================on click event of save button =======================
   on_Click_Save_Settings = () => {
     const userId = parseInt(sessionStorage.getItem('UserID') || '0', 10);
+    console.log('Final data to insert:', this.dataSource);
+    let formatDate = (date: Date | null) => {
+      if (!date) return null;
 
-    const formatDate = (date: Date | null) =>
-      date ? date.toISOString().split('T')[0] : null; // Format the date correctly
+      const localDate = new Date(
+        date.getTime() - date.getTimezoneOffset() * 60000
+      ); // Adjust for timezone
+      return localDate.toISOString().split('T')[0]; // Format as 'yyyy-MM-dd'
+    };
 
     const downloadInstance = this.dataSource
       .filter((item: any) => item.parentId !== null)
@@ -381,11 +400,8 @@ export class AutoDownloadSettingsComponent {
       download_instance: downloadInstance,
     };
 
-    console.log('Final data to insert:', finalData);
-
     this.dataService.autoDownload_Instance_Settings_insert(finalData).subscribe(
       (response) => {
-        console.log('Insert successful:', response);
         notify(
           {
             message: 'Download settings saved successfully',
@@ -435,6 +451,7 @@ export class AutoDownloadSettingsComponent {
     DxPopupModule,
     DxDropDownBoxModule,
     DxNumberBoxModule,
+    DxValidatorModule,
   ],
   providers: [],
   exports: [],

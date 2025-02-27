@@ -291,7 +291,7 @@
   [closeOnOutsideClick]="true"
 >
   <div *dxTemplate="let data of 'content'">
-    <dx-form [colCount]="1">
+    <dx-form #updateForm [colCount]="1">
       <!-- Instance Field -->
       <dxi-item>
         <div>
@@ -343,6 +343,12 @@
             valueFormat="yyyy/MM/dd"
             [(value)]="update_instanceClaimDownloadStartDate"
           >
+            <dx-validator #dateValidator>
+              <dxi-validation-rule
+                type="required"
+                message="Claim Transaction Date is required"
+              ></dxi-validation-rule>
+            </dx-validator>
           </dx-date-box>
         </div>
       </dxi-item>
@@ -359,6 +365,12 @@
             valueFormat="yyyy/MM/dd"
             [(value)]="update_instanceRemittanceDownloadStartDate"
           >
+          <dx-validator #dateValidator>
+            <dxi-validation-rule
+              type="required"
+              message="Claim Remittance Date is required"
+            ></dxi-validation-rule>
+          </dx-validator>
           </dx-date-box>
         </div>
       </dxi-item>
@@ -379,6 +391,7 @@
         text="Save"
         stylingMode="contained"
         type="default"
+        [useSubmitBehavior]="true"
         (onClick)="On_Update_DataSource()"
       ></dx-button>
     </div>

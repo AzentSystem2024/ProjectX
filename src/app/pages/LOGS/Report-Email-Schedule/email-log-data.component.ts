@@ -145,13 +145,14 @@ export class EmailLogDataComponent {
           container.appendChild(textDiv);
         },
       },
-      {
-        dataField: 'SearchOn',
-        caption: 'Search On',
-      },
+      // {
+      //   dataField: 'SearchOn',
+      //   caption: 'Search On',
+      // },
       {
         dataField: 'EncounterType',
         caption: 'Encounter Type',
+        width: 'auto',
       },
       {
         dataField: 'FacilityName',
@@ -165,8 +166,9 @@ export class EmailLogDataComponent {
         },
       },
       {
-        dataField: 'DatePeriod',
+        dataField: 'DatePeriodValue',
         caption: 'Date Period',
+        width: 'auto',
       },
       {
         dataField: 'EmailUserName',

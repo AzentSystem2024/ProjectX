@@ -143,7 +143,7 @@ export class ReportService {
     const url = `${BASE_URL}reports/resubmissionsummary/summary`;
     const reqBody = {
       userid: userid,
-      // reportid: currentPathName,
+      reportid: currentPathName,
       SearchOn: formData.SearchOn,
       encounterType: formData.EncounterType,
       DateFrom: formData.From_Date,
