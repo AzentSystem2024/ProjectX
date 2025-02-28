@@ -105,3 +105,12 @@
   margin-bottom: 5px;
   margin-left: 20px;
 }
+.innerGriddata {
+  border: 1px solid var(--div-border-color);
+  border-radius: 5px;
+}
+.mainInnerGridDiv {
+  box-shadow: 2px 2px 5px var(--div-border-color);
+  padding: 5px;
+  border-radius: 5px;
+}

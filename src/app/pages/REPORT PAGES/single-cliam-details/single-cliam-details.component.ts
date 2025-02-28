@@ -201,17 +201,17 @@ export class SingleCliamDetailsComponent implements OnInit {
       });
   }
   //===============change color of each row depend transaction type==========
-  onRowPrepared(e: any) {
-    if (e.rowType === 'data') {
-      if (e.data.TransactionType.includes('Submission')) {
-        e.rowElement.style.backgroundColor = `${this.submissionColor}`;
-      } else if (e.data.TransactionType.includes('Resubmission')) {
-        e.rowElement.style.backgroundColor = `${this.resubmissionColor}`;
-      } else if (e.data.TransactionType.includes('Remittance')) {
-        e.rowElement.style.backgroundColor = `${this.remittanceColor}`;
-      }
-    }
-  }
+  // onRowPrepared(e: any) {
+  //   if (e.rowType === 'data') {
+  //     if (e.data.TransactionType.includes('Submission')) {
+  //       e.rowElement.style.backgroundColor = `${this.submissionColor}`;
+  //     } else if (e.data.TransactionType.includes('Resubmission')) {
+  //       e.rowElement.style.backgroundColor = `${this.resubmissionColor}`;
+  //     } else if (e.data.TransactionType.includes('Remittance')) {
+  //       e.rowElement.style.backgroundColor = `${this.remittanceColor}`;
+  //     }
+  //   }
+  // }
   //=================row selection event of transaction table=============
   onTransactionGridFocusedRowChanged(e: any) {
     this.activityFocusRow = null;

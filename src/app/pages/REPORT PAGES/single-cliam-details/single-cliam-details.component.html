@@ -222,7 +222,7 @@
             }"
             (onFocusedRowChanged)="onTransactionGridFocusedRowChanged($event)"
             (onRowExpanding)="TransactionRowDrillDownClick($event)"
-            (onRowPrepared)="onRowPrepared($event)"
+            
           >
             <dxi-column
               *ngFor="let column of transactionColumns"
@@ -237,10 +237,13 @@
               template="masterDetail"
             ></dxo-master-detail>
 
-            <div *dxTemplate="let detailData of 'masterDetail'">
+            <div
+              class="ps-2 pe-2 mainInnerGridDiv"
+              *dxTemplate="let detailData of 'masterDetail'"
+            >
               <div
                 *ngIf="ResubmissionDrillDownLoaded"
-                class="data-grid-container mt-1 mb-2"
+                class="data-grid-container mt-1 mb-2 innerGriddata"
               >
                 <span class="po-title">Resubmission Details</span>
                 <dx-data-grid
@@ -255,9 +258,9 @@
 
               <div
                 *ngIf="cliamDetailsDrillDownLoaded"
-                class="data-grid-container mt-1"
+                class="data-grid-container mt-1 innerGriddata"
               >
-                <span class="po-title">Claim Details</span>
+                <span class="po-title text-center">Claim Details</span>
                 <dx-data-grid
                   [columnAutoWidth]="true"
                   [showBorders]="true"
@@ -270,7 +273,7 @@
 
               <div
                 *ngIf="encounterDrillDownLoaded"
-                class="data-grid-container mt-1"
+                class="data-grid-container mt-1 innerGriddata"
               >
                 <span class="po-title">Encounter Details</span>
                 <dx-data-grid
@@ -285,7 +288,7 @@
 
               <div
                 *ngIf="RemittanceDrillDownLoaded"
-                class="data-grid-container mt-1 mb-2"
+                class="data-grid-container mt-1 mb-2 innerGriddata"
               >
                 <span class="po-title">Remittance Details</span>
                 <dx-data-grid
@@ -300,7 +303,7 @@
 
               <div
                 *ngIf="OthersDrillDownLoaded"
-                class="data-grid-container mt-1 mb-2"
+                class="data-grid-container mt-1 mb-2 innerGriddata"
               >
                 <span class="po-title">Other Details</span>
                 <dx-data-grid
