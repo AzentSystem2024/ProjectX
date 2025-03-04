@@ -13,7 +13,6 @@
     (onRowUpdating)="onRowUpdating($event)"
     height="84vh"
   >
-    <dxo-paging [pageSize]="10"></dxo-paging>
 
     <dxo-editing
       mode="popup"
@@ -32,7 +31,7 @@
       [showInfo]="true"
       [showNavigationButtons]="true"
     ></dxo-pager>
-
+    <dxo-paging [pageSize]="10"></dxo-paging>
     <dxo-load-panel [showPane]="false"></dxo-load-panel>
     <dxo-scrolling mode="virtual"></dxo-scrolling>
     <dxo-sorting mode="multiple"></dxo-sorting>
@@ -46,7 +45,7 @@
     ></dxo-search-panel>
 
     <!-- Custom Search Bar -->
-    <div class="search-container">
+    <!-- <div class="search-container">
       <div class="search-icon">
         <i
           class="search-icon dx-icon dx-icon-search"
@@ -67,7 +66,7 @@
           ></dx-text-box>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <dxo-export
       [enabled]="true"

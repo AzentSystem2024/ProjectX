@@ -694,3 +694,19 @@ body {
   background-color: #00a1e0;
   margin-right: 10px;
 }
+.gridDataDiv .dx-tab.dx-tab-selected {
+  border: 1px solid var(--border-color);
+  border-radius: 5px 5px 0 0;
+  background-color: var(--tab_selected_bg_color);
+}
+.gridDataDiv.dx-tabs {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 5vh;
+  padding: 0px;
+  margin: 0px;
+}

@@ -48,14 +48,14 @@ $theme-mode: null !default;
   --bg-side-panel: #00a1e0;
   --div-border-color: #000000;
   --border-color: black;
-  // --filter-row-color: #00a1e0;
+  --tab_selected_bg_color: rgb(164, 198, 208);
 
   @if $theme-mode == dark {
     --card-background: var(--base-bg-darken-5);
     --bg-side-panel: rgb(41, 41, 41);
     --div-border-color: #ffffff;
     --border-color: white;
-    // --filter-row-color: #00a1e0;
+    --tab_selected_bg_color: rgb(52, 52, 52);
   }
 
   --border-color: #{$base-border-color};

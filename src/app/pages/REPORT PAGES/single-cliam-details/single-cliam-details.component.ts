@@ -65,7 +65,7 @@ export class SingleCliamDetailsComponent implements OnInit {
 
   ClaimNumber: any;
   FacilityID: any;
-  focusedRow: any;
+  focusedRow: any = null;
   activityFocusRow: any;
 
   loadingVisible: boolean;
@@ -92,12 +92,60 @@ export class SingleCliamDetailsComponent implements OnInit {
   remittanceDataSource: any[];
 
   expandedRowKey: any = null;
-  submissionColor: any = '#6e8550';
-  remittanceColor: any = '#3a5869';
-  resubmissionColor: any = '#508576';
   Facility_DataSource: any;
 
   isGridBoxOpened = false;
+
+  //============tab dataSource
+  SubmissiontabsWithText: any[] = [
+    {
+      id: 0,
+      text: 'Submission Activities',
+    },
+    {
+      id: 1,
+      text: 'Diagnosis',
+    },
+    {
+      id: 2,
+      text: 'Encounte Details',
+    },
+    {
+      id: 3,
+      text: 'Others',
+    },
+  ];
+  RemittancetabsWithText: any[] = [
+    {
+      id: 0,
+      text: 'Remittance Activity',
+    },
+    {
+      id: 1,
+      text: 'Others',
+    },
+  ];
+  ResubmissiontabsWithText: any[] = [
+    {
+      id: 1,
+      text: 'Resubmission Details',
+    },
+
+    {
+      id: 2,
+      text: 'Encounte Details',
+    },
+    {
+      id: 3,
+      text: 'Others',
+    },
+  ];
+
+  selectedIndex: number = 0;
+
+  isSubmissionClickVisible: boolean = false;
+  isResubmissionClickVisible: boolean = false;
+  isRemittanceClickVisible: boolean = false;
 
   constructor(
     private service: ReportService,
@@ -114,8 +162,10 @@ export class SingleCliamDetailsComponent implements OnInit {
     this.activityFocusRow = null;
     this.isActivityGridVisible = false;
     this.isDiagnosisGridVisible = false;
+  }
 
-    // this.get_All_DataSource();
+  onTabChange(index: number) {
+    this.selectedIndex = index;
   }
 
   get_facility_datasource() {
@@ -164,6 +214,7 @@ export class SingleCliamDetailsComponent implements OnInit {
   get_All_DataSource() {
     this.loadingVisible = true;
     this.isContentVisible = true;
+    this.isActivityGridVisible = false;
     this.service
       .get_CliamDetails_DrillDown_Data(
         this.ClaimNumber,
@@ -200,51 +251,117 @@ export class SingleCliamDetailsComponent implements OnInit {
         this.isEmptyDatagrid = false;
       });
   }
-  //===============change color of each row depend transaction type==========
-  // onRowPrepared(e: any) {
-  //   if (e.rowType === 'data') {
-  //     if (e.data.TransactionType.includes('Submission')) {
-  //       e.rowElement.style.backgroundColor = `${this.submissionColor}`;
-  //     } else if (e.data.TransactionType.includes('Resubmission')) {
-  //       e.rowElement.style.backgroundColor = `${this.resubmissionColor}`;
-  //     } else if (e.data.TransactionType.includes('Remittance')) {
-  //       e.rowElement.style.backgroundColor = `${this.remittanceColor}`;
-  //     }
-  //   }
-  // }
+
   //=================row selection event of transaction table=============
   onTransactionGridFocusedRowChanged(e: any) {
+    this.loadingVisible = true;
     this.activityFocusRow = null;
-    this.isDiagnosisGridVisible = false;
-    this.filteredActivityDataSource = '';
+    this.selectedIndex = 0;
+    this.isSubmissionClickVisible = false;
+    this.isResubmissionClickVisible = false;
+    this.isRemittanceClickVisible = false;
+    if (e.row && e.row.data) {
+      this.focusedRow = e.row.data.TransactionDate;
+    }
+    // Reset Data Sources
+    this.filteredActivityDataSource = [];
+    this.filteredDiagnosisDataSource = [];
+    this.claimDetailsDataSource = [];
+    this.encounterDataSource = [];
+    this.othersDataSource = [];
+    this.ResubmissionDatasource = [];
+    this.remittanceDataSource = [];
+
+    let TransactionType = e.row.data.TransactionType;
+    let facilityID = this.FacilityID.join(',');
     let selectedRowClaimRemittanceHeaderUID =
       e.row.data.ClaimRemittanceHeaderUID;
+    let selectedRowClaimRemittanceUID = e.row.data.ClaimRemittanceUID;
+    let selectedRowSerialNumber = e.row.data.SerialNumber;
 
+    if (TransactionType.includes('Submission')) {
+      this.service
+        .get_CliamDetails_InnerDrillDown_Submission_Data(
+          facilityID,
+          selectedRowClaimRemittanceHeaderUID,
+          selectedRowClaimRemittanceUID
+        )
+        .subscribe((response: any) => {
+          if (response.flag === '1') {
+            this.claimDetailsDataSource = [response.submission];
+            this.encounterDataSource = [response.encounter];
+            this.othersDataSource = [response.others];
+          }
+          this.loadingVisible = false;
+          this.isSubmissionClickVisible = true;
+        });
+    } else if (TransactionType.includes('Resubmission')) {
+      this.service
+        .get_CliamDetails_InnerDrillDown_Resubmission_Data(
+          facilityID,
+          selectedRowClaimRemittanceHeaderUID,
+          selectedRowClaimRemittanceUID
+        )
+        .subscribe((response: any) => {
+          if (response.flag === '1') {
+            this.claimDetailsDataSource = [response.resubmission]; // Corrected
+            this.encounterDataSource = [response.encounter];
+            this.othersDataSource = [response.others];
+            this.ResubmissionDatasource = [response.resubmission];
+          }
+          this.isResubmissionClickVisible = true;
+          this.loadingVisible = false;
+        });
+    } else if (TransactionType.includes('Remittance')) {
+      this.service
+        .get_CliamDetails_InnerDrillDown_Remittance_Data(
+          facilityID,
+          selectedRowClaimRemittanceHeaderUID,
+          selectedRowClaimRemittanceUID
+        )
+        .subscribe((response: any) => {
+          if (response.flag === '1') {
+            this.remittanceDataSource = [response.remittance];
+            this.othersDataSource = [response.others];
+          }
+          this.isRemittanceClickVisible = true;
+          this.loadingVisible = false;
+        });
+    }
+
+    // Filter Activity and Diagnosis Data
     this.filteredActivityDataSource = this.ActivityDataSource.filter(
       (item) =>
         item.ClaimRemittanceHeaderUID === selectedRowClaimRemittanceHeaderUID
     );
 
-    this.isActivityGridVisible = true;
-    this.isEmptyDatagrid = false;
-  }
-  //==========row selection event of submission activity table============
-  onActivityGridFocusedRowChanged(e: any) {
-    this.filteredDiagnosisDataSource = '';
-
-    let selectedRowClaimRemittanceHeaderUID =
-      e.row.data.ClaimRemittanceHeaderUID;
-    let selectedRowClaimRemittanceUID = e.row.data.ClaimRemittanceUID;
-    let selectedRowSerialNumber = e.row.data.SerialNumber;
     this.filteredDiagnosisDataSource = this.DiagnosisDataSource.filter(
       (item) =>
         item.ClaimRemittanceHeaderUID === selectedRowClaimRemittanceHeaderUID &&
         item.ClaimRemittanceUID === selectedRowClaimRemittanceUID &&
         item.SerialNumber === selectedRowSerialNumber
     );
-    this.isDiagnosisGridVisible = true;
-    this.isEmptyDatagrid = false;
+
+    // Show Activity Grid
+    this.isActivityGridVisible = true;
   }
+
+  //==========row selection event of submission activity table============
+  // onActivityGridFocusedRowChanged(e: any) {
+  //   this.filteredDiagnosisDataSource = '';
+  //   let selectedRowClaimRemittanceHeaderUID =
+  //     e.row.data.ClaimRemittanceHeaderUID;
+  //   let selectedRowClaimRemittanceUID = e.row.data.ClaimRemittanceUID;
+  //   let selectedRowSerialNumber = e.row.data.SerialNumber;
+  //   this.filteredDiagnosisDataSource = this.DiagnosisDataSource.filter(
+  //     (item) =>
+  //       item.ClaimRemittanceHeaderUID === selectedRowClaimRemittanceHeaderUID &&
+  //       item.ClaimRemittanceUID === selectedRowClaimRemittanceUID &&
+  //       item.SerialNumber === selectedRowSerialNumber
+  //   );
+  //   this.isDiagnosisGridVisible = true;
+  //   this.isEmptyDatagrid = false;
+  // }
 
   //================Row data drill down click event======================
   TransactionRowDrillDownClick(e: any) {
@@ -252,24 +369,20 @@ export class SingleCliamDetailsComponent implements OnInit {
       e.component.collapseRow(this.expandedRowKey);
     }
     this.expandedRowKey = e.key;
-
     const rowKey = e.key;
     const expandedRowData = e.component
       .getDataSource()
       .items()
       .find((item) => item.TransactionDate === rowKey);
-
     const transactionType: any = expandedRowData.TransactionType;
     let facilityID = this.FacilityID.join(',');
     let submissionUID = expandedRowData.ClaimRemittanceHeaderUID;
     let claimUID = expandedRowData.ClaimRemittanceUID;
-
     this.ResubmissionDrillDownLoaded = false;
     this.encounterDrillDownLoaded = false;
     this.cliamDetailsDrillDownLoaded = false;
     this.RemittanceDrillDownLoaded = false;
     this.OthersDrillDownLoaded = false;
-
     if (transactionType.includes('Submission')) {
       this.service
         .get_CliamDetails_InnerDrillDown_Submission_Data(
