@@ -77,11 +77,7 @@ export class SingleCliamDetailsComponent implements OnInit {
   isResubmissionDrillOpened: boolean = false;
   isRemittanceDrillOpened: boolean = false;
 
-  cliamDetailsDrillDownLoaded: boolean = false;
-  ResubmissionDrillDownLoaded: boolean = false;
-  RemittanceDrillDownLoaded: boolean = false;
-  OthersDrillDownLoaded: boolean = false;
-  encounterDrillDownLoaded: boolean = false;
+
 
   detailColumns: any;
   claimDetailsDataSource: any;
@@ -108,7 +104,7 @@ export class SingleCliamDetailsComponent implements OnInit {
     },
     {
       id: 2,
-      text: 'Encounte Details',
+      text: 'Encounter Details',
     },
     {
       id: 3,
@@ -133,7 +129,7 @@ export class SingleCliamDetailsComponent implements OnInit {
 
     {
       id: 2,
-      text: 'Encounte Details',
+      text: 'Encounter Details',
     },
     {
       id: 3,
@@ -158,7 +154,7 @@ export class SingleCliamDetailsComponent implements OnInit {
   ngOnInit(): void {
     // this.loadingVisible = true;
     // this.isContentVisible = true;
-    this.focusedRow = null;
+    // this.focusedRow = null;
     this.activityFocusRow = null;
     this.isActivityGridVisible = false;
     this.isDiagnosisGridVisible = false;
@@ -167,6 +163,10 @@ export class SingleCliamDetailsComponent implements OnInit {
   onTabChange(index: number) {
     this.selectedIndex = index;
   }
+
+  facilityDisplayExpr = (item: any) => {
+    return item ? `${item.FacilityLicense} - ${item.FacilityName}` : '';
+  };
 
   get_facility_datasource() {
     this.masterService.Get_Facility_List_Data().subscribe((response: any) => {
@@ -254,15 +254,16 @@ export class SingleCliamDetailsComponent implements OnInit {
 
   //=================row selection event of transaction table=============
   onTransactionGridFocusedRowChanged(e: any) {
+    if (e.row && e.row.key) {
+      this.focusedRow = e.row.key;
+    }
     this.loadingVisible = true;
     this.activityFocusRow = null;
     this.selectedIndex = 0;
     this.isSubmissionClickVisible = false;
     this.isResubmissionClickVisible = false;
     this.isRemittanceClickVisible = false;
-    if (e.row && e.row.data) {
-      this.focusedRow = e.row.data.TransactionDate;
-    }
+
     // Reset Data Sources
     this.filteredActivityDataSource = [];
     this.filteredDiagnosisDataSource = [];
@@ -341,12 +342,11 @@ export class SingleCliamDetailsComponent implements OnInit {
         item.ClaimRemittanceUID === selectedRowClaimRemittanceUID &&
         item.SerialNumber === selectedRowSerialNumber
     );
-
     // Show Activity Grid
     this.isActivityGridVisible = true;
   }
 
-  //==========row selection event of submission activity table============
+  //==========row selection event of submission activity table===========
   // onActivityGridFocusedRowChanged(e: any) {
   //   this.filteredDiagnosisDataSource = '';
   //   let selectedRowClaimRemittanceHeaderUID =
@@ -363,87 +363,83 @@ export class SingleCliamDetailsComponent implements OnInit {
   //   this.isEmptyDatagrid = false;
   // }
 
-  //================Row data drill down click event======================
-  TransactionRowDrillDownClick(e: any) {
-    if (this.expandedRowKey !== null && this.expandedRowKey !== e.key) {
-      e.component.collapseRow(this.expandedRowKey);
-    }
-    this.expandedRowKey = e.key;
-    const rowKey = e.key;
-    const expandedRowData = e.component
-      .getDataSource()
-      .items()
-      .find((item) => item.TransactionDate === rowKey);
-    const transactionType: any = expandedRowData.TransactionType;
-    let facilityID = this.FacilityID.join(',');
-    let submissionUID = expandedRowData.ClaimRemittanceHeaderUID;
-    let claimUID = expandedRowData.ClaimRemittanceUID;
-    this.ResubmissionDrillDownLoaded = false;
-    this.encounterDrillDownLoaded = false;
-    this.cliamDetailsDrillDownLoaded = false;
-    this.RemittanceDrillDownLoaded = false;
-    this.OthersDrillDownLoaded = false;
-    if (transactionType.includes('Submission')) {
-      this.service
-        .get_CliamDetails_InnerDrillDown_Submission_Data(
-          facilityID,
-          submissionUID,
-          claimUID
-        )
-        .subscribe((response: any) => {
-          if (response.flag === '1') {
-            this.claimDetailsDataSource = [response.submission];
-            this.encounterDataSource = [response.encounter];
-            this.othersDataSource = [response.others];
+  // //================Row data drill down click event===================
+  // TransactionRowDrillDownClick(e: any) {
+  //   if (this.expandedRowKey !== null && this.expandedRowKey !== e.key) {
+  //     e.component.collapseRow(this.expandedRowKey);
+  //   }
+  //   this.expandedRowKey = e.key;
+  //   const rowKey = e.key;
+  //   const expandedRowData = e.component
+  //     .getDataSource()
+  //     .items()
+  //     .find((item) => item.TransactionDate === rowKey);
+  //   const transactionType: any = expandedRowData.TransactionType;
+  //   let facilityID = this.FacilityID.join(',');
+  //   let submissionUID = expandedRowData.ClaimRemittanceHeaderUID;
+  //   let claimUID = expandedRowData.ClaimRemittanceUID;
 
-            this.cliamDetailsDrillDownLoaded = true;
-            this.encounterDrillDownLoaded = true;
-            this.OthersDrillDownLoaded = true;
-          }
-        });
-    }
+  //   if (transactionType.includes('Submission')) {
+  //     this.service
+  //       .get_CliamDetails_InnerDrillDown_Submission_Data(
+  //         facilityID,
+  //         submissionUID,
+  //         claimUID
+  //       )
+  //       .subscribe((response: any) => {
+  //         if (response.flag === '1') {
+  //           this.claimDetailsDataSource = [response.submission];
+  //           this.encounterDataSource = [response.encounter];
+  //           this.othersDataSource = [response.others];
 
-    if (transactionType.includes('Resubmission')) {
-      this.service
-        .get_CliamDetails_InnerDrillDown_Resubmission_Data(
-          facilityID,
-          submissionUID,
-          claimUID
-        )
-        .subscribe((response: any) => {
-          if (response.flag === '1') {
-            this.claimDetailsDataSource = [response.submission];
-            this.encounterDataSource = [response.encounter];
-            this.othersDataSource = [response.others];
-            this.ResubmissionDatasource = [response.resubmission];
-            this.ResubmissionDrillDownLoaded = true;
-            this.encounterDrillDownLoaded = true;
-            this.cliamDetailsDrillDownLoaded = true;
-            this.OthersDrillDownLoaded = true;
-          }
-        });
-    }
+  //           this.cliamDetailsDrillDownLoaded = true;
+  //           this.encounterDrillDownLoaded = true;
+  //           this.OthersDrillDownLoaded = true;
+  //         }
+  //       });
+  //   }
 
-    if (transactionType.includes('Remittance')) {
-      this.service
-        .get_CliamDetails_InnerDrillDown_Remittance_Data(
-          facilityID,
-          submissionUID,
-          claimUID
-        )
-        .subscribe((response: any) => {
-          if (response.flag === '1') {
-            this.remittanceDataSource = [response.remittance];
-            this.othersDataSource = [response.others];
-            this.ResubmissionDrillDownLoaded = false;
-            this.encounterDrillDownLoaded = false;
-            this.cliamDetailsDrillDownLoaded = false;
-            this.RemittanceDrillDownLoaded = true;
-            this.OthersDrillDownLoaded = true;
-          }
-        });
-    }
-  }
+  //   if (transactionType.includes('Resubmission')) {
+  //     this.service
+  //       .get_CliamDetails_InnerDrillDown_Resubmission_Data(
+  //         facilityID,
+  //         submissionUID,
+  //         claimUID
+  //       )
+  //       .subscribe((response: any) => {
+  //         if (response.flag === '1') {
+  //           this.claimDetailsDataSource = [response.submission];
+  //           this.encounterDataSource = [response.encounter];
+  //           this.othersDataSource = [response.others];
+  //           this.ResubmissionDatasource = [response.resubmission];
+  //           this.ResubmissionDrillDownLoaded = true;
+  //           this.encounterDrillDownLoaded = true;
+  //           this.cliamDetailsDrillDownLoaded = true;
+  //           this.OthersDrillDownLoaded = true;
+  //         }
+  //       });
+  //   }
+
+  //   if (transactionType.includes('Remittance')) {
+  //     this.service
+  //       .get_CliamDetails_InnerDrillDown_Remittance_Data(
+  //         facilityID,
+  //         submissionUID,
+  //         claimUID
+  //       )
+  //       .subscribe((response: any) => {
+  //         if (response.flag === '1') {
+  //           this.remittanceDataSource = [response.remittance];
+  //           this.othersDataSource = [response.others];
+  //           this.ResubmissionDrillDownLoaded = false;
+  //           this.encounterDrillDownLoaded = false;
+  //           this.cliamDetailsDrillDownLoaded = false;
+  //           this.RemittanceDrillDownLoaded = true;
+  //           this.OthersDrillDownLoaded = true;
+  //         }
+  //       });
+  //   }
+  // }
 }
 
 @NgModule({

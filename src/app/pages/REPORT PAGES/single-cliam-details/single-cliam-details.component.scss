@@ -44,7 +44,7 @@
 .BorderBox {
   align-items: center;
   justify-content: center;
-  padding: auto;
+  padding: 10px;
   width: 45%;
   height: auto;
   margin-left: 10px;
@@ -53,6 +53,7 @@
   padding-bottom: 10px;
   background-color: var(--base-bg);
   border-radius: 8px;
+  border: 1px dotted ;
 }
 .grid {
   padding-left: 5px;
