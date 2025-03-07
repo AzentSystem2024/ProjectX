@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, NgModule, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  NgModule,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   DxDataGridModule,
   DxButtonModule,
@@ -12,6 +18,8 @@ import {
   DxLoadPanelModule,
   DxPopupModule,
   DxDropDownBoxModule,
+  DxValidatorModule,
+  DxValidatorComponent,
 } from 'devextreme-angular';
 import { FormPopupModule } from 'src/app/components';
 import { ReportService } from 'src/app/services/Report-data.service';
@@ -27,6 +35,11 @@ import { DxDropDownBoxTypes } from 'devextreme-angular/ui/drop-down-box';
   providers: [ReportService, ReportEngineService],
 })
 export class SingleCliamDetailsComponent implements OnInit {
+  @ViewChild('facilityValidator', { static: false })
+  facilityValidator!: DxValidatorComponent;
+  @ViewChild('ClaimNumberValidator', { static: false })
+  ClaimNumberValidator!: DxValidatorComponent;
+
   width: any = '100%';
   rtlEnabled: boolean = false;
   scrollByContent: boolean = true;
@@ -73,18 +86,15 @@ export class SingleCliamDetailsComponent implements OnInit {
 
   isEmptyDatagrid: boolean = true;
   RowData: any;
-  isSubmissionDrillOpened: boolean = false;
-  isResubmissionDrillOpened: boolean = false;
-  isRemittanceDrillOpened: boolean = false;
-
-
 
   detailColumns: any;
   claimDetailsDataSource: any;
   encounterDataSource: any;
   othersDataSource: any;
   ResubmissionDatasource: any[];
-
+  ObservationDatasource: any;
+  ObservationColumns: any;
+  filteredObservationdataSource: any;
   remittanceDataSource: any[];
 
   expandedRowKey: any = null;
@@ -123,6 +133,10 @@ export class SingleCliamDetailsComponent implements OnInit {
   ];
   ResubmissiontabsWithText: any[] = [
     {
+      id: 0,
+      text: 'Submission Activities',
+    },
+    {
       id: 1,
       text: 'Resubmission Details',
     },
@@ -138,10 +152,21 @@ export class SingleCliamDetailsComponent implements OnInit {
   ];
 
   selectedIndex: number = 0;
-
+  basicDataAvailable: boolean = false;
   isSubmissionClickVisible: boolean = false;
   isResubmissionClickVisible: boolean = false;
   isRemittanceClickVisible: boolean = false;
+  attachmentButton = [
+    {
+      icon: 'attach',
+      hint: 'View Attachments',
+      visible: (e: any) => e.row.data.hasAttachment,
+      onClick: (e: any) => {
+        e.event.stopPropagation();
+        console.log('Attachment clicked', e.row.data);
+      },
+    },
+  ];
 
   constructor(
     private service: ReportService,
@@ -152,9 +177,6 @@ export class SingleCliamDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.loadingVisible = true;
-    // this.isContentVisible = true;
-    // this.focusedRow = null;
     this.activityFocusRow = null;
     this.isActivityGridVisible = false;
     this.isDiagnosisGridVisible = false;
@@ -208,48 +230,84 @@ export class SingleCliamDetailsComponent implements OnInit {
     this.isContentVisible = !this.isContentVisible;
   }
   //==========================Clear Button Clicked========================
-  clearButtonAction() {}
+  clearButtonAction() {
+    this.basicDataAvailable = false;
+    this.isSubmissionClickVisible = false;
+    this.isResubmissionClickVisible = false;
+    this.isRemittanceClickVisible = false;
+    this.isEmptyDatagrid = true;
+    this.TransactionDataSource = [];
+    this.transactionColumns = [];
+    this.ClaimNumberValue = '';
+    this.EmiratesIDvalue = '';
+    this.ReceiverIDValue = '';
+    this.PayerIDValue = '';
+    this.IDPayerValue = '';
+    this.MemberIDValue = '';
+    this.ClaimCountValue = '';
+    this.ClaimAmountValue = '';
+    this.RemittanceAmountValue = '';
+    this.RemittanceCountValue = '';
+    this.ClaimNumber = '';
+    this.FacilityID = '';
+
+  }
+  //=========================Datagrid Show Attachment Click===============
+  onAttachmentClick(event: any) {
+    event.event.stopPropagation(); //  Prevents row click event
+  }
 
   //===============Get all Data source Of the drill dowm ==================
   get_All_DataSource() {
-    this.loadingVisible = true;
-    this.isContentVisible = true;
-    this.isActivityGridVisible = false;
-    this.service
-      .get_CliamDetails_DrillDown_Data(
-        this.ClaimNumber,
-        this.FacilityID.join(',')
-      )
-      .subscribe((response: any) => {
-        this.ClaimNumberValue = response.Summary[0].ClaimNumber;
-        this.EmiratesIDvalue = response.Summary[0].EmiratesIDNumber;
-        this.ReceiverIDValue = response.Summary[0].ReceiverID;
-        this.PayerIDValue = response.Summary[0].PayerID;
-        this.IDPayerValue = response.Summary[0].IDPayer;
-        this.MemberIDValue = response.Summary[0].MemberID;
-        this.ClaimCountValue = response.Summary[0].ClaimCount;
-        this.ClaimAmountValue = response.Summary[0].ClaimAmount;
-        this.RemittanceAmountValue = response.Summary[0].RemittanceAmount;
-        this.RemittanceCountValue = response.Summary[0].RemittanceCount;
-        this.DiagnosisDataSource = response.Diagnosis;
-        this.ActivityDataSource = response.Activity.map((item) => {
-          return {
-            ...item,
-            StartDate: this.service.formatDate(item.StartDate),
-          };
+    const FacilityvalidationResult = this.facilityValidator.instance.validate();
+    const ClaimvalidationResult = this.ClaimNumberValidator.instance.validate();
+
+    if (FacilityvalidationResult.isValid && ClaimvalidationResult.isValid) {
+      this.TransactionDataSource = '';
+      this.isSubmissionClickVisible = false;
+      this.isResubmissionClickVisible = false;
+      this.isRemittanceClickVisible = false;
+      this.loadingVisible = true;
+      this.isContentVisible = true;
+      this.service
+        .get_CliamDetails_DrillDown_Data(
+          this.ClaimNumber,
+          this.FacilityID.join(',')
+        )
+        .subscribe((response: any) => {
+          this.ClaimNumberValue = response.Summary[0].ClaimNumber;
+          this.EmiratesIDvalue = response.Summary[0].EmiratesIDNumber;
+          this.ReceiverIDValue = response.Summary[0].ReceiverID;
+          this.PayerIDValue = response.Summary[0].PayerID;
+          this.IDPayerValue = response.Summary[0].IDPayer;
+          this.MemberIDValue = response.Summary[0].MemberID;
+          this.ClaimCountValue = response.Summary[0].ClaimCount;
+          this.ClaimAmountValue = response.Summary[0].ClaimAmount;
+          this.RemittanceAmountValue = response.Summary[0].RemittanceAmount;
+          this.RemittanceCountValue = response.Summary[0].RemittanceCount;
+          this.DiagnosisDataSource = response.Diagnosis;
+          this.ActivityDataSource = response.Activity.map((item) => {
+            return {
+              ...item,
+              StartDate: this.service.formatDate(item.StartDate),
+            };
+          });
+          this.TransactionDataSource = response.Transaction.map((item) => {
+            return {
+              ...item,
+              TransactionDate: this.service.formatDate(item.TransactionDate),
+            };
+          });
+          this.transactionColumns = response.TransactionColumns;
+          this.SubmisstionActivityColumns = response.ActivityColumns;
+          this.DiagnosisColumns = response.DiagnosisColumns;
+          this.ObservationDatasource = response.ActivityObservation;
+          this.ObservationColumns = response.ObservationColumns;
+          this.basicDataAvailable = true;
+          this.loadingVisible = false;
+          this.isEmptyDatagrid = false;
         });
-        this.TransactionDataSource = response.Transaction.map((item) => {
-          return {
-            ...item,
-            TransactionDate: this.service.formatDate(item.TransactionDate),
-          };
-        });
-        this.transactionColumns = response.TransactionColumns;
-        this.SubmisstionActivityColumns = response.ActivityColumns;
-        this.DiagnosisColumns = response.DiagnosisColumns;
-        this.loadingVisible = false;
-        this.isEmptyDatagrid = false;
-      });
+    }
   }
 
   //=================row selection event of transaction table=============
@@ -346,100 +404,29 @@ export class SingleCliamDetailsComponent implements OnInit {
     this.isActivityGridVisible = true;
   }
 
-  //==========row selection event of submission activity table===========
-  // onActivityGridFocusedRowChanged(e: any) {
-  //   this.filteredDiagnosisDataSource = '';
-  //   let selectedRowClaimRemittanceHeaderUID =
-  //     e.row.data.ClaimRemittanceHeaderUID;
-  //   let selectedRowClaimRemittanceUID = e.row.data.ClaimRemittanceUID;
-  //   let selectedRowSerialNumber = e.row.data.SerialNumber;
-  //   this.filteredDiagnosisDataSource = this.DiagnosisDataSource.filter(
-  //     (item) =>
-  //       item.ClaimRemittanceHeaderUID === selectedRowClaimRemittanceHeaderUID &&
-  //       item.ClaimRemittanceUID === selectedRowClaimRemittanceUID &&
-  //       item.SerialNumber === selectedRowSerialNumber
-  //   );
-  //   this.isDiagnosisGridVisible = true;
-  //   this.isEmptyDatagrid = false;
-  // }
-
   // //================Row data drill down click event===================
-  // TransactionRowDrillDownClick(e: any) {
-  //   if (this.expandedRowKey !== null && this.expandedRowKey !== e.key) {
-  //     e.component.collapseRow(this.expandedRowKey);
-  //   }
-  //   this.expandedRowKey = e.key;
-  //   const rowKey = e.key;
-  //   const expandedRowData = e.component
-  //     .getDataSource()
-  //     .items()
-  //     .find((item) => item.TransactionDate === rowKey);
-  //   const transactionType: any = expandedRowData.TransactionType;
-  //   let facilityID = this.FacilityID.join(',');
-  //   let submissionUID = expandedRowData.ClaimRemittanceHeaderUID;
-  //   let claimUID = expandedRowData.ClaimRemittanceUID;
+  ActivityRowDrillDownClick(e: any) {
+    if (this.expandedRowKey !== null && this.expandedRowKey !== e.key) {
+      e.component.collapseRow(this.expandedRowKey);
+    }
+    this.expandedRowKey = e.key;
 
-  //   if (transactionType.includes('Submission')) {
-  //     this.service
-  //       .get_CliamDetails_InnerDrillDown_Submission_Data(
-  //         facilityID,
-  //         submissionUID,
-  //         claimUID
-  //       )
-  //       .subscribe((response: any) => {
-  //         if (response.flag === '1') {
-  //           this.claimDetailsDataSource = [response.submission];
-  //           this.encounterDataSource = [response.encounter];
-  //           this.othersDataSource = [response.others];
+    const rowKey = e.key;
+    const expandedRowData = e.component
+      .getDataSource()
+      .items()
+      .find((item) => item.ClaimActivityNumber === rowKey);
 
-  //           this.cliamDetailsDrillDownLoaded = true;
-  //           this.encounterDrillDownLoaded = true;
-  //           this.OthersDrillDownLoaded = true;
-  //         }
-  //       });
-  //   }
+    let claimActivityUID = expandedRowData.ClaimActivityUID;
+    let claimremittanceUID = expandedRowData.ClaimRemittanceUID;
 
-  //   if (transactionType.includes('Resubmission')) {
-  //     this.service
-  //       .get_CliamDetails_InnerDrillDown_Resubmission_Data(
-  //         facilityID,
-  //         submissionUID,
-  //         claimUID
-  //       )
-  //       .subscribe((response: any) => {
-  //         if (response.flag === '1') {
-  //           this.claimDetailsDataSource = [response.submission];
-  //           this.encounterDataSource = [response.encounter];
-  //           this.othersDataSource = [response.others];
-  //           this.ResubmissionDatasource = [response.resubmission];
-  //           this.ResubmissionDrillDownLoaded = true;
-  //           this.encounterDrillDownLoaded = true;
-  //           this.cliamDetailsDrillDownLoaded = true;
-  //           this.OthersDrillDownLoaded = true;
-  //         }
-  //       });
-  //   }
-
-  //   if (transactionType.includes('Remittance')) {
-  //     this.service
-  //       .get_CliamDetails_InnerDrillDown_Remittance_Data(
-  //         facilityID,
-  //         submissionUID,
-  //         claimUID
-  //       )
-  //       .subscribe((response: any) => {
-  //         if (response.flag === '1') {
-  //           this.remittanceDataSource = [response.remittance];
-  //           this.othersDataSource = [response.others];
-  //           this.ResubmissionDrillDownLoaded = false;
-  //           this.encounterDrillDownLoaded = false;
-  //           this.cliamDetailsDrillDownLoaded = false;
-  //           this.RemittanceDrillDownLoaded = true;
-  //           this.OthersDrillDownLoaded = true;
-  //         }
-  //       });
-  //   }
-  // }
+    this.filteredObservationdataSource = this.ObservationDatasource.filter(
+      (item) =>
+        item.ClaimActivityUID === claimActivityUID &&
+        item.ClaimRemittanceUID === claimremittanceUID
+    );
+    // console.log('Activity row expanded:', expandedRowData);
+  }
 }
 
 @NgModule({
@@ -458,6 +445,7 @@ export class SingleCliamDetailsComponent implements OnInit {
     DxLoadPanelModule,
     DxPopupModule,
     DxDropDownBoxModule,
+    DxValidatorModule,
   ],
   providers: [],
   exports: [SingleCliamDetailsComponent],

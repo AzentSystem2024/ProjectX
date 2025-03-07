@@ -105,14 +105,16 @@ export class ClinicianComponent implements OnInit {
   ) {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        this.isAddClinicianPopupOpened = this.popupStateService.getPopupState('clinicianPopup');
+        this.isAddClinicianPopupOpened =
+          this.popupStateService.getPopupState('clinicianPopup');
       }
     });
   }
 
   ngOnInit(): void {
     this.get_DropDown_Data();
-    this.isAddClinicianPopupOpened = this.popupStateService.getPopupState('clinicianPopup');
+    this.isAddClinicianPopupOpened =
+      this.popupStateService.getPopupState('clinicianPopup');
   }
 
   show_new__Form() {
@@ -200,7 +202,6 @@ export class ClinicianComponent implements OnInit {
   onRowRemoving(event: any) {
     event.cancel = true;
     let SelectedRow = event.key;
-
     this.masterService
       .Remove_Clinician_Row_Data(SelectedRow.ID)
       .subscribe(() => {

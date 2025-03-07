@@ -20,6 +20,7 @@
               (onOptionChanged)="onGridBoxOptionChanged($event)"
               label="Facility"
               labelMode="floating"
+              validationMessagePosition="top"
             >
               <div *dxTemplate="let data of 'content'">
                 <dx-data-grid
@@ -47,43 +48,49 @@
                 >
                 </dx-data-grid>
               </div>
+              <dx-validator #facilityValidator>
+                <dxi-validation-rule
+                  type="required"
+                  message="Facility selection is required"
+                ></dxi-validation-rule>
+              </dx-validator>
             </dx-drop-down-box>
           </div>
 
-          <div class="mt-1">
+          <div class="mt-1" *ngIf="basicDataAvailable">
             <dx-text-box
               [(value)]="MemberIDValue"
               label="Member ID"
               labelMode="floating"
-            >
-            </dx-text-box>
+              [readOnly]="true"
+            ></dx-text-box>
           </div>
 
-          <div class="mt-1">
+          <div class="mt-1" *ngIf="basicDataAvailable">
             <dx-text-box
               [(value)]="ReceiverIDValue"
               label="Receiver ID"
               labelMode="floating"
-            >
-            </dx-text-box>
+              [readOnly]="true"
+            ></dx-text-box>
           </div>
 
-          <div class="mt-1">
+          <div class="mt-1" *ngIf="basicDataAvailable">
             <dx-text-box
               [(value)]="PayerIDValue"
               label="Payer"
               labelMode="floating"
-            >
-            </dx-text-box>
+              [readOnly]="true"
+            ></dx-text-box>
           </div>
 
-          <div class="mt-1">
+          <div class="mt-1" *ngIf="basicDataAvailable">
             <dx-text-box
               [(value)]="EmiratesIDvalue"
               label="Emirates ID"
               labelMode="floating"
-            >
-            </dx-text-box>
+              [readOnly]="true"
+            ></dx-text-box>
           </div>
         </div>
 
@@ -94,35 +101,42 @@
               [(value)]="ClaimNumber"
               label="Claim Number"
               labelMode="floating"
+              validationMessagePosition="top"
             >
+              <dx-validator #ClaimNumberValidator>
+                <dxi-validation-rule
+                  type="required"
+                  message="Claim Number is required"
+                ></dxi-validation-rule>
+              </dx-validator>
             </dx-text-box>
           </div>
 
-          <div class="mt-1">
+          <div class="mt-1" *ngIf="basicDataAvailable">
             <dx-text-box
               [(value)]="ClaimCountValue"
               label="Claim Count"
               labelMode="floating"
-            >
-            </dx-text-box>
+              [readOnly]="true"
+            ></dx-text-box>
           </div>
 
-          <div class="mt-1">
+          <div class="mt-1" *ngIf="basicDataAvailable">
             <dx-text-box
               [(value)]="RemittanceCountValue"
               label="Remittance Count"
               labelMode="floating"
-            >
-            </dx-text-box>
+              [readOnly]="true"
+            ></dx-text-box>
           </div>
 
-          <div class="mt-1">
+          <div class="mt-1" *ngIf="basicDataAvailable">
             <dx-text-box
               [(value)]="IDPayerValue"
               label="ID Payer"
               labelMode="floating"
-            >
-            </dx-text-box>
+              [readOnly]="true"
+            ></dx-text-box>
           </div>
         </div>
 
@@ -136,8 +150,7 @@
               hint="Refresh"
               stylingMode="contained"
               (onClick)="get_All_DataSource()"
-            >
-            </dx-button>
+            ></dx-button>
           </div>
           <div class="mt-1">
             <dx-button
@@ -147,14 +160,13 @@
               hint="Clear"
               stylingMode="contained"
               (onClick)="clearButtonAction()"
-            >
-            </dx-button>
+            ></dx-button>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="button-container mt-1">
+    <div *ngIf="basicDataAvailable" class="button-container mt-1">
       <dx-button
         class="toggleButton"
         icon="{{ isContentVisible ? 'spinup' : 'spindown' }}"
@@ -178,7 +190,7 @@
           <dx-data-grid
             class="grid theme-dependent"
             noDataText="No Data Available"
-            [height]="'auto'"
+            [height]="isEmptyDatagrid ? '65vh' : '30vh'"
             [dataSource]="TransactionDataSource"
             [allowColumnResizing]="true"
             [allowColumnReordering]="true"
@@ -195,114 +207,26 @@
             }"
             (onFocusedRowChanged)="onTransactionGridFocusedRowChanged($event)"
           >
-            <!-- <dxi-column alignment="center" caption="Select" width="50">
-              <ng-template #cellTemplate let-data="data">
-                <div class="dx-icon-container">
-                  <i
-                    class="dx-icon"
-                    [ngClass]="{
-                      'dx-icon-check dx-text-success':
-                        focusedRow === data.row.key,
-                      'dx-icon-radio-unchecked dx-text-muted':
-                        focusedRow !== data.row.key
-                    }"
-                  ></i>
-                </div>
-              </ng-template>
-            </dxi-column> -->
-
             <dxi-column
               *ngFor="let column of transactionColumns"
               [dataField]="column.Title"
               [caption]="column.ToolTip"
               [visible]="column.Visibility"
             ></dxi-column>
-
-            <!-- <dxo-master-detail
-              [enabled]="true"
-              [autoExpandAll]="false"
-              template="masterDetail"
-            ></dxo-master-detail> -->
-
-            <!-- <div
-              class="ps-2 pe-2 mainInnerGridDiv"
-              *dxTemplate="let detailData of 'masterDetail'"
+            <dxi-column
+              *ngIf="!isEmptyDatagrid"
+              type="buttons"
+              caption=""
+              [width]="40"
+              [fixed]="false"
+              fixedPosition="right"
+              [allowFixing]="false"
+              [allowHiding]="false"
+              [allowResizing]="false"
+              [allowReordering]="false"
+              [buttons]="attachmentButton"
             >
-              <div
-                *ngIf="ResubmissionDrillDownLoaded"
-                class="data-grid-container mt-1 mb-2 innerGriddata"
-              >
-                <span class="po-title">Resubmission Details</span>
-                <dx-data-grid
-                  [columnAutoWidth]="true"
-                  [showBorders]="true"
-                  [dataSource]="ResubmissionDatasource"
-                  [width]="'100%'"
-                  [height]="'10vh'"
-                >
-                </dx-data-grid>
-              </div>
-
-              <div
-                *ngIf="cliamDetailsDrillDownLoaded"
-                class="data-grid-container mt-1 innerGriddata"
-              >
-                <span class="po-title text-center">Claim Details</span>
-                <dx-data-grid
-                  [columnAutoWidth]="true"
-                  [showBorders]="true"
-                  [dataSource]="claimDetailsDataSource"
-                  [width]="'100%'"
-                  [height]="'10vh'"
-                >
-                </dx-data-grid>
-              </div>
-
-              <div
-                *ngIf="encounterDrillDownLoaded"
-                class="data-grid-container mt-1 innerGriddata"
-              >
-                <span class="po-title">Encounter Details</span>
-                <dx-data-grid
-                  [columnAutoWidth]="true"
-                  [showBorders]="true"
-                  [dataSource]="encounterDataSource"
-                  [width]="'100%'"
-                  [height]="'10vh'"
-                >
-                </dx-data-grid>
-              </div>
-
-              <div
-                *ngIf="RemittanceDrillDownLoaded"
-                class="data-grid-container mt-1 mb-2 innerGriddata"
-              >
-                <span class="po-title">Remittance Details</span>
-                <dx-data-grid
-                  [columnAutoWidth]="true"
-                  [showBorders]="true"
-                  [dataSource]="remittanceDataSource"
-                  [width]="'100%'"
-                  [height]="'10vh'"
-                >
-                </dx-data-grid>
-              </div>
-
-              <div
-                *ngIf="OthersDrillDownLoaded"
-                class="data-grid-container mt-1 mb-2 innerGriddata"
-              >
-                <span class="po-title">Other Details</span>
-                <dx-data-grid
-                  [columnAutoWidth]="true"
-                  [showBorders]="true"
-                  [dataSource]="othersDataSource"
-                  [width]="'100%'"
-                  [height]="'10vh'"
-                >
-                </dx-data-grid>
-              </div>
-            </div> -->
+            </dxi-column>
           </dx-data-grid>
         </div>
 
@@ -342,13 +266,43 @@
                 texts: { fix: 'Freeze', unfix: 'Unfreeze' }
               }"
               [(focusedRowKey)]="activityFocusRow"
+              (onRowExpanding)="ActivityRowDrillDownClick($event)"
             >
               <dxi-column
                 *ngFor="let column of SubmisstionActivityColumns"
-                [dataField]="column.Title"
+                [dataField]="column.Name"
                 [caption]="column.ToolTip"
                 [visible]="column.Visibility"
               ></dxi-column>
+
+              <dxo-master-detail
+                [enabled]="true"
+                [autoExpandAll]="false"
+                template="masterDetail"
+              ></dxo-master-detail>
+
+              <div
+                class="ps-2 pe-2 mainInnerGridDiv"
+                *dxTemplate="let detailData of 'masterDetail'"
+              >
+                <div class="data-grid-container mt-1 mb-2 innerGriddata">
+                  <span class="po-title">Observation Details</span>
+                  <dx-data-grid
+                    [columnAutoWidth]="true"
+                    [showBorders]="true"
+                    [dataSource]="filteredObservationdataSource"
+                    [width]="'100%'"
+                    [height]="'auto'"
+                  >
+                    <dxi-column
+                      *ngFor="let column of ObservationColumns"
+                      [dataField]="column.Name"
+                      [caption]="column.ToolTip"
+                      [visible]="column.Visibility"
+                    ></dxi-column>
+                  </dx-data-grid>
+                </div>
+              </div>
             </dx-data-grid>
           </div>
 
@@ -357,7 +311,14 @@
               [dataSource]="filteredDiagnosisDataSource"
               noDataText="No Diagnosis data Available"
               [height]="'35vh'"
-            ></dx-data-grid>
+            >
+              <dxi-column
+                *ngFor="let column of DiagnosisColumns"
+                [dataField]="column.Name"
+                [caption]="column.ToolTip"
+                [visible]="column.Visibility"
+              ></dxi-column>
+            </dx-data-grid>
           </div>
 
           <div *ngIf="selectedIndex === 2">
@@ -396,11 +357,71 @@
 
           <div *ngIf="selectedIndex === 0">
             <dx-data-grid
+              class="grid theme-dependent"
+              noDataText="No Data Available"
+              [height]="'35vh'"
+              [dataSource]="filteredActivityDataSource"
+              [allowColumnResizing]="true"
+              [allowColumnReordering]="true"
+              [hoverStateEnabled]="true"
+              [columnAutoWidth]="true"
+              [focusedRowEnabled]="true"
+              [autoNavigateToFocusedRow]="false"
+              [keyExpr]="'ClaimActivityNumber'"
+              [headerFilter]="{ visible: true }"
+              [columnFixing]="{
+                enabled: true,
+                texts: { fix: 'Freeze', unfix: 'Unfreeze' }
+              }"
+              [(focusedRowKey)]="activityFocusRow"
+              (onRowExpanding)="ActivityRowDrillDownClick($event)"
+            >
+              <dxi-column
+                *ngFor="let column of SubmisstionActivityColumns"
+                [dataField]="column.Name"
+                [caption]="column.ToolTip"
+                [visible]="column.Visibility"
+              ></dxi-column>
+
+              <dxo-master-detail
+                [enabled]="true"
+                [autoExpandAll]="false"
+                template="masterDetail"
+              ></dxo-master-detail>
+
+              <div
+                class="ps-2 pe-2 mainInnerGridDiv"
+                *dxTemplate="let detailData of 'masterDetail'"
+              >
+                <div class="data-grid-container mt-1 mb-2 innerGriddata">
+                  <span class="po-title">Observation Details</span>
+                  <dx-data-grid
+                    [columnAutoWidth]="true"
+                    [showBorders]="true"
+                    [dataSource]="filteredObservationdataSource"
+                    [width]="'100%'"
+                    [height]="'auto'"
+                  >
+                    <dxi-column
+                      *ngFor="let column of ObservationColumns"
+                      [dataField]="column.Name"
+                      [caption]="column.ToolTip"
+                      [visible]="column.Visibility"
+                    ></dxi-column>
+                  </dx-data-grid>
+                </div>
+              </div>
+            </dx-data-grid>
+          </div>
+
+          <div *ngIf="selectedIndex === 1">
+            <dx-data-grid
               [dataSource]="ResubmissionDatasource"
               noDataText="Resubmission data not available"
               [height]="'35vh'"
             ></dx-data-grid>
           </div>
+
           <div *ngIf="selectedIndex === 1">
             <dx-data-grid
               [dataSource]="encounterDataSource"

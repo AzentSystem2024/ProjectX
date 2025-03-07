@@ -38,11 +38,12 @@
       <dx-tab-panel
         class="tabPanelDiv mt-1"
         [dataSource]="tabs"
+        noDataText=" "
         itemTitleTemplate="title"
         itemTemplate="item"
         [animationEnabled]="true"
         [deferRendering]="false"
-        [showNavButtons]="true"
+        [showNavButtons]="true" 
         [repaintChangesOnly]="true"
         [selectedIndex]="selectedIndex"
       >

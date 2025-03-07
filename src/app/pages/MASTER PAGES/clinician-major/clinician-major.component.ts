@@ -31,8 +31,10 @@ import { DataService } from 'src/app/services';
   providers: [ReportService, DataService],
 })
 export class ClinicianMajorComponent  {
+  
   @ViewChild(DxDataGridComponent, { static: true })
   dataGrid: DxDataGridComponent;
+
   @ViewChild(ClinicianMajorNewFormComponent, { static: false })
   ClinicianMajor: ClinicianMajorNewFormComponent;
 

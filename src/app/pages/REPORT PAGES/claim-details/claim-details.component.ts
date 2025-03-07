@@ -347,7 +347,6 @@ export class ClaimDetailsComponent implements OnInit {
           popup.isOpened = true; // Restore visibility for popups that should be shown
         }
       });
-
       // Ensure UI reflects changes immediately
       this.cdr.detectChanges();
     }
