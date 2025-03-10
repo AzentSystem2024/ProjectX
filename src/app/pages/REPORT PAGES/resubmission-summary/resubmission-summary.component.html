@@ -51,7 +51,7 @@
             </dx-drop-down-box>
           </dxi-item>
         </dxi-item>
-  
+
         <dxi-item
           itemType="group"
           cssClass="form-group"
@@ -76,7 +76,7 @@
               </dx-select-box>
             </div>
           </dxi-item>
-  
+
           <dxi-item [colSpan]="1">
             <dx-select-box
               labelMode="floating"
@@ -89,7 +89,7 @@
               [width]="'auto'"
             ></dx-select-box>
           </dxi-item>
-  
+
           <dxi-item [colSpan]="1">
             <div>
               <dx-select-box
@@ -106,7 +106,7 @@
               </dx-select-box>
             </div>
           </dxi-item>
-  
+
           <dxi-item [colSpan]="1">
             <dx-date-box
               labelMode="floating"
@@ -121,7 +121,7 @@
             >
             </dx-date-box>
           </dxi-item>
-  
+
           <dxi-item [colSpan]="1">
             <dx-date-box
               labelMode="floating"
@@ -136,7 +136,7 @@
             >
             </dx-date-box>
           </dxi-item>
-  
+
           <dxi-item [colSpan]="2">
             <div>
               <dx-select-box
@@ -155,7 +155,7 @@
             </div>
           </dxi-item>
         </dxi-item>
-  
+
         <dxi-item
           itemType="group"
           cssClass="form-group"
@@ -177,7 +177,7 @@
             >
             </dx-select-box>
           </dxi-item>
-  
+
           <dxi-item [colSpan]="2">
             <dx-drop-down-box
               labelMode="floating"
@@ -213,7 +213,7 @@
               </div>
             </dx-drop-down-box>
           </dxi-item>
-  
+
           <dxi-item [colSpan]="2">
             <dx-drop-down-box
               labelMode="floating"
@@ -249,7 +249,7 @@
               </div>
             </dx-drop-down-box>
           </dxi-item>
-  
+
           <dxi-item [colSpan]="2">
             <dx-drop-down-box
               labelMode="floating"
@@ -286,7 +286,7 @@
             </dx-drop-down-box>
           </dxi-item>
         </dxi-item>
-  
+
         <dxi-item
           itemType="group"
           cssClass="form-group"
@@ -328,7 +328,7 @@
               </div>
             </dx-drop-down-box>
           </dxi-item>
-  
+
           <dxi-item [colSpan]="2">
             <div>
               <dx-text-box
@@ -340,7 +340,7 @@
               </dx-text-box>
             </div>
           </dxi-item>
-  
+
           <dxi-item [colSpan]="2">
             <div>
               <dx-text-box
@@ -352,7 +352,7 @@
               </dx-text-box>
             </div>
           </dxi-item>
-  
+
           <dxi-item [colSpan]="2">
             <div>
               <dx-text-box
@@ -401,7 +401,7 @@
         </div>
       </dxi-item>
 
-        
+
 
       <dxi-item [colSpan]="2">
         <dx-select-box
@@ -484,7 +484,7 @@
       >
       </dx-button>
       </dxi-item>
-<!-- 
+<!--
       <dxi-item [colSpan]="1">
         <dx-button
         class="add-card"
@@ -497,7 +497,7 @@
       </dx-button>
       </dxi-item> -->
       </dxi-item>
-  
+
         <!-- <dxi-item
           itemType="group"
           cssClass="form-group"
@@ -518,7 +518,7 @@
             >
             </dx-select-box>
           </dxi-item>
-  
+
           <dxi-item [colSpan]="2">
             <div>
               <dx-text-box
@@ -530,7 +530,7 @@
               </dx-text-box>
             </div>
           </dxi-item>
-  
+
           <dxi-item [colSpan]="2">
             <dx-select-box
               labelMode="floating"
@@ -545,7 +545,7 @@
             >
             </dx-select-box>
           </dxi-item>
-  
+
           <dxi-item [colSpan]="2">
             <div>
               <dx-select-box
@@ -581,7 +581,7 @@
               </dx-select-box>
             </div>
           </dxi-item>
-  
+
           <dxi-item [colSpan]="1" class="mt-1 ms-5">
             <dx-button
               class="add-card"
@@ -594,7 +594,7 @@
             >
             </dx-button>
           </dxi-item>
-  
+
           <dxi-item [colSpan]="1" class="mt-1">
             <dx-button
               class="add-card"
@@ -663,7 +663,7 @@
             [onClick]="handleRowDrillDownClick"
           ></dxi-button>
         </dxi-column>
-  
+
         <ng-container *ngFor="let column of columnsConfig">
           <dxi-column
             *ngIf="column.isBand"
@@ -679,7 +679,7 @@
               [width]="200"
             ></dxi-column>
           </dxi-column>
-  
+
           <dxi-column
             *ngIf="!column.isBand"
             [dataField]="column.dataField"
@@ -689,7 +689,7 @@
             [width]="200"
           ></dxi-column>
         </ng-container>
-  
+
         <dxo-search-panel [visible]="true"></dxo-search-panel>
         <dxo-paging [pageSize]="10"></dxo-paging>
         <dxo-pager
@@ -705,11 +705,11 @@
         <dxo-scrolling mode="virtual"></dxo-scrolling>
         <dxo-sorting mode="multiple"></dxo-sorting>
         <dxo-header-filter [visible]="true" highlight="true"></dxo-header-filter>
-  
+
         <dxo-filter-panel [visible]="isFilterOpened"></dxo-filter-panel>
         <dxo-filter-builder [allowHierarchicalFields]="true">
         </dxo-filter-builder>
-  
+
         <dxo-column-chooser
           [height]="500"
           hideOnOutsideClick="true"
@@ -717,12 +717,12 @@
           mode="select"
         >
         </dxo-column-chooser>
-  
+
         <dxo-search-panel
           [visible]="true"
           placeholder="Search"
         ></dxo-search-panel>
-  
+
         <dxo-filter-row
           [visible]="isFilterOpened"
           [applyFilter]="applyFilter"
@@ -825,7 +825,7 @@
               }
             }"
           ></dxi-item>
-  
+
           <dxi-item
             class="columnfinderclass"
             widget="dxDropDownButton"
@@ -841,24 +841,24 @@
                 width: 'auto',
                 height: '60vh'
               },
-  
+
             }"
           ></dxi-item>
         </dxo-toolbar>
-  
+
         <dxo-grouping
           [autoExpandAll]="false"
           [contextMenuEnabled]="true"
           [expandMode]="'rowClick'"
         ></dxo-grouping>
-  
+
         <dxo-selection mode="multiple"></dxo-selection>
         <dxo-header-filter [visible]="true">
           <dxo-search [enabled]="true"></dxo-search>
         </dxo-header-filter>
       </dx-data-grid>
     </ng-container>
-  
+
     <dx-popup
       class="m-0 p-0"
       [(visible)]="isSaveMemorisedOpened"
@@ -898,7 +898,7 @@
         class="save-button"
       ></dx-button>
     </dx-popup>
-  
+
     <form-popup
       class="formPopupClass hide-buttons dx-popup-content m-0 p-0"
       [(visible)]="isAdvancefilterOpened"
@@ -937,6 +937,7 @@
             class="custom-minimize-btn"
             [attr.data-popup-id]="popup.id"
             (click)="minimisePopup(popup.id)"
+            title="minimise btn"
           >
             <span
               *ngIf="!popup.isPopupMinimised"
@@ -949,12 +950,12 @@
             ></span>
             <!-- Expand icon when minimized -->
           </button>
-  
+
           <!-- Close Button -->
           <button class="custom-close-btn" (click)="closePopup1(popup)">
             &times;
           </button>
-  
+
           <!-- Popup Content -->
           <app-claim-detail-activity-drill-down
             [clickedRowData]="popup.rowData"
@@ -962,34 +963,13 @@
         </div>
       </dx-popup>
     </div>
-  
-    <!-- <div *ngIf="isDrillDownPopupOpened">
-      <dx-popup
-        [(visible)]="isDrillDownPopupOpened"
-        title="Resubmission Summary"
-        [height]="popupHeight"
-        [width]="popupWidth"
-        [resizeEnabled]="true"
-        [dragEnabled]="true"
-        [shading]="false"
-        [showCloseButton]="false"
-        [closeOnOutsideClick]="true"
-        [showCloseButton]="false"
-        (onResizeEnd)="onResizeEnd($event)"
-        [toolbarItems]="toolbarItems"
-        [position]="popupPosition"
-      >
-        <app-claim-detail-activity-drill-down
-          [clickedRowData]="clickedRowData"
-        ></app-claim-detail-activity-drill-down>
-      </dx-popup>
-    </div> -->
-  
+
+   
+
     <dx-load-panel
       #loadPanel
       class="loadPanel"
-      shadingColor="rgba(0,0,0,0)"
-      [position]="{ of: '.grid' }"
+      shadingColor="rgba(0,0,0,0.4)"
       [(visible)]="loadingVisible"
       [showIndicator]="true"
       [showPane]="true"
@@ -999,4 +979,3 @@
     >
     </dx-load-panel>
   </div>
-  

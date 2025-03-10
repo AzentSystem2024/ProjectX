@@ -146,9 +146,9 @@ export class ClaimDetailsActivityComponent {
   columnFixed: boolean = true;
   initialized: boolean;
 
-  popupWidth: any = '100%';
-  popupHeight: any = '100%';
-  popupPosition: any = { my: 'center', at: 'center', of: '.view-wrapper' };
+  popupWidth: any = '90%';
+  popupHeight: any = '90vh';
+  popupPosition: any = { my: 'center', at: 'center' };
   isPopupMinimised: boolean = false;
 
   RecieverIDjsonData: any;
@@ -167,7 +167,7 @@ export class ClaimDetailsActivityComponent {
     private router: Router,
     private masterService: MasterReportService,
     private popupStateService: PopupStateService,
-        private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef
   ) {
     this.loadingVisible = true;
     this.minDate = new Date(2000, 1, 1); // Set the minimum date
@@ -192,16 +192,16 @@ export class ClaimDetailsActivityComponent {
     //     );
     //   }
     // });
-        this.router.events.subscribe((event) => {
-          if (event instanceof NavigationStart) {
-            this.hidePopupsOnNavigation();
-          }
-    
-          // Listen for NavigationEnd event to restore visibility
-          if (event instanceof NavigationEnd) {
-            this.restorePopupsOnNavigation();
-          }
-        });
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        this.hidePopupsOnNavigation();
+      }
+
+      // Listen for NavigationEnd event to restore visibility
+      if (event instanceof NavigationEnd) {
+        this.restorePopupsOnNavigation();
+      }
+    });
   }
   //==================MAking cutom datasource for facility datagrid and dropdown loADING=======
   makeAsyncDataSourceFromJson(jsonData: any) {
@@ -254,36 +254,7 @@ export class ClaimDetailsActivityComponent {
     }
   }
 
-  // updateToolbarItems() {
-  //   this.toolbarItems = [
-  //     {
-  //       widget: 'dxButton',
-  //       options: {
-  //         text: '',
-  //         icon: this.isPopupMinimised ? 'expandform' : 'minus', 
-  //         type: 'normal',
-  //         stylingMode: 'contained',
-  //         onClick: () => this.minimisePopup(), 
-  //       },
-  //       toolbar: 'top',
-  //       location: 'after',
-  //     },
-  //     {
-  //       widget: 'dxButton',
-  //       options: {
-  //         text: '',
-  //         icon: 'close',
-  //         type: 'normal',
-  //         stylingMode: 'contained',
-  //         onClick: () => this.closePopup(), // Close the popup on click
-  //       },
-  //       toolbar: 'top',
-  //       location: 'after',
-  //     },
-  //   ];
-  // }
   //========Remove closing popup from the popup array=====
- 
 
   updateToolbarItems(popupId: string) {
     const popup = this.drilldownPopups.find((p) => p.id === popupId); // Get the full popup object by its ID
@@ -324,26 +295,8 @@ export class ClaimDetailsActivityComponent {
     this.closedPopupsSet.add(popup.id);
     // Additional logic for closing the popup can go here
   }
- 
-  // minimisePopup() {
-  //   if (this.isPopupMinimised) {
-  //     this.popupWidth = '70%';
-  //     this.popupHeight = '90%';
-  //     this.popupPosition = { my: 'center', at: 'center', of: '.view-wrapper' };
-  //   } else {
-  //     this.popupHeight = '40vh';
-  //     this.popupWidth = '30%';
-  //     this.popupPosition = {
-  //       my: 'center right',
-  //       at: 'center right',
-  //       of: '.grid',
-  //     };
-  //   }
-  //   this.isPopupMinimised = !this.isPopupMinimised;
-  //   this.updateToolbarItems();
-  // }
+
   //========Remove closing popup from the popup array=====
- 
 
   minimisePopup(popupId: string): void {
     const popup = this.drilldownPopups.find((p) => p.id === popupId);
@@ -364,9 +317,9 @@ export class ClaimDetailsActivityComponent {
           of: window, // Reference the entire window as the parent
         };
       } else {
-        popup.width = '100%';
-        popup.height = '80%';
-        popup.position = { my: 'center', at: 'center', of: '.view-wrapper' }; // Example position
+        popup.width = '90%';
+        popup.height = '90vh';
+        popup.position = { my: 'center', at: 'center' }; // Example position
         popup.icon = 'minimize-icon';
       }
 
@@ -375,7 +328,7 @@ export class ClaimDetailsActivityComponent {
       this.updateToolbarItems(popupId); // Update toolbar items after minimizing
     }
   }
- 
+
   closePopup() {
     this.popupStateService.setPopupState(
       'claimDetaisActivityDrillDownPopup',
@@ -391,21 +344,6 @@ export class ClaimDetailsActivityComponent {
 
   //=================Row click drill Down====================
 
-  // handleRowDrillDownClick = (e: any) => {
-  //   this.isPopupMinimised = false;
-  //   this.updateToolbarItems();
-  //   this.popupWidth = '100%';
-  //   this.popupHeight = '100%';
-  //   this.popupPosition = { my: 'center', at: 'center', of: '.view-wrapper' };
-  //   const rowData = e.row.data;
-  //   this.clickedRowData = rowData;
-  //   this.isDrillDownPopupOpened = true;
-  //   this.popupStateService.setPopupState(
-  //     'claimDetaisActivityDrillDownPopup',
-  //     true
-  //   );
-  // };
-
   handleRowDrillDownClick = (e: any) => {
     const popupId = `drilldown-${new Date().getTime()}`; // Unique ID for each popup
     const rowData = e.row.data;
@@ -415,9 +353,9 @@ export class ClaimDetailsActivityComponent {
     // Add the new popup configuration
     this.drilldownPopups.push({
       id: popupId,
-      width: '100%',
-      height: '80%',
-      position: { my: 'center', at: 'center', of: '.view-wrapper' },
+      width: '90%',
+      height: '90vh',
+      position: { my: 'center', at: 'center' },
       rowData: rowData,
       isOpened: true, // Ensure this popup is opened
       isPopupMinimised: false,

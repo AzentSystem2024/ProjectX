@@ -154,8 +154,8 @@ export class ClaimSummaryMonthWiseComponent {
   orderingClinicianJsonData: any;
 
   popupWidth: any = '100%';
-  popupHeight: any = '100%';
-  popupPosition: any = { my: 'center', at: 'center', of: '.view-wrapper' };
+  popupHeight: any = '90vh';
+  popupPosition: any = { my: 'center', at: 'center' };
   isPopupMinimised: boolean = false;
   closedPopupsSet: Set<string> = new Set();
   drilldownPopups: any[];
@@ -170,8 +170,6 @@ export class ClaimSummaryMonthWiseComponent {
     private popupStateService: PopupStateService,
     private cdr: ChangeDetectorRef
   ) {
-    this.loadingVisible = true;
-
     this.minDate = new Date(2000, 1, 1); // Set the minimum date
     this.maxDate = new Date(); // Set the maximum date
     //============Year field dataSource===============
@@ -188,23 +186,16 @@ export class ClaimSummaryMonthWiseComponent {
       });
     }
 
-        this.router.events.subscribe((event) => {
-          if (event instanceof NavigationStart) {
-            this.hidePopupsOnNavigation();
-          }
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        this.hidePopupsOnNavigation();
+      }
 
-          // Listen for NavigationEnd event to restore visibility
-          if (event instanceof NavigationEnd) {
-            this.restorePopupsOnNavigation();
-          }
-        });
-    // this.router.events.subscribe((event) => {
-    //   if (event instanceof NavigationEnd) {
-    //     this.isDrillDownPopupOpened = this.popupStateService.getPopupState(
-    //       'ClaimSummaryBreakUpPopup'
-    //     );
-    //   }
-    // });
+      // Listen for NavigationEnd event to restore visibility
+      if (event instanceof NavigationEnd) {
+        this.restorePopupsOnNavigation();
+      }
+    });
   }
 
   //=============Resize the popup drill down============
@@ -212,7 +203,6 @@ export class ClaimSummaryMonthWiseComponent {
     this.popupWidth = event.width;
     this.popupHeight = event.height;
   }
-
 
   hidePopupsOnNavigation() {
     if (this.drilldownPopups && this.drilldownPopups.length > 0) {
@@ -248,36 +238,6 @@ export class ClaimSummaryMonthWiseComponent {
     this.closedPopupsSet.add(popup.id);
     // Additional logic for closing the popup can go here
   }
-  //=============update toolbar items==================
-  // updateToolbarItems() {
-  //   this.toolbarItems = [
-  //     {
-  //       widget: 'dxButton',
-  //       options: {
-  //         text: '',
-  //         icon: this.isPopupMinimised ? 'expandform' : 'minus', // Toggle icon based on minimize state
-  //         type: 'normal',
-  //         stylingMode: 'contained',
-  //         onClick: () => this.minimisePopup(), // Minimize the popup on click
-  //       },
-  //       toolbar: 'top',
-  //       location: 'after',
-  //     },
-  //     {
-  //       widget: 'dxButton',
-  //       options: {
-  //         text: '',
-  //         icon: 'close',
-  //         type: 'normal',
-  //         stylingMode: 'contained',
-  //         onClick: () => this.closePopup(), // Close the popup on click
-  //       },
-  //       toolbar: 'top',
-  //       location: 'after',
-  //     },
-  //   ];
-  // }
-
 
   updateToolbarItems(popupId: string) {
     const popup = this.drilldownPopups.find((p) => p.id === popupId); // Get the full popup object by its ID
@@ -312,7 +272,7 @@ export class ClaimSummaryMonthWiseComponent {
     }
   }
 
-
+  //========Remove closing popup from the popup array=====
   minimisePopup(popupId: string): void {
     const popup = this.drilldownPopups.find((p) => p.id === popupId);
     if (popup) {
@@ -333,8 +293,8 @@ export class ClaimSummaryMonthWiseComponent {
         };
       } else {
         popup.width = '100%';
-        popup.height = '80%';
-        popup.position = { my: 'center', at: 'center', of: '.view-wrapper' }; // Example position
+        popup.height = '90vh';
+        popup.position = { my: 'center', at: 'center' }; // Example position
         popup.icon = 'minimize-icon';
       }
 
@@ -343,25 +303,6 @@ export class ClaimSummaryMonthWiseComponent {
       this.updateToolbarItems(popupId); // Update toolbar items after minimizing
     }
   }
-
-  //========Remove closing popup from the popup array=====
-  // minimisePopup() {
-  //   if (this.isPopupMinimised) {
-  //     this.popupWidth = '70%';
-  //     this.popupHeight = '90%';
-  //     this.popupPosition = { my: 'center', at: 'center', of: '.view-wrapper' };
-  //   } else {
-  //     this.popupHeight = '40vh';
-  //     this.popupWidth = '30%';
-  //     this.popupPosition = {
-  //       my: 'center right',
-  //       at: 'center right',
-  //       of: '.grid',
-  //     };
-  //   }
-  //   this.isPopupMinimised = !this.isPopupMinimised;
-  //   this.updateToolbarItems();
-  // }
   //========Remove closing popup from the popup array=====
   closePopup() {
     this.popupStateService.setPopupState('ClaimSummaryBreakUpPopup', false);
@@ -374,18 +315,6 @@ export class ClaimSummaryMonthWiseComponent {
   }
 
   //=================Row click drill Down====================
-  // handleRowDrillDownClick = (e: any) => {
-  //   this.isPopupMinimised = false;
-  //   this.updateToolbarItems();
-  //   this.popupWidth = '100%';
-  //   this.popupHeight = '100%';
-  //   this.popupPosition = { my: 'center', at: 'center', of: '.view-wrapper' };
-  //   this.clickedRowData = e.row.data;
-  //   console.log("CLICKEDROWDATA",this.clickedRowData)
-  //   this.isDrillDownPopupOpened = true;
-  //   this.popupStateService.setPopupState('ClaimSummaryBreakUpPopup', true);
-  // };
-
   handleRowDrillDownClick = (e: any) => {
     const popupId = `drilldown-${new Date().getTime()}`; // Unique ID for each popup
     const rowData = e.row.data;
@@ -396,8 +325,8 @@ export class ClaimSummaryMonthWiseComponent {
     this.drilldownPopups.push({
       id: popupId,
       width: '100%',
-      height: '80%',
-      position: { my: 'center', at: 'center', of: '.view-wrapper' },
+      height: '90vh',
+      position: { my: 'center', at: 'center' },
       rowData: rowData,
       isOpened: true, // Ensure this popup is opened
       isPopupMinimised: false,
@@ -439,6 +368,7 @@ export class ClaimSummaryMonthWiseComponent {
 
   //============Get search parameters dropdown values=======
   get_searchParameters_Dropdown_Values() {
+    this.loadingVisible = true;
     this.masterService.Get_Facility_List_Data().subscribe((response: any) => {
       if (response.flag == '1') {
         this.Facility_DataSource = this.makeAsyncDataSourceFromJson(

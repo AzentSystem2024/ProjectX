@@ -830,17 +830,15 @@
       ></app-claim-detail-activity-drill-down>
     </dx-popup>
   </div> -->
-  <dx-load-panel
-    #loadPanel
-    class="loadPanel"
-    shadingColor="rgba(0,0,0,0)"
-    [position]="{ of: '.grid' }"
-    [(visible)]="loadingVisible"
-    [showIndicator]="true"
-    [showPane]="true"
-    [shading]="false"
-    [hideOnOutsideClick]="false"
-    [message]="'Loading...'"
-  >
-  </dx-load-panel>
 </div>
+<dx-load-panel
+  #loadPanel
+  shadingColor="rgba(0,0,0,0.0)"
+  [(visible)]="loadingVisible"
+  [showIndicator]="true"
+  [showPane]="true"
+  [shading]="true"
+  [hideOnOutsideClick]="false"
+  [message]="'Loading...'"
+>
+</dx-load-panel>

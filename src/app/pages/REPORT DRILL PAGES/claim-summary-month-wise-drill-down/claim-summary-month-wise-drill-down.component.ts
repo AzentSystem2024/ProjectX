@@ -82,8 +82,8 @@ export class ClaimSummaryMonthWiseDrillDownComponent implements OnInit {
   isSecondDrillOpened: boolean = false;
   selectedTab: any;
 
-  popupWidth: any = '50%';
-  popupHeight: any = '60%';
+  popupWidth: any = '90%';
+  popupHeight: any = '80%';
   popups: Array<{
     visible: boolean;
     height: number;
@@ -136,22 +136,6 @@ export class ClaimSummaryMonthWiseDrillDownComponent implements OnInit {
       this.get_Datagrid_DataSource();
     }
   }
-
-  // ngOnChanges(changes: SimpleChanges): void {
-  //   if (changes['clickedRowData'] && this.clickedRowData) {
-  //     console.log('Clicked row data fetched ==>>', this.clickedRowData);
-  //     console.log('detailed data==>', this.DetailData);
-  //     this.loadingVisible = true;
-  //     this.isContentVisible = true;
-  //     this.Year = this.clickedRowData.ClaimYear;
-  //     this.Month = this.clickedRowData.ClaimMonth;
-  //     this.FacilityID = this.clickedRowData.FacilityID;
-
-  //     if (this.Year && this.Month && this.FacilityID) {
-  //       this.get_Datagrid_DataSource();
-  //     }
-  //   }
-  // }
 
   //=============Resize the popup drill down============
   onResizeEnd(event: any) {

@@ -1,4 +1,3 @@
-
 import { MasterReportService } from 'src/app/pages/MASTER PAGES/master-report.service';
 import { CommonModule, DatePipe } from '@angular/common';
 import {
@@ -149,9 +148,9 @@ export class ResubmissionSummaryComponent implements OnInit {
   columnFixed: boolean = true;
   initialized: boolean;
 
-  popupWidth: any = '100%';
-  popupHeight: any = '100%';
-  popupPosition: any = { my: 'center', at: 'center', of: '.view-wrapper' };
+  popupWidth: any = '90%';
+  popupHeight: any = '90vh';
+  popupPosition: any = { my: 'center', at: 'center' };
   isPopupMinimised: boolean = false;
 
   jsonData: any;
@@ -168,7 +167,7 @@ export class ResubmissionSummaryComponent implements OnInit {
   // RemittanceBasedOn: any;
   remittanceOptions = [
     { ID: 1, Name: 'Last Remittance' },
-    { ID: 2, Name: 'All Remittance' }
+    { ID: 2, Name: 'All Remittance' },
   ];
 
   // Selected value
@@ -180,7 +179,7 @@ export class ResubmissionSummaryComponent implements OnInit {
     private datePipe: DatePipe,
     private masterService: MasterReportService,
     private popupStateService: PopupStateService,
-            private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef
   ) {
     this.loadingVisible = true;
 
@@ -200,13 +199,6 @@ export class ResubmissionSummaryComponent implements OnInit {
         this.updateToolbarItems(popup.id); // Pass the popupId when calling this method
       });
     }
-    // this.router.events.subscribe((event) => {
-    //   if (event instanceof NavigationEnd) {
-    //     this.isDrillDownPopupOpened = this.popupStateService.getPopupState(
-    //       'claimDetaisDrillDownPopup'
-    //     );
-    //   }
-    // });
 
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
@@ -273,36 +265,7 @@ export class ResubmissionSummaryComponent implements OnInit {
     }
   }
 
-  // updateToolbarItems() {
-  //   this.toolbarItems = [
-  //     {
-  //       widget: 'dxButton',
-  //       options: {
-  //         text: '',
-  //         icon: this.isPopupMinimised ? 'expandform' : 'minus', // Toggle icon based on minimize state
-  //         type: 'normal',
-  //         stylingMode: 'contained',
-  //         onClick: () => this.minimisePopup(), // Minimize the popup on click
-  //       },
-  //       toolbar: 'top',
-  //       location: 'after',
-  //     },
-  //     {
-  //       widget: 'dxButton',
-  //       options: {
-  //         text: '',
-  //         icon: 'close',
-  //         type: 'normal',
-  //         stylingMode: 'contained',
-  //         onClick: () => this.closePopup(), // Close the popup on click
-  //       },
-  //       toolbar: 'top',
-  //       location: 'after',
-  //     },
-  //   ];
-  // }
   //============= minimise popup ==========
- 
 
   updateToolbarItems(popupId: string) {
     const popup = this.drilldownPopups.find((p) => p.id === popupId); // Get the full popup object by its ID
@@ -363,9 +326,9 @@ export class ResubmissionSummaryComponent implements OnInit {
           of: window, // Reference the entire window as the parent
         };
       } else {
-        popup.width = '100%';
-        popup.height = '80%';
-        popup.position = { my: 'center', at: 'center', of: '.view-wrapper' }; // Example position
+        popup.width = '90%';
+        popup.height = '90vh';
+        popup.position = { my: 'center', at: 'center' }; // Example position
         popup.icon = 'minimize-icon';
       }
 
@@ -374,24 +337,7 @@ export class ResubmissionSummaryComponent implements OnInit {
       this.updateToolbarItems(popupId); // Update toolbar items after minimizing
     }
   }
- 
-  // minimisePopup() {
-  //   if (this.isPopupMinimised) {
-  //     this.popupWidth = '70%';
-  //     this.popupHeight = '90%';
-  //     this.popupPosition = { my: 'center', at: 'center', of: '.view-wrapper' };
-  //   } else {
-  //     this.popupHeight = '40vh';
-  //     this.popupWidth = '30%';
-  //     this.popupPosition = {
-  //       my: 'center right',
-  //       at: 'center right',
-  //       of: '.grid',
-  //     };
-  //   }
-  //   this.isPopupMinimised = !this.isPopupMinimised;
-  //   this.updateToolbarItems();
-  // }
+
   //========Remove closing popup from the popup array=====
   closePopup() {
     this.popupStateService.setPopupState('claimDetaisDrillDownPopup', false);
@@ -403,18 +349,6 @@ export class ResubmissionSummaryComponent implements OnInit {
   }
 
   //=================Row click drill Down===================
-  // handleRowDrillDownClick = (e: any) => {
-  //   this.isPopupMinimised = false;
-  //   this.updateToolbarItems();
-  //   this.popupWidth = '100%';
-  //   this.popupHeight = '100%';
-  //   this.popupPosition = { my: 'center', at: 'center', of: '.view-wrapper' };
-  //   const rowData = e.row.data;
-  //   this.clickedRowData = rowData;
-  //   this.isDrillDownPopupOpened = true;
-  //   this.popupStateService.setPopupState('claimDetaisDrillDownPopup', true);
-  // };
-
   handleRowDrillDownClick = (e: any) => {
     const popupId = `drilldown-${new Date().getTime()}`; // Unique ID for each popup
     const rowData = e.row.data;
@@ -424,9 +358,9 @@ export class ResubmissionSummaryComponent implements OnInit {
     // Add the new popup configuration
     this.drilldownPopups.push({
       id: popupId,
-      width: '100%',
-      height: '80%',
-      position: { my: 'center', at: 'center', of: '.view-wrapper' },
+      width: '90%',
+      height: '90vh',
+      position: { my: 'center', at: 'center' },
       rowData: rowData,
       isOpened: true, // Ensure this popup is opened
       isPopupMinimised: false,
@@ -487,9 +421,12 @@ export class ResubmissionSummaryComponent implements OnInit {
           this.CliamStatus_DataSource = response.ClaimStatus;
           this.paymentStatus_DataSource = response.PaymentStatus;
           this.advanceFilterGridColumns = response.AdvanceFilter;
-          this.RemittanceBasedOn = response.RemittanceBasedOn
-          console.log(this.RemittanceBasedOn,"REMITTANCE BASED ON")
-          console.log(this.advanceFilterGridColumns,"advanceFilterGridColumns")
+          this.RemittanceBasedOn = response.RemittanceBasedOn;
+          console.log(this.RemittanceBasedOn, 'REMITTANCE BASED ON');
+          console.log(
+            this.advanceFilterGridColumns,
+            'advanceFilterGridColumns'
+          );
           this.loadingVisible = false;
         }
       },
@@ -519,8 +456,8 @@ export class ResubmissionSummaryComponent implements OnInit {
       // CliamStatus: this.CliamStatus_Value,
       // memberID: this.memberID_Value,
       // paymentStatus: this.paymentStatus_Value,
-      CPTCode:this.CPTCode,
-      RemittanceBasedOn:this.RemittanceBasedOn
+      CPTCode: this.CPTCode,
+      RemittanceBasedOn: this.RemittanceBasedOn,
     };
     this.isContentVisible = false;
     this.dataGrid.instance.beginCustomLoading('Loading...');

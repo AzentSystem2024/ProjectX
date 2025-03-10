@@ -148,9 +148,9 @@ export class ClaimDetailsComponent implements OnInit {
   columnFixed: boolean = true;
   initialized: boolean;
 
-  popupWidth: any = '100%';
-  popupHeight: any = '100%';
-  popupPosition: any = { my: 'center', at: 'center', of: '.view-wrapper' };
+  popupWidth: any = '90%';
+  popupHeight: any = '90vh';
+  popupPosition: any = { my: 'center', at: 'center', };
   isPopupMinimised: boolean = false;
 
   jsonData: any;
@@ -173,7 +173,7 @@ export class ClaimDetailsComponent implements OnInit {
     private popupStateService: PopupStateService,
     private cdr: ChangeDetectorRef
   ) {
-    this.loadingVisible = true;
+    // this.loadingVisible = true;
 
     this.minDate = new Date(2000, 1, 1); // Set the minimum date
     this.maxDate = new Date(); // Set the maximum date
@@ -283,8 +283,8 @@ export class ClaimDetailsComponent implements OnInit {
         };
       } else {
         popup.width = '100%';
-        popup.height = '80%';
-        popup.position = { my: 'center', at: 'center', of: '.view-wrapper' }; // Example position
+        popup.height = '90vh';
+        popup.position = { my: 'center', at: 'center',  }; // Example position
         popup.icon = 'minimize-icon';
       }
 
@@ -314,9 +314,9 @@ export class ClaimDetailsComponent implements OnInit {
     // Add the new popup configuration
     this.drilldownPopups.push({
       id: popupId,
-      width: '100%',
-      height: '80%',
-      position: { my: 'center', at: 'center', of: '.view-wrapper' },
+      width: '90%',
+      height: '80vh',
+      position: { my: 'center', at: 'center' },
       rowData: rowData,
       isOpened: true, // Ensure this popup is opened
       isPopupMinimised: false,
@@ -375,6 +375,7 @@ export class ClaimDetailsComponent implements OnInit {
 
   //============Get search parameters dropdown values=======
   get_searchParameters_Dropdown_Values() {
+    this.loadingVisible = true;
     this.masterService.Get_Facility_List_Data().subscribe((response: any) => {
       if (response.flag == '1') {
         this.Facility_DataSource = this.makeAsyncDataSourceFromJson(

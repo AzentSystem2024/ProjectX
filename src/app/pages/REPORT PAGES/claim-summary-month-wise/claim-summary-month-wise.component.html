@@ -807,41 +807,16 @@
       </div>
     </dx-popup>
   </div>
-
-  <!-- <div *ngIf="isDrillDownPopupOpened">
-    <dx-popup *ngIf="isDrillDownPopupOpened"
-      [(visible)]="isDrillDownPopupOpened"
-      title="Claim Summary BreakUp"
-      [height]="popupHeight"
-      [width]="popupWidth"
-      [resizeEnabled]="true"
-      [dragEnabled]="true"
-      [shading]="false"
-      [showCloseButton]="false"
-      [closeOnOutsideClick]="true"
-      [showCloseButton]="false"
-      (onResizeEnd)="onResizeEnd($event)"
-      [toolbarItems]="toolbarItems"
-      [position]="popupPosition"
-    >
-      <app-claim-summary-month-wise-drill-down
-        [clickedRowData]="clickedRowData"
-        [DetailData]="detailData"
-      ></app-claim-summary-month-wise-drill-down>
-    </dx-popup>
-  </div> -->
-
-  <dx-load-panel
-    #loadPanel
-    class="loadPanel"
-    shadingColor="rgba(0,0,0,0)"
-    [position]="{ of: '.grid' }"
-    [(visible)]="loadingVisible"
-    [showIndicator]="true"
-    [showPane]="false"
-    [shading]="true"
-    [hideOnOutsideClick]="false"
-    [message]="'Loading...'"
-  >
-  </dx-load-panel>
 </div>
+<dx-load-panel
+  #loadPanel
+  class="loadPanel"
+  shadingColor="rgba(0,0,0,0)"
+  [(visible)]="loadingVisible"
+  [showIndicator]="true"
+  [showPane]="false"
+  [shading]="true"
+  [hideOnOutsideClick]="false"
+  [message]="'Loading...'"
+>
+</dx-load-panel>

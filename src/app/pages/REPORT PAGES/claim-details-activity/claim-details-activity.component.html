@@ -781,7 +781,6 @@
   </dx-popup>
   </div> -->
 
-
   <div *ngFor="let popup of drilldownPopups">
     <dx-popup
       [(visible)]="popup.isOpened"
@@ -803,6 +802,7 @@
           class="custom-minimize-btn"
           [attr.data-popup-id]="popup.id"
           (click)="minimisePopup(popup.id)"
+          title="minimise button"
         >
           <span
             *ngIf="!popup.isPopupMinimised"
@@ -828,18 +828,16 @@
       </div>
     </dx-popup>
   </div>
-
-  <dx-load-panel
-    #loadPanel
-    class="loadPanel"
-    shadingColor="rgba(0,0,0,0)"
-    [position]="{ of: '.grid' }"
-    [(visible)]="loadingVisible"
-    [showIndicator]="true"
-    [showPane]="false"
-    [shading]="true"
-    [hideOnOutsideClick]="false"
-    [message]="'Loading...'"
-  >
-  </dx-load-panel>
 </div>
+<dx-load-panel
+  #loadPanel
+  class="loadPanel"
+  shadingColor="rgba(0,0,0,0.4)"
+  [(visible)]="loadingVisible"
+  [showIndicator]="true"
+  [showPane]="false"
+  [shading]="true"
+  [hideOnOutsideClick]="false"
+  [message]="'Loading...'"
+>
+</dx-load-panel>
