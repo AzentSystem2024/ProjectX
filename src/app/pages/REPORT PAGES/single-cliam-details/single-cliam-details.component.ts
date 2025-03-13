@@ -48,7 +48,6 @@ export class SingleCliamDetailsComponent implements OnInit {
   stylingMode: any = 'primary';
   iconPosition: any = 'left';
   selectedRows: { [key: number]: any[] } = {};
-  selectedTab: number = 0;
 
   //====================DataSource Variables and Value Fields============
   TransactionDataSource: any;
@@ -96,62 +95,22 @@ export class SingleCliamDetailsComponent implements OnInit {
   ObservationColumns: any;
   filteredObservationdataSource: any;
   remittanceDataSource: any[];
+  AttechmentDataSource: any[];
 
   expandedRowKey: any = null;
   Facility_DataSource: any;
 
   isGridBoxOpened = false;
 
+  selectedTabId: number = 1;
+
   //============tab dataSource
-  SubmissiontabsWithText: any[] = [
-    {
-      id: 0,
-      text: 'Submission Activities',
-    },
-    {
-      id: 1,
-      text: 'Diagnosis',
-    },
-    {
-      id: 2,
-      text: 'Encounter Details',
-    },
-    {
-      id: 3,
-      text: 'Others',
-    },
-  ];
-  RemittancetabsWithText: any[] = [
-    {
-      id: 0,
-      text: 'Remittance Activity',
-    },
-    {
-      id: 1,
-      text: 'Others',
-    },
-  ];
-  ResubmissiontabsWithText: any[] = [
-    {
-      id: 0,
-      text: 'Submission Activities',
-    },
-    {
-      id: 1,
-      text: 'Resubmission Details',
-    },
+  SubmissiontabsWithText: any[];
 
-    {
-      id: 2,
-      text: 'Encounter Details',
-    },
-    {
-      id: 3,
-      text: 'Others',
-    },
-  ];
+  RemittancetabsWithText: any[];
 
-  selectedIndex: number = 0;
+  ResubmissiontabsWithText: any[];
+
   basicDataAvailable: boolean = false;
   isSubmissionClickVisible: boolean = false;
   isResubmissionClickVisible: boolean = false;
@@ -182,8 +141,8 @@ export class SingleCliamDetailsComponent implements OnInit {
     this.isDiagnosisGridVisible = false;
   }
 
-  onTabChange(index: number) {
-    this.selectedIndex = index;
+  onTabChange(selectedTabId: number) {
+    this.selectedTabId = selectedTabId;
   }
 
   facilityDisplayExpr = (item: any) => {
@@ -250,7 +209,6 @@ export class SingleCliamDetailsComponent implements OnInit {
     this.RemittanceCountValue = '';
     this.ClaimNumber = '';
     this.FacilityID = '';
-
   }
   //=========================Datagrid Show Attachment Click===============
   onAttachmentClick(event: any) {
@@ -304,6 +262,10 @@ export class SingleCliamDetailsComponent implements OnInit {
           this.ObservationDatasource = response.ActivityObservation;
           this.ObservationColumns = response.ObservationColumns;
           this.basicDataAvailable = true;
+          this.focusedRow = this.TransactionDataSource[0].TransactionDate;
+          this.onTransactionGridFocusedRowChanged({
+            row: { data: this.TransactionDataSource[0] },
+          });
           this.loadingVisible = false;
           this.isEmptyDatagrid = false;
         });
@@ -317,7 +279,7 @@ export class SingleCliamDetailsComponent implements OnInit {
     }
     this.loadingVisible = true;
     this.activityFocusRow = null;
-    this.selectedIndex = 0;
+    this.selectedTabId = 1;
     this.isSubmissionClickVisible = false;
     this.isResubmissionClickVisible = false;
     this.isRemittanceClickVisible = false;
@@ -337,6 +299,7 @@ export class SingleCliamDetailsComponent implements OnInit {
       e.row.data.ClaimRemittanceHeaderUID;
     let selectedRowClaimRemittanceUID = e.row.data.ClaimRemittanceUID;
     let selectedRowSerialNumber = e.row.data.SerialNumber;
+    let hasAttachment = e.row.data.hasAttachment;
 
     if (TransactionType.includes('Submission')) {
       this.service
@@ -350,6 +313,16 @@ export class SingleCliamDetailsComponent implements OnInit {
             this.claimDetailsDataSource = [response.submission];
             this.encounterDataSource = [response.encounter];
             this.othersDataSource = [response.others];
+          }
+          this.SubmissiontabsWithText = [
+            { id: 1, text: 'Submission Activities' },
+            { id: 2, text: 'Diagnosis' },
+            { id: 3, text: 'Encounter Details' },
+            { id: 4, text: 'Others' },
+          ];
+
+          if (hasAttachment) {
+            this.SubmissiontabsWithText.push({ id: 5, text: 'Attachments' });
           }
           this.loadingVisible = false;
           this.isSubmissionClickVisible = true;
@@ -368,6 +341,16 @@ export class SingleCliamDetailsComponent implements OnInit {
             this.othersDataSource = [response.others];
             this.ResubmissionDatasource = [response.resubmission];
           }
+          this.ResubmissiontabsWithText = [
+            { id: 1, text: 'Submission Activities' },
+            { id: 2, text: 'Resubmission Details' },
+            { id: 3, text: 'Encounter Details' },
+            { id: 4, text: 'Others' },
+          ];
+
+          if (hasAttachment) {
+            this.ResubmissiontabsWithText.push({ id: 5, text: 'Attachments' });
+          }
           this.isResubmissionClickVisible = true;
           this.loadingVisible = false;
         });
@@ -382,6 +365,14 @@ export class SingleCliamDetailsComponent implements OnInit {
           if (response.flag === '1') {
             this.remittanceDataSource = [response.remittance];
             this.othersDataSource = [response.others];
+          }
+          this.RemittancetabsWithText = [
+            { id: 1, text: 'Remittance Activity' },
+            { id: 2, text: 'Others' },
+          ];
+
+          if (hasAttachment) {
+            this.RemittancetabsWithText.push({ id: 3, text: 'Attachments' });
           }
           this.isRemittanceClickVisible = true;
           this.loadingVisible = false;

@@ -190,7 +190,7 @@
           <dx-data-grid
             class="grid theme-dependent"
             noDataText="No Data Available"
-            [height]="isEmptyDatagrid ? '65vh' : '30vh'"
+            [height]="'30vh'"
             [dataSource]="TransactionDataSource"
             [allowColumnResizing]="true"
             [allowColumnReordering]="true"
@@ -213,20 +213,20 @@
               [caption]="column.ToolTip"
               [visible]="column.Visibility"
             ></dxi-column>
-            <dxi-column
+            <!-- <dxi-column
               *ngIf="!isEmptyDatagrid"
               type="buttons"
               caption=""
               [width]="40"
               [fixed]="false"
-              fixedPosition="right"
+              fixedPosition="left"
               [allowFixing]="false"
               [allowHiding]="false"
               [allowResizing]="false"
               [allowReordering]="false"
               [buttons]="attachmentButton"
             >
-            </dxi-column>
+            </dxi-column> -->
           </dx-data-grid>
         </div>
 
@@ -236,7 +236,8 @@
             *ngIf="isSubmissionClickVisible"
             #withText
             [width]="width"
-            [selectedIndex]="selectedIndex"
+            keyExpr="id"
+            [selectedItem]="selectedTabId"
             [rtlEnabled]="rtlEnabled"
             [scrollByContent]="scrollByContent"
             [showNavButtons]="showNavButtons"
@@ -244,14 +245,15 @@
             orientation="horizontal"
             [stylingMode]="stylingMode"
             [iconPosition]="iconPosition"
-            (selectedIndexChange)="onTabChange($event)"
+            (onItemClick)="onTabChange($event.itemData.id)"
           ></dx-tabs>
+
           <!-- Different DataGrid for each tab -->
-          <div *ngIf="selectedIndex === 0">
+          <div *ngIf="selectedTabId === 1">
             <dx-data-grid
               class="grid theme-dependent"
               noDataText="No Data Available"
-              [height]="'35vh'"
+              [height]="'40vh'"
               [dataSource]="filteredActivityDataSource"
               [allowColumnResizing]="true"
               [allowColumnReordering]="true"
@@ -292,7 +294,7 @@
                     [showBorders]="true"
                     [dataSource]="filteredObservationdataSource"
                     [width]="'100%'"
-                    [height]="'40vh'"
+                    [height]="'25vh'"
                   >
                     <dxi-column
                       *ngFor="let column of ObservationColumns"
@@ -306,11 +308,11 @@
             </dx-data-grid>
           </div>
 
-          <div *ngIf="selectedIndex === 1">
+          <div *ngIf="selectedTabId === 2">
             <dx-data-grid
               [dataSource]="filteredDiagnosisDataSource"
               noDataText="No Diagnosis data Available"
-              [height]="'35vh'"
+              [height]="'40vh'"
             >
               <dxi-column
                 *ngFor="let column of DiagnosisColumns"
@@ -321,19 +323,27 @@
             </dx-data-grid>
           </div>
 
-          <div *ngIf="selectedIndex === 2">
+          <div *ngIf="selectedTabId === 3">
             <dx-data-grid
               [dataSource]="encounterDataSource"
               noDataText="encounter data not available"
-              [height]="'35vh'"
+              [height]="'40vh'"
             ></dx-data-grid>
           </div>
 
-          <div *ngIf="selectedIndex === 3">
+          <div *ngIf="selectedTabId === 4">
             <dx-data-grid
               [dataSource]="othersDataSource"
               noDataText="other data not available"
-              [height]="'35vh'"
+              [height]="'40vh'"
+            ></dx-data-grid>
+          </div>
+
+          <div *ngIf="selectedTabId === 5">
+            <dx-data-grid
+              [dataSource]="AttechmentDataSource"
+              noDataText="not available"
+              [height]="'40vh'"
             ></dx-data-grid>
           </div>
         </div>
@@ -343,7 +353,8 @@
             *ngIf="isResubmissionClickVisible"
             #withText
             [width]="width"
-            [selectedIndex]="selectedIndex"
+            keyExpr="id"
+            [selectedItem]="selectedTabId"
             [rtlEnabled]="rtlEnabled"
             [scrollByContent]="scrollByContent"
             [showNavButtons]="showNavButtons"
@@ -351,15 +362,15 @@
             orientation="horizontal"
             [stylingMode]="stylingMode"
             [iconPosition]="iconPosition"
-            (selectedIndexChange)="onTabChange($event)"
+            (onItemClick)="onTabChange($event.itemData.id)"
           ></dx-tabs>
-          <!-- Different DataGrid for each tab -->
 
-          <div *ngIf="selectedIndex === 0">
+          <!-- Different DataGrid for each tab -->
+          <div *ngIf="selectedTabId === 1">
             <dx-data-grid
               class="grid theme-dependent"
               noDataText="No Data Available"
-              [height]="'35vh'"
+              [height]="'40vh'"
               [dataSource]="filteredActivityDataSource"
               [allowColumnResizing]="true"
               [allowColumnReordering]="true"
@@ -400,7 +411,7 @@
                     [showBorders]="true"
                     [dataSource]="filteredObservationdataSource"
                     [width]="'100%'"
-                    [height]="'40vh'"
+                    [height]="'25vh'"
                   >
                     <dxi-column
                       *ngFor="let column of ObservationColumns"
@@ -414,27 +425,34 @@
             </dx-data-grid>
           </div>
 
-          <div *ngIf="selectedIndex === 1">
+          <div *ngIf="selectedTabId === 2">
             <dx-data-grid
               [dataSource]="ResubmissionDatasource"
               noDataText="Resubmission data not available"
-              [height]="'35vh'"
+              [height]="'40vh'"
             ></dx-data-grid>
           </div>
 
-          <div *ngIf="selectedIndex === 1">
+          <div *ngIf="selectedTabId === 3">
             <dx-data-grid
               [dataSource]="encounterDataSource"
-              noDataText="encounter data not available"
-              [height]="'35vh'"
+              noDataText="Encounter data not available"
+              [height]="'40vh'"
             ></dx-data-grid>
           </div>
 
-          <div *ngIf="selectedIndex === 2">
+          <div *ngIf="selectedTabId === 4">
             <dx-data-grid
               [dataSource]="othersDataSource"
-              noDataText="other data not available"
-              [height]="'35vh'"
+              noDataText="Other data not available"
+              [height]="'40vh'"
+            ></dx-data-grid>
+          </div>
+          <div *ngIf="selectedTabId === 5">
+            <dx-data-grid
+              [dataSource]="AttechmentDataSource"
+              noDataText="not available"
+              [height]="'40vh'"
             ></dx-data-grid>
           </div>
         </div>
@@ -444,7 +462,7 @@
             *ngIf="isRemittanceClickVisible"
             #withText
             [width]="width"
-            [selectedIndex]="selectedIndex"
+            [selectedItem]="selectedTabId"
             [rtlEnabled]="rtlEnabled"
             [scrollByContent]="scrollByContent"
             [showNavButtons]="showNavButtons"
@@ -452,23 +470,31 @@
             orientation="horizontal"
             [stylingMode]="stylingMode"
             [iconPosition]="iconPosition"
-            (selectedIndexChange)="onTabChange($event)"
+            displayExpr="text"
+            valueExpr="id"
+            (onItemClick)="onTabChange($event.itemData.id)"
           ></dx-tabs>
-          <!-- Different DataGrid for each tab -->
 
-          <div *ngIf="selectedIndex === 0">
+          <div *ngIf="selectedTabId === 1">
             <dx-data-grid
               [dataSource]="remittanceDataSource"
               noDataText="Remittance data not available"
-              [height]="'35vh'"
+              [height]="'40vh'"
             ></dx-data-grid>
           </div>
 
-          <div *ngIf="selectedIndex === 1">
+          <div *ngIf="selectedTabId === 2">
             <dx-data-grid
               [dataSource]="othersDataSource"
-              noDataText="other data not available"
-              [height]="'35vh'"
+              noDataText="Other data not available"
+              [height]="'40vh'"
+            ></dx-data-grid>
+          </div>
+          <div *ngIf="selectedTabId === 3">
+            <dx-data-grid
+              [dataSource]="AttechmentDataSource"
+              noDataText="not available"
+              [height]="'40vh'"
             ></dx-data-grid>
           </div>
         </div>

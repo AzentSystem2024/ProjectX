@@ -99,6 +99,13 @@ export class AllocationPageComponent {
     }
     //=============month field datasource============
     this.monthDataSource = this.reportServce.getMonths();
+
+    this.reportServce
+      .get_SearchParametrs_resubmission_Data()
+      .subscribe((resp: any) => {
+        let initdata: any = resp;
+        console.log('init data loaded successfully :>>', initdata);
+      });
   }
   // ======================facility display expression ============
   facilityDisplayExpr = (item: any) => {
