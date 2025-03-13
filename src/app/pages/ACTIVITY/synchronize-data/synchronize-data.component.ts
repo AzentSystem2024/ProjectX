@@ -8,7 +8,10 @@ import {
   ViewChild,
 } from '@angular/core';
 import {
+  DxDataGridComponent,
+  DxDataGridModule,
   DxLoadPanelModule,
+  DxPopupModule,
   DxToolbarModule,
   DxValidatorComponent,
   DxValidatorModule,
@@ -24,6 +27,8 @@ import { MasterReportService } from '../../MASTER PAGES/master-report.service';
 import { DxToastModule } from 'devextreme-angular';
 import { concatMap, finalize, from, Subscription } from 'rxjs';
 import { NavigationEnd, NavigationStart, Router } from '@angular/router';
+import { SystemServicesService } from '../../SYSTEM PAGES/system-services.service';
+import { FormPopupModule } from 'src/app/components';
 
 @Component({
   selector: 'app-synchronize-data',
@@ -33,6 +38,9 @@ import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 export class SynchronizeDataComponent implements OnInit, OnDestroy {
   @ViewChild('facilityValidator', { static: false })
   facilityValidator!: DxValidatorComponent;
+
+  @ViewChild(DxDataGridComponent, { static: false })
+  dataGrid!: DxDataGridComponent;
 
   @ViewChild('folderInput') fileInput!: ElementRef<HTMLInputElement>;
 
@@ -73,14 +81,21 @@ export class SynchronizeDataComponent implements OnInit, OnDestroy {
   message: string = '';
   disableButtons = false;
   intervalId: any;
+
+  facility_Liecence_Info_Data: any;
+  isImportClaimXlmPopupVisible = false;
   // serviceSubscription: Subscription | null = null; // For managing the service subscription
   private serviceSubscription: Subscription | null = null;
   private routerSubscription: Subscription | null = null;
+  xmlFile_DataSource: any[] = [];
+  selectedRowKeys: any[] = [];
+  importType: 'claim' | 'remittance' = 'claim';
 
   constructor(
     private dataService: DataService,
     private masterservice: MasterReportService,
-    private router: Router
+    private router: Router,
+    private systemservice: SystemServicesService
   ) {
     this.get_Facility_List_Data();
     this.fetch_last_sync_times();
@@ -114,7 +129,7 @@ export class SynchronizeDataComponent implements OnInit, OnDestroy {
     return `Downloading: ${ratio * 100}%`;
   }
 
-  //=========================Fetch facility list======================
+  //=========================Fetch facility list===================
   get_Facility_List_Data() {
     this.dataService
       .get_UserWise_FacilityList_Data()
@@ -123,6 +138,10 @@ export class SynchronizeDataComponent implements OnInit, OnDestroy {
           this.FacilitydropdownItems = response.facilityDetails;
         }
       });
+
+    this.systemservice.list_license_info_data().subscribe((response: any) => {
+      this.facility_Liecence_Info_Data = response.data;
+    });
   }
 
   //==================get last sync time===========================
@@ -145,43 +164,46 @@ export class SynchronizeDataComponent implements OnInit, OnDestroy {
       });
   }
 
-  // ==================== Trigger File Selection ====================
-  handleManualImportClick(type: 'claim' | 'remittance'): void {
-    const validationResult = this.facilityValidator.instance.validate();
-    if (validationResult && this.FacilityValue) {
-      const folderInput = document.getElementById(
-        'folderInput'
-      ) as HTMLInputElement;
-      folderInput.onchange = (event) => this.handleFolderImport(event, type);
-      folderInput.click();
-    } else {
-      notify(
-        {
-          message: `Select a facility value and try again..`,
-          position: { at: 'top right', my: 'top right' },
-        },
-        'error'
-      );
-    }
-  }
-  // ==================== Handle File Selection ====================
-  handleFolderImport(event: Event, type: 'claim' | 'remittance'): void {
-    const validationResult = this.facilityValidator.instance.validate();
-    if (validationResult && this.FacilityValue) {
-      const input = event.target as HTMLInputElement;
-      if (input.files) {
-        const files = Array.from(input.files);
-        const fileDataPromises = files.map((file) =>
-          this.readFileContent(file)
-        );
+  //============ facility drop down value change event =============
+  onFacilityExpiryCheck = (): boolean => {
+    let isFacilityExists = this.facility_Liecence_Info_Data.find(
+      (facility) => facility.ID === this.FacilityValue
+    );
+    if (isFacilityExists) {
+      let currentDate = new Date();
+      let expiryDate = new Date(isFacilityExists.Expiry_Date);
 
-        Promise.all(fileDataPromises)
-          .then((fileDataArray) => {
-            this.uploadFiles(fileDataArray, type);
-          })
-          .catch((error) => {
-            console.error(`Error reading ${type} files:`, error);
-          });
+      if (expiryDate < currentDate) {
+        notify(
+          {
+            message: `Your selected facility has expired.`,
+            position: { at: 'top right', my: 'top right' },
+          },
+          'error'
+        );
+        return false; // Facility is expired
+      } else {
+        return true; // Facility is valid
+      }
+    }
+    return false; // Facility not found (invalid selection)
+  };
+  //=================== Show XML data import Popup =================
+  showImportXMLPopup(clickData) {
+    const validationResult = this.facilityValidator.instance.validate();
+    if (validationResult && this.FacilityValue) {
+      let isfacilityExpired = this.onFacilityExpiryCheck();
+      if (isfacilityExpired === true) {
+        this.isImportClaimXlmPopupVisible = true;
+        this.importType = clickData;
+      } else {
+        notify(
+          {
+            message: `Selected facility is expired..`,
+            position: { at: 'top right', my: 'top right' },
+          },
+          'error'
+        );
       }
     } else {
       notify(
@@ -193,45 +215,93 @@ export class SynchronizeDataComponent implements OnInit, OnDestroy {
       );
     }
   }
-
-  // ==================== Read File Content ====================
-  readFileContent(file: File): Promise<{ fileName: string; fileData: string }> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () =>
-        resolve({ fileName: file.name, fileData: reader.result as string });
-      reader.onerror = reject;
-      reader.readAsText(file);
-    });
+  //============ CLEAR POPUP DATA AFTER THE POPUP CLOSING ===========
+  closeImportXMLPopup() {
+    this.isImportClaimXlmPopupVisible = false;
   }
 
-  // ==================== Upload Files Based on Type ====================
-  uploadFiles(
-    filesData: { fileName: string; fileData: string }[],
-    type: 'claim' | 'remittance'
-  ): void {
-    this.isLoading = true;
+  //============================================================================================================================================
+  triggerFileInput() {
+    let fileInput = document.getElementById('folderInput') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.click();
+    }
+  }
+  //==================== making all columns selected ===============
+  clearPopupData() {
+    this.xmlFile_DataSource = [];
+    this.selectedRowKeys = [];
+  }
 
-    from(filesData) // Convert the array into an Observable sequence
+  //==========Handle file selection event for loading datagrid========
+  handleFileSelection(event: any): void {
+    console.log('Loaded Data:>>', event.target);
+    const selectedFiles = event.target.files;
+    if (!selectedFiles || selectedFiles.length === 0) return;
+    let fileList: any[] = [];
+    let fileReadPromises: Promise<any>[] = [];
+    for (let i = 0; i < selectedFiles.length; i++) {
+      let file = selectedFiles[i];
+      // Create a promise to read file data
+      let filePromise = new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          resolve({
+            ID: i + 1, // Unique ID for selection
+            FileName: file.name,
+            FileSize: (file.size / 1024).toFixed(2), // Convert to KB
+            FileType: file.type || 'Unknown',
+            FileData: reader.result as string, // Store file content as Base64 or text
+          });
+        };
+        reader.onerror = reject;
+        reader.readAsText(file); // Read file as text (change to `readAsDataURL(file)` for Base64)
+      });
+      fileReadPromises.push(filePromise);
+    }
+    // Wait for all files to be read
+    Promise.all(fileReadPromises).then((filesWithData) => {
+      if (!Array.isArray(this.xmlFile_DataSource)) {
+        this.xmlFile_DataSource = [];
+      }
+      // Update DataGrid & Select All Rows
+      this.xmlFile_DataSource = [...this.xmlFile_DataSource, ...filesWithData];
+      if (this.xmlFile_DataSource.length > 0) {
+        this.selectedRowKeys = this.xmlFile_DataSource.map((item) => item.ID);
+        console.log('Updated DataGrid:', this.xmlFile_DataSource);
+        console.log('Selected Rows:', this.selectedRowKeys);
+      }
+    });
+    event.target.value = '';
+  }
+
+  //==================== Upload Files to API ====================
+  uploadFiles() {
+    this.isLoading = true;
+    let type = this.importType;
+    const selectedData = this.dataGrid.instance.getSelectedRowsData();
+    console.log('selected row data only :>>', selectedData);
+
+    from(selectedData)
       .pipe(
-        concatMap(({ fileName, fileData }) =>
+        concatMap((file) =>
           type === 'claim'
             ? this.dataService.import_Local_folder_Claim_data(
                 this.FacilityValue,
-                fileName,
-                fileData
+                file.FileName,
+                file.FileData
               )
             : this.dataService.import_Local_folder_Remittance_data(
                 this.FacilityValue,
-                fileName,
-                fileData
+                file.FileName,
+                file.FileData
               )
         ),
         finalize(() => {
-          this.isLoading = false; // Set loading to false when all uploads complete
+          this.isLoading = false;
           notify(
             {
-              message: `All files imported successfully.`,
+              message: `All selected files imported successfully.`,
               position: { at: 'top right', my: 'top right' },
             },
             'success'
@@ -245,59 +315,76 @@ export class SynchronizeDataComponent implements OnInit, OnDestroy {
       });
   }
 
+  //=========================================================================================================================================
   //====================Click event of Facility Sync==============
-  handleFacilityButtonClick() {
+  handleClaimButtonClick() {
     const validationResult = this.facilityValidator.instance.validate();
     if (validationResult.isValid) {
-      this.facilityButtonVisibility = false;
-      this.facilityDownloadedCount = 0;
-      let facilityID = this.FacilityValue;
-      let fromDate = new Date(this.startDate);
-      let endDate = new Date(this.endDate);
-      // Calculate the total number of days between fromDate and endDate
-      const totalDays =
-        Math.floor(
-          (endDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24)
-        ) + 1;
-      this.maxValue = totalDays;
-      this.seconds = 0;
-      this.showProgressBar = true;
+      let isfacilityExpired = this.onFacilityExpiryCheck();
+      console.log('facility expired>>', isfacilityExpired);
+      if (isfacilityExpired === true) {
+        this.facilityButtonVisibility = false;
+        this.facilityDownloadedCount = 0;
+        let facilityID = this.FacilityValue;
+        let fromDate = new Date(this.startDate);
+        let endDate = new Date(this.endDate);
+        // Calculate the total number of days between fromDate and endDate
+        const totalDays =
+          Math.floor(
+            (endDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24)
+          ) + 1;
+        this.maxValue = totalDays;
+        this.seconds = 0;
+        this.showProgressBar = true;
 
-      const callApiForDate = (currentDate: any) => {
-        const formattedDate = this.convertDateToYYYYMMDD(currentDate);
-        this.dataService
-          .get_Claim_SyncData_Details(facilityID, formattedDate, formattedDate)
-          .subscribe(
-            (response: any) => {
-              if (response.flag === 1) {
-                this.facilityDownloadedCount =
-                  this.facilityDownloadedCount + response.count;
-                this.seconds++;
-                if (this.seconds >= totalDays) {
-                  this.showProgressBar = false;
-                  notify(
-                    {
-                      message: `Claim Sync completed!`,
-                      position: { at: 'top right', my: 'top right' },
-                    },
-                    'success'
-                  );
+        const callApiForDate = (currentDate: any) => {
+          const formattedDate = this.convertDateToYYYYMMDD(currentDate);
+          this.dataService
+            .get_Claim_SyncData_Details(
+              facilityID,
+              formattedDate,
+              formattedDate
+            )
+            .subscribe(
+              (response: any) => {
+                if (response.flag === 1) {
+                  this.facilityDownloadedCount =
+                    this.facilityDownloadedCount + response.count;
+                  this.seconds++;
+                  if (this.seconds >= totalDays) {
+                    this.showProgressBar = false;
+                    notify(
+                      {
+                        message: `Claim Sync completed!`,
+                        position: { at: 'top right', my: 'top right' },
+                      },
+                      'success'
+                    );
+                  } else {
+                    const nextDate = new Date(currentDate);
+                    nextDate.setDate(currentDate.getDate() + 1);
+                    callApiForDate(nextDate);
+                  }
                 } else {
-                  const nextDate = new Date(currentDate);
-                  nextDate.setDate(currentDate.getDate() + 1);
-                  callApiForDate(nextDate);
+                  console.error(`Error syncing data for ${formattedDate}`);
                 }
-              } else {
-                console.error(`Error syncing data for ${formattedDate}`);
+              },
+              (error) => {
+                console.error(`Error on ${formattedDate}:`, error);
               }
-            },
-            (error) => {
-              console.error(`Error on ${formattedDate}:`, error);
-            }
-          );
-      };
-      callApiForDate(fromDate);
-      this.facilityButtonVisibility = true;
+            );
+        };
+        callApiForDate(fromDate);
+        this.facilityButtonVisibility = true;
+      } else {
+        notify(
+          {
+            message: `Selected facility is expired..`,
+            position: { at: 'top right', my: 'top right' },
+          },
+          'error'
+        );
+      }
     } else {
       notify(
         {
@@ -313,58 +400,69 @@ export class SynchronizeDataComponent implements OnInit, OnDestroy {
   handleRemittanceButtonClick() {
     const validationResult = this.facilityValidator.instance.validate();
     if (validationResult.isValid) {
-      this.remittanceButtonVisibility = false;
-      this.RemittanceDownloadedCount = 0;
-      let facilityID = this.FacilityValue;
-      let fromDate = new Date(this.startDate);
-      let endDate = new Date(this.endDate);
-      // Calculate the total number of days between fromDate and endDate
-      const totalDays =
-        Math.floor(
-          (endDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24)
-        ) + 1;
-      this.maxValue = totalDays;
-      this.seconds = 0;
-      this.showProgressBar = true;
-      const callApiForDate = (currentDate: any) => {
-        const formattedDate = this.convertDateToYYYYMMDD(currentDate);
-        this.dataService
-          .get_Remittance_SyncData_Details(
-            facilityID,
-            formattedDate,
-            formattedDate
-          )
-          .subscribe(
-            (response: any) => {
-              if (response.flag === 1) {
-                this.RemittanceDownloadedCount =
-                  this.RemittanceDownloadedCount + response.count;
-                this.seconds++;
-                if (this.seconds >= totalDays) {
-                  this.showProgressBar = false;
-                  notify(
-                    {
-                      message: `Remittance Sync completed!`,
-                      position: { at: 'top right', my: 'top right' },
-                    },
-                    'success'
-                  );
+      let isfacilityExpired = this.onFacilityExpiryCheck();
+      if (isfacilityExpired === true) {
+        this.remittanceButtonVisibility = false;
+        this.RemittanceDownloadedCount = 0;
+        let facilityID = this.FacilityValue;
+        let fromDate = new Date(this.startDate);
+        let endDate = new Date(this.endDate);
+        // Calculate the total number of days between fromDate and endDate
+        const totalDays =
+          Math.floor(
+            (endDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24)
+          ) + 1;
+        this.maxValue = totalDays;
+        this.seconds = 0;
+        this.showProgressBar = true;
+        const callApiForDate = (currentDate: any) => {
+          const formattedDate = this.convertDateToYYYYMMDD(currentDate);
+          this.dataService
+            .get_Remittance_SyncData_Details(
+              facilityID,
+              formattedDate,
+              formattedDate
+            )
+            .subscribe(
+              (response: any) => {
+                if (response.flag === 1) {
+                  this.RemittanceDownloadedCount =
+                    this.RemittanceDownloadedCount + response.count;
+                  this.seconds++;
+                  if (this.seconds >= totalDays) {
+                    this.showProgressBar = false;
+                    notify(
+                      {
+                        message: `Remittance Sync completed!`,
+                        position: { at: 'top right', my: 'top right' },
+                      },
+                      'success'
+                    );
+                  } else {
+                    const nextDate = new Date(currentDate);
+                    nextDate.setDate(currentDate.getDate() + 1);
+                    callApiForDate(nextDate);
+                  }
                 } else {
-                  const nextDate = new Date(currentDate);
-                  nextDate.setDate(currentDate.getDate() + 1);
-                  callApiForDate(nextDate);
+                  console.error(`Error syncing data for ${formattedDate}`);
                 }
-              } else {
-                console.error(`Error syncing data for ${formattedDate}`);
+              },
+              (error) => {
+                console.error(`Error on ${formattedDate}:`, error);
               }
-            },
-            (error) => {
-              console.error(`Error on ${formattedDate}:`, error);
-            }
-          );
-      };
-      callApiForDate(fromDate);
-      this.remittanceButtonVisibility = true;
+            );
+        };
+        callApiForDate(fromDate);
+        this.remittanceButtonVisibility = true;
+      } else {
+        notify(
+          {
+            message: `Selected facility is expired..`,
+            position: { at: 'top right', my: 'top right' },
+          },
+          'error'
+        );
+      }
     } else {
       notify(
         {
@@ -433,16 +531,13 @@ export class SynchronizeDataComponent implements OnInit, OnDestroy {
   }
 
   fetchServiceStatus() {
-    // Subscribe to the service and manage the notification logic
     this.serviceSubscription = this.dataService
       .getServiceSynchStatus()
       .subscribe((response: any) => {
         console.log(response, 'SERVICESTATUS');
-
         // If Flag is 1, enable notifications for this page
         if (response.Flag === 1) {
-          this.disableButtons = true;
-
+          // this.disableButtons = true;
           // Notify immediately
           notify(
             {
@@ -454,12 +549,10 @@ export class SynchronizeDataComponent implements OnInit, OnDestroy {
             },
             'success'
           );
-
           // // Clear any existing interval to avoid duplication
           // if (this.intervalId) {
           //   clearInterval(this.intervalId);
           // }
-
           // // Start a new interval to display the message every 30 seconds
           // this.intervalId = setInterval(() => {
           //   notify(
@@ -524,6 +617,8 @@ export class SynchronizeDataComponent implements OnInit, OnDestroy {
     DxLoadPanelModule,
     DxValidatorModule,
     DxToastModule,
+    FormPopupModule,
+    DxDataGridModule,
   ],
   providers: [],
   exports: [],

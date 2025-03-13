@@ -49,6 +49,7 @@ $theme-mode: null !default;
   --div-border-color: #000000;
   --border-color: black;
   --tab_selected_bg_color: rgb(164, 198, 208);
+  --content-bg-color: rgb(241, 245, 249);
 
   @if $theme-mode == dark {
     --card-background: var(--base-bg-darken-5);
@@ -56,6 +57,7 @@ $theme-mode: null !default;
     --div-border-color: #ffffff;
     --border-color: white;
     --tab_selected_bg_color: rgb(52, 52, 52);
+    --content-bg-color: rgb(31, 31, 31);
   }
 
   --border-color: #{$base-border-color};

@@ -33,6 +33,7 @@ body {
 .content {
   line-height: 1.5;
   height: 100%;
+  background-color: var(--content-bg-color);
 
   h2 {
     font-size: 30px;
@@ -536,7 +537,7 @@ body {
   .dx-toolbar-text-auto-hide
   .dx-button.dx-button-has-icon {
   border-radius: 4px;
-  background-color: #00a0e028;
+  background-color: rgb(96, 165, 250);
 }
 .dx-dropdownbutton-action.dx-button-has-icon:not(.dx-button-has-text)
   .dx-button-content {
@@ -577,7 +578,7 @@ body {
   transform: translatey(-80%);
 }
 .grid .dx-button-mode-text {
-  background-color: #00a0e028;
+  background-color: rgb(96, 165, 250);
   color: #ffffff;
   border-radius: 4px;
 }
@@ -709,4 +710,9 @@ body {
   height: 5vh;
   padding: 0px;
   margin: 0px;
+}
+.grid .dx-texteditor.dx-editor-outlined {
+  border-radius: 30px;
+  border-width: 1px;
+  border-style: solid;
 }

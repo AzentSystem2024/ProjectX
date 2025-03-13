@@ -61,7 +61,6 @@
         </p>
         <h1>{{ facilityDownloadedCount }}</h1>
         <div class="d-flex align-items-center mt-5 gap-2">
-          <input type="file" id="folderInput" hidden multiple />
           <!-- Manual Import Button -->
           <dx-button
             text="Import Claim"
@@ -72,7 +71,7 @@
             class="FacilitycountButton"
             [width]="'auto'"
             [height]="40"
-            (onClick)="handleManualImportClick('claim')"
+            (onClick)="showImportXMLPopup('claim')"
           >
           </dx-button>
 
@@ -87,7 +86,7 @@
             class="FacilitycountButton"
             [width]="'auto'"
             [height]="40"
-            (onClick)="handleFacilityButtonClick()"
+            (onClick)="handleClaimButtonClick()"
           >
           </dx-button>
         </div>
@@ -111,7 +110,7 @@
               class="FacilitycountButton"
               [width]="'auto'"
               [height]="40"
-              (onClick)="handleManualImportClick('remittance')"
+              (onClick)="showImportXMLPopup('remittance')"
             >
             </dx-button>
           </div>
@@ -171,3 +170,49 @@
   class="progress-bar-centered"
 >
 </dx-progress-bar>
+
+<form-popup
+  class="formPopupClass"
+  [(visible)]="isImportClaimXlmPopupVisible"
+  (save)="uploadFiles()"
+  (clear)="clearPopupData()"
+  titleText="import XML"
+  [height]="'auto'"
+  width="70%"
+>
+  <div>
+    <dx-data-grid
+      [dataSource]="xmlFile_DataSource"
+      [showBorders]="true"
+      keyExpr="ID"
+      [selection]="{ mode: 'multiple', showCheckBoxesMode: 'always' }"
+      [height]="'60vh'"
+      [scrolling]="{ mode: 'virtual' }"
+      [selectedRowKeys]="selectedRowKeys"
+    >
+      <dxo-paging [enabled]="false"></dxo-paging>
+      <dxo-toolbar>
+        <dxi-item location="after">
+          <input
+            type="file"
+            id="folderInput"
+            hidden
+            multiple
+            (change)="handleFileSelection($event)"
+          />
+          <dx-button
+            text="Add"
+            type="default"
+            icon="activefolder"
+            (onClick)="triggerFileInput()"
+          ></dx-button>
+        </dxi-item>
+      </dxo-toolbar>
+
+      <!-- Table Columns -->
+      <dxi-column dataField="FileName" caption="File Name"></dxi-column>
+      <dxi-column dataField="FileSize" caption="Size (KB)"></dxi-column>
+      <dxi-column dataField="FileType" caption="Type"></dxi-column>
+    </dx-data-grid>
+  </div>
+</form-popup>

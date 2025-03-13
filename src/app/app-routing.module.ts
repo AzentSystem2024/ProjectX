@@ -49,6 +49,7 @@ import { DownloadLogViewComponent } from './pages/LOGS/download-log-view/downloa
 import { ResubmissionSummaryComponent } from './pages/REPORT PAGES/resubmission-summary/resubmission-summary.component';
 import { EmailLogDataComponent } from './pages/LOGS/Report-Email-Schedule/email-log-data.component';
 import { SingleCliamDetailsComponent } from './pages/REPORT PAGES/single-cliam-details/single-cliam-details.component';
+import { AllocationPageComponent } from './pages/RESUBMISSION/allocation-page/allocation-page.component';
 const routes: Routes = [
   {
     path: '',
@@ -273,6 +274,11 @@ const routes: Routes = [
       {
         path: 'Email-Log-Scheduling',
         component: EmailLogDataComponent,
+        canActivate: [AuthGuardService],
+      },
+      {
+        path: 'Resub-Allocation-Page',
+        component: AllocationPageComponent,
         canActivate: [AuthGuardService],
       },
       {
