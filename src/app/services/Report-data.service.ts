@@ -72,7 +72,7 @@ export class ReportService {
   get_SearchParametrs_Data() {
     const userid = sessionStorage.getItem('UserID');
     // const currentPathName = this.router.url.replace('/', '');
-    const url = `${BASE_URL}/reports/claimdetailswithactivity/parametervalues`;
+    const url = `${BASE_URL}reports/claimdetailswithactivity/parametervalues`;
     const reqBody = { userid: userid };
     return this.http.post(url, reqBody);
   }
@@ -135,9 +135,8 @@ export class ReportService {
     return this.http.post(url, reqBody);
   }
 
-
-   //========fetch datasource of Resubmission_summary========
-   fetch_Resubmission_summary(formData: any) {
+  //========fetch datasource of Resubmission_summary========
+  fetch_Resubmission_summary(formData: any) {
     const userid = sessionStorage.getItem('UserID');
     const currentPathName = this.router.url.replace('/', '');
     const url = `${BASE_URL}reports/resubmissionsummary/summary`;
@@ -161,8 +160,8 @@ export class ReportService {
       // PatientID: formData.PatientID,
       // MemberID: formData.memberID,
       DenialCode: formData.DenialCodes,
-      RemittanceBasedOn:formData.RemittanceBasedOn,
-      CPTCode:formData.CPTCode
+      RemittanceBasedOn: formData.RemittanceBasedOn,
+      CPTCode: formData.CPTCode,
     };
     return this.http.post(url, reqBody);
   }

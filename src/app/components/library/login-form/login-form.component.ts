@@ -72,6 +72,7 @@ export class LoginFormComponent implements OnInit {
               sessionStorage.setItem('loginName', response.data.LoginName);
               sessionStorage.setItem('UserID', response.data.UserID);
               sessionStorage.setItem('UserPhoto', response.data.PhotoFile);
+              sessionStorage.setItem('AuthToken', response.token);
 
               this.authService.setUserData(response.data);
               localStorage.setItem('logData', JSON.stringify(response.data));

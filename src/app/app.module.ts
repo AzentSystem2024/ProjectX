@@ -10,7 +10,7 @@ import {
   ChangePasswordFormModule,
   LoginFormModule,
 } from './components';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AuthService, ScreenService, AppInfoService } from './services';
 import { UnauthenticatedContentModule } from './layouts/unauthenticated-content/unauthenticated-content';
 import { AppRoutingModule } from './app-routing.module';
@@ -30,7 +30,11 @@ import { ImportMasterDataFormModule } from './pages/POP-UP_PAGES/import-master-d
 import { ViewImportedMasterDataFormModule } from './pages/POP-UP_PAGES/view-imported-master-data-form/view-imported-master-data-form.component';
 import { RouteReuseStrategy } from '@angular/router';
 import { CustomReuseStrategy } from './custom-reuse-strategy';
-import { ResubmissionSummaryComponent, ResubmissionSummaryModule } from './pages/REPORT PAGES/resubmission-summary/resubmission-summary.component';
+import {
+  ResubmissionSummaryComponent,
+  ResubmissionSummaryModule,
+} from './pages/REPORT PAGES/resubmission-summary/resubmission-summary.component';
+import { AuthInterceptor } from './services/auth.interceptor';
 
 @NgModule({
   declarations: [AppComponent],
@@ -60,7 +64,7 @@ import { ResubmissionSummaryComponent, ResubmissionSummaryModule } from './pages
     ImportMasterDataModule,
     ImportMasterDataFormModule,
     ViewImportedMasterDataFormModule,
-    ResubmissionSummaryModule
+    ResubmissionSummaryModule,
   ],
   providers: [
     AuthService,
@@ -68,6 +72,7 @@ import { ResubmissionSummaryComponent, ResubmissionSummaryModule } from './pages
     AppInfoService,
     ThemeService,
     { provide: RouteReuseStrategy, useClass: CustomReuseStrategy },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
   ],
   bootstrap: [AppComponent],
 })

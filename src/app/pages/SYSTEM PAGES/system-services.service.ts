@@ -12,18 +12,18 @@ export class SystemServicesService {
   constructor(private http: HttpClient) {}
   //======Facility Drop down data=====================
   Get_GropDown(dropDownField: any) {
-    const Url = `${BASE_URL}/dropdown`;
+    const Url = `${BASE_URL}dropdown`;
     const reqBody = { name: dropDownField };
     return this.http.post(Url, reqBody);
   }
   //===================================Security Policy===================================
   get_securityPolicy_List(userid: any) {
-    const Url = `${BASE_URL}/securitysettings/list`;
+    const Url = `${BASE_URL}securitysettings/list`;
     return this.http.post(Url, { UserID: userid });
   }
   //========================Insert OR Update security policy list==========================
   save_security_Policy_Data(data: any) {
-    const Url = `${BASE_URL}/securitysettings/save`;
+    const Url = `${BASE_URL}securitysettings/save`;
     const reqBody = {
       PasswordValidationRequired: data.validationRequired,
       MinimumLength: data.minPasswordLength,
@@ -56,7 +56,7 @@ export class SystemServicesService {
   //========Facility credentials verify ========
   verify_PostOfficeCredencial() {
     const UserId = sessionStorage.getItem('UserID');
-    const Url = `${BASE_URL}/facilitycredentials/verifyuserfacilities`;
+    const Url = `${BASE_URL}facilitycredentials/verifyuserfacilities`;
     const reqBody = {
       UserId: UserId,
     };
@@ -64,7 +64,7 @@ export class SystemServicesService {
   }
   //===========List===========
   get_PostOfficeCredencial_List() {
-    const Url = `${BASE_URL}/facilitycredentials/list`;
+    const Url = `${BASE_URL}facilitycredentials/list`;
     const reqBody = {
       list: [],
     };
@@ -77,7 +77,7 @@ export class SystemServicesService {
     LoginName: any,
     Password: any
   ) {
-    const url = `${BASE_URL}/facilitycredentials/update`;
+    const url = `${BASE_URL}facilitycredentials/update`;
     const reqBody = {
       FacilityID: FacilityID,
       PostOfficeID: PostOfficeID,
@@ -95,7 +95,7 @@ export class SystemServicesService {
     Password: any
   ) {
     const UserId = sessionStorage.getItem('UserID');
-    const url = `${BASE_URL}/facilitycredentials/verifyfacility`;
+    const url = `${BASE_URL}facilitycredentials/verifyfacility`;
     const reqBody = {
       UserId: UserId,
       FacilityID: FacilityID,
@@ -108,7 +108,7 @@ export class SystemServicesService {
 
   // ------------------------------------------License Info---------------------------------------------------
   list_license_info_data() {
-    const url = `${BASE_URL}/facility/licensefacilityInfo`;
+    const url = `${BASE_URL}facility/licensefacilityInfo`;
     return this.http.post(url, {});
   }
 
